@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia da Sala de Estudos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .preview {
+            border: 2px solid #ddd;
+            padding: 20px;
+            background-color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+        .preview img {
+            max-width: 100%;
+            height: auto;
+        }
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .option-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .option-card:hover {
+            transform: scale(1.05);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .tips {
+            margin-top: 20px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Guia da Sala de Estudos</h1>
+        <p>Personalize sua experiência de estudos de forma prática e eficiente!</p>
+    </header>
+    <div class="container">
+        <h2>O que é a Sala de Estudos?</h2>
+        <p>A Sala de Estudos é um ambiente virtual projetado para maximizar sua produtividade. Aqui, você pode personalizar o layout, cores, lembretes e até música de fundo para criar o espaço perfeito para seus estudos.</p>
+
+        <h2>Prévia da Sala</h2>
+        <div class="preview" id="salaPreview">
+            <img src="https://via.placeholder.com/600x300?text=Sala+de+Estudos" alt="Prévia da Sala" id="salaImage">
+        </div>
+
+        <h2>Personalize sua Sala</h2>
+        <div class="options">
+            <div class="option-card" onclick="changeColor('#3498db')">
+                <h3>Cor de Fundo</h3>
+                <p>Escolha uma cor que te inspire!</p>
+            </div>
+            <div class="option-card" onclick="changeLayout('minimalista')">
+                <h3>Layout</h3>
+                <p>Minimalista, clássico ou moderno.</p>
+            </div>
+            <div class="option-card" onclick="addReminder()">
+                <h3>Lembretes</h3>
+                <p>Configure lembretes para pausas.</p>
+            </div>
+            <div class="option-card" onclick="playMusic()">
+                <h3>Música de Fundo</h3>
+                <p>Escolha uma trilha relaxante.</p>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h3>Dica Interativa</h3>
+            <p id="tipText">Clique nas opções acima para ver como sua sala muda em tempo real!</p>
+        </div>
+    </div>
+
+    <script>
+    const userId = "12345"; // Substituir pelo ID real do usuário (ex.: obtido via autenticação)
+    const apiUrl = "https://nvp-backend.onrender.com/api";
+
+    // Carrega as configurações da sala ao iniciar
+    async function loadSalaConfig() {
+        try {
+            const response = await fetch(`${apiUrl}/${userId}`);
+            const data = await response.json();
+            if (data) {
+                document.getElementById('salaPreview').style.backgroundColor = data.color || '#ffffff';
+                document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${data.layout || 'default'}`;
+                document.getElementById('tipText').innerText = "Configurações carregadas!";
+            }
+        } catch (error) {
+            console.error("Erro ao carregar configurações:", error);
+        }
+    }
+
+    // Salva as personalizações
+    async function saveSalaConfig(config) {
+        try {
+            const response = await fetch(`${apiUrl}/${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            });
+            const result = await response.json();
+            document.getElementById('tipText').innerText = result.message;
+        } catch (error) {
+            console.error("Erro ao salvar configurações:", error);
+        }
+    }
+
+    // Funções de personalização
+    function changeColor(color) {
+        document.getElementById('salaPreview').style.backgroundColor = color;
+        saveSalaConfig({ color });
+        document.getElementById('tipText').innerText = `Cor ${color} salva!`;
+    }
+
+    function changeLayout(layout) {
+        document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${layout}`;
+        saveSalaConfig({ layout });
+        document.getElementById('tipText').innerText = `Layout ${layout} salvo!`;
+    }
+
+    function addReminder() {
+        let time = prompt("Digite o intervalo para lembretes (em minutos):");
+        if (time) {
+            saveSalaConfig({ reminders: time });
+            document.getElementById('tipText').innerText = `Lembrete a cada ${time} minutos salvo!`;
+        }
+    }
+
+    function playMusic() {
+        let music = prompt("Escolha a música (ex.: lo-fi, clássica, natureza):");
+        if (music) {
+            saveSalaConfig({ music });
+            document.getElementById('tipText').innerText = `Música ${music} salva!`;
+        }
+    }
+
+    // Carrega as configurações ao carregar a página
+    window.onload = loadSalaConfig;
+</script>
+</body>
+</html>

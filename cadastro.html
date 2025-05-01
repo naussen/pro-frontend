@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro - NVP Concursos</title>
+<style>
+  :root {
+    --header-height: 55px;
+    --main-color: #1A5276;
+    --light-highlight-bg: #EAF2F8;
+    --accent-1: #D4AC0D;
+    --accent-1-darker: #b3910b;
+    --accent-2: #CA6F1E;
+    --dark-bg: #154360;
+    --subnav-bg: #282A35;
+    --text-dark: #333;
+    --text-light: #f8f9fa;
+    --text-muted: #6c757d;
+    --border-color: #ccc;
+    --light-grey-bg: #f1f1f1;
+    --header-bg: #ffffff;
+    --header-border: #e7e7e7;
+    --main-content-bg: #ffffff;
+    --code-bg: #f1f1f1;
+    --button-text-dark: #333;
+    --footer-text-muted: #ccc;
+    --footer-link-color: #ccc;
+    --footer-link-hover: var(--accent-1);
+    --footer-separator: #555;
+    --footer-h4: #f1f1f1;
+    --dark-blue-hover: #113a54;
+    --error-color: #D32F2F;
+  }
+
+  body.dark-mode {
+    --main-color: #6cb6ff;
+    --light-highlight-bg: #2d333b;
+    --accent-1: #e4c05c;
+    --accent-1-darker: #cfae51;
+    --accent-2: #d98234;
+    --dark-bg: #0d1117;
+    --subnav-bg: #22272e;
+    --text-dark: #c9d1d9;
+    --text-light: #f0f6fc;
+    --text-muted: #8b949e;
+    --border-color: #444c56;
+    --light-grey-bg: #0d1117;
+    --header-bg: #161b22;
+    --header-border: #30363d;
+    --main-content-bg: #161b22;
+    --code-bg: #22272e;
+    --button-text-dark: #161b22;
+    --footer-text-muted: #8b949e;
+    --footer-link-color: #8b949e;
+    --footer-link-hover: var(--accent-1);
+    --footer-separator: #30363d;
+    --footer-h4: var(--text-light);
+    --dark-blue-hover: #1a6fba;
+    --error-color: #FF5252;
+  }
+
+  html { height: 100%; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--light-grey-bg);
+    color: var(--text-dark);
+    padding-top: var(--header-height);
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .w3s-header {
+    background-color: var(--header-bg);
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: var(--header-height);
+    width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 103;
+    border-bottom: 1px solid var(--header-border);
+    gap: 15px;
+  }
+  .w3s-logo-area {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .w3s-logo-placeholder {
+    width: 35px;
+    height: 35px;
+    margin-right: 8px;
+  }
+  .w3s-logo-placeholder text {
+    font-size: 35px;
+    fill: var(--main-color);
+    font-weight: bold;
+    font-family: sans-serif;
+  }
+  .w3s-logo-placeholder circle {
+    fill: transparent;
+    stroke: var(--main-color);
+    stroke-width: 5;
+  }
+  .w3s-header-right-group {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 12px;
+  }
+  .w3s-search-area {
+    display: flex;
+    align-items: center;
+    max-width: 220px;
+  }
+  .w3s-search-area input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px 0 0 25px;
+    font-size: 14px;
+    width: 100%;
+    border-right: none;
+    height: 36px;
+    box-sizing: border-box;
+    background-color: var(--main-content-bg);
+    color: var(--text-dark);
+  }
+  .w3s-search-area input[type="text"]:focus {
+    outline: none;
+    border-color: var(--main-color);
+  }
+  .w3s-search-area button {
+    padding: 0 12px;
+    height: 36px;
+    box-sizing: border-box;
+    background-color: var(--light-grey-bg);
+    border: 1px solid var(--border-color);
+    border-left: none;
+    cursor: pointer;
+    border-radius: 0 25px 25px 0;
+    transition: background-color 0.2s;
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+  .w3s-search-area button:hover {
+    background-color: #ddd;
+  }
+  body.dark-mode .w3s-search-area button:hover {
+    background-color: #2d333b;
+  }
+  .w3s-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .w3s-header-actions a,
+  .w3s-header-actions button {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s, background-color 0.2s;
+    padding: 5px 6px;
+    border-radius: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .w3s-header-actions a .icon,
+  .w3s-header-actions button .icon {
+    font-size: 1.1em;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    text-align: center;
+    color: #666;
+  }
+  body.dark-mode .w3s-header-actions a,
+  body.dark-mode .w3s-header-actions button {
+    color: var(--text-muted);
+  }
+  body.dark-mode .w3s-header-actions a .icon,
+  body.dark-mode .w3s-header-actions button .icon {
+    color: var(--text-muted);
+  }
+  .w3s-header-actions a[title="Assinaturas"] .icon {
+    color: #9763f6;
+  }
+  body.dark-mode .w3s-header-actions a[title="Assinaturas"] .icon {
+    color: #c8a1ff;
+  }
+  .w3s-header-actions a[title="Contato"] .icon {
+    color: var(--main-color);
+  }
+  .w3s-header-actions a[title="Login"] .icon {
+    color: #2a93fb;
+  }
+  body.dark-mode .w3s-header-actions a[title="Login"] .icon {
+    color: #79c0ff;
+  }
+  .w3s-header-actions a:hover,
+  .w3s-header-actions button:hover {
+    color: var(--main-color);
+    background-color: rgba(0,0,0,0.03);
+  }
+  body.dark-mode .w3s-header-actions a:hover,
+  body.dark-mode .w3s-header-actions button:hover {
+    background-color: rgba(255,255,255,0.05);
+  }
+  .w3s-header-actions a:hover .icon,
+  .w3s-header-actions button:hover .icon {
+    color: var(--main-color);
+  }
+  #theme-toggle .icon {
+    font-size: 1.3em;
+  }
+
+  .login-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background-color: var(--header-bg);
+    border: 1px solid var(--header-border);
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 15px;
+    width: 280px;
+    z-index: 110;
+  }
+  .login-dropdown.active {
+    display: block;
+  }
+  .login-dropdown label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .login-dropdown input[type="email"],
+  .login-dropdown input[type="password"],
+  .login-dropdown input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: var(--main-content-bg);
+    color: var(--text-dark);
+  }
+  .login-dropdown input[type="email"]:focus,
+  .login-dropdown input[type="password"]:focus,
+  .login-dropdown input[type="text"]:focus {
+    outline: none;
+    border-color: var(--main-color);
+  }
+  .login-dropdown button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--main-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+  }
+  body.dark-mode .login-dropdown button[type="submit"] {
+    color: var(--button-text-dark);
+  }
+  .login-dropdown button[type="submit"]:hover {
+    background-color: var(--accent-1-darker);
+  }
+  body.dark-mode .login-dropdown button[type="submit"]:hover {
+    background-color: #8fceff;
+  }
+  .login-dropdown p {
+    margin-top: 10px;
+    font-size: 0.9em;
+    text-align: center;
+  }
+  .login-dropdown p a {
+    color: var(--main-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .login-dropdown p a:hover {
+    text-decoration: underline;
+  }
+
+  main {
+    flex-grow: 1;
+    background-color: var(--main-content-bg);
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 0;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .signup-benefits {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px;
+    background-color: var(--light-highlight-bg);
+    border-radius: 8px;
+    border: 1px solid var(--header-border);
+  }
+  .signup-benefits h2 {
+    font-size: 1.8em;
+    color: var(--main-color);
+    margin-bottom: 15px;
+  }
+  .signup-benefits .price {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--accent-1-darker);
+    margin: 15px 0 5px 0;
+    display: block;
+  }
+  .signup-benefits .cancel-note {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    margin-bottom: 25px;
+    display: block;
+  }
+  .benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+    text-align: left;
+    display: inline-block;
+    max-width: 450px;
+  }
+  .benefits-list li {
+    margin-bottom: 12px;
+    font-size: 1.05em;
+    color: var(--text-dark);
+    position: relative;
+    padding-left: 25px;
+  }
+  .benefits-list li::before {
+    content: '✔️';
+    color: var(--main-color);
+    position: absolute;
+    left: 0;
+    top: 1px;
+  }
+  .signup-benefits .extra-info {
+    margin-top: 20px;
+    font-size: 1em;
+    color: var(--text-muted);
+    border-top: 1px dashed var(--border-color);
+    padding-top: 20px;
+  }
+  .signup-benefits .arrow-down {
+    font-size: 1.5em;
+    color: var(--accent-1);
+    display: block;
+    margin: 15px auto;
+  }
+
+  .signup-form-section {
+    background-color: var(--header-bg);
+    padding: 30px 40px;
+    border-radius: 8px;
+    border: 1px solid var(--header-border);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .signup-form-section h2 {
+    text-align: center;
+    font-size: 1.8em;
+    color: var(--main-color);
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.95em;
+    color: var(--text-muted);
+  }
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="password"],
+  .form-group input[type="number"],
+  .form-group input[type="tel"],
+  .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+    background-color: var(--main-content-bg);
+    color: var(--text-dark);
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 2px rgba(26, 82, 118, 0.2);
+  }
+  .form-group input.error,
+  .form-group select.error {
+    border-color: var(--error-color);
+  }
+  .error-message {
+    color: var(--error-color);
+    font-size: 0.8em;
+    margin-top: 4px;
+    min-height: 1.2em;
+    display: block;
+  }
+  .password-requirements {
+    font-size: 0.8em;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .signup-form-section button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--accent-1);
+    color: var(--button-text-dark);
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 20px;
+  }
+  .signup-form-section button[type="submit"]:hover {
+    background-color: var(--accent-1-darker);
+    transform: translateY(-2px);
+  }
+
+  .footer {
+    background-color: var(--dark-bg);
+    color: var(--footer-text-muted);
+    padding: 30px 20px;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 101;
+    flex-shrink: 0;
+    margin-top: 40px;
+  }
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--footer-separator);
+    margin-bottom: 15px;
+  }
+  .footer-section {
+    min-width: 200px;
+    flex-grow: 1;
+  }
+  .footer h4 {
+    color: var(--footer-h4);
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--footer-separator);
+    padding-bottom: 8px;
+    font-size: 1.1em;
+  }
+  .footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer ul li {
+    margin-bottom: 8px;
+  }
+  .footer ul li a,
+  .footer-section p a {
+    color: var(--footer-link-color);
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: color 0.3s;
+  }
+  .footer ul li a:hover,
+  .footer-section p a:hover {
+    color: var(--footer-link-hover);
+  }
+  .footer-section p {
+    color: var(--footer-link-color);
+    font-size: 0.9em;
+    margin: 0 0 8px 0;
+    line-height: 1.5;
+  }
+  .footer-copyright {
+    text-align: center;
+    font-size: 0.85em;
+    color: #a8c0d1;
+    width: 100%;
+    padding-top: 15px;
+  }
+  body.dark-mode .footer-copyright {
+    color: var(--text-muted);
+  }
+  .footer-copyright a {
+    color: var(--footer-link-color);
+  }
+  .footer-copyright a:hover {
+    color: var(--footer-link-hover);
+  }
+
+  @media screen and (max-width: 1100px) {
+    .w3s-header-actions a[title="Contato"] {
+      display: none;
+    }
+    .w3s-search-area {
+      max-width: 200px;
+    }
+    .w3s-header {
+      gap: 15px;
+    }
+  }
+  @media screen and (max-width: 992px) {
+    .w3s-search-area {
+      max-width: 180px;
+    }
+    .w3s-header-right-group {
+      gap: 10px;
+    }
+    .w3s-header-actions {
+      gap: 8px;
+    }
+    .w3s-header-actions a span.link-text {
+      display: none;
+    }
+    .w3s-header {
+      gap: 10px;
+      padding: 0 10px;
+    }
+    .container {
+      max-width: 95%;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .w3s-header {
+      height: 50px;
+    }
+    body {
+      padding-top: 50px;
+    }
+    main {
+      padding: 20px 0;
+    }
+    .container {
+      padding: 0 15px;
+    }
+    .signup-benefits {
+      padding: 20px;
+    }
+    .signup-benefits h2 {
+      font-size: 1.6em;
+    }
+    .signup-benefits .price {
+      font-size: 2em;
+    }
+    .signup-form-section {
+      padding: 20px;
+    }
+    .signup-form-section h2 {
+      font-size: 1.6em;
+    }
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .footer-content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .footer-section {
+      min-width: unset;
+      width: 80%;
+      margin-bottom: 15px;
+    }
+  }
+  @media screen and (max-width: 480px) {
+    .w3s-search-area {
+      display: none;
+    }
+    .w3s-header-right-group {
+      margin-left: auto;
+    }
+    .login-dropdown {
+      width: 90%;
+      right: 5%;
+      left: 5%;
+    }
+    .benefits-list li {
+      font-size: 1em;
+      padding-left: 22px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="w3s-header" id="mainHeader">
+  <div class="w3s-logo-area">
+    <a href="index.html" title="Página Inicial">
+      <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48"/>
+        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
+      </svg>
+    </a>
+  </div>
+  <div class="w3s-header-right-group">
+    <div class="w3s-search-area">
+      <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
+      <button type="submit" aria-label="Buscar">🔍</button>
+    </div>
+    <div class="w3s-header-actions">
+      <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+        <span class="icon theme-icon-light">☀️</span>
+        <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+      </button>
+      <a href="cadastro.html" title="Assinaturas"><span class="icon">➕</span> <span class="link-text">Assinaturas</span></a>
+      <a href="#" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">Contato</span></a>
+      <div style="position: relative;">
+        <button id="login-btn" title="Login"><span class="icon">👤</span> <span class="link-text">Login</span></button>
+        <div id="login-dropdown" class="login-dropdown">
+          <form id="login-form">
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" name="email" required>
+            <label for="login-password">Senha:</label>
+            <input type="password" id="login-password" name="password" required>
+            <button type="submit">Entrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <section class="signup-benefits">
+      <h2>Faça parte de uma plataforma interativa e objetiva para quem não tem tempo a perder!</h2>
+      <span class="arrow-down">👇</span>
+      <span class="price">R$ 29,90 <small>/ mês</small></span>
+      <span class="cancel-note">Cancele quando quiser</span>
+      <span class="arrow-down">👇</span>
+      <ul class="benefits-list">
+        <li>Acesso total aos conteúdos</li>
+        <li>Cursos completos nas principais disciplinas</li>
+        <li>Flashcards interativos</li>
+        <li>Questões comentadas (FGV, FCC e CEBRASPE)</li>
+        <li>Área do aluno personalizável</li>
+      </ul>
+      <div class="extra-info">
+        <strong>E mais:</strong> Peça seu guia de estudos personalizado por email na página de contato!
+      </div>
+      <span class="arrow-down">👇</span>
+    </section>
+
+    <section class="signup-form-section">
+      <h2>CADASTRO</h2>
+      <form id="cadastro-form" novalidate>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="nome">Nome completo:</label>
+            <input type="text" id="nome" name="nome" required minlength="3">
+            <span class="error-message" id="nome-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" required pattern="\d{11}" maxlength="11" title="Digite 11 números, sem pontos ou traços">
+            <span class="error-message" id="cpf-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="nascimento">Data de nascimento:</label>
+            <input type="text" id="nascimento" name="nascimento" required placeholder="DD/MM/AAAA" pattern="\d{2}/\d{2}/\d{4}">
+            <span class="error-message" id="nascimento-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="cep">CEP:</label>
+            <input type="text" id="cep" name="cep" required pattern="\d{8}" maxlength="8" title="Digite 8 números, sem traço">
+            <span class="error-message" id="cep-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="logradouro">Logradouro:</label>
+            <input type="text" id="logradouro" name="logradouro" required>
+            <span class="error-message" id="logradouro-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="complemento">Complemento/Apto (Opcional):</label>
+            <input type="text" id="complemento" name="complemento">
+            <span class="error-message" id="complemento-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="tempo_estudo">Há quanto tempo estuda?</label>
+            <input type="text" id="tempo_estudo" name="tempo_estudo" required minlength="2">
+            <span class="error-message" id="tempo_estudo-error"></span>
+          </div>
+          <div class="form-group full-width">
+            <label for="concurso_atual">Para qual concurso está estudando?</label>
+            <input type="text" id="concurso_atual" name="concurso_atual" required minlength="2">
+            <span class="error-message" id="concurso_atual-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="horas_dia">Horas/dia de estudo:</label>
+            <input type="number" id="horas_dia" name="horas_dia" required min="1">
+            <span class="error-message" id="horas_dia-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="dias_semana">Dias/semana de estudo:</label>
+            <input type="number" id="dias_semana" name="dias_semana" required min="1" max="7">
+            <span class="error-message" id="dias_semana-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+            <span class="error-message" id="email-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required minlength="8">
+            <span class="password-requirements">Mín. 8 caracteres, 1 maiúscula, 1 minúscula, 1 número, 1 especial.</span>
+            <span class="error-message" id="senha-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="repetir_senha">Repetir Senha:</label>
+            <input type="password" id="repetir_senha" name="repetir_senha" required>
+            <span class="error-message" id="repetir_senha-error"></span>
+          </div>
+        </div>
+        <button type="submit">FINALIZAR CADASTRO</button>
+      </form>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Recursos Adicionais</h4>
+      <ul>
+        <li><a href="#">Questões Comentadas</a></li>
+        <li><a href="#">Mapas Mentais</a></li>
+        <li><a href="#">Legislação Compilada</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Próximos Módulos</h4>
+      <p><a href="#">Direito Administrativo</a></p>
+      <p><a href="#">Português para Concursos</a></p>
+    </div>
+    <div class="footer-section">
+      <h4>Links Úteis</h4>
+      <ul>
+        <li><a href="#">Termos de Uso</a></li>
+        <li><a href="#">Política de Privacidade</a></li>
+        <li><a href="#">Sobre Nós</a></li>
+        <li><a href="#">Mapa do Site</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <span>© <span id="current-year"></span> NVP Concursos. Todos os direitos reservados.</span>
+  </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+    authDomain: "nvp-concursos.firebaseapp.com",
+    projectId: "nvp-concursos",
+    storageBucket: "nvp-concursos.firebasestorage.app",
+    messagingSenderId: "397960760271",
+    appId: "1:397960760271:web:1550ff01910ae927d860ba"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  const bodyElement = document.body;
+  const sunIcon = themeToggleBtn?.querySelector('.theme-icon-light');
+  const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      bodyElement.classList.add('dark-mode');
+      if (sunIcon) sunIcon.style.display = 'none';
+      if (moonIcon) moonIcon.style.display = 'inline';
+    } else {
+      bodyElement.classList.remove('dark-mode');
+      if (sunIcon) sunIcon.style.display = 'inline';
+      if (moonIcon) moonIcon.style.display = 'none';
+    }
+  }
+
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+  let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+  applyTheme(currentTheme);
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
+      applyTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+
+  prefersDarkScheme.addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      applyTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+
+  const loginBtnHeader = document.getElementById('login-btn');
+  const loginDropdownHeader = document.getElementById('login-dropdown');
+  const loginFormHeader = document.getElementById('login-form');
+
+  if (loginBtnHeader && loginDropdownHeader) {
+    loginBtnHeader.addEventListener('click', (event) => {
+      event.stopPropagation();
+      loginDropdownHeader.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!loginDropdownHeader.contains(event.target) && !loginBtnHeader.contains(event.target)) {
+        loginDropdownHeader.classList.remove('active');
+      }
+    });
+
+    loginDropdownHeader?.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+  }
+
+  if (loginFormHeader) {
+    loginFormHeader.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById('login-email');
+      const passwordInput = document.getElementById('login-password');
+      const email = emailInput?.value;
+      const password = passwordInput?.value;
+      const loginButton = loginFormHeader.querySelector('button[type="submit"]');
+
+      if (!email || !password) {
+        alert('Preencha email e senha.');
+        return;
+      }
+
+      loginButton.disabled = true;
+      loginButton.textContent = '...';
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => db.collection('users').doc(userCredential.user.uid).get())
+        .then(doc => {
+          if (doc.exists && doc.data().role === 'admin') {
+            window.location.href = '/admin/dashboard.html';
+          } else if (doc.exists && doc.data().hasPersonalized === true) {
+            window.location.href = 'saladeestudos.html';
+          } else {
+            window.location.href = 'personalizar.html';
+          }
+        })
+        .catch(error => {
+          console.error("Erro no login:", error);
+          alert("Erro no login: Verifique suas credenciais.");
+          loginButton.disabled = false;
+          loginButton.textContent = 'Entrar';
+        });
+    });
+  }
+
+  const form = document.getElementById('cadastro-form');
+
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      let isValid = true;
+
+      document.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+      document.querySelectorAll('.form-group input').forEach(input => input.classList.remove('error'));
+
+      isValid = validateRequiredField('nome', 'Nome completo é obrigatório.', 3) && isValid;
+      isValid = validateCpf('cpf') && isValid;
+      isValid = validateDateField('nascimento', 'Data de nascimento inválida (DD/MM/AAAA).') && isValid;
+      isValid = validateCep('cep') && isValid;
+      isValid = validateRequiredField('logradouro', 'Logradouro é obrigatório.') && isValid;
+      isValid = validateRequiredField('tempo_estudo', 'Informe há quanto tempo estuda.', 2) && isValid;
+      isValid = validateRequiredField('concurso_atual', 'Informe para qual concurso estuda.', 2) && isValid;
+      isValid = validateNumberField('horas_dia', 'Informe as horas/dia (mín. 1).', 1) && isValid;
+      isValid = validateNumberField('dias_semana', 'Informe os dias/semana (1-7).', 1, 7) && isValid;
+      isValid = validateEmailField('email', 'Formato de e-mail inválido.') && isValid;
+      isValid = validatePasswordField('senha') && isValid;
+      isValid = validatePasswordMatch('senha', 'repetir_senha') && isValid;
+
+      if (isValid) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processando...';
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('senha').value;
+        const userData = {
+          user_id: "", // Será preenchido com o UID após criação do usuário
+          nome: document.getElementById('nome').value.trim(),
+          cpf: document.getElementById('cpf').value,
+          nascimento: document.getElementById('nascimento').value,
+          cep: document.getElementById('cep').value,
+          logradouro: document.getElementById('logradouro').value.trim(),
+          complemento: document.getElementById('complemento').value.trim(),
+          tempo_estudo: document.getElementById('tempo_estudo').value.trim(),
+          concurso_atual: document.getElementById('concurso_atual').value.trim(),
+          horas_dia: parseInt(document.getElementById('horas_dia').value, 10),
+          dias_semana: parseInt(document.getElementById('dias_semana').value, 10),
+          email: email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          hasPersonalized: false,
+          is_subscriber: false // Inicialmente falso, será atualizado após pagamento
+        };
+
+        auth.createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            userData.user_id = user.uid; // Adiciona o UID ao campo user_id
+            return db.collection('users').doc(user.uid).set(userData);
+          })
+          .then(() => {
+            alert('Cadastro realizado com sucesso! Agora, finalize sua assinatura.');
+            window.location.href = 'pagamento.html'; // Redireciona para a página de pagamento
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            let friendlyMessage = 'Ocorreu um erro inesperado durante o cadastro.';
+            if (errorCode === 'auth/email-already-in-use') {
+              friendlyMessage = 'Este endereço de e-mail já está cadastrado.';
+              showError('email', friendlyMessage);
+            } else if (errorCode === 'auth/invalid-email') {
+              friendlyMessage = 'Formato de e-mail inválido.';
+              showError('email', friendlyMessage);
+            } else if (errorCode === 'auth/weak-password') {
+              friendlyMessage = 'A senha é muito fraca.';
+              showError('senha', friendlyMessage);
+            } else {
+              alert(friendlyMessage + ` (${errorCode})`);
+            }
+            submitButton.disabled = false;
+            submitButton.textContent = 'FINALIZAR CADASTRO';
+          });
+      }
+    });
+  } else {
+    const submitButton = form?.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Erro de Inicialização';
+      submitButton.style.backgroundColor = 'grey';
+    }
+  }
+
+  function showError(fieldId, message) {
+    const errorSpan = document.getElementById(`${fieldId}-error`);
+    const inputField = document.getElementById(fieldId);
+    if (errorSpan) errorSpan.textContent = message;
+    if (inputField) inputField.classList.add('error');
+  }
+
+  function validateRequiredField(fieldId, message, minLength = 1) {
+    const field = document.getElementById(fieldId);
+    if (!field || !field.value.trim() || field.value.trim().length < minLength) {
+      showError(fieldId, message || `Campo obrigatório (mín. ${minLength} caracteres).`);
+      return false;
+    }
+    return true;
+  }
+
+  function validateCpf(fieldId) {
+    const field = document.getElementById(fieldId);
+    const cpfPattern = /^\d{11}$/;
+    if (!field || !cpfPattern.test(field.value)) {
+      showError(fieldId, 'CPF inválido (11 números).');
+      return false;
+    }
+    return true;
+  }
+
+  function validateDateField(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    const datePattern = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    if (!field || !datePattern.test(field.value)) {
+      showError(fieldId, message);
+      return false;
+    }
+    return true;
+  }
+
+  function validateCep(fieldId) {
+    const field = document.getElementById(fieldId);
+    const cepPattern = /^\d{8}$/;
+    if (!field || !cepPattern.test(field.value)) {
+      showError(fieldId, 'CEP inválido (8 números).');
+      return false;
+    }
+    return true;
+  }
+
+  function validateNumberField(fieldId, message, min = null, max = null) {
+    const field = document.getElementById(fieldId);
+    if (!field) return false;
+    const value = parseInt(field.value, 10);
+    if (isNaN(value) || (min !== null && value < min) || (max !== null && value > max)) {
+      showError(fieldId, message);
+      return false;
+    }
+    return true;
+  }
+
+  function validateEmailField(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!field || !emailPattern.test(field.value)) {
+      showError(fieldId, message);
+      return false;
+    }
+    return true;
+  }
+
+  function validatePasswordField(fieldId) {
+    const field = document.getElementById(fieldId);
+    const value = field ? field.value : '';
+    let isValid = true;
+    let errorMessage = '';
+    if (value.length < 8) {
+      errorMessage += 'Mín. 8 caracteres. ';
+      isValid = false;
+    }
+    if (!/[A-Z]/.test(value)) {
+      errorMessage += '1 maiúscula. ';
+      isValid = false;
+    }
+    if (!/[a-z]/.test(value)) {
+      errorMessage += '1 minúscula. ';
+      isValid = false;
+    }
+    if (!/\d/.test(value)) {
+      errorMessage += '1 número. ';
+      isValid = false;
+    }
+    if (!/[@$!%*?&.\-_]/.test(value)) {
+      errorMessage += '1 especial (@$!%*?&.-_).';
+      isValid = false;
+    }
+    if (!isValid) {
+      showError(fieldId, errorMessage.trim());
+    }
+    return isValid;
+  }
+
+  function validatePasswordMatch(passFieldId, confirmFieldId) {
+    const passField = document.getElementById(passFieldId);
+    const confirmField = document.getElementById(confirmFieldId);
+    if (!passField || !confirmField) {
+      showError(confirmFieldId, 'Erro interno.');
+      return false;
+    }
+    if (passField.value !== confirmField.value) {
+      showError(confirmFieldId, 'As senhas não coincidem.');
+      return false;
+    }
+    return true;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const yearSpan = document.getElementById('current-year');
+    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+  });
+</script>
+
+</body>
+</html>

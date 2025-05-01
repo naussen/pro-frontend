@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Cadastro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        input[readonly] {
+            background-color: #ecf0f1;
+            cursor: not-allowed;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Meu Cadastro</h1>
+        <p>Atualize suas informações pessoais e preferências de estudo.</p>
+    </header>
+    <div class="container">
+        <form id="cadastroForm">
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" value="João Silva" readonly>
+            </div>
+            <div class="form-group">
+                <label for="apelido">Apelido (opcional)</label>
+                <input type="text" id="apelido" value="Jojo">
+            </div>
+            <div class="form-group">
+                <label for="cpf">CPF</label>
+                <input type="text" id="cpf" value="123.456.789-00" readonly>
+            </div>
+            <div class="form-group">
+                <label for="emailPrincipal">E-mail Principal</label>
+                <input type="email" id="emailPrincipal" value="joao.silva@email.com" readonly>
+            </div>
+            <div class="form-group">
+                <label for="emailSecundario">E-mail Secundário (opcional)</label>
+                <input type="email" id="emailSecundario" value="">
+            </div>
+            <div class="form-group">
+                <label for="endereco">Endereço</label>
+                <textarea id="endereco">Rua das Flores, 123, Centro, São Paulo - SP</textarea>
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="tel" id="telefone" value="(11) 98765-4321">
+            </div>
+            <div class="form-group">
+                <label for="diasEstudo">Dias de Estudo</label>
+                <select id="diasEstudo" multiple>
+                    <option value="segunda" selected>Segunda</option>
+                    <option value="terca" selected>Terça</option>
+                    <option value="quarta">Quarta</option>
+                    <option value="quinta">Quinta</option>
+                    <option value="sexta" selected>Sexta</option>
+                    <option value="sabado">Sábado</option>
+                    <option value="domingo">Domingo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="horasEstudo">Horas de Estudo por Dia</label>
+                <input type="number" id="horasEstudo" value="4" min="1" max="12">
+            </div>
+            <div class="form-group">
+                <label for="concurso">Concurso Atual</label>
+                <input type="text" id="concurso" value="Concurso Banco do Brasil 2025">
+            </div>
+            <button type="submit">Salvar Alterações</button>
+        </form>
+        <p class="success-message" id="successMessage">Dados salvos com sucesso!</p>
+    </div>
+
+<script>
+    const userId = "12345"; // Substituir pelo ID real do usuário
+    const apiUrl = "https://nvp-backend.onrender.com/api";
+
+    // Carrega os dados do usuário
+    async function loadUserData() {
+        try {
+            const response = await fetch(`${apiUrl}/${userId}`);
+            const data = await response.json();
+            if (data) {
+                document.getElementById('nome').value = data.nome;
+                document.getElementById('apelido').value = data.apelido || '';
+                document.getElementById('cpf').value = data.cpf;
+                document.getElementById('emailPrincipal').value = data.emailPrincipal;
+                document.getElementById('emailSecundario').value = data.emailSecundario || '';
+                document.getElementById('endereco').value = data.endereco;
+                document.getElementById('telefone').value = data.telefone;
+                document.getElementById('horasEstudo').value = data.horasEstudo;
+                document.getElementById('concurso').value = data.concurso;
+
+                // Preenche os dias de estudo
+                const diasEstudo = data.diasEstudo || [];
+                const select = document.getElementById('diasEstudo');
+                for (let option of select.options) {
+                    option.selected = diasEstudo.includes(option.value);
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+        }
+    }
+
+    // Salva os dados do usuário
+    async function saveUserData(event) {
+        event.preventDefault();
+        const formData = {
+            apelido: document.getElementById('apelido').value,
+            emailSecundario: document.getElementById('emailSecundario').value,
+            endereco: document.getElementById('endereco').value,
+            telefone: document.getElementById('telefone').value,
+            diasEstudo: Array.from(document.getElementById('diasEstudo').selectedOptions).map(opt => opt.value),
+            horasEstudo: parseInt(document.getElementById('horasEstudo').value),
+            concurso: document.getElementById('concurso').value
+        };
+
+        try {
+            const response = await fetch(`${apiUrl}/${userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            const result = await response.json();
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('successMessage').innerText = result.message;
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+        } catch (error) {
+            console.error("Erro ao salvar dados:", error);
+        }
+    }
+
+    // Carrega os dados ao iniciar
+    window.onload = loadUserData;
+
+    // Associa o evento de submit
+    document.getElementById('cadastroForm').addEventListener('submit', saveUserData);
+</script>
+</body>
+</html>
