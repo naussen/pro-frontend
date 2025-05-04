@@ -74,7 +74,6 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Cabeçalho */
         .w3s-header {
             background-color: var(--header-bg);
             color: var(--text-dark);
@@ -161,7 +160,6 @@
         }
         #theme-toggle .icon { font-size: 1.3em; }
 
-        /* Conteúdo Principal */
         main {
             flex-grow: 1;
             background-color: var(--main-content-bg);
@@ -286,7 +284,6 @@
             color: var(--main-color);
         }
 
-        /* Rodapé */
         .footer {
             background-color: var(--dark-bg);
             color: var(--footer-text-muted);
@@ -356,7 +353,6 @@
             color: var(--text-muted);
         }
 
-        /* Responsividade */
         @media screen and (max-width: 992px) {
             .options-section { flex-direction: column; align-items: center; }
             .option-card { width: 80%; max-width: 300px; }
@@ -402,7 +398,7 @@
 
             <h2>Prévia da Sala</h2>
             <div class="preview-section" id="salaPreview">
-                <img src="https://via.placeholder.com/600x300?text=Sala+Minimalista" alt="Prévia da Sala" id="salaImage">
+                <img src="https://picsum.photos/600/300?random=1" alt="Prévia da Sala" id="salaImage">
             </div>
 
             <h2>Personalize sua Sala</h2>
@@ -502,9 +498,16 @@
         const db = firebase.firestore();
 
         // Autenticação
+        let userId = null;
         auth.onAuthStateChanged(user => {
+            console.log('Usuário autenticado:', user);
             if (!user) {
+                console.log('Nenhum usuário autenticado, redirecionando para index.html');
                 window.location.href = 'index.html';
+            } else {
+                userId = user.uid;
+                console.log('userId:', userId);
+                loadSalaConfig();
             }
         });
 
@@ -541,30 +544,73 @@
         const logoutBtn = document.getElementById('logout-btn');
         logoutBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
+                console.log('Logout bem-sucedido');
                 window.location.href = 'index.html';
             }).catch(error => {
+                console.error('Erro ao fazer logout:', error);
                 alert('Erro ao fazer logout: ' + error.message);
             });
         });
 
-        // Configuração da Sala (Usando localStorage como fallback)
-        const defaultConfig = {
-            color: '#ffffff',
-            layout: 'minimalista',
-            music: '',
-            pomodoro: 20
-        };
+        // Configuração da Sala (Usando o backend)
+        const apiUrl = "https://api.proconcursos.com.br/api/sala";
 
-        function loadSalaConfig() {
-            const config = JSON.parse(localStorage.getItem('salaConfig')) || defaultConfig;
-            document.getElementById('salaPreview').style.backgroundColor = config.color;
-            document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${config.layout.charAt(0).toUpperCase() + config.layout.slice(1)}`;
-            document.getElementById('tipText').innerText = "Configurações carregadas do localStorage!";
+        async function loadSalaConfig() {
+            if (!userId) {
+                console.log('userId não definido, abortando loadSalaConfig');
+                return;
+            }
+            try {
+                console.log('Carregando configurações para userId:', userId);
+                const response = await fetch(`${apiUrl}/${userId}`);
+                console.log('Resposta do backend:', response);
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Dados recebidos:', data);
+                if (data) {
+                    document.getElementById('salaPreview').style.backgroundColor = data.color || '#ffffff';
+                    document.getElementById('salaImage').src = `https://picsum.photos/600/300?random=${Math.random()}`;
+                    document.getElementById('tipText').innerText = "Configurações carregadas!";
+                    if (data.music) {
+                        document.getElementById('musicSelect').value = data.music;
+                    }
+                    if (data.pomodoro) {
+                        document.getElementById('pomodoroTime').value = data.pomodoro;
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao carregar configurações:", error);
+                document.getElementById('tipText').innerText = "Erro ao carregar configurações. Usando valores padrão.";
+                document.getElementById('salaPreview').style.backgroundColor = '#ffffff';
+                document.getElementById('salaImage').src = `https://picsum.photos/600/300?random=${Math.random()}`;
+            }
         }
 
-        function saveSalaConfig(config) {
-            localStorage.setItem('salaConfig', JSON.stringify(config));
-            document.getElementById('tipText').innerText = "Configurações salvas no localStorage!";
+        async function saveSalaConfig(config) {
+            if (!userId) {
+                console.log('userId não definido, abortando saveSalaConfig');
+                return;
+            }
+            try {
+                console.log('Salvando configurações para userId:', userId, config);
+                const response = await fetch(`${apiUrl}/${userId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+                console.log('Resposta do backend:', response);
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log('Resultado do salvamento:', result);
+                document.getElementById('tipText').innerText = result.message || "Configurações salvas!";
+            } catch (error) {
+                console.error("Erro ao salvar configurações:", error);
+                document.getElementById('tipText').innerText = "Erro ao salvar configurações.";
+            }
         }
 
         // Funções de Personalização
@@ -576,9 +622,7 @@
         function changeColor() {
             const color = document.getElementById('colorInput').value;
             document.getElementById('salaPreview').style.backgroundColor = color;
-            const config = JSON.parse(localStorage.getItem('salaConfig')) || defaultConfig;
-            config.color = color;
-            saveSalaConfig(config);
+            saveSalaConfig({ color });
             document.getElementById('tipText').innerText = `Cor ${color} aplicada!`;
         }
 
@@ -589,10 +633,8 @@
 
         function changeLayout() {
             const layout = document.getElementById('layoutSelect').value;
-            document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${layout.charAt(0).toUpperCase() + layout.slice(1)}`;
-            const config = JSON.parse(localStorage.getItem('salaConfig')) || defaultConfig;
-            config.layout = layout;
-            saveSalaConfig(config);
+            document.getElementById('salaImage').src = `https://picsum.photos/600/300?random=${Math.random()}`;
+            saveSalaConfig({ layout });
             document.getElementById('tipText').innerText = `Layout ${layout} aplicado!`;
         }
 
@@ -625,12 +667,13 @@
             }
 
             audioPlayer.src = musicUrls[musicType];
-            audioPlayer.play();
+            audioPlayer.play().catch(error => {
+                console.error('Erro ao tocar música:', error);
+                document.getElementById('tipText').innerText = 'Erro ao tocar música.';
+            });
             currentAudio = audioPlayer;
 
-            const config = JSON.parse(localStorage.getItem('salaConfig')) || defaultConfig;
-            config.music = musicType;
-            saveSalaConfig(config);
+            saveSalaConfig({ music: musicType });
             document.getElementById('tipText').innerText = `Música ${musicType} aplicada!`;
         }
 
@@ -643,4 +686,77 @@
         // Pomodoro
         let pomodoroInterval = null;
         let timeRemaining = 0;
-        let is
+        let isBreak = false;
+
+        function togglePomodoroPlayer() {
+            const pomodoroPlayer = document.getElementById('pomodoroPlayer');
+            pomodoroPlayer.style.display = pomodoroPlayer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function startPomodoro() {
+            if (pomodoroInterval) return;
+
+            const timeSelect = document.getElementById('pomodoroTime');
+            const minutes = parseInt(timeSelect.value);
+            timeRemaining = minutes * 60;
+            isBreak = false;
+
+            saveSalaConfig({ pomodoro: minutes });
+
+            document.getElementById('pomodoroStatus').innerText = `Foco: ${minutes} minutos em andamento...`;
+            updatePomodoroTimer();
+            pomodoroInterval = setInterval(() => {
+                timeRemaining--;
+                updatePomodoroTimer();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(pomodoroInterval);
+                    pomodoroInterval = null;
+
+                    if (!isBreak) {
+                        alert('Tempo de foco concluído! Iniciando pausa de 10 minutos.');
+                        timeRemaining = 10 * 60;
+                        isBreak = true;
+                        document.getElementById('pomodoroStatus').innerText = 'Pausa: 10 minutos em andamento...';
+                        pomodoroInterval = setInterval(() => {
+                            timeRemaining--;
+                            updatePomodoroTimer();
+
+                            if (timeRemaining <= 0) {
+                                clearInterval(pomodoroInterval);
+                                pomodoroInterval = null;
+                                alert('Pausa de 10 minutos concluída! Pronto para outra sessão de foco?');
+                                document.getElementById('pomodoroStatus').innerText = 'Selecione o tempo e inicie sua sessão de foco.';
+                                document.getElementById('pomodoroTimer').innerText = '00:00';
+                            }
+                        }, 1000);
+                    }
+                }
+            }, 1000);
+        }
+
+        function updatePomodoroTimer() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('pomodoroTimer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopPomodoro() {
+            if (pomodoroInterval) {
+                clearInterval(pomodoroInterval);
+                pomodoroInterval = null;
+                timeRemaining = 0;
+                isBreak = false;
+                document.getElementById('pomodoroTimer').innerText = '00:00';
+                document.getElementById('pomodoroStatus').innerText = 'Temporizador pausado. Inicie uma nova sessão.';
+            }
+        }
+
+        // Atualizar o ano no rodapé
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
