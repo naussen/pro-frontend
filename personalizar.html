@@ -649,11 +649,13 @@ async function loadCoursesFromFirestore() {
         console.log("Buscando cursos na coleção 'courses'...");
         const coursesSnapshot = await coursesRef.get();
         if (coursesSnapshot.empty) {
-            console.warn(`Nenhum curso encontrado na coleção '${collectionName}'.`);
-            loadedCoursesData = [];
-            if (courseListContainer) courseListContainer.innerHTML = '<h2>Nenhum curso disponível.</h2><p>Adicione cursos no Firestore para continuar.</p>';
-            return;
-        }
+			console.warn(`Nenhum curso encontrado na coleção '${collectionName}'.`);
+			loadedCoursesData = [];
+			if (courseListContainer) {
+			    courseListContainer.innerHTML = '<h2>Nenhum curso disponível.</h2><p>Entre em contato com o suporte para adicionar cursos.</p>';
+			}
+			return;
+		}
         console.log(`Personalizar: Encontrados ${coursesSnapshot.size} cursos.`);
         const coursePromises = coursesSnapshot.docs.map(async (courseDoc) => {
             const courseData = courseDoc.data();
@@ -981,6 +983,7 @@ function addEventListeners() {
         if (yearSpan) yearSpan.textContent = new Date().getFullYear();
     });
     window.addEventListener('resize', () => {});
+	
 </script>
 </body>
 </html>

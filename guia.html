@@ -3,179 +3,620 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia da Sala de Estudos</title>
+    <title>Guia da Sala de Estudos - NVP Concursos</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+        :root {
+            --header-height: 55px;
+            --main-color: #1A5276;
+            --light-highlight-bg: #EAF2F8;
+            --accent-1: #D4AC0D;
+            --accent-1-darker: #b3910b;
+            --accent-2: #CA6F1E;
+            --dark-bg: #154360;
+            --subnav-bg: #282A35;
+            --text-dark: #333;
+            --text-light: #f8f9fa;
+            --text-muted: #6c757d;
+            --border-color: #ccc;
+            --light-grey-bg: #f1f1f1;
+            --header-bg: #ffffff;
+            --header-border: #e7e7e7;
+            --main-content-bg: #ffffff;
+            --code-bg: #f1f1f1;
+            --button-text-dark: #333;
+            --footer-text-muted: #ccc;
+            --footer-link-color: #ccc;
+            --footer-link-hover: var(--accent-1);
+            --footer-separator: #555;
+            --footer-h4: #f1f1f1;
+            --dark-blue-hover: #113a54;
+            --error-color: #D32F2F;
         }
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
+
+        body.dark-mode {
+            --main-color: #6cb6ff;
+            --light-highlight-bg: #2d333b;
+            --accent-1: #e4c05c;
+            --accent-1-darker: #cfae51;
+            --accent-2: #d98234;
+            --dark-bg: #0d1117;
+            --subnav-bg: #22272e;
+            --text-dark: #c9d1d9;
+            --text-light: #f0f6fc;
+            --text-muted: #8b949e;
+            --border-color: #444c56;
+            --light-grey-bg: #0d1117;
+            --header-bg: #161b22;
+            --header-border: #30363d;
+            --main-content-bg: #161b22;
+            --code-bg: #22272e;
+            --button-text-dark: #161b22;
+            --footer-text-muted: #8b949e;
+            --footer-link-color: #8b949e;
+            --footer-link-hover: var(--accent-1);
+            --footer-separator: #30363d;
+            --footer-h4: var(--text-light);
+            --dark-blue-hover: #1a6fba;
+            --error-color: #FF5252;
+        }
+
+        html { height: 100%; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--light-grey-bg);
+            color: var(--text-dark);
+            padding-top: var(--header-height);
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Cabeçalho */
+        .w3s-header {
+            background-color: var(--header-bg);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: var(--header-height);
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 103;
+            border-bottom: 1px solid var(--header-border);
+            gap: 15px;
+        }
+        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
+        .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
+        .w3s-logo-placeholder text {
+            font-size: 35px;
+            fill: var(--main-color);
+            font-weight: bold;
+            font-family: sans-serif;
+        }
+        .w3s-logo-placeholder circle {
+            fill: transparent;
+            stroke: var(--main-color);
+            stroke-width: 5;
+        }
+        .w3s-header-right-group {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            gap: 10px;
+        }
+        .w3s-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .w3s-header-actions a, .w3s-header-actions button {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s, background-color 0.2s;
+            padding: 5px 8px;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .w3s-header-actions a .icon, .w3s-header-actions button .icon {
+            font-size: 1.1em;
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            line-height: 1em;
             text-align: center;
+            color: #666;
+        }
+        body.dark-mode .w3s-header-actions a, body.dark-mode .w3s-header-actions button {
+            color: var(--text-muted);
+        }
+        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon {
+            color: var(--text-muted);
+        }
+        .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
+        .w3s-header-actions a[title="Minha Sala de Estudos"] .icon { color: #3fb950; }
+        .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
+        .w3s-header-actions a:hover, .w3s-header-actions button:hover {
+            color: var(--main-color);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon {
+            color: var(--main-color);
+        }
+        #theme-toggle .icon { font-size: 1.3em; }
+
+        /* Conteúdo Principal */
+        main {
+            flex-grow: 1;
+            background-color: var(--main-content-bg);
+            width: 100%;
+            box-sizing: border-box;
+            padding: 40px 0;
         }
         .container {
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
         }
-        .preview {
-            border: 2px solid #ddd;
+        .guide-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .guide-header h1 {
+            font-size: 2em;
+            color: var(--main-color);
+            margin-bottom: 10px;
+        }
+        .guide-header p {
+            color: var(--text-muted);
+            font-size: 1.1em;
+        }
+        .preview-section {
+            border: 2px solid var(--header-border);
             padding: 20px;
-            background-color: white;
+            background-color: var(--header-bg);
             text-align: center;
             margin-bottom: 20px;
+            border-radius: 8px;
             transition: background-color 0.3s;
         }
-        .preview img {
+        .preview-section img {
             max-width: 100%;
             height: auto;
+            border-radius: 4px;
         }
-        .options {
+        .options-section {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
+            justify-content: center;
         }
         .option-card {
-            background-color: white;
-            border: 1px solid #ddd;
+            background-color: var(--header-bg);
+            border: 1px solid var(--header-border);
             padding: 15px;
             width: 200px;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.2s;
+            border-radius: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         .option-card:hover {
             transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .option-card h3 {
+            font-size: 1.2em;
+            color: var(--main-color);
+            margin-bottom: 10px;
+        }
+        .option-card p {
+            color: var(--text-muted);
+            font-size: 0.95em;
         }
         button {
-            background-color: #3498db;
-            color: white;
+            background-color: var(--accent-1);
+            color: var(--button-text-dark);
             border: none;
             padding: 10px 20px;
             cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
             margin-top: 10px;
         }
         button:hover {
-            background-color: #2980b9;
+            background-color: var(--accent-1-darker);
+            transform: translateY(-2px);
         }
-        .tips {
+        .tips-section {
             margin-top: 20px;
-            background-color: #ecf0f1;
+            background-color: var(--light-highlight-bg);
             padding: 15px;
-            border-left: 5px solid #3498db;
+            border-left: 5px solid var(--main-color);
+            border-radius: 4px;
+        }
+        .tips-section h3 {
+            margin-top: 0;
+            color: var(--main-color);
+        }
+        .tips-section p {
+            margin: 5px 0;
+            color: var(--text-dark);
+        }
+        .music-player {
+            margin-top: 20px;
+            background-color: var(--header-bg);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--header-border);
+            text-align: center;
+        }
+        .music-player select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-right: 10px;
+            background-color: var(--main-content-bg);
+            color: var(--text-dark);
+        }
+        .music-player button {
+            padding: 8px 16px;
+        }
+
+        /* Rodapé */
+        .footer {
+            background-color: var(--dark-bg);
+            color: var(--footer-text-muted);
+            padding: 30px 20px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 101;
+            flex-shrink: 0;
+            margin-top: 40px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--footer-separator);
+            margin-bottom: 15px;
+        }
+        .footer-section {
+            min-width: 200px;
+            flex-grow: 1;
+        }
+        .footer h4 {
+            color: var(--footer-h4);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--footer-separator);
+            padding-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .footer ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer ul li {
+            margin-bottom: 8px;
+        }
+        .footer ul li a, .footer-section p a {
+            color: var(--footer-link-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+        .footer ul li a:hover, .footer-section p a:hover {
+            color: var(--footer-link-hover);
+        }
+        .footer-section p {
+            color: var(--footer-link-color);
+            font-size: 0.9em;
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+        }
+        .footer-copyright {
+            text-align: center;
+            font-size: 0.85em;
+            color: #a8c0d1;
+            width: 100%;
+            padding-top: 15px;
+        }
+        body.dark-mode .footer-copyright {
+            color: var(--text-muted);
+        }
+
+        /* Responsividade */
+        @media screen and (max-width: 992px) {
+            .options-section { flex-direction: column; align-items: center; }
+            .option-card { width: 80%; max-width: 300px; }
+        }
+        @media screen and (max-width: 768px) {
+            .container { padding: 0 15px; }
+            main { padding: 20px 0; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Guia da Sala de Estudos</h1>
-        <p>Personalize sua experiência de estudos de forma prática e eficiente!</p>
+    <header class="w3s-header" id="mainHeader">
+        <div class="w3s-logo-area">
+            <a href="index.html" title="Página Inicial">
+                <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48"/>
+                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
+                </svg>
+            </a>
+        </div>
+        <div class="w3s-header-right-group">
+            <div class="w3s-header-actions">
+                <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                    <span class="icon theme-icon-light">☀️</span>
+                    <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+                </button>
+                <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
+                <a href="saladeestudos.html" title="Minha Sala de Estudos"><span class="icon">📚</span> <span class="link-text">Sala de Estudos</span></a>
+                <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+            </div>
+        </div>
     </header>
-    <div class="container">
-        <h2>O que é a Sala de Estudos?</h2>
-        <p>A Sala de Estudos é um ambiente virtual projetado para maximizar sua produtividade. Aqui, você pode personalizar o layout, cores, lembretes e até música de fundo para criar o espaço perfeito para seus estudos.</p>
 
-        <h2>Prévia da Sala</h2>
-        <div class="preview" id="salaPreview">
-            <img src="https://via.placeholder.com/600x300?text=Sala+de+Estudos" alt="Prévia da Sala" id="salaImage">
+    <main>
+        <div class="container">
+            <div class="guide-header">
+                <h1>Guia da Sala de Estudos</h1>
+                <p>Personalize sua experiência de estudos de forma prática e eficiente!</p>
+            </div>
+
+            <h2>O que é a Sala de Estudos?</h2>
+            <p>A Sala de Estudos é um ambiente virtual projetado para maximizar sua produtividade. Aqui, você pode personalizar o layout, cores, lembretes e até música de fundo para criar o espaço perfeito para seus estudos.</p>
+
+            <h2>Prévia da Sala</h2>
+            <div class="preview-section" id="salaPreview">
+                <img src="https://via.placeholder.com/600x300?text=Sala+de+Estudos" alt="Prévia da Sala" id="salaImage">
+            </div>
+
+            <h2>Personalize sua Sala</h2>
+            <div class="options-section">
+                <div class="option-card" onclick="changeColor('#3498db')">
+                    <h3>Cor de Fundo</h3>
+                    <p>Escolha uma cor que te inspire!</p>
+                </div>
+                <div class="option-card" onclick="changeLayout('minimalista')">
+                    <h3>Layout</h3>
+                    <p>Minimalista, clássico ou moderno.</p>
+                </div>
+                <div class="option-card" onclick="addReminder()">
+                    <h3>Lembretes</h3>
+                    <p>Configure lembretes para pausas.</p>
+                </div>
+                <div class="option-card" onclick="toggleMusicPlayer()">
+                    <h3>Música de Fundo</h3>
+                    <p>Escolha uma trilha relaxante.</p>
+                </div>
+            </div>
+
+            <div class="music-player" id="musicPlayer" style="display: none;">
+                <h3>Player de Música</h3>
+                <select id="musicSelect">
+                    <option value="">Selecione uma música</option>
+                    <option value="lofi">Lo-Fi Relaxante</option>
+                    <option value="classical">Clássica (Canon in D)</option>
+                    <option value="nature">Sons da Natureza</option>
+                </select>
+                <button onclick="playMusic()">Tocar</button>
+                <button onclick="pauseMusic()">Pausar</button>
+                <audio id="audioPlayer"></audio>
+            </div>
+
+            <div class="tips-section">
+                <h3>Dica Interativa</h3>
+                <p id="tipText">Clique nas opções acima para ver como sua sala muda em tempo real!</p>
+            </div>
         </div>
+    </main>
 
-        <h2>Personalize sua Sala</h2>
-        <div class="options">
-            <div class="option-card" onclick="changeColor('#3498db')">
-                <h3>Cor de Fundo</h3>
-                <p>Escolha uma cor que te inspire!</p>
-            </div>
-            <div class="option-card" onclick="changeLayout('minimalista')">
-                <h3>Layout</h3>
-                <p>Minimalista, clássico ou moderno.</p>
-            </div>
-            <div class="option-card" onclick="addReminder()">
-                <h3>Lembretes</h3>
-                <p>Configure lembretes para pausas.</p>
-            </div>
-            <div class="option-card" onclick="playMusic()">
-                <h3>Música de Fundo</h3>
-                <p>Escolha uma trilha relaxante.</p>
-            </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h4>Recursos Adicionais</h4><ul><li><a href="#">Questões Comentadas</a></li><li><a href="#">Mapas Mentais</a></li><li><a href="#">Legislação Compilada</a></li></ul></div>
+            <div class="footer-section"><h4>Próximos Módulos</h4><p><a href="#">Direito Administrativo</a></p><p><a href="#">Português para Concursos</a></p></div>
+            <div class="footer-section"><h4>Links Úteis</h4><ul><li><a href="#">Termos de Uso</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Sobre Nós</a></li><li><a href="#">Mapa do Site</a></li></ul></div>
         </div>
+        <div class="footer-copyright"><span>© <span id="current-year">2025</span> NVP Concursos. Todos os direitos reservados.</span></div>
+    </footer>
 
-        <div class="tips">
-            <h3>Dica Interativa</h3>
-            <p id="tipText">Clique nas opções acima para ver como sua sala muda em tempo real!</p>
-        </div>
-    </div>
-
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-    const userId = "12345"; // Substituir pelo ID real do usuário (ex.: obtido via autenticação)
-    const apiUrl = "https://https://api.proconcursos.com.br/api";
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+            authDomain: "nvp-concursos.firebaseapp.com",
+            projectId: "nvp-concursos",
+            storageBucket: "nvp-concursos.firebasestorage.app",
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1550ff01910ae927d860ba"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-    // Carrega as configurações da sala ao iniciar
-    async function loadSalaConfig() {
-        try {
-            const response = await fetch(`${apiUrl}/${userId}`);
-            const data = await response.json();
-            if (data) {
-                document.getElementById('salaPreview').style.backgroundColor = data.color || '#ffffff';
-                document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${data.layout || 'default'}`;
-                document.getElementById('tipText').innerText = "Configurações carregadas!";
+        // Autenticação
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'index.html';
             }
-        } catch (error) {
-            console.error("Erro ao carregar configurações:", error);
-        }
-    }
+        });
 
-    // Salva as personalizações
-    async function saveSalaConfig(config) {
-        try {
-            const response = await fetch(`${apiUrl}/${userId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(config)
+        // Tema Claro/Escuro
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const bodyElement = document.body;
+        const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
+        const moonIcon = themeToggleBtn.querySelector('.theme-icon-dark');
+
+        function applyTheme(theme) {
+            bodyElement.classList.toggle('dark-mode', theme === 'dark');
+            sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+            moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+        applyTheme(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        prefersDarkScheme.addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Logout
+        const logoutBtn = document.getElementById('logout-btn');
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch(error => {
+                alert('Erro ao fazer logout: ' + error.message);
             });
-            const result = await response.json();
-            document.getElementById('tipText').innerText = result.message;
-        } catch (error) {
-            console.error("Erro ao salvar configurações:", error);
+        });
+
+        // Configuração da Sala
+        const userId = auth.currentUser ? auth.currentUser.uid : "12345"; // Usar UID real
+        const apiUrl = "https://api.proconcursos.com.br/api/sala";
+
+        async function loadSalaConfig() {
+            try {
+                const response = await fetch(`${apiUrl}/${userId}`);
+                const data = await response.json();
+                if (data) {
+                    document.getElementById('salaPreview').style.backgroundColor = data.color || '#ffffff';
+                    document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${data.layout || 'default'}`;
+                    document.getElementById('tipText').innerText = "Configurações carregadas!";
+                }
+            } catch (error) {
+                console.error("Erro ao carregar configurações:", error);
+                document.getElementById('tipText').innerText = "Erro ao carregar configurações.";
+            }
         }
-    }
 
-    // Funções de personalização
-    function changeColor(color) {
-        document.getElementById('salaPreview').style.backgroundColor = color;
-        saveSalaConfig({ color });
-        document.getElementById('tipText').innerText = `Cor ${color} salva!`;
-    }
-
-    function changeLayout(layout) {
-        document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${layout}`;
-        saveSalaConfig({ layout });
-        document.getElementById('tipText').innerText = `Layout ${layout} salvo!`;
-    }
-
-    function addReminder() {
-        let time = prompt("Digite o intervalo para lembretes (em minutos):");
-        if (time) {
-            saveSalaConfig({ reminders: time });
-            document.getElementById('tipText').innerText = `Lembrete a cada ${time} minutos salvo!`;
+        async function saveSalaConfig(config) {
+            try {
+                const response = await fetch(`${apiUrl}/${userId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+                const result = await response.json();
+                document.getElementById('tipText').innerText = result.message;
+            } catch (error) {
+                console.error("Erro ao salvar configurações:", error);
+                document.getElementById('tipText').innerText = "Erro ao salvar configurações.";
+            }
         }
-    }
 
-    function playMusic() {
-        let music = prompt("Escolha a música (ex.: lo-fi, clássica, natureza):");
-        if (music) {
-            saveSalaConfig({ music });
-            document.getElementById('tipText').innerText = `Música ${music} salva!`;
+        // Funções de Personalização
+        function changeColor(color) {
+            document.getElementById('salaPreview').style.backgroundColor = color;
+            saveSalaConfig({ color });
+            document.getElementById('tipText').innerText = `Cor ${color} salva!`;
         }
-    }
 
-    // Carrega as configurações ao carregar a página
-    window.onload = loadSalaConfig;
-</script>
+        function changeLayout(layout) {
+            document.getElementById('salaImage').src = `https://via.placeholder.com/600x300?text=Sala+${layout}`;
+            saveSalaConfig({ layout });
+            document.getElementById('tipText').innerText = `Layout ${layout} salvo!`;
+        }
+
+        function addReminder() {
+            let time = prompt("Digite o intervalo para lembretes (em minutos):");
+            if (time) {
+                saveSalaConfig({ reminders: time });
+                document.getElementById('tipText').innerText = `Lembrete a cada ${time} minutos salvo!`;
+            }
+        }
+
+        // Música de Fundo
+        const musicUrls = {
+            lofi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Exemplo de áudio Creative Commons
+            classical: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+            nature: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+        };
+
+        let currentAudio = null;
+
+        function toggleMusicPlayer() {
+            const musicPlayer = document.getElementById('musicPlayer');
+            musicPlayer.style.display = musicPlayer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function playMusic() {
+            const musicSelect = document.getElementById('musicSelect');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const musicType = musicSelect.value;
+
+            if (!musicType) {
+                alert('Por favor, selecione uma música.');
+                return;
+            }
+
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            audioPlayer.src = musicUrls[musicType];
+            audioPlayer.play();
+            currentAudio = audioPlayer;
+
+            saveSalaConfig({ music: musicType });
+            document.getElementById('tipText').innerText = `Música ${musicType} salva!`;
+        }
+
+        function pauseMusic() {
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.pause();
+            document.getElementById('tipText').innerText = 'Música pausada.';
+        }
+
+        // Carrega as configurações ao carregar a página
+        window.onload = loadSalaConfig;
+
+        // Atualizar o ano no rodapé
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+        });
+    </script>
 </body>
 </html>
