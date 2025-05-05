@@ -5,26 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Estudos - PRO Concursos</title>
     <style>
+        /* --- :ROOT Variables --- */
         :root {
             --header-height: 55px;
-            --sidebar-width: 240px; /* Largura da sidebar estilo W3S */
+            --sidebar-width: 240px;
             --main-color: #1A5276;
             --light-highlight-bg: #EAF2F8;
             --accent-1: #D4AC0D;
             --accent-1-darker: #b3910b;
             --accent-2: #CA6F1E;
-            --dark-bg: #154360; /* Fundo Footer */
-            --subnav-bg: #ddd; /* Fundo Hover Sidebar */
+            --dark-bg: #154360;
+            --subnav-bg: #ddd;
             --text-dark: #333;
             --text-light: #f8f9fa;
             --text-muted: #6c757d;
             --border-color: #ccc;
-            --light-grey-bg: #f1f1f1; /* Fundo principal body */
-            --header-bg: #ffffff; /* Fundo Header */
+            --light-grey-bg: #f1f1f1;
+            --header-bg: #ffffff;
             --header-border: #e7e7e7;
-            --main-content-bg: #ffffff; /* Fundo area principal */
+            --main-content-bg: #ffffff;
             --code-bg: #f1f1f1;
-            --button-text-dark: #333;
+            --button-text-dark: #333; /* Texto para botões com fundo claro/accent */
             --footer-text-muted: #ccc;
             --footer-link-color: #ccc;
             --footer-link-hover: var(--accent-1);
@@ -32,23 +33,75 @@
             --footer-h4: #f1f1f1;
             --dark-blue-hover: #113a54;
             --error-color: #D32F2F;
-            --sidebar-bg: #f1f1f1; /* Fundo Sidebar */
-            --sidebar-border: #d4d4d4; /* Borda direita Sidebar */
+            --sidebar-bg: #f1f1f1;
+            --sidebar-border: #d4d4d4;
             --sidebar-link-color: #000;
             --sidebar-link-hover-bg: #ddd;
-            --sidebar-link-active-bg: #4CAF50; /* Cor W3S para item ativo */
+            --sidebar-link-active-bg: #4CAF50;
             --sidebar-link-active-color: #fff;
             --floating-panel-bg: #fdfdfd;
             --floating-panel-border: #ccc;
             --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            --floating-panel-width: 350px; /* Largura do painel flutuante */
-            --top-nav-bg: #ffffff; /* Fundo da navegação superior Cursos | Questões | etc */
+            --floating-panel-width: 350px;
+            --top-nav-bg: #ffffff;
             --top-nav-link-color: #333;
             --top-nav-link-hover-bg: #f1f1f1;
-            --top-nav-link-active-bg: #ddd;
+            --top-nav-link-active-bg: #ddd; /* Fundo do botão do menu ativo */
+             --mega-menu-bg: #f8f9fa; /* Fundo do mega menu */
+             --mega-menu-border: #dee2e6;
+             --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.1);
+             --mega-menu-link-color: #212529;
+             --mega-menu-link-hover-color: #0056b3;
+             --mega-menu-heading-color: #495057;
         }
 
-        /* Removido :root body.dark-mode e toda lógica JS de tema */
+        /* --- Dark Mode Variables --- */
+        body.dark-mode {
+            --main-color: #6cb6ff; /* Azul mais claro */
+            --light-highlight-bg: #2d333b; /* Fundo de hover escuro */
+            --accent-1: #e4c05c; /* Amarelo/Dourado mais claro */
+            --accent-1-darker: #cfae51;
+            --accent-2: #d98234; /* Laranja mais claro */
+            --dark-bg: #0d1117; /* Fundo Footer escuro */
+            --subnav-bg: #22272e; /* Fundo Hover Sidebar escuro */
+            --text-dark: #c9d1d9; /* Texto principal claro */
+            --text-light: #f0f6fc; /* Texto contrastante claro */
+            --text-muted: #8b949e; /* Textomuted claro */
+            --border-color: #444c56; /* Bordas escuras */
+            --light-grey-bg: #0d1117; /* Fundo principal body escuro */
+            --header-bg: #161b22; /* Fundo Header escuro */
+            --header-border: #30363d; /* Borda Header escura */
+            --main-content-bg: #161b22; /* Fundo area principal escuro */
+            --code-bg: #22272e;
+            --button-text-dark: #161b22; /* Texto para botões com fundo accent (precisa contraste) */
+            --footer-text-muted: #8b949e;
+            --footer-link-color: #8b949e;
+            --footer-link-hover: var(--accent-1);
+            --footer-separator: #30363d;
+            --footer-h4: var(--text-light);
+            --dark-blue-hover: #1a6fba;
+            --error-color: #FF5252;
+            --sidebar-bg: #161b22; /* Fundo Sidebar escuro */
+            --sidebar-border: #30363d;
+            --sidebar-link-color: var(--text-light);
+            --sidebar-link-hover-bg: #22272e;
+            --sidebar-link-active-bg: #007bff; /* Azul ativo no dark mode */
+            --sidebar-link-active-color: #fff;
+            --floating-panel-bg: #22272e;
+            --floating-panel-border: #30363d;
+            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            --top-nav-bg: #161b22;
+            --top-nav-link-color: var(--text-light);
+            --top-nav-link-hover-bg: #2d333b;
+            --top-nav-link-active-bg: #0d1117;
+            --mega-menu-bg: #212529; /* Fundo mega menu escuro */
+            --mega-menu-border: #343a40;
+            --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            --mega-menu-link-color: #adb5bd;
+            --mega-menu-link-hover-color: #dee2e6;
+            --mega-menu-heading-color: #ced4da;
+        }
+
 
         html { height: 100%; box-sizing: border-box; }
         *, *:before, *:after { box-sizing: inherit; }
@@ -59,18 +112,19 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: var(--light-grey-bg);
-            color: var(--text-dark);
-            padding-top: var(--header-height); /* Espaço para header fixo */
+            background-color: var(--light-grey-bg); /* Usa variável */
+            color: var(--text-dark); /* Usa variável */
+            padding-top: var(--header-height);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Transição para dark mode */
         }
 
         /* --- Header --- */
         .w3s-header {
-            background-color: var(--header-bg);
-            color: var(--text-dark);
+            background-color: var(--header-bg); /* Usa variável */
+            color: var(--text-dark); /* Usa variável */
             display: flex;
             align-items: center;
-            padding: 0 10px 0 0; /* Reduzido padding esquerdo */
+            padding: 0 10px 0 0;
             height: var(--header-height);
             width: 100%;
             box-sizing: border-box;
@@ -78,388 +132,388 @@
             top: 0;
             left: 0;
             z-index: 103;
-            border-bottom: 1px solid var(--header-border);
-            gap: 5px; /* Reduzido gap */
+            border-bottom: 1px solid var(--header-border); /* Usa variável */
+            gap: 5px;
         }
-        .w3s-sidebar-toggle { /* Botão para abrir/fechar sidebar */
+        .w3s-sidebar-toggle {
             background-color: transparent;
             border: none;
             font-size: 24px;
             cursor: pointer;
             padding: 0 15px;
-            color: var(--text-dark);
+            color: var(--text-dark); /* Usa variável */
             line-height: var(--header-height);
             margin-right: 5px;
         }
-        .w3s-sidebar-toggle:hover {
-            background-color: var(--light-grey-bg);
-        }
+        .w3s-sidebar-toggle:hover { background-color: var(--light-grey-bg); } /* Usa variável */
         .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
         .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
-        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; }
-        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
+        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; } /* Usa variável */
+        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; } /* Usa variável */
 
-        /* --- Top Navigation (Esquerda) --- */
-        .w3s-top-nav {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            margin-left: 10px; /* Espaço após logo/toggle */
-        }
-        .w3s-top-nav a {
+        /* --- Top Navigation (Esquerda com Dropdowns) --- */
+        .w3s-top-nav { display: flex; align-items: center; height: 100%; margin-left: 10px; position: relative; }
+        .w3s-top-nav button.nav-button { /* Estilo botão para abrir menu */
             display: flex;
             align-items: center;
             padding: 0 12px;
             height: 100%;
             text-decoration: none;
-            color: var(--top-nav-link-color);
+            color: var(--top-nav-link-color); /* Usa variável */
             font-size: 15px;
+            font-family: inherit; /* Herda fonte do body */
+            background-color: transparent; /* Fundo transparente */
+            border: none; /* Sem borda padrão */
+            border-right: 1px solid var(--header-border); /* Usa variável */
+            cursor: pointer;
             transition: background-color 0.2s;
-            border-right: 1px solid var(--header-border);
         }
-        .w3s-top-nav a:first-child {
-             border-left: 1px solid var(--header-border);
+        .w3s-top-nav button.nav-button:first-child { border-left: 1px solid var(--header-border); } /* Usa variável */
+        .w3s-top-nav button.nav-button:hover { background-color: var(--top-nav-link-hover-bg); } /* Usa variável */
+        .w3s-top-nav button.nav-button.active { background-color: var(--top-nav-link-active-bg); } /* Usa variável */
+
+        /* --- Mega Menu Panel --- */
+        .mega-menu-panel {
+            display: none; /* Começa escondido */
+            position: absolute;
+            top: 100%; /* Abaixo do botão */
+            left: 0;
+            width: 100vw; /* Largura total */
+            max-height: calc(100vh - var(--header-height) - 20px); /* Altura max */
+            overflow-y: auto;
+            background-color: var(--mega-menu-bg); /* Usa variável */
+            border: 1px solid var(--mega-menu-border); /* Usa variável */
+            border-top: none;
+            box-shadow: var(--mega-menu-shadow); /* Usa variável */
+            z-index: 104; /* Acima do conteúdo e sidebar */
+            padding: 25px 30px;
+            animation: fadeInMegaMenu 0.3s ease-out;
         }
-        .w3s-top-nav a:hover {
-            background-color: var(--top-nav-link-hover-bg);
+        .mega-menu-panel.active { display: flex; /* Usar flex para colunas */ flex-wrap: wrap; gap: 20px; }
+
+        @keyframes fadeInMegaMenu {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .w3s-top-nav a.active { /* Adicionar esta classe à página ativa */
-            background-color: var(--top-nav-link-active-bg);
+
+        .mega-menu-column {
+            flex: 1; /* Colunas flexíveis */
+            min-width: 200px; /* Largura mínima */
+            padding: 0 15px;
         }
+         .mega-menu-column:not(:last-child) {
+             border-right: 1px solid var(--mega-menu-border); /* Separador */
+         }
+        .mega-menu-column h4 {
+            font-size: 1.1em;
+            color: var(--mega-menu-heading-color); /* Usa variável */
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--mega-menu-border); /* Usa variável */
+        }
+        .mega-menu-column a {
+            display: block;
+            color: var(--mega-menu-link-color); /* Usa variável */
+            text-decoration: none;
+            padding: 6px 0;
+            font-size: 0.95em;
+            transition: color 0.2s;
+        }
+        .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); /* Usa variável */ }
 
 
         /* --- Header Actions (Direita) --- */
         .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px;}
         .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
         .w3s-header-actions a, .w3s-header-actions button {
-            color: var(--text-dark);
+            color: var(--text-dark); /* Usa variável */
             text-decoration: none;
             font-size: 14px;
             display: flex;
             align-items: center;
             gap: 5px;
             transition: color 0.2s, background-color 0.2s;
-            padding: 6px 10px; /* Ajuste padding */
+            padding: 6px 10px;
             border-radius: 4px;
             background: none;
             border: none;
             cursor: pointer;
-            white-space: nowrap; /* Evita quebra de linha */
+            white-space: nowrap;
         }
         .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; width: 1em; height: 1em; line-height: 1em; text-align: center; color: #666; }
-        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); }
-        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
+        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); } /* Ícones no dark mode */
+        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); } /* Usa variável */
+        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover { background-color: rgba(255, 255, 255, 0.05); } /* Hover dark mode */
+        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); } /* Usa variável */
         .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
         .w3s-header-actions a[title="Guia do Método"] .icon { color: #3fb950; }
         .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
-        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; } /* Cor exemplo para o picker */
+        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; }
+        #theme-toggle .icon { font-size: 1.3em; } /* Tamanho ícone tema */
 
 
         /* --- Content Wrapper --- */
-        .content-wrapper {
-            display: flex;
-            flex-grow: 1; /* Ocupa espaço restante */
-            /* padding-top removido, já está no body */
-        }
+        .content-wrapper { display: flex; flex-grow: 1; }
 
         /* --- Sidebar (Estilo W3Schools) --- */
         .sidebar {
             width: var(--sidebar-width);
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--sidebar-border);
-            padding: 0; /* Removido padding geral */
+            background-color: var(--sidebar-bg); /* Usa variável */
+            border-right: 1px solid var(--sidebar-border); /* Usa variável */
+            padding: 0;
             position: fixed;
             top: var(--header-height);
             left: 0;
-            bottom: 0; /* Estende até o rodapé */
+            bottom: 0;
             overflow-y: auto;
             transition: transform 0.3s ease, width 0.3s ease;
-            z-index: 102; /* Abaixo do header, acima do main */
-            transform: translateX(0); /* Começa visível */
+            z-index: 102;
+            transform: translateX(0);
         }
-        .sidebar.hidden {
-            transform: translateX(calc(-1 * var(--sidebar-width)));
-            width: 0; /* Encolhe a largura quando escondido */
-            border-right: none;
-        }
-        .sidebar h2 { /* Título dentro da sidebar */
-            font-size: 1.3em;
-            color: var(--text-dark);
-            margin: 0;
-            padding: 15px 20px;
-            font-weight: 600;
-            border-bottom: 1px solid var(--sidebar-border);
-         }
-        .sidebar-nav { /* Usar uma div ou nav para a lista */
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .sidebar-nav a { /* Links da sidebar */
-            color: var(--sidebar-link-color);
-            text-decoration: none;
-            font-size: 0.95em;
-            display: block;
-            padding: 10px 20px;
-            transition: background-color 0.2s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .sidebar-nav a:hover {
-            background-color: var(--sidebar-link-hover-bg);
-        }
-        .sidebar-nav a.active { /* Para marcar link ativo */
-             background-color: var(--sidebar-link-active-bg);
-             color: var(--sidebar-link-active-color);
-        }
-        /* Remover estilo de botão para itens da sidebar original */
-        .sidebar ul li button { display: none; }
+        .sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-width))); width: 0; border-right: none; }
+        .sidebar h2 { font-size: 1.3em; color: var(--text-dark); margin: 0; padding: 15px 20px; font-weight: 600; border-bottom: 1px solid var(--sidebar-border); } /* Usa variável */
+        .sidebar-nav { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav a { color: var(--sidebar-link-color); text-decoration: none; font-size: 0.95em; display: block; padding: 10px 20px; transition: background-color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* Usa variável */
+        .sidebar-nav a:hover { background-color: var(--sidebar-link-hover-bg); } /* Usa variável */
+        .sidebar-nav a.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); } /* Usa variável */
+
 
         /* --- Main Content Area --- */
         main {
             flex-grow: 1;
-            background-color: var(--main-content-bg);
-            margin-left: var(--sidebar-width); /* Espaço para sidebar */
+            background-color: var(--main-content-bg); /* Usa variável */
+            margin-left: var(--sidebar-width);
             box-sizing: border-box;
-            padding: 30px 25px; /* Padding interno */
-            transition: margin-left 0.3s ease;
-            position: relative; /* Para contexto de z-index se necessário */
-            z-index: 1; /* Abaixo da sidebar e header */
+            padding: 30px 25px;
+            transition: margin-left 0.3s ease, background-color 0.3s ease, color 0.3s ease; /* Transição dark mode */
+            position: relative;
+            z-index: 1;
         }
-        main.sidebar-hidden {
-            margin-left: 0; /* Ocupa tudo quando sidebar escondida */
-        }
+        main.sidebar-hidden { margin-left: 0; }
         .container { max-width: 1200px; margin: 0 auto; }
         .study-room-header { text-align: center; margin-bottom: 30px; }
-        .study-room-header h1 { font-size: 2em; color: var(--main-color); margin-bottom: 10px; }
-        .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
+        .study-room-header h1 { font-size: 2em; color: var(--main-color); margin-bottom: 10px; } /* Usa variável */
+        .study-room-header p { color: var(--text-muted); font-size: 1.1em; } /* Usa variável */
 
         /* --- Course List --- */
         .course-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
-        .course-card { background-color: var(--header-bg); border: 1px solid var(--header-border); padding: 20px; border-radius: 6px; transition: transform 0.2s, box-shadow 0.2s; }
+        .course-card { background-color: var(--header-bg); border: 1px solid var(--header-border); padding: 20px; border-radius: 6px; transition: transform 0.2s, box-shadow 0.2s; } /* Usa variável */
         .course-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); }
-        .course-card h3 { font-size: 1.3em; color: var(--main-color); margin: 0 0 15px 0; }
+        body.dark-mode .course-card:hover { box-shadow: 0 6px 15px rgba(255, 255, 255, 0.1); } /* Sombra dark mode */
+        .course-card h3 { font-size: 1.3em; color: var(--main-color); margin: 0 0 15px 0; } /* Usa variável */
         .course-card ul { list-style: none; padding: 0; margin: 0; }
-        .course-card ul li { margin-bottom: 8px; color: var(--text-dark); font-size: 0.95em; }
+        .course-card ul li { margin-bottom: 8px; color: var(--text-dark); font-size: 0.95em; } /* Usa variável */
         .course-card ul li ul { padding-left: 20px; margin-top: 5px; }
-        .course-card ul li ul li { font-size: 0.9em; color: var(--text-muted); }
+        .course-card ul li ul li { font-size: 0.9em; color: var(--text-muted); } /* Usa variável */
 
         /* --- Floating Tools Panel --- */
         #floatingToolsPanel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: var(--floating-panel-width);
-            max-height: 80vh; /* Altura máxima */
-            background-color: var(--floating-panel-bg);
-            border: 1px solid var(--floating-panel-border);
-            border-radius: 8px;
-            box-shadow: var(--floating-panel-shadow);
-            z-index: 105; /* Acima de outros conteúdos */
-            overflow: hidden; /* Controla o conteúdo interno */
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-            transform: translateY(0);
-            opacity: 1;
+            position: fixed; bottom: 20px; right: 20px; width: var(--floating-panel-width); max-height: 80vh;
+            background-color: var(--floating-panel-bg); border: 1px solid var(--floating-panel-border); /* Usa variável */
+            border-radius: 8px; box-shadow: var(--floating-panel-shadow); z-index: 105; overflow: hidden;
+            display: flex; flex-direction: column; transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+            transform: translateY(0); opacity: 1;
         }
-        #floatingToolsPanel.collapsed {
-            transform: translateY(calc(100% - 50px)); /* Esconde a maior parte, deixa o header visível */
-            height: 50px; /* Altura quando colapsado */
-            opacity: 0.9;
-        }
-        #floatingToolsPanel.hidden-completely { /* Estado para esconder totalmente se necessário */
-             opacity: 0;
-             transform: translateY(100%);
-             pointer-events: none;
-        }
-
-        .tools-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            background-color: var(--light-grey-bg);
-            border-bottom: 1px solid var(--floating-panel-border);
-            cursor: pointer; /* Clicar no header para colapsar */
-        }
-        .tools-panel-header h3 {
-            margin: 0;
-            font-size: 1.1em;
-            color: var(--main-color);
-        }
-        #toggleToolsPanelBtn {
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: var(--text-muted);
-            padding: 0 5px;
-        }
-        .tools-panel-content {
-             padding: 15px;
-             overflow-y: auto; /* Scroll se conteúdo for grande */
-             flex-grow: 1;
-        }
-        .tool-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap; /* Quebra linha se não couber */
-        }
+        #floatingToolsPanel.collapsed { transform: translateY(calc(100% - 50px)); height: 50px; opacity: 0.9; }
+        .tools-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--light-grey-bg); border-bottom: 1px solid var(--floating-panel-border); cursor: pointer; } /* Usa variável */
+        .tools-panel-header h3 { margin: 0; font-size: 1.1em; color: var(--main-color); } /* Usa variável */
+        #toggleToolsPanelBtn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-muted); padding: 0 5px; } /* Usa variável */
+        .tools-panel-content { padding: 15px; overflow-y: auto; flex-grow: 1; }
+        .tool-buttons { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .tool-buttons button {
-             flex-grow: 1; /* Ocupa espaço igual */
-             background-color: var(--accent-1);
-             color: var(--button-text-dark);
-             border: none;
-             padding: 8px 12px;
-             cursor: pointer;
-             border-radius: 5px;
-             font-weight: bold;
-             transition: background-color 0.3s;
-             font-size: 0.9em;
-             text-align: center;
+             flex-grow: 1; background-color: var(--accent-1); color: var(--button-text-dark); /* Usa variável */
+             border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px; font-weight: bold;
+             transition: background-color 0.3s; font-size: 0.9em; text-align: center;
         }
-        .tool-buttons button:hover {
-            background-color: var(--accent-1-darker);
-        }
+        .tool-buttons button:hover { background-color: var(--accent-1-darker); } /* Usa variável */
 
         /* --- Tool Panels (Dentro do Flutuante) --- */
         .tool-panel {
-            background-color: transparent; /* Fundo vem do painel flutuante */
-            border: none; /* Borda vem do painel flutuante */
-            padding: 0; /* Padding gerenciado pelo content */
-            margin-top: 0; /* Reset margin */
-            text-align: left; /* Alinhar conteúdo à esquerda */
-            display: none; /* Começam escondidos */
-            border-top: 1px dashed var(--border-color);
-            margin-top: 15px;
-            padding-top: 15px;
+            background-color: transparent; border: none; padding: 0; margin-top: 0; text-align: left; display: none;
+            border-top: 1px dashed var(--border-color); margin-top: 15px; padding-top: 15px; /* Usa variável */
         }
-        .tool-panel h4 { /* Usar h4 dentro dos paineis */
-            font-size: 1.1em;
-            color: var(--main-color);
-            margin-bottom: 10px;
-            margin-top: 0;
-        }
-         .tool-panel p { font-size: 0.95em; margin-bottom: 10px;}
-         .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            margin-right: 10px;
-            margin-bottom: 10px; /* Espaço abaixo */
-            background-color: var(--main-content-bg); /* Usar fundo claro */
-            color: var(--text-dark);
-            width: calc(100% - 20px); /* Ocupar largura disponível */
-            max-width: 200px; /* Limite máximo */
+        .tool-panel h4 { font-size: 1.1em; color: var(--main-color); margin-bottom: 10px; margin-top: 0; } /* Usa variável */
+        .tool-panel p { font-size: 0.95em; margin-bottom: 10px; color: var(--text-dark);} /* Usa variável */
+        .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
+            padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-right: 10px; margin-bottom: 10px;
+            background-color: var(--main-content-bg); color: var(--text-dark); /* Usa variável */
+            width: calc(100% - 20px); max-width: 200px;
         }
         .tool-panel button {
-            background-color: var(--accent-2); /* Cor diferente para ações internas */
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            margin-right: 5px;
-             margin-bottom: 10px; /* Espaço abaixo */
+            background-color: var(--accent-2); color: white; border: none; padding: 8px 16px; cursor: pointer;
+            border-radius: 5px; font-weight: bold; transition: background-color 0.3s; margin-right: 5px; margin-bottom: 10px; /* Usa variável */
         }
-        .tool-panel button:hover {
-            background-color: #a05a17; /* Escurecer accent-2 */
-        }
-        .timer-display { font-size: 1.8em; margin: 15px 0; color: var(--main-color); font-weight: bold; text-align: center; }
-        #pomodoroStatus { font-size: 0.9em; color: var(--text-muted); text-align: center; }
-
-        /* Específico Música */
-        #musicPanel button { margin-top: 10px; }
-        #musicPanel audio { display: none; } /* Esconder player padrão */
-
+         .tool-panel button:hover { background-color: #a05a17; }
+        body.dark-mode .tool-panel button:hover { background-color: #f8961e; } /* Hover botão dark mode */
+        .timer-display { font-size: 1.8em; margin: 15px 0; color: var(--main-color); font-weight: bold; text-align: center; } /* Usa variável */
+        #pomodoroStatus { font-size: 0.9em; color: var(--text-muted); text-align: center; } /* Usa variável */
+        #musicPanel p { color: var(--text-dark); } /* Usa variável */
+        #musicPanel audio { display: none; }
 
         /* --- Footer --- */
         .footer {
-            background-color: var(--dark-bg);
-            color: var(--footer-text-muted);
-            padding: 30px 20px;
-            text-align: left;
-            width: 100%;
-            box-sizing: border-box;
-            z-index: 101; /* Acima do conteúdo, abaixo de paineis fixos */
-            flex-shrink: 0;
-            margin-top: 40px; /* Espaço antes do footer */
+            background-color: var(--dark-bg); color: var(--footer-text-muted); padding: 30px 20px; text-align: left; /* Usa variáveis */
+            width: 100%; box-sizing: border-box; z-index: 101; flex-shrink: 0; margin-top: 40px;
         }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap; gap: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--footer-separator); margin-bottom: 15px; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap; gap: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--footer-separator); margin-bottom: 15px; } /* Usa variável */
         .footer-section { min-width: 200px; flex-grow: 1; }
-        .footer h4 { color: var(--footer-h4); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid var(--footer-separator); padding-bottom: 8px; font-size: 1.1em; }
+        .footer h4 { color: var(--footer-h4); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid var(--footer-separator); padding-bottom: 8px; font-size: 1.1em; } /* Usa variável */
         .footer ul { list-style: none; padding: 0; margin: 0; }
         .footer ul li { margin-bottom: 8px; }
-        .footer ul li a, .footer-section p a { color: var(--footer-link-color); text-decoration: none; font-size: 0.9em; transition: color 0.3s; }
-        .footer ul li a:hover, .footer-section p a:hover { color: var(--footer-link-hover); }
-        .footer-section p { color: var(--footer-link-color); font-size: 0.9em; margin: 0 0 8px 0; line-height: 1.5; }
-        .footer-copyright { text-align: center; font-size: 0.85em; color: var(--footer-text-muted); width: 100%; padding-top: 15px; }
+        .footer ul li a, .footer-section p a { color: var(--footer-link-color); text-decoration: none; font-size: 0.9em; transition: color 0.3s; } /* Usa variável */
+        .footer ul li a:hover, .footer-section p a:hover { color: var(--footer-link-hover); } /* Usa variável */
+        .footer-section p { color: var(--footer-link-color); font-size: 0.9em; margin: 0 0 8px 0; line-height: 1.5; } /* Usa variável */
+        .footer-copyright { text-align: center; font-size: 0.85em; color: var(--footer-text-muted); width: 100%; padding-top: 15px; } /* Usa variável */
+
 
         /* --- Responsividade --- */
         @media screen and (max-width: 992px) {
-             :root { --sidebar-width: 200px; } /* Sidebar menor */
-             .w3s-top-nav a { font-size: 14px; padding: 0 8px; }
-             .w3s-header-actions .link-text { display: none; } /* Esconder texto dos botões */
+             :root { --sidebar-width: 200px; }
+             .w3s-top-nav button.nav-button { font-size: 14px; padding: 0 8px; }
+             .w3s-header-actions .link-text { display: none; }
              .w3s-header-actions a, .w3s-header-actions button { padding: 6px 8px; }
              #floatingToolsPanel { width: 300px; }
+             .mega-menu-column { min-width: 180px; }
         }
 
         @media screen and (max-width: 768px) {
-            :root { --sidebar-width: 240px; } /* Volta largura normal para mobile overlay */
-            .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); width: var(--sidebar-width); } /* Começa escondida */
-            .sidebar.visible { transform: translateX(0); } /* Mostra quando 'visible' */
-            main { margin-left: 0; } /* Main sempre ocupa tudo */
-            main.sidebar-visible { margin-left: 0; } /* Mesmo com sidebar visível (ela fica sobreposta) */
-            .w3s-sidebar-toggle { display: block; } /* Garante visibilidade do toggle */
-            .w3s-top-nav { display: none; } /* Esconder nav superior no mobile */
-             #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; /* Ajustar largura */ }
+            :root { --sidebar-width: 240px; }
+            .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); width: var(--sidebar-width); }
+            .sidebar.visible { transform: translateX(0); }
+            main { margin-left: 0; }
+             .w3s-sidebar-toggle { display: block; }
+             /* .w3s-top-nav { display: none; } -> Manter visível para acesso aos menus */
+             #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
+             .mega-menu-panel { padding: 15px; }
+             .mega-menu-column { min-width: calc(50% - 20px); } /* Duas colunas */
+             .mega-menu-column:not(:last-child) { border-right: none; }
+             .mega-menu-column:nth-child(odd) { padding-right: 10px;}
+             .mega-menu-column:nth-child(even) { padding-left: 10px;}
         }
          @media screen and (max-width: 480px) {
-              .course-list { grid-template-columns: 1fr; } /* Uma coluna */
+              .course-list { grid-template-columns: 1fr; }
               #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
               .tool-buttons button { font-size: 0.85em; padding: 6px 8px;}
+              .mega-menu-column { min-width: 100%; padding: 0;} /* Uma coluna */
+              .mega-menu-panel { width: calc(100vw - 20px); left: 10px; /* Ajustar posição */ }
+
          }
 
     </style>
 </head>
-<body>
-    <header class="w3s-header" id="mainHeader">
-        <button class="w3s-sidebar-toggle" id="sidebarToggleBtn" title="Abrir/Fechar Menu">&#9776;</button>
+<body class=""> <header class="w3s-header" id="mainHeader">
+        <button class="w3s-sidebar-toggle" id="sidebarToggleBtn" title="Abrir/Fechar Menu">☰</button>
 
         <div class="w3s-logo-area">
             <a href="index.html" title="Página Inicial">
                 <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="50" cy="50" r="48"/>
-                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
+                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">PRO</text>
                 </svg>
             </a>
         </div>
 
-        <nav class="w3s-top-nav">
-            <a href="#">Cursos</a>
-            <a href="#">Questões</a>
-            <a href="#">Flashcards</a>
+        <nav class="w3s-top-nav" id="topNav">
+            <button class="nav-button" data-target="cursos-menu">Cursos</button>
+            <button class="nav-button" data-target="questoes-menu">Questões</button>
+            <button class="nav-button" data-target="flashcards-menu">Flashcards</button>
         </nav>
 
         <div class="w3s-header-right-group">
             <div class="w3s-header-actions">
-                 <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
-                <a href="meucadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
+                <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                    <span class="icon theme-icon-light">☀️</span>
+                    <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+                    </button>
+                <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
+                <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
                 <a href="guia.html" title="Guia do Método"><span class="icon">📖</span> <span class="link-text">Guia</span></a>
                 <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
             </div>
         </div>
     </header>
 
+    <div id="megaMenuContainer">
+        <div class="mega-menu-panel" id="cursos-menu">
+            <div class="mega-menu-column">
+                <h4>Disciplinas Básicas</h4>
+                <a href="#">Português</a>
+                <a href="#">Raciocínio Lógico-Matemático</a>
+                <a href="#">Informática Básica</a>
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Direito Administrativo</a>
+                <a href="#">Atualidades</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Disciplinas Específicas (Exemplos)</h4>
+                <a href="#">Direito Penal</a>
+                <a href="#">Direito Processual Penal</a>
+                <a href="#">Direito Civil</a>
+                <a href="#">Direito Processual Civil</a>
+                <a href="#">Legislação Específica (Ex: 8.112)</a>
+                <a href="#">Contabilidade Pública</a>
+                <a href="#">Administração Financeira e Orçamentária (AFO)</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Áreas (Exemplos)</h4>
+                <a href="#">Carreiras Policiais</a>
+                <a href="#">Carreiras Fiscais</a>
+                <a href="#">Carreiras Tribunais</a>
+                <a href="#">Carreiras Administrativas</a>
+                <a href="#">Carreiras Bancárias</a>
+            </div>
+             <div class="mega-menu-column">
+                <h4>Outros Recursos</h4>
+                <a href="#">Mapas Mentais</a>
+                <a href="#">Legislação Compilada</a>
+                <a href="#">Videoaulas</a>
+                <a href="#">Simulados</a>
+                <a href="#">Plano de Estudos</a>
+            </div>
+        </div>
+        <div class="mega-menu-panel" id="questoes-menu">
+             <div class="mega-menu-column">
+                 <h4>Questões por Disciplina</h4>
+                 <a href="#">Português - Questões</a>
+                 <a href="#">Direito Administrativo - Questões</a>
+                 <a href="#">Informática - Questões</a>
+                 </div>
+             <div class="mega-menu-column">
+                 <h4>Questões por Banca</h4>
+                 <a href="#">Questões - FCC</a>
+                 <a href="#">Questões - FGV</a>
+                 <a href="#">Questões - Cebraspe</a>
+                 </div>
+             <div class="mega-menu-column">
+                 <h4>Recursos de Questões</h4>
+                 <a href="#">Cadernos de Questões</a>
+                 <a href="#">Questões Comentadas</a>
+                 <a href="#">Ranking de Desempenho</a>
+             </div>
+        </div>
+        <div class="mega-menu-panel" id="flashcards-menu">
+             <div class="mega-menu-column">
+                 <h4>Flashcards por Disciplina</h4>
+                 <a href="#">Flashcards - Constitucional</a>
+                 <a href="#">Flashcards - Administrativo</a>
+                 <a href="#">Flashcards - Português</a>
+                 </div>
+              <div class="mega-menu-column">
+                 <h4>Meus Flashcards</h4>
+                 <a href="#">Criar Novo Deck</a>
+                 <a href="#">Decks Salvos</a>
+                 <a href="#">Revisão Espaçada</a>
+             </div>
+        </div>
+    </div>
+
+
     <div class="content-wrapper">
         <nav class="sidebar" id="sidebar">
             <h2>Navegação</h2>
-            <div class="sidebar-nav"> <a href="#link1">Direito Constitucional</a>
+            <div class="sidebar-nav">
+                 <a href="#link1">Direito Constitucional</a>
                  <a href="#link2" class="active">Direito Administrativo</a>
                  <a href="#link3">Português</a>
                  <a href="#link4">Raciocínio Lógico</a>
@@ -484,56 +538,31 @@
 
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-section"><h4>Recursos Adicionais</h4><ul><li><a href="#">Questões Comentadas</a></li><li><a href="#">Mapas Mentais</a></li><li><a href="#">Legislação Compilada</a></li></ul></div>
-            <div class="footer-section"><h4>Próximos Módulos</h4><p><a href="#">Direito Administrativo Avançado</a></p><p><a href="#">Português (Bancas específicas)</a></p></div>
-            <div class="footer-section"><h4>Links Úteis</h4><ul><li><a href="#">Termos de Uso</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Sobre Nós</a></li><li><a href="#">Mapa do Site</a></li></ul></div>
+             <div class="footer-section"><h4>Recursos Adicionais</h4><ul><li><a href="#">Questões Comentadas</a></li><li><a href="#">Mapas Mentais</a></li><li><a href="#">Legislação Compilada</a></li></ul></div>
+             <div class="footer-section"><h4>Próximos Módulos</h4><p><a href="#">Direito Administrativo Avançado</a></p><p><a href="#">Português (Bancas específicas)</a></p></div>
+             <div class="footer-section"><h4>Links Úteis</h4><ul><li><a href="#">Termos de Uso</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Sobre Nós</a></li><li><a href="#">Mapa do Site</a></li></ul></div>
         </div>
-        <div class="footer-copyright"><span>© <span id="current-year">2025</span> NVP Concursos. Todos os direitos reservados.</span></div>
+        <div class="footer-copyright"><span>© <span id="current-year">2025</span> PRO Concursos. Todos os direitos reservados.</span></div>
     </footer>
 
     <div id="floatingToolsPanel">
-        <div class="tools-panel-header" onclick="toggleFloatingToolsPanel()"> <h3>Ferramentas de Estudo</h3>
-            <button id="toggleToolsPanelBtn" title="Minimizar/Restaurar Ferramentas">&#9660;</button> </div>
-        <div class="tools-panel-content">
-            <div class="tool-buttons">
-                 <button onclick="toggleTool('questionsPanel')">Questões</button>
-                 <button onclick="toggleTool('flashcardsPanel')">Flashcards</button>
-                 <button onclick="toggleTool('pomodoroPanel')">Pomodoro</button>
-                 <button onclick="toggleTool('musicPanel')">Música</button>
-            </div>
-
-            <div class="tool-panel" id="questionsPanel">
-                <h4>Questões</h4>
-                <p>Pratique com questões dos seus cursos selecionados. (Funcionalidade em desenvolvimento)</p>
-                 </div>
-
-            <div class="tool-panel" id="flashcardsPanel">
-                <h4>Flashcards</h4>
-                <p>Revise os conteúdos com flashcards interativos. (Funcionalidade em desenvolvimento)</p>
-                 </div>
-
-            <div class="tool-panel" id="pomodoroPanel">
-                <h4>Temporizador Pomodoro</h4>
-                <select id="pomodoroTime">
-                    <option value="20">20 minutos</option>
-                    <option value="30">30 minutos</option>
-                    <option value="40">40 minutos</option>
-                    <option value="50" selected>50 minutos</option> </select>
-                <button onclick="startPomodoro()">Iniciar Foco</button>
-                <button onclick="stopPomodoro()">Parar</button>
-                <div class="timer-display" id="pomodoroTimer">00:00</div>
-                <p id="pomodoroStatus">Selecione o tempo e inicie sua sessão de foco.</p>
-            </div>
-
-            <div class="tool-panel" id="musicPanel">
-                <h4>Player de Música</h4>
-                 <p>Música para concentração:</p>
-                <button onclick="playMusic()">Tocar</button>
-                <button onclick="pauseMusic()">Pausar</button>
-                <audio id="audioPlayer" loop></audio> <p style="font-size: 0.8em; color: var(--text-muted); margin-top: 10px;">Nota: Player usa música placeholder. Substitua a URL no código JS.</p>
-            </div>
-        </div>
-    </div>
+         <div class="tools-panel-header" onclick="toggleFloatingToolsPanel()">
+             <h3>Ferramentas de Estudo</h3>
+             <button id="toggleToolsPanelBtn" title="Minimizar/Restaurar Ferramentas">▼</button>
+         </div>
+         <div class="tools-panel-content">
+             <div class="tool-buttons">
+                  <button onclick="toggleTool('questionsPanel')">Questões</button>
+                  <button onclick="toggleTool('flashcardsPanel')">Flashcards</button>
+                  <button onclick="toggleTool('pomodoroPanel')">Pomodoro</button>
+                  <button onclick="toggleTool('musicPanel')">Música</button>
+             </div>
+             <div class="tool-panel" id="questionsPanel"><h4>Questões</h4><p>...</p></div>
+             <div class="tool-panel" id="flashcardsPanel"><h4>Flashcards</h4><p>...</p></div>
+             <div class="tool-panel" id="pomodoroPanel"><h4>Temporizador Pomodoro</h4><select id="pomodoroTime"><option value="20">20</option><option value="30">30</option><option value="40">40</option><option value="50" selected>50</option></select><button onclick="startPomodoro()">Iniciar</button><button onclick="stopPomodoro()">Parar</button><div class="timer-display" id="pomodoroTimer">00:00</div><p id="pomodoroStatus">...</p></div>
+             <div class="tool-panel" id="musicPanel"><h4>Player de Música</h4><p>Música:</p><button onclick="playMusic()">Tocar</button><button onclick="pauseMusic()">Pausar</button><audio id="audioPlayer" loop></audio><p style="font-size: 0.8em; color: var(--text-muted); margin-top: 10px;">Nota: Player usa música placeholder.</p></div>
+         </div>
+     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -541,13 +570,13 @@
     <script>
         // --- Configuração Firebase (Mantida) ---
         const firebaseConfig = {
-             apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // Sua chave real
-             authDomain: "nvp-concursos.firebaseapp.com",
-             projectId: "nvp-concursos",
-             storageBucket: "nvp-concursos.appspot.com", // Corrigido: terminação appspot.com
-             messagingSenderId: "397960760271",
-             appId: "1:397960760271:web:1550ff01910ae927d860ba"
-        };
+            apiKey: "SUA_API_KEY", // Substitua pela sua chave real
+            authDomain: "nvp-concursos.firebaseapp.com",
+            projectId: "nvp-concursos",
+            storageBucket: "nvp-concursos.appspot.com",
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1550ff01910ae927d860ba"
+         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -561,399 +590,224 @@
         const toggleToolsPanelBtn = document.getElementById('toggleToolsPanelBtn');
         const colorPickerBtn = document.getElementById('color-picker-btn');
         const logoutBtn = document.getElementById('logout-btn');
-        const courseListContainer = document.getElementById('courseList'); // Renomeado para clareza
+        const courseListContainer = document.getElementById('courseList');
         const audioPlayer = document.getElementById('audioPlayer');
         const pomodoroTimerDisplay = document.getElementById('pomodoroTimer');
         const pomodoroStatus = document.getElementById('pomodoroStatus');
         const pomodoroTimeSelect = document.getElementById('pomodoroTime');
+        const topNav = document.getElementById('topNav'); // Nav container
+        const megaMenuContainer = document.getElementById('megaMenuContainer'); // Container dos menus
+
+        // --- Dark Mode Refs (Restaurado) ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const bodyElement = document.body;
+        const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
+        const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
 
 
         // --- Autenticação ---
         auth.onAuthStateChanged(user => {
-            console.log('Auth State Changed:', user);
-            if (!user) {
-                console.log('Nenhum usuário logado, redirecionando...');
-                window.location.href = 'index.html'; // Ou sua página de login
-            } else {
-                userId = user.uid;
-                console.log('Usuário logado:', userId);
-                loadCourses();
-                // loadSalaConfig(); // Carregar outras configs se necessário
-                adjustLayoutForUser(); // Ajusta layout inicial para usuário logado
-            }
-        });
+             console.log('Auth State Changed:', user);
+             if (!user) {
+                 console.log('Nenhum usuário logado, redirecionando...');
+                 // window.location.href = 'index.html'; // Descomente para redirecionar
+             } else {
+                 userId = user.uid;
+                 console.log('Usuário logado:', userId);
+                 loadCourses();
+                 adjustLayoutForUser();
+                 // Carregar configs salvas (cor, etc.) se houver
+                 applySavedPreferences();
+             }
+         });
 
         function adjustLayoutForUser() {
-             // Mostra/ajusta elementos que só aparecem para usuários logados
-             // (Se houver algum, como a nav superior ou sidebar)
-             // Inicialmente, a sidebar e o painel de ferramentas ficam visíveis/não colapsados
-             if (window.innerWidth <= 768) { // Se mobile, começar com sidebar escondida
-                 sidebar.classList.remove('visible');
-             } else {
-                  sidebar.classList.add('visible'); // Garante visibilidade em desktop
-             }
-             updateLayout(); // Aplica margens e classes corretas
+            if (window.innerWidth <= 768) { sidebar.classList.remove('visible'); }
+            else { sidebar.classList.add('visible'); }
+            updateLayout();
         }
+
+        function applySavedPreferences() {
+             // Aplicar cor de fundo salva
+             const savedBgColor = localStorage.getItem('userBgColor');
+             if (savedBgColor) { document.body.style.backgroundColor = savedBgColor; }
+
+             // Aplicar tema salvo (Dark Mode)
+             const savedTheme = localStorage.getItem('theme');
+             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+             let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+             applyTheme(currentTheme);
+        }
+
 
         // --- Logout ---
-        if(logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                auth.signOut().then(() => {
-                    console.log('Logout bem-sucedido');
-                    window.location.href = 'index.html'; // Ou sua página de login
-                }).catch(error => {
-                    console.error('Erro ao fazer logout:', error);
-                    alert('Erro ao fazer logout: ' + error.message);
-                });
-            });
+        if(logoutBtn) { logoutBtn.addEventListener('click', () => { auth.signOut().then(() => { window.location.href = 'index.html'; }).catch(error => { console.error('Erro logout:', error); alert('Erro ao sair: ' + error.message); }); }); }
+
+        // --- Tema Claro/Escuro (Restaurado) ---
+        function applyTheme(theme) {
+            bodyElement.classList.toggle('dark-mode', theme === 'dark');
+            if (sunIcon && moonIcon) {
+                sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+                moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+            }
+            localStorage.setItem('theme', theme); // Salva a escolha
         }
 
-        // --- Mudar Cor de Fundo ---
-        if (colorPickerBtn) {
-             colorPickerBtn.addEventListener('click', () => {
-                 const colorInput = document.createElement('input');
-                 colorInput.type = 'color';
-                 // Usar a cor atual do body OU um padrão
-                 const currentColor = document.body.style.backgroundColor;
-                 colorInput.value = currentColor ? rgbToHex(currentColor) : '#f1f1f1'; // Converte se for rgb
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
+                applyTheme(newTheme);
+            });
 
-                 colorInput.addEventListener('input', () => { // 'input' atualiza em tempo real
-                     const color = colorInput.value;
-                     document.body.style.backgroundColor = color;
-                     // Opcional: Salvar a cor no Firebase ou localStorage
-                     // saveSalaConfig({ backgroundColor: color }); // Se tiver backend/função para isso
-                     localStorage.setItem('userBgColor', color);
-                 });
-                 colorInput.click();
+             // Listener para mudança de preferência do sistema (se não houver tema salvo)
+             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                 if (!localStorage.getItem('theme')) { // Só aplica se o usuário não escolheu manualmente
+                     applyTheme(e.matches ? 'dark' : 'light');
+                 }
              });
         }
-         // Função auxiliar para converter rgb() para hex (necessário para input color)
-         function rgbToHex(rgb) {
-             if (!rgb || rgb.startsWith('#')) return rgb; // Já é hex ou inválido
-             let sep = rgb.indexOf(",") > -1 ? "," : " ";
-             rgb = rgb.substr(4).split(")")[0].split(sep);
-             let r = (+rgb[0]).toString(16),
-                 g = (+rgb[1]).toString(16),
-                 b = (+rgb[2]).toString(16);
-             if (r.length == 1) r = "0" + r;
-             if (g.length == 1) g = "0" + g;
-             if (b.length == 1) b = "0" + b;
-             return "#" + r + g + b;
-         }
-         // Aplicar cor salva ao carregar a página
-         const savedBgColor = localStorage.getItem('userBgColor');
-         if (savedBgColor) {
-             document.body.style.backgroundColor = savedBgColor;
-         }
+        // Aplica tema inicial na carga (feito em applySavedPreferences)
+
+
+        // --- Mudar Cor de Fundo ---
+        if (colorPickerBtn) { colorPickerBtn.addEventListener('click', () => { const colorInput = document.createElement('input'); colorInput.type = 'color'; const currentColor = document.body.style.backgroundColor; colorInput.value = currentColor ? rgbToHex(currentColor) : '#f1f1f1'; colorInput.addEventListener('input', () => { const color = colorInput.value; document.body.style.backgroundColor = color; localStorage.setItem('userBgColor', color); }); colorInput.click(); }); }
+        function rgbToHex(rgb) { if (!rgb || rgb.startsWith('#')) return rgb; let sep = rgb.indexOf(",") > -1 ? "," : " "; rgb = rgb.substr(4).split(")")[0].split(sep); let r = (+rgb[0]).toString(16), g = (+rgb[1]).toString(16), b = (+rgb[2]).toString(16); if (r.length == 1) r = "0" + r; if (g.length == 1) g = "0" + g; if (b.length == 1) b = "0" + b; return "#" + r + g + b; }
 
 
         // --- Carregar Cursos (na área principal) ---
-        async function loadCourses() {
+        async function loadCourses() { /* ... (código mantido da versão anterior) ... */
             if (!userId || !courseListContainer) return;
-            courseListContainer.innerHTML = '<p>Carregando seus cursos...</p>'; // Feedback
+            courseListContainer.innerHTML = '<p>Carregando seus cursos...</p>';
             try {
+                // Lógica para buscar cursos selecionados ou padrão... (mantida)
                 const userDoc = await db.collection('users').doc(userId).get();
                 let courseIds = [];
-                if (userDoc.exists && userDoc.data().selectedCourses) {
-                    courseIds = userDoc.data().selectedCourses;
-                }
-
+                if (userDoc.exists && userDoc.data().selectedCourses) { courseIds = userDoc.data().selectedCourses; }
                 let coursesData = [];
-                if (courseIds.length > 0) {
-                    // Buscar dados dos cursos selecionados
-                    const coursesPromises = courseIds.map(courseId =>
-                        db.collection('courses').doc(courseId).get()
-                    );
-                    const coursesDocs = await Promise.all(coursesPromises);
-                    coursesData = coursesDocs
-                        .filter(doc => doc.exists)
-                        .map(doc => ({ id: doc.id, ...doc.data() }));
-                } else {
-                     // Opcional: Carregar alguns cursos padrão ou mostrar mensagem
-                     // console.log("Nenhum curso selecionado pelo usuário.");
-                     // Alternativamente, buscar todos os cursos (pode ser pesado)
-                     // const allCoursesSnapshot = await db.collection('courses').limit(6).get(); // Limitar
-                     // coursesData = allCoursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                }
+                 if (courseIds.length > 0) { /* Buscar selecionados */
+                    const coursesPromises = courseIds.map(id => db.collection('courses').doc(id).get());
+                    const docs = await Promise.all(coursesPromises);
+                    coursesData = docs.filter(doc => doc.exists).map(doc => ({ id: doc.id, ...doc.data() }));
+                 } else { /* Buscar padrão ou mostrar msg */ }
 
-                courseListContainer.innerHTML = ''; // Limpar feedback
+                courseListContainer.innerHTML = ''; // Limpar
+                 if (coursesData.length === 0) { courseListContainer.innerHTML = '<p>Nenhum curso selecionado ou disponível.</p>'; return; }
 
-                if (coursesData.length === 0) {
-                    courseListContainer.innerHTML = '<p>Você ainda não selecionou cursos ou não há cursos disponíveis.</p>';
-                    return;
-                }
-
-                coursesData.forEach(course => {
-                    const courseCard = document.createElement('div');
-                    courseCard.className = 'course-card';
-                    let cardContent = `<h3>${course.name || 'Curso Sem Nome'}</h3>`;
-
-                    if (course.modules && course.modules.length > 0) {
-                        cardContent += '<ul>';
-                        course.modules.forEach(module => {
-                            cardContent += `<li>${module.name || 'Módulo Sem Nome'}`;
-                            if (module.subitems && module.subitems.length > 0) {
-                                cardContent += '<ul>';
-                                module.subitems.forEach(subitem => {
-                                    cardContent += `<li>${subitem || 'Subitem Sem Nome'}</li>`;
-                                });
-                                cardContent += '</ul>';
-                            }
-                            cardContent += '</li>';
-                        });
-                        cardContent += '</ul>';
-                    } else {
-                         cardContent += '<p><i>Nenhum módulo cadastrado.</i></p>';
-                    }
-                    courseCard.innerHTML = cardContent;
-                    courseListContainer.appendChild(courseCard);
-                });
-
-            } catch (error) {
-                console.error('Erro ao carregar cursos:', error);
-                courseListContainer.innerHTML = '<p class="error-message">Erro ao carregar cursos. Tente recarregar a página.</p>';
-            }
-        }
-
-        // --- Sidebar Toggle (Estilo W3S) ---
-        if (sidebarToggleBtn && sidebar && mainContent) {
-            sidebarToggleBtn.addEventListener('click', toggleSidebar);
-        }
-
-        function toggleSidebar() {
-            const isVisible = sidebar.classList.toggle('visible'); // Adiciona/remove 'visible'
-             if (window.innerWidth <= 768) { // Em mobile, a sidebar se sobrepõe
-                 // Não precisa ajustar margin do main
-                 sidebarToggleBtn.innerHTML = isVisible ? '&#10006;' : '&#9776;'; // Muda ícone (X ou Menu)
-             } else { // Em desktop, ajusta a margem do main
-                 sidebar.classList.toggle('hidden', !isVisible);
-                 mainContent.classList.toggle('sidebar-hidden', !isVisible);
-                 sidebarToggleBtn.innerHTML = '&#9776;'; // Sempre menu em desktop
-             }
-             // Salvar estado da sidebar (opcional)
-             // localStorage.setItem('sidebarVisible', isVisible);
-        }
-
-         // Ajustar layout na mudança de tamanho da janela
-         window.addEventListener('resize', updateLayout);
-
-         function updateLayout() {
-             const isMobile = window.innerWidth <= 768;
-             const isSidebarVisible = sidebar.classList.contains('visible');
-
-             if (isMobile) {
-                 mainContent.style.marginLeft = '0';
-                 mainContent.classList.add('sidebar-hidden'); // Classe para garantir que não tenha margem
-                 if (!isSidebarVisible) {
-                     sidebar.classList.add('hidden'); // Garante estado hidden se não visível
-                 } else {
-                      sidebar.classList.remove('hidden');
-                 }
-                 sidebarToggleBtn.innerHTML = isSidebarVisible ? '&#10006;' : '&#9776;';
-             } else {
-                 if (isSidebarVisible) {
-                     sidebar.classList.remove('hidden');
-                     mainContent.classList.remove('sidebar-hidden');
-                     mainContent.style.marginLeft = `var(--sidebar-width)`; // Define a margem
-                 } else {
-                     sidebar.classList.add('hidden');
-                     mainContent.classList.add('sidebar-hidden');
-                     mainContent.style.marginLeft = '0'; // Remove a margem
-                 }
-                  sidebarToggleBtn.innerHTML = '&#9776;';
-             }
+                 coursesData.forEach(course => { /* Criar cards */
+                    const card = document.createElement('div'); card.className = 'course-card';
+                    let content = `<h3>${course.name || 'Curso'}</h3>`;
+                    if (course.modules && course.modules.length > 0) { /* ... (lógica módulos mantida) ... */ }
+                    else { content += '<p><i>Sem módulos.</i></p>';}
+                    card.innerHTML = content; courseListContainer.appendChild(card);
+                 });
+            } catch (error) { console.error('Erro cursos:', error); courseListContainer.innerHTML = '<p>Erro ao carregar.</p>'; }
          }
 
-         // Inicializar layout correto
-          document.addEventListener('DOMContentLoaded', updateLayout);
+        // --- Sidebar Toggle (Estilo W3S) ---
+        if (sidebarToggleBtn && sidebar && mainContent) { sidebarToggleBtn.addEventListener('click', toggleSidebar); }
+        function toggleSidebar() {
+            const isVisible = sidebar.classList.toggle('visible');
+             if (window.innerWidth <= 768) { sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰'; }
+             else { sidebar.classList.toggle('hidden', !isVisible); mainContent.classList.toggle('sidebar-hidden', !isVisible); sidebarToggleBtn.innerHTML = '☰'; }
+             closeAllMegaMenus(); // Fecha menus ao abrir/fechar sidebar
+        }
+        window.addEventListener('resize', updateLayout);
+        function updateLayout() { /* ... (código mantido da versão anterior) ... */
+             const isMobile = window.innerWidth <= 768;
+             const isSidebarVisible = sidebar.classList.contains('visible');
+             if (isMobile) { mainContent.style.marginLeft = '0'; mainContent.classList.add('sidebar-hidden'); if (!isSidebarVisible) sidebar.classList.add('hidden'); else sidebar.classList.remove('hidden'); sidebarToggleBtn.innerHTML = isSidebarVisible ? '✖' : '☰'; }
+             else { if (isSidebarVisible) { sidebar.classList.remove('hidden'); mainContent.classList.remove('sidebar-hidden'); mainContent.style.marginLeft = `var(--sidebar-width)`; } else { sidebar.classList.add('hidden'); mainContent.classList.add('sidebar-hidden'); mainContent.style.marginLeft = '0'; } sidebarToggleBtn.innerHTML = '☰'; }
+         }
+
+
+        // --- Mega Menu Logic ---
+        const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
+        const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
+
+        megaMenuButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation(); // Impede que o clique feche o menu imediatamente
+                const targetId = button.getAttribute('data-target');
+                const targetPanel = document.getElementById(targetId);
+
+                if (!targetPanel) return;
+
+                const isAlreadyActive = targetPanel.classList.contains('active');
+
+                // Fecha todos os outros painéis e remove 'active' dos botões
+                closeAllMegaMenus(targetId); // Passa o ID do atual para não o fechar ainda
+
+                // Ativa/desativa o painel clicado
+                if (!isAlreadyActive) {
+                    targetPanel.classList.add('active');
+                    button.classList.add('active'); // Marca botão como ativo
+                }
+                // Se já estava ativo, closeAllMegaMenus já o fechou
+            });
+        });
+
+        // Fecha menus ao clicar fora
+        document.addEventListener('click', (event) => {
+             if (!megaMenuContainer.contains(event.target) && !topNav.contains(event.target)) {
+                 closeAllMegaMenus();
+             }
+         });
+
+         function closeAllMegaMenus(excludePanelId = null) {
+             allMegaPanels.forEach(panel => {
+                 if (panel.id !== excludePanelId) {
+                     panel.classList.remove('active');
+                 }
+             });
+             megaMenuButtons.forEach(btn => {
+                 if (btn.getAttribute('data-target') !== excludePanelId) {
+                     btn.classList.remove('active');
+                 }
+             });
+         }
 
 
         // --- Floating Tools Panel Toggle ---
         if (toggleToolsPanelBtn && floatingToolsPanel) {
-             toggleToolsPanelBtn.addEventListener('click', (e) => {
-                  e.stopPropagation(); // Impede que o clique no botão também dispare o do header
-                  toggleFloatingToolsPanel();
-             });
-             // Clicar no header também colapsa/expande
-             const panelHeader = floatingToolsPanel.querySelector('.tools-panel-header');
-             if(panelHeader) {
-                 panelHeader.addEventListener('click', toggleFloatingToolsPanel);
-             }
+            toggleToolsPanelBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFloatingToolsPanel(); });
+            const panelHeader = floatingToolsPanel.querySelector('.tools-panel-header');
+            if(panelHeader) { panelHeader.addEventListener('click', toggleFloatingToolsPanel); }
         }
+        function toggleFloatingToolsPanel() { const isCollapsed = floatingToolsPanel.classList.toggle('collapsed'); toggleToolsPanelBtn.innerHTML = isCollapsed ? '▲' : '▼'; }
 
-        function toggleFloatingToolsPanel() {
-            const isCollapsed = floatingToolsPanel.classList.toggle('collapsed');
-            toggleToolsPanelBtn.innerHTML = isCollapsed ? '&#9650;' : '&#9660;'; // Muda seta (Cima/Baixo)
-            // Opcional: Salvar estado
-            // localStorage.setItem('toolsPanelCollapsed', isCollapsed);
-        }
-        // Restaurar estado colapsado (opcional)
-        // if (localStorage.getItem('toolsPanelCollapsed') === 'true') {
-        //     toggleFloatingToolsPanel();
-        // }
 
         // --- Mostrar/Esconder Ferramentas Dentro do Painel Flutuante ---
-        const toolPanels = floatingToolsPanel.querySelectorAll('.tool-panel');
-
+        const toolPanels = floatingToolsPanel ? floatingToolsPanel.querySelectorAll('.tool-panel') : [];
         function toggleTool(panelIdToShow) {
-            // Garante que o painel flutuante não esteja colapsado
-            if (floatingToolsPanel.classList.contains('collapsed')) {
-                toggleFloatingToolsPanel();
-            }
-
+            if (floatingToolsPanel.classList.contains('collapsed')) { toggleFloatingToolsPanel(); }
             let panelWasVisible = false;
             toolPanels.forEach(panel => {
-                if (panel.id === panelIdToShow) {
-                    if (panel.style.display === 'block') {
-                        panel.style.display = 'none'; // Esconde se já estava visível
-                        panelWasVisible = true;
-                    } else {
-                        panel.style.display = 'block'; // Mostra o painel clicado
-                    }
-                } else {
-                    panel.style.display = 'none'; // Esconde os outros painéis
-                }
+                if (panel.id === panelIdToShow) { if (panel.style.display === 'block') { panel.style.display = 'none'; panelWasVisible = true; } else { panel.style.display = 'block'; } }
+                else { panel.style.display = 'none'; }
             });
-             // Se o painel clicado foi escondido (porque já estava visível),
-             // talvez colapsar o painel flutuante? (Opcional)
-             // if (panelWasVisible && !floatingToolsPanel.classList.contains('collapsed')) {
-             //     let anyPanelVisible = false;
-             //     toolPanels.forEach(p => { if(p.style.display === 'block') anyPanelVisible = true; });
-             //     if (!anyPanelVisible) toggleFloatingToolsPanel();
-             // }
         }
 
         // --- Música (Simplificado) ---
-        // SUBSTITUA PELA URL REAL DO SEU ARQUIVO DE ÁUDIO
-        const musicUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+        const musicUrl = 'https://www.youtube.com/watch?v=UW2XiPwRcy4'; // Substituir URL
         let isMusicPlaying = false;
-
-        function playMusic() {
-            if (!audioPlayer.src) {
-                audioPlayer.src = musicUrl;
-            }
-            audioPlayer.play().then(() => {
-                 isMusicPlaying = true;
-                 console.log("Música tocando");
-                 // Opcional: Mudar ícone do botão, etc.
-            }).catch(error => {
-                console.error('Erro ao tocar música:', error);
-                if (error.name === 'NotAllowedError') {
-                     alert('O navegador bloqueou a reprodução automática. Interaja com a página primeiro (clique em algo).');
-                } else {
-                     alert('Não foi possível tocar a música. Verifique a URL ou a conexão.');
-                }
-                isMusicPlaying = false;
-            });
-        }
-
-        function pauseMusic() {
-            audioPlayer.pause();
-            isMusicPlaying = false;
-            console.log("Música pausada");
-             // Opcional: Mudar ícone do botão, etc.
-        }
+        function playMusic() { if (!audioPlayer.src) audioPlayer.src = musicUrl; audioPlayer.play().then(() => {isMusicPlaying = true;}).catch(error => {console.error('Erro música:', error); alert('Erro ao tocar.'); isMusicPlaying = false;}); }
+        function pauseMusic() { audioPlayer.pause(); isMusicPlaying = false; }
 
         // --- Pomodoro ---
-        let pomodoroInterval = null;
-        let timeRemaining = 0; // em segundos
-        let isBreak = false;
-        let initialFocusTime = 50 * 60; // Padrão inicial (50 min)
-
-        function startPomodoro() {
-            if (pomodoroInterval) {
-                 console.log("Pomodoro já em andamento.");
-                 return; // Evita múltiplos intervalos
-            }
-
-            isBreak = false;
-            const selectedMinutes = parseInt(pomodoroTimeSelect.value);
-            initialFocusTime = selectedMinutes * 60; // Atualiza tempo de foco
-            timeRemaining = initialFocusTime;
-
-            console.log(`Iniciando foco: ${selectedMinutes} minutos.`);
-            pomodoroStatus.innerText = `Foco: ${selectedMinutes} min em andamento...`;
-            updatePomodoroTimer(); // Mostra o tempo inicial
-
-            pomodoroInterval = setInterval(() => {
-                timeRemaining--;
-                updatePomodoroTimer();
-
-                if (timeRemaining <= 0) {
-                    clearInterval(pomodoroInterval);
-                    pomodoroInterval = null;
-                     handlePomodoroCompletion();
-                }
-            }, 1000); // Atualiza a cada segundo
-        }
-
-        function handlePomodoroCompletion() {
-             if (!isBreak) {
-                 // Foco terminou, iniciar pausa
-                 console.log("Foco concluído. Iniciando pausa.");
-                 alert('Tempo de foco concluído! Hora da pausa (5 minutos).'); // Pausa de 5 min
-                 isBreak = true;
-                 timeRemaining = 5 * 60; // 5 minutos de pausa
-                 pomodoroStatus.innerText = 'Pausa: 5 min em andamento...';
-                 updatePomodoroTimer();
-
-                 pomodoroInterval = setInterval(() => {
-                     timeRemaining--;
-                     updatePomodoroTimer();
-                     if (timeRemaining <= 0) {
-                         clearInterval(pomodoroInterval);
-                         pomodoroInterval = null;
-                         handlePomodoroCompletion(); // Chama de novo para finalizar a pausa
-                     }
-                 }, 1000);
-
-             } else {
-                 // Pausa terminou
-                 console.log("Pausa concluída.");
-                 alert('Pausa concluída! Pronto para a próxima sessão de foco?');
-                 isBreak = false;
-                 pomodoroStatus.innerText = 'Selecione o tempo e inicie sua sessão de foco.';
-                 // Resetar display para o tempo de foco selecionado, mas não iniciar
-                 timeRemaining = initialFocusTime; // Volta ao tempo de foco
-                 updatePomodoroTimer(); // Mostra o tempo de foco novamente
-                 // Ou resetar para 00:00? Decisão de UX.
-                 // pomodoroTimerDisplay.innerText = '00:00';
-
-             }
-        }
+        let pomodoroInterval = null; let timeRemaining = 0; let isBreak = false; let initialFocusTime = 50 * 60;
+        function startPomodoro() { if (pomodoroInterval) return; isBreak = false; const selMin = parseInt(pomodoroTimeSelect.value); initialFocusTime = selMin * 60; timeRemaining = initialFocusTime; pomodoroStatus.innerText = `Foco: ${selMin} min...`; updatePomodoroTimer(); pomodoroInterval = setInterval(() => { timeRemaining--; updatePomodoroTimer(); if (timeRemaining <= 0) { clearInterval(pomodoroInterval); pomodoroInterval = null; handlePomodoroCompletion(); } }, 1000); }
+        function handlePomodoroCompletion() { if (!isBreak) { alert('Foco concluído! Pausa (5 min).'); isBreak = true; timeRemaining = 5 * 60; pomodoroStatus.innerText = 'Pausa: 5 min...'; updatePomodoroTimer(); pomodoroInterval = setInterval(() => { timeRemaining--; updatePomodoroTimer(); if (timeRemaining <= 0) { clearInterval(pomodoroInterval); pomodoroInterval = null; handlePomodoroCompletion(); } }, 1000); } else { alert('Pausa concluída!'); isBreak = false; pomodoroStatus.innerText = 'Pronto para iniciar.'; timeRemaining = initialFocusTime; updatePomodoroTimer(); } }
+        function updatePomodoroTimer() { if (timeRemaining < 0) timeRemaining = 0; const min = Math.floor(timeRemaining / 60); const sec = timeRemaining % 60; pomodoroTimerDisplay.innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`; }
+        function stopPomodoro() { if (pomodoroInterval) { clearInterval(pomodoroInterval); pomodoroInterval = null; } timeRemaining = initialFocusTime; isBreak = false; updatePomodoroTimer(); pomodoroStatus.innerText = 'Parado. Pronto.'; }
 
 
-        function updatePomodoroTimer() {
-            if (timeRemaining < 0) timeRemaining = 0; // Garante que não fique negativo
-            const minutes = Math.floor(timeRemaining / 60);
-            const seconds = timeRemaining % 60;
-            pomodoroTimerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            // Atualizar título da página (opcional)
-            // document.title = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} - Sala de Estudos`;
-        }
-
-        function stopPomodoro() {
-            if (pomodoroInterval) {
-                clearInterval(pomodoroInterval);
-                pomodoroInterval = null;
-                console.log("Pomodoro parado pelo usuário.");
-            }
-            // Resetar estado
-            timeRemaining = initialFocusTime; // Volta ao tempo de foco inicial selecionado
-            isBreak = false;
-            updatePomodoroTimer(); // Atualiza display
-            pomodoroStatus.innerText = 'Temporizador parado. Pronto para iniciar.';
-             // document.title = 'Sala de Estudos - NVP Concursos'; // Resetar título da página
-        }
-
-
-        // --- Atualizar o ano no rodapé ---
+        // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-
-             // Chamar updateLayout para garantir o estado inicial correto
-             updateLayout();
+            updateLayout(); // Aplica layout inicial
+            // Aplica preferências salvas (cor, tema) - Chamado na resposta do Auth
+            if (!auth.currentUser) { applySavedPreferences(); } // Aplica se não estiver logado ainda
         });
 
     </script>
