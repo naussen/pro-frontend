@@ -7,21 +7,22 @@
     <style>
         :root {
             --header-height: 55px;
+            --sidebar-width: 240px; /* Largura da sidebar estilo W3S */
             --main-color: #1A5276;
             --light-highlight-bg: #EAF2F8;
             --accent-1: #D4AC0D;
             --accent-1-darker: #b3910b;
             --accent-2: #CA6F1E;
-            --dark-bg: #154360;
-            --subnav-bg: #282A35;
+            --dark-bg: #154360; /* Fundo Footer */
+            --subnav-bg: #ddd; /* Fundo Hover Sidebar */
             --text-dark: #333;
             --text-light: #f8f9fa;
             --text-muted: #6c757d;
             --border-color: #ccc;
-            --light-grey-bg: #f1f1f1;
-            --header-bg: #ffffff;
+            --light-grey-bg: #f1f1f1; /* Fundo principal body */
+            --header-bg: #ffffff; /* Fundo Header */
             --header-border: #e7e7e7;
-            --main-content-bg: #ffffff;
+            --main-content-bg: #ffffff; /* Fundo area principal */
             --code-bg: #f1f1f1;
             --button-text-dark: #333;
             --footer-text-muted: #ccc;
@@ -31,41 +32,27 @@
             --footer-h4: #f1f1f1;
             --dark-blue-hover: #113a54;
             --error-color: #D32F2F;
-            --sidebar-width: 250px;
-            --sidebar-bg: #f1f1f1;
-            --sidebar-border: #ddd;
+            --sidebar-bg: #f1f1f1; /* Fundo Sidebar */
+            --sidebar-border: #d4d4d4; /* Borda direita Sidebar */
+            --sidebar-link-color: #000;
+            --sidebar-link-hover-bg: #ddd;
+            --sidebar-link-active-bg: #4CAF50; /* Cor W3S para item ativo */
+            --sidebar-link-active-color: #fff;
+            --floating-panel-bg: #fdfdfd;
+            --floating-panel-border: #ccc;
+            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            --floating-panel-width: 350px; /* Largura do painel flutuante */
+            --top-nav-bg: #ffffff; /* Fundo da navegação superior Cursos | Questões | etc */
+            --top-nav-link-color: #333;
+            --top-nav-link-hover-bg: #f1f1f1;
+            --top-nav-link-active-bg: #ddd;
         }
 
-        body.dark-mode {
-            --main-color: #6cb6ff;
-            --light-highlight-bg: #2d333b;
-            --accent-1: #e4c05c;
-            --accent-1-darker: #cfae51;
-            --accent-2: #d98234;
-            --dark-bg: #0d1117;
-            --subnav-bg: #22272e;
-            --text-dark: #c9d1d9;
-            --text-light: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #444c56;
-            --light-grey-bg: #0d1117;
-            --header-bg: #161b22;
-            --header-border: #30363d;
-            --main-content-bg: #161b22;
-            --code-bg: #22272e;
-            --button-text-dark: #161b22;
-            --footer-text-muted: #8b949e;
-            --footer-link-color: #8b949e;
-            --footer-link-hover: var(--accent-1);
-            --footer-separator: #30363d;
-            --footer-h4: var(--text-light);
-            --dark-blue-hover: #1a6fba;
-            --error-color: #FF5252;
-            --sidebar-bg: #22272e;
-            --sidebar-border: #30363d;
-        }
+        /* Removido :root body.dark-mode e toda lógica JS de tema */
 
-        html { height: 100%; }
+        html { height: 100%; box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: inherit; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -74,16 +61,16 @@
             min-height: 100vh;
             background-color: var(--light-grey-bg);
             color: var(--text-dark);
-            box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-top: var(--header-height); /* Espaço para header fixo */
         }
 
+        /* --- Header --- */
         .w3s-header {
             background-color: var(--header-bg);
             color: var(--text-dark);
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 10px 0 0; /* Reduzido padding esquerdo */
             height: var(--header-height);
             width: 100%;
             box-sizing: border-box;
@@ -92,34 +79,58 @@
             left: 0;
             z-index: 103;
             border-bottom: 1px solid var(--header-border);
-            gap: 15px;
+            gap: 5px; /* Reduzido gap */
         }
-        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
+        .w3s-sidebar-toggle { /* Botão para abrir/fechar sidebar */
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 15px;
+            color: var(--text-dark);
+            line-height: var(--header-height);
+            margin-right: 5px;
+        }
+        .w3s-sidebar-toggle:hover {
+            background-color: var(--light-grey-bg);
+        }
+        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
         .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
-        .w3s-logo-placeholder text {
-            font-size: 35px;
-            fill: var(--main-color);
-            font-weight: bold;
-            font-family: sans-serif;
-        }
-        .w3s-logo-placeholder circle {
-            fill: transparent;
-            stroke: var(--main-color);
-            stroke-width: 5;
-        }
-        .w3s-header-right-group {
+        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; }
+        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
+
+        /* --- Top Navigation (Esquerda) --- */
+        .w3s-top-nav {
             display: flex;
             align-items: center;
-            margin-left: auto;
-            gap: 10px;
+            height: 100%;
+            margin-left: 10px; /* Espaço após logo/toggle */
         }
-        .w3s-header-actions {
+        .w3s-top-nav a {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-            position: relative;
+            padding: 0 12px;
+            height: 100%;
+            text-decoration: none;
+            color: var(--top-nav-link-color);
+            font-size: 15px;
+            transition: background-color 0.2s;
+            border-right: 1px solid var(--header-border);
         }
+        .w3s-top-nav a:first-child {
+             border-left: 1px solid var(--header-border);
+        }
+        .w3s-top-nav a:hover {
+            background-color: var(--top-nav-link-hover-bg);
+        }
+        .w3s-top-nav a.active { /* Adicionar esta classe à página ativa */
+            background-color: var(--top-nav-link-active-bg);
+        }
+
+
+        /* --- Header Actions (Direita) --- */
+        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px;}
+        .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
         .w3s-header-actions a, .w3s-header-actions button {
             color: var(--text-dark);
             text-decoration: none;
@@ -128,276 +139,246 @@
             align-items: center;
             gap: 5px;
             transition: color 0.2s, background-color 0.2s;
-            padding: 5px 8px;
+            padding: 6px 10px; /* Ajuste padding */
             border-radius: 4px;
             background: none;
             border: none;
             cursor: pointer;
+            white-space: nowrap; /* Evita quebra de linha */
         }
-        .w3s-header-actions a .icon, .w3s-header-actions button .icon {
-            font-size: 1.1em;
-            display: inline-block;
-            width: 1em;
-            height: 1em;
-            line-height: 1em;
-            text-align: center;
-            color: #666;
-        }
-        body.dark-mode .w3s-header-actions a, body.dark-mode .w3s-header-actions button {
-            color: var(--text-muted);
-        }
-        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon {
-            color: var(--text-muted);
-        }
+        .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; width: 1em; height: 1em; line-height: 1em; text-align: center; color: #666; }
+        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); }
+        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
         .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
-        .w3s-header-actions a[title="Minha Sala de Estudos"] .icon { color: #3fb950; }
+        .w3s-header-actions a[title="Guia do Método"] .icon { color: #3fb950; }
         .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
-        .w3s-header-actions a:hover, .w3s-header-actions button:hover {
-            color: var(--main-color);
-            background-color: rgba(0, 0, 0, 0.03);
-        }
-        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon {
-            color: var(--main-color);
-        }
-        #theme-toggle .icon { font-size: 1.3em; }
+        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; } /* Cor exemplo para o picker */
 
-        .w3s-nav-menu {
-            display: flex;
-            gap: 10px;
-        }
-        .nav-item {
-            position: relative;
-        }
-        .nav-btn {
-            background-color: var(--subnav-bg);
-            color: var(--text-light);
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .nav-btn:hover {
-            background-color: var(--dark-blue-hover);
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: var(--header-bg);
-            min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            border-radius: 4px;
-            top: 100%;
-            left: 0;
-        }
-        .dropdown-content a {
-            color: var(--text-dark);
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            transition: background-color 0.2s;
-        }
-        .dropdown-content a:hover {
-            background-color: var(--light-highlight-bg);
-        }
-        body.dark-mode .dropdown-content {
-            background-color: var(--subnav-bg);
-        }
-        body.dark-mode .dropdown-content a {
-            color: var(--text-light);
-        }
-        body.dark-mode .dropdown-content a:hover {
-            background-color: var(--dark-bg);
-        }
 
+        /* --- Content Wrapper --- */
         .content-wrapper {
             display: flex;
-            min-height: calc(100vh - var(--header-height));
-            padding-top: var(--header-height);
+            flex-grow: 1; /* Ocupa espaço restante */
+            /* padding-top removido, já está no body */
         }
 
+        /* --- Sidebar (Estilo W3Schools) --- */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--sidebar-border);
-            padding: 20px;
+            padding: 0; /* Removido padding geral */
             position: fixed;
             top: var(--header-height);
-            bottom: 0;
+            left: 0;
+            bottom: 0; /* Estende até o rodapé */
             overflow-y: auto;
-            transition: transform 0.3s ease;
-            z-index: 102;
+            transition: transform 0.3s ease, width 0.3s ease;
+            z-index: 102; /* Abaixo do header, acima do main */
+            transform: translateX(0); /* Começa visível */
         }
         .sidebar.hidden {
-            transform: translateX(-100%);
+            transform: translateX(calc(-1 * var(--sidebar-width)));
+            width: 0; /* Encolhe a largura quando escondido */
+            border-right: none;
         }
-        .sidebar-toggle {
-            position: fixed;
-            top: calc(var(--header-height) + 10px);
-            left: 10px;
-            z-index: 104;
-            background-color: var(--accent-1);
-            color: var(--button-text-dark);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .sidebar-toggle.hidden {
-            left: 10px;
-        }
-        .sidebar-toggle:hover {
-            background-color: var(--accent-1-darker);
-        }
-        .sidebar h2 {
-            font-size: 1.5em;
-            color: var(--main-color);
-            margin-bottom: 20px;
-        }
-        .sidebar ul {
+        .sidebar h2 { /* Título dentro da sidebar */
+            font-size: 1.3em;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 15px 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--sidebar-border);
+         }
+        .sidebar-nav { /* Usar uma div ou nav para a lista */
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .sidebar ul li {
-            margin-bottom: 10px;
-        }
-        .sidebar ul li a, .sidebar ul li button {
-            color: var(--text-dark);
+        .sidebar-nav a { /* Links da sidebar */
+            color: var(--sidebar-link-color);
             text-decoration: none;
-            font-size: 1em;
+            font-size: 0.95em;
             display: block;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 10px 20px;
             transition: background-color 0.2s;
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .sidebar ul li a:hover, .sidebar ul li button:hover {
-            background-color: var(--light-highlight-bg);
+        .sidebar-nav a:hover {
+            background-color: var(--sidebar-link-hover-bg);
         }
-        body.dark-mode .sidebar ul li a, body.dark-mode .sidebar ul li button {
-            color: var(--text-light);
+        .sidebar-nav a.active { /* Para marcar link ativo */
+             background-color: var(--sidebar-link-active-bg);
+             color: var(--sidebar-link-active-color);
         }
-        body.dark-mode .sidebar ul li a:hover, body.dark-mode .sidebar ul li button:hover {
-            background-color: var(--subnav-bg);
-        }
+        /* Remover estilo de botão para itens da sidebar original */
+        .sidebar ul li button { display: none; }
 
+        /* --- Main Content Area --- */
         main {
             flex-grow: 1;
             background-color: var(--main-content-bg);
-            width: calc(100% - var(--sidebar-width));
-            margin-left: var(--sidebar-width);
+            margin-left: var(--sidebar-width); /* Espaço para sidebar */
             box-sizing: border-box;
-            padding: 40px 20px;
-            transition: margin-left 0.3s ease, width 0.3s ease;
+            padding: 30px 25px; /* Padding interno */
+            transition: margin-left 0.3s ease;
+            position: relative; /* Para contexto de z-index se necessário */
+            z-index: 1; /* Abaixo da sidebar e header */
         }
-        main.full-width {
-            width: 100%;
-            margin-left: 0;
+        main.sidebar-hidden {
+            margin-left: 0; /* Ocupa tudo quando sidebar escondida */
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .container { max-width: 1200px; margin: 0 auto; }
+        .study-room-header { text-align: center; margin-bottom: 30px; }
+        .study-room-header h1 { font-size: 2em; color: var(--main-color); margin-bottom: 10px; }
+        .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
+
+        /* --- Course List --- */
+        .course-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+        .course-card { background-color: var(--header-bg); border: 1px solid var(--header-border); padding: 20px; border-radius: 6px; transition: transform 0.2s, box-shadow 0.2s; }
+        .course-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08); }
+        .course-card h3 { font-size: 1.3em; color: var(--main-color); margin: 0 0 15px 0; }
+        .course-card ul { list-style: none; padding: 0; margin: 0; }
+        .course-card ul li { margin-bottom: 8px; color: var(--text-dark); font-size: 0.95em; }
+        .course-card ul li ul { padding-left: 20px; margin-top: 5px; }
+        .course-card ul li ul li { font-size: 0.9em; color: var(--text-muted); }
+
+        /* --- Floating Tools Panel --- */
+        #floatingToolsPanel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: var(--floating-panel-width);
+            max-height: 80vh; /* Altura máxima */
+            background-color: var(--floating-panel-bg);
+            border: 1px solid var(--floating-panel-border);
+            border-radius: 8px;
+            box-shadow: var(--floating-panel-shadow);
+            z-index: 105; /* Acima de outros conteúdos */
+            overflow: hidden; /* Controla o conteúdo interno */
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+            transform: translateY(0);
+            opacity: 1;
         }
-        .study-room-header {
-            text-align: center;
-            margin-bottom: 30px;
+        #floatingToolsPanel.collapsed {
+            transform: translateY(calc(100% - 50px)); /* Esconde a maior parte, deixa o header visível */
+            height: 50px; /* Altura quando colapsado */
+            opacity: 0.9;
         }
-        .study-room-header h1 {
-            font-size: 2em;
-            color: var(--main-color);
-            margin-bottom: 10px;
-        }
-        .study-room-header p {
-            color: var(--text-muted);
-            font-size: 1.1em;
-        }
-        .course-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .course-card {
-            background-color: var(--header-bg);
-            border: 1px solid var(--header-border);
-            padding: 15px;
-            border-radius: 6px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .course-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .course-card h3 {
-            font-size: 1.2em;
-            color: var(--main-color);
-            margin: 0 0 10px 0;
-        }
-        .course-card ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .course-card ul li {
-            margin-bottom: 5px;
-            color: var(--text-dark);
-        }
-        .course-card ul li ul {
-            padding-left: 15px;
+        #floatingToolsPanel.hidden-completely { /* Estado para esconder totalmente se necessário */
+             opacity: 0;
+             transform: translateY(100%);
+             pointer-events: none;
         }
 
-        .tool-panel {
-            background-color: var(--header-bg);
-            border: 1px solid var(--header-border);
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 10px;
-            text-align: center;
-            display: none;
+        .tools-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: var(--light-grey-bg);
+            border-bottom: 1px solid var(--floating-panel-border);
+            cursor: pointer; /* Clicar no header para colapsar */
         }
-        .tool-panel h3 {
-            font-size: 1.2em;
+        .tools-panel-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+            color: var(--main-color);
+        }
+        #toggleToolsPanelBtn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0 5px;
+        }
+        .tools-panel-content {
+             padding: 15px;
+             overflow-y: auto; /* Scroll se conteúdo for grande */
+             flex-grow: 1;
+        }
+        .tool-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap; /* Quebra linha se não couber */
+        }
+        .tool-buttons button {
+             flex-grow: 1; /* Ocupa espaço igual */
+             background-color: var(--accent-1);
+             color: var(--button-text-dark);
+             border: none;
+             padding: 8px 12px;
+             cursor: pointer;
+             border-radius: 5px;
+             font-weight: bold;
+             transition: background-color 0.3s;
+             font-size: 0.9em;
+             text-align: center;
+        }
+        .tool-buttons button:hover {
+            background-color: var(--accent-1-darker);
+        }
+
+        /* --- Tool Panels (Dentro do Flutuante) --- */
+        .tool-panel {
+            background-color: transparent; /* Fundo vem do painel flutuante */
+            border: none; /* Borda vem do painel flutuante */
+            padding: 0; /* Padding gerenciado pelo content */
+            margin-top: 0; /* Reset margin */
+            text-align: left; /* Alinhar conteúdo à esquerda */
+            display: none; /* Começam escondidos */
+            border-top: 1px dashed var(--border-color);
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+        .tool-panel h4 { /* Usar h4 dentro dos paineis */
+            font-size: 1.1em;
             color: var(--main-color);
             margin-bottom: 10px;
+            margin-top: 0;
         }
-        .tool-panel select, .tool-panel input {
+         .tool-panel p { font-size: 0.95em; margin-bottom: 10px;}
+         .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
             padding: 8px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             margin-right: 10px;
-            background-color: var(--main-content-bg);
+            margin-bottom: 10px; /* Espaço abaixo */
+            background-color: var(--main-content-bg); /* Usar fundo claro */
             color: var(--text-dark);
+            width: calc(100% - 20px); /* Ocupar largura disponível */
+            max-width: 200px; /* Limite máximo */
         }
         .tool-panel button {
-            background-color: var(--accent-1);
-            color: var(--button-text-dark);
+            background-color: var(--accent-2); /* Cor diferente para ações internas */
+            color: white;
             border: none;
             padding: 8px 16px;
             cursor: pointer;
             border-radius: 5px;
             font-weight: bold;
             transition: background-color 0.3s;
+            margin-right: 5px;
+             margin-bottom: 10px; /* Espaço abaixo */
         }
         .tool-panel button:hover {
-            background-color: var(--accent-1-darker);
+            background-color: #a05a17; /* Escurecer accent-2 */
         }
-        .timer-display {
-            font-size: 1.5em;
-            margin: 10px 0;
-            color: var(--main-color);
-        }
+        .timer-display { font-size: 1.8em; margin: 15px 0; color: var(--main-color); font-weight: bold; text-align: center; }
+        #pomodoroStatus { font-size: 0.9em; color: var(--text-muted); text-align: center; }
 
+        /* Específico Música */
+        #musicPanel button { margin-top: 10px; }
+        #musicPanel audio { display: none; } /* Esconder player padrão */
+
+
+        /* --- Footer --- */
         .footer {
             background-color: var(--dark-bg);
             color: var(--footer-text-muted);
@@ -405,96 +386,86 @@
             text-align: left;
             width: 100%;
             box-sizing: border-box;
-            z-index: 101;
+            z-index: 101; /* Acima do conteúdo, abaixo de paineis fixos */
             flex-shrink: 0;
-            margin-top: 40px;
+            margin-top: 40px; /* Espaço antes do footer */
         }
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--footer-separator);
-            margin-bottom: 15px;
-        }
-        .footer-section {
-            min-width: 200px;
-            flex-grow: 1;
-        }
-        .footer h4 {
-            color: var(--footer-h4);
-            margin-top: 0;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--footer-separator);
-            padding-bottom: 8px;
-            font-size: 1.1em;
-        }
-        .footer ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer ul li {
-            margin-bottom: 8px;
-        }
-        .footer ul li a, .footer-section p a {
-            color: var(--footer-link-color);
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: color 0.3s;
-        }
-        .footer ul li a:hover, .footer-section p a:hover {
-            color: var(--footer-link-hover);
-        }
-        .footer-section p {
-            color: var(--footer-link-color);
-            font-size: 0.9em;
-            margin: 0 0 8px 0;
-            line-height: 1.5;
-        }
-        .footer-copyright {
-            text-align: center;
-            font-size: 0.85em;
-            color: #a8c0d1;
-            width: 100%;
-            padding-top: 15px;
-        }
-        body.dark-mode .footer-copyright {
-            color: var(--text-muted);
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap; gap: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--footer-separator); margin-bottom: 15px; }
+        .footer-section { min-width: 200px; flex-grow: 1; }
+        .footer h4 { color: var(--footer-h4); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid var(--footer-separator); padding-bottom: 8px; font-size: 1.1em; }
+        .footer ul { list-style: none; padding: 0; margin: 0; }
+        .footer ul li { margin-bottom: 8px; }
+        .footer ul li a, .footer-section p a { color: var(--footer-link-color); text-decoration: none; font-size: 0.9em; transition: color 0.3s; }
+        .footer ul li a:hover, .footer-section p a:hover { color: var(--footer-link-hover); }
+        .footer-section p { color: var(--footer-link-color); font-size: 0.9em; margin: 0 0 8px 0; line-height: 1.5; }
+        .footer-copyright { text-align: center; font-size: 0.85em; color: var(--footer-text-muted); width: 100%; padding-top: 15px; }
+
+        /* --- Responsividade --- */
+        @media screen and (max-width: 992px) {
+             :root { --sidebar-width: 200px; } /* Sidebar menor */
+             .w3s-top-nav a { font-size: 14px; padding: 0 8px; }
+             .w3s-header-actions .link-text { display: none; } /* Esconder texto dos botões */
+             .w3s-header-actions a, .w3s-header-actions button { padding: 6px 8px; }
+             #floatingToolsPanel { width: 300px; }
         }
 
-        @media screen and (max-width: 992px) {
-            .sidebar { width: 200px; }
-            main { width: calc(100% - 200px); margin-left: 200px; }
-            .course-list { grid-template-columns: 1fr; }
-        }
         @media screen and (max-width: 768px) {
-            .sidebar { width: 100%; transform: translateX(-100%); }
-            .sidebar.visible { transform: translateX(0); }
-            main { width: 100%; margin-left: 0; }
-            main.full-width { width: 100%; }
-            .container { padding: 0 15px; }
-            .sidebar-toggle { display: block; }
-            .w3s-nav-menu { flex-wrap: wrap; }
+            :root { --sidebar-width: 240px; } /* Volta largura normal para mobile overlay */
+            .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); width: var(--sidebar-width); } /* Começa escondida */
+            .sidebar.visible { transform: translateX(0); } /* Mostra quando 'visible' */
+            main { margin-left: 0; } /* Main sempre ocupa tudo */
+            main.sidebar-visible { margin-left: 0; } /* Mesmo com sidebar visível (ela fica sobreposta) */
+            .w3s-sidebar-toggle { display: block; } /* Garante visibilidade do toggle */
+            .w3s-top-nav { display: none; } /* Esconder nav superior no mobile */
+             #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; /* Ajustar largura */ }
         }
+         @media screen and (max-width: 480px) {
+              .course-list { grid-template-columns: 1fr; } /* Uma coluna */
+              #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
+              .tool-buttons button { font-size: 0.85em; padding: 6px 8px;}
+         }
+
     </style>
 </head>
 <body>
+    <header class="w3s-header" id="mainHeader">
+        <button class="w3s-sidebar-toggle" id="sidebarToggleBtn" title="Abrir/Fechar Menu">&#9776;</button>
+
+        <div class="w3s-logo-area">
+            <a href="index.html" title="Página Inicial">
+                <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48"/>
+                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
+                </svg>
+            </a>
+        </div>
+
+        <nav class="w3s-top-nav">
+            <a href="#">Cursos</a>
+            <a href="#">Questões</a>
+            <a href="#">Flashcards</a>
+        </nav>
+
+        <div class="w3s-header-right-group">
+            <div class="w3s-header-actions">
+                 <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
+                <a href="meucadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
+                <a href="guia.html" title="Guia do Método"><span class="icon">📖</span> <span class="link-text">Guia</span></a>
+                <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+            </div>
+        </div>
+    </header>
+
     <div class="content-wrapper">
         <nav class="sidebar" id="sidebar">
-            <h2>Ferramentas</h2>
-            <ul>
-                <li><button onclick="toggleTool('questionsPanel')">Questões</button></li>
-                <li><button onclick="toggleTool('flashcardsPanel')">Flashcards</button></li>
-                <li><button onclick="toggleTool('pomodoroPanel')">Pomodoro</button></li>
-                <li><button onclick="toggleTool('musicPanel')">Música</button></li>
-            </ul>
+            <h2>Navegação</h2>
+            <div class="sidebar-nav"> <a href="#link1">Direito Constitucional</a>
+                 <a href="#link2" class="active">Direito Administrativo</a>
+                 <a href="#link3">Português</a>
+                 <a href="#link4">Raciocínio Lógico</a>
+                 <a href="#link5">Informática</a>
+                 </div>
         </nav>
-        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
 
         <main id="mainContent">
             <div class="container">
@@ -503,46 +474,9 @@
                     <p>Acesse os conteúdos que você selecionou para estudar de forma organizada.</p>
                 </div>
 
-                <div class="tool-panel" id="questionsPanel">
-                    <h3>Questões</h3>
-                    <p>Pratique com questões dos seus cursos selecionados. (Funcionalidade em desenvolvimento)</p>
-                </div>
-
-                <div class="tool-panel" id="flashcardsPanel">
-                    <h3>Flashcards</h3>
-                    <p>Revise os conteúdos com flashcards interativos. (Funcionalidade em desenvolvimento)</p>
-                </div>
-
-                <div class="tool-panel" id="pomodoroPanel">
-                    <h3>Temporizador Pomodoro</h3>
-                    <select id="pomodoroTime">
-                        <option value="20">20 minutos</option>
-                        <option value="30">30 minutos</option>
-                        <option value="40">40 minutos</option>
-                        <option value="50">50 minutos</option>
-                    </select>
-                    <button onclick="startPomodoro()">Iniciar Foco</button>
-                    <button onclick="stopPomodoro()">Parar</button>
-                    <div class="timer-display" id="pomodoroTimer">00:00</div>
-                    <p id="pomodoroStatus">Selecione o tempo e inicie sua sessão de foco.</p>
-                </div>
-
-                <div class="tool-panel" id="musicPanel">
-                    <h3>Player de Música</h3>
-                    <select id="musicSelect">
-                        <option value="">Selecione uma música</option>
-                        <option value="lofi">Lo-Fi Relaxante</option>
-                        <option value="classical">Clássica (Canon in D)</option>
-                        <option value="nature">Sons da Natureza</option>
-                    </select>
-                    <button onclick="playMusic()">Tocar</button>
-                    <button onclick="pauseMusic()">Pausar</button>
-                    <audio id="audioPlayer"></audio>
-                </div>
-
                 <h2>Meus Cursos</h2>
                 <div class="course-list" id="courseList">
-                    <!-- Cursos serão adicionados dinamicamente aqui -->
+                    <p>Carregando seus cursos...</p>
                 </div>
             </div>
         </main>
@@ -551,281 +485,396 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section"><h4>Recursos Adicionais</h4><ul><li><a href="#">Questões Comentadas</a></li><li><a href="#">Mapas Mentais</a></li><li><a href="#">Legislação Compilada</a></li></ul></div>
-            <div class="footer-section"><h4>Próximos Módulos</h4><p><a href="#">Direito Administrativo</a></p><p><a href="#">Português para Concursos</a></p></div>
+            <div class="footer-section"><h4>Próximos Módulos</h4><p><a href="#">Direito Administrativo Avançado</a></p><p><a href="#">Português (Bancas específicas)</a></p></div>
             <div class="footer-section"><h4>Links Úteis</h4><ul><li><a href="#">Termos de Uso</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Sobre Nós</a></li><li><a href="#">Mapa do Site</a></li></ul></div>
         </div>
         <div class="footer-copyright"><span>© <span id="current-year">2025</span> NVP Concursos. Todos os direitos reservados.</span></div>
     </footer>
 
+    <div id="floatingToolsPanel">
+        <div class="tools-panel-header" onclick="toggleFloatingToolsPanel()"> <h3>Ferramentas de Estudo</h3>
+            <button id="toggleToolsPanelBtn" title="Minimizar/Restaurar Ferramentas">&#9660;</button> </div>
+        <div class="tools-panel-content">
+            <div class="tool-buttons">
+                 <button onclick="toggleTool('questionsPanel')">Questões</button>
+                 <button onclick="toggleTool('flashcardsPanel')">Flashcards</button>
+                 <button onclick="toggleTool('pomodoroPanel')">Pomodoro</button>
+                 <button onclick="toggleTool('musicPanel')">Música</button>
+            </div>
+
+            <div class="tool-panel" id="questionsPanel">
+                <h4>Questões</h4>
+                <p>Pratique com questões dos seus cursos selecionados. (Funcionalidade em desenvolvimento)</p>
+                 </div>
+
+            <div class="tool-panel" id="flashcardsPanel">
+                <h4>Flashcards</h4>
+                <p>Revise os conteúdos com flashcards interativos. (Funcionalidade em desenvolvimento)</p>
+                 </div>
+
+            <div class="tool-panel" id="pomodoroPanel">
+                <h4>Temporizador Pomodoro</h4>
+                <select id="pomodoroTime">
+                    <option value="20">20 minutos</option>
+                    <option value="30">30 minutos</option>
+                    <option value="40">40 minutos</option>
+                    <option value="50" selected>50 minutos</option> </select>
+                <button onclick="startPomodoro()">Iniciar Foco</button>
+                <button onclick="stopPomodoro()">Parar</button>
+                <div class="timer-display" id="pomodoroTimer">00:00</div>
+                <p id="pomodoroStatus">Selecione o tempo e inicie sua sessão de foco.</p>
+            </div>
+
+            <div class="tool-panel" id="musicPanel">
+                <h4>Player de Música</h4>
+                 <p>Música para concentração:</p>
+                <button onclick="playMusic()">Tocar</button>
+                <button onclick="pauseMusic()">Pausar</button>
+                <audio id="audioPlayer" loop></audio> <p style="font-size: 0.8em; color: var(--text-muted); margin-top: 10px;">Nota: Player usa música placeholder. Substitua a URL no código JS.</p>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script src="header.js"></script>
     <script>
-
-        // Configuração Firebase
+        // --- Configuração Firebase (Mantida) ---
         const firebaseConfig = {
-            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
-            authDomain: "nvp-concursos.firebaseapp.com",
-            projectId: "nvp-concursos",
-            storageBucket: "nvp-concursos.firebasestorage.app",
-            messagingSenderId: "397960760271",
-            appId: "1:397960760271:web:1550ff01910ae927d860ba"
+             apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // Sua chave real
+             authDomain: "nvp-concursos.firebaseapp.com",
+             projectId: "nvp-concursos",
+             storageBucket: "nvp-concursos.appspot.com", // Corrigido: terminação appspot.com
+             messagingSenderId: "397960760271",
+             appId: "1:397960760271:web:1550ff01910ae927d860ba"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Autenticação
+        // --- Referências Globais ---
         let userId = null;
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+        const floatingToolsPanel = document.getElementById('floatingToolsPanel');
+        const toggleToolsPanelBtn = document.getElementById('toggleToolsPanelBtn');
+        const colorPickerBtn = document.getElementById('color-picker-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const courseListContainer = document.getElementById('courseList'); // Renomeado para clareza
+        const audioPlayer = document.getElementById('audioPlayer');
+        const pomodoroTimerDisplay = document.getElementById('pomodoroTimer');
+        const pomodoroStatus = document.getElementById('pomodoroStatus');
+        const pomodoroTimeSelect = document.getElementById('pomodoroTime');
+
+
+        // --- Autenticação ---
         auth.onAuthStateChanged(user => {
-            console.log('Usuário autenticado:', user);
+            console.log('Auth State Changed:', user);
             if (!user) {
-                console.log('Nenhum usuário autenticado, redirecionando para index.html');
-                window.location.href = 'index.html';
+                console.log('Nenhum usuário logado, redirecionando...');
+                window.location.href = 'index.html'; // Ou sua página de login
             } else {
                 userId = user.uid;
-                console.log('userId:', userId);
+                console.log('Usuário logado:', userId);
                 loadCourses();
-                loadSalaConfig();
+                // loadSalaConfig(); // Carregar outras configs se necessário
+                adjustLayoutForUser(); // Ajusta layout inicial para usuário logado
             }
         });
 
-        // Tema Claro/Escuro
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const bodyElement = document.body;
-        const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
-        const moonIcon = themeToggleBtn.querySelector('.theme-icon-dark');
-
-        function applyTheme(theme) {
-            bodyElement.classList.toggle('dark-mode', theme === 'dark');
-            sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
-            moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+        function adjustLayoutForUser() {
+             // Mostra/ajusta elementos que só aparecem para usuários logados
+             // (Se houver algum, como a nav superior ou sidebar)
+             // Inicialmente, a sidebar e o painel de ferramentas ficam visíveis/não colapsados
+             if (window.innerWidth <= 768) { // Se mobile, começar com sidebar escondida
+                 sidebar.classList.remove('visible');
+             } else {
+                  sidebar.classList.add('visible'); // Garante visibilidade em desktop
+             }
+             updateLayout(); // Aplica margens e classes corretas
         }
 
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
-        applyTheme(currentTheme);
-
-        themeToggleBtn.addEventListener('click', () => {
-            let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
-            applyTheme(newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
-
-        prefersDarkScheme.addEventListener('change', (e) => {
-            if (!localStorage.getItem('theme')) {
-                applyTheme(e.matches ? 'dark' : 'light');
-            }
-        });
-
-        // Logout
-        const logoutBtn = document.getElementById('logout-btn');
-        logoutBtn.addEventListener('click', () => {
-            auth.signOut().then(() => {
-                console.log('Logout bem-sucedido');
-                window.location.href = 'index.html';
-            }).catch(error => {
-                console.error('Erro ao fazer logout:', error);
-                alert('Erro ao fazer logout: ' + error.message);
-            });
-        });
-
-        // Configuração da Sala (Usando o backend)
-        const apiUrl = "https://api.proconcursos.com.br/api/sala";
-
-        async function loadSalaConfig() {
-            if (!userId) return;
-            try {
-                const response = await fetch(`${apiUrl}/${userId}`);
-                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-                const data = await response.json();
-                if (data) {
-                    document.body.style.backgroundColor = data.color || '#ffffff';
-                    if (data.music) {
-                        document.getElementById('musicSelect').value = data.music;
-                    }
-                    if (data.pomodoro) {
-                        document.getElementById('pomodoroTime').value = data.pomodoro;
-                    }
-                }
-            } catch (error) {
-                console.error("Erro ao carregar configurações:", error);
-                document.body.style.backgroundColor = '#ffffff';
-            }
-        }
-
-        async function saveSalaConfig(config) {
-            if (!userId) return;
-            try {
-                const response = await fetch(`${apiUrl}/${userId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
+        // --- Logout ---
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                auth.signOut().then(() => {
+                    console.log('Logout bem-sucedido');
+                    window.location.href = 'index.html'; // Ou sua página de login
+                }).catch(error => {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout: ' + error.message);
                 });
-                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-                const result = await response.json();
-                console.log('Configurações salvas:', result);
-            } catch (error) {
-                console.error("Erro ao salvar configurações:", error);
-            }
+            });
         }
 
-        // Mudar Cor de Fundo
-        const colorPickerBtn = document.getElementById('color-picker-btn');
-        colorPickerBtn.addEventListener('click', () => {
-            const colorInput = document.createElement('input');
-            colorInput.type = 'color';
-            colorInput.value = document.body.style.backgroundColor || '#ffffff';
-            colorInput.addEventListener('change', () => {
-                const color = colorInput.value;
-                document.body.style.backgroundColor = color;
-                saveSalaConfig({ color });
-            });
-            colorInput.click();
-        });
+        // --- Mudar Cor de Fundo ---
+        if (colorPickerBtn) {
+             colorPickerBtn.addEventListener('click', () => {
+                 const colorInput = document.createElement('input');
+                 colorInput.type = 'color';
+                 // Usar a cor atual do body OU um padrão
+                 const currentColor = document.body.style.backgroundColor;
+                 colorInput.value = currentColor ? rgbToHex(currentColor) : '#f1f1f1'; // Converte se for rgb
 
-        // Carregar Cursos
+                 colorInput.addEventListener('input', () => { // 'input' atualiza em tempo real
+                     const color = colorInput.value;
+                     document.body.style.backgroundColor = color;
+                     // Opcional: Salvar a cor no Firebase ou localStorage
+                     // saveSalaConfig({ backgroundColor: color }); // Se tiver backend/função para isso
+                     localStorage.setItem('userBgColor', color);
+                 });
+                 colorInput.click();
+             });
+        }
+         // Função auxiliar para converter rgb() para hex (necessário para input color)
+         function rgbToHex(rgb) {
+             if (!rgb || rgb.startsWith('#')) return rgb; // Já é hex ou inválido
+             let sep = rgb.indexOf(",") > -1 ? "," : " ";
+             rgb = rgb.substr(4).split(")")[0].split(sep);
+             let r = (+rgb[0]).toString(16),
+                 g = (+rgb[1]).toString(16),
+                 b = (+rgb[2]).toString(16);
+             if (r.length == 1) r = "0" + r;
+             if (g.length == 1) g = "0" + g;
+             if (b.length == 1) b = "0" + b;
+             return "#" + r + g + b;
+         }
+         // Aplicar cor salva ao carregar a página
+         const savedBgColor = localStorage.getItem('userBgColor');
+         if (savedBgColor) {
+             document.body.style.backgroundColor = savedBgColor;
+         }
+
+
+        // --- Carregar Cursos (na área principal) ---
         async function loadCourses() {
-            if (!userId) return;
-            const courseList = document.getElementById('courseList');
-            courseList.innerHTML = '';
+            if (!userId || !courseListContainer) return;
+            courseListContainer.innerHTML = '<p>Carregando seus cursos...</p>'; // Feedback
             try {
                 const userDoc = await db.collection('users').doc(userId).get();
-                let selectedCourses = [];
+                let courseIds = [];
                 if (userDoc.exists && userDoc.data().selectedCourses) {
-                    selectedCourses = userDoc.data().selectedCourses;
+                    courseIds = userDoc.data().selectedCourses;
                 }
-                if (!selectedCourses || selectedCourses.length === 0) {
-                    const coursesSnapshot = await db.collection('courses').get();
-                    selectedCourses = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                } else {
-                    const coursesPromises = selectedCourses.map(courseId =>
+
+                let coursesData = [];
+                if (courseIds.length > 0) {
+                    // Buscar dados dos cursos selecionados
+                    const coursesPromises = courseIds.map(courseId =>
                         db.collection('courses').doc(courseId).get()
                     );
                     const coursesDocs = await Promise.all(coursesPromises);
-                    selectedCourses = coursesDocs
+                    coursesData = coursesDocs
                         .filter(doc => doc.exists)
                         .map(doc => ({ id: doc.id, ...doc.data() }));
+                } else {
+                     // Opcional: Carregar alguns cursos padrão ou mostrar mensagem
+                     // console.log("Nenhum curso selecionado pelo usuário.");
+                     // Alternativamente, buscar todos os cursos (pode ser pesado)
+                     // const allCoursesSnapshot = await db.collection('courses').limit(6).get(); // Limitar
+                     // coursesData = allCoursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 }
-                if (selectedCourses.length === 0) {
-                    courseList.innerHTML = '<p>Nenhum curso disponível.</p>';
+
+                courseListContainer.innerHTML = ''; // Limpar feedback
+
+                if (coursesData.length === 0) {
+                    courseListContainer.innerHTML = '<p>Você ainda não selecionou cursos ou não há cursos disponíveis.</p>';
                     return;
                 }
-                selectedCourses.forEach(course => {
+
+                coursesData.forEach(course => {
                     const courseCard = document.createElement('div');
                     courseCard.className = 'course-card';
-                    const courseTitle = document.createElement('h3');
-                    courseTitle.textContent = course.name || 'Curso Sem Nome';
-                    courseCard.appendChild(courseTitle);
+                    let cardContent = `<h3>${course.name || 'Curso Sem Nome'}</h3>`;
+
                     if (course.modules && course.modules.length > 0) {
-                        const moduleList = document.createElement('ul');
+                        cardContent += '<ul>';
                         course.modules.forEach(module => {
-                            const moduleItem = document.createElement('li');
-                            moduleItem.textContent = module.name || 'Módulo Sem Nome';
+                            cardContent += `<li>${module.name || 'Módulo Sem Nome'}`;
                             if (module.subitems && module.subitems.length > 0) {
-                                const subitemList = document.createElement('ul');
+                                cardContent += '<ul>';
                                 module.subitems.forEach(subitem => {
-                                    const subitemItem = document.createElement('li');
-                                    subitemItem.textContent = subitem || 'Subitem Sem Nome';
-                                    subitemList.appendChild(subitemItem);
+                                    cardContent += `<li>${subitem || 'Subitem Sem Nome'}</li>`;
                                 });
-                                moduleItem.appendChild(subitemList);
+                                cardContent += '</ul>';
                             }
-                            moduleList.appendChild(moduleItem);
+                            cardContent += '</li>';
                         });
-                        courseCard.appendChild(moduleList);
+                        cardContent += '</ul>';
+                    } else {
+                         cardContent += '<p><i>Nenhum módulo cadastrado.</i></p>';
                     }
-                    courseList.appendChild(courseCard);
+                    courseCard.innerHTML = cardContent;
+                    courseListContainer.appendChild(courseCard);
                 });
+
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
-                courseList.innerHTML = '<p>Erro ao carregar cursos. Tente novamente mais tarde.</p>';
+                courseListContainer.innerHTML = '<p class="error-message">Erro ao carregar cursos. Tente recarregar a página.</p>';
             }
         }
 
-        // Sidebar Toggle
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const mainContent = document.getElementById('mainContent');
+        // --- Sidebar Toggle (Estilo W3S) ---
+        if (sidebarToggleBtn && sidebar && mainContent) {
+            sidebarToggleBtn.addEventListener('click', toggleSidebar);
+        }
 
         function toggleSidebar() {
-            sidebar.classList.toggle('hidden');
-            sidebar.classList.toggle('visible');
-            mainContent.classList.toggle('full-width');
-            sidebarToggle.classList.toggle('hidden');
-            sidebarToggle.textContent = sidebar.classList.contains('hidden') ? '☰' : '✖';
+            const isVisible = sidebar.classList.toggle('visible'); // Adiciona/remove 'visible'
+             if (window.innerWidth <= 768) { // Em mobile, a sidebar se sobrepõe
+                 // Não precisa ajustar margin do main
+                 sidebarToggleBtn.innerHTML = isVisible ? '&#10006;' : '&#9776;'; // Muda ícone (X ou Menu)
+             } else { // Em desktop, ajusta a margem do main
+                 sidebar.classList.toggle('hidden', !isVisible);
+                 mainContent.classList.toggle('sidebar-hidden', !isVisible);
+                 sidebarToggleBtn.innerHTML = '&#9776;'; // Sempre menu em desktop
+             }
+             // Salvar estado da sidebar (opcional)
+             // localStorage.setItem('sidebarVisible', isVisible);
         }
 
-        // Ferramentas (Pomodoro, Música)
-        function toggleTool(panelId) {
-            const panels = ['questionsPanel', 'flashcardsPanel', 'pomodoroPanel', 'musicPanel'];
-            panels.forEach(id => {
-                const panel = document.getElementById(id);
-                if (id === panelId) {
-                    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+         // Ajustar layout na mudança de tamanho da janela
+         window.addEventListener('resize', updateLayout);
+
+         function updateLayout() {
+             const isMobile = window.innerWidth <= 768;
+             const isSidebarVisible = sidebar.classList.contains('visible');
+
+             if (isMobile) {
+                 mainContent.style.marginLeft = '0';
+                 mainContent.classList.add('sidebar-hidden'); // Classe para garantir que não tenha margem
+                 if (!isSidebarVisible) {
+                     sidebar.classList.add('hidden'); // Garante estado hidden se não visível
+                 } else {
+                      sidebar.classList.remove('hidden');
+                 }
+                 sidebarToggleBtn.innerHTML = isSidebarVisible ? '&#10006;' : '&#9776;';
+             } else {
+                 if (isSidebarVisible) {
+                     sidebar.classList.remove('hidden');
+                     mainContent.classList.remove('sidebar-hidden');
+                     mainContent.style.marginLeft = `var(--sidebar-width)`; // Define a margem
+                 } else {
+                     sidebar.classList.add('hidden');
+                     mainContent.classList.add('sidebar-hidden');
+                     mainContent.style.marginLeft = '0'; // Remove a margem
+                 }
+                  sidebarToggleBtn.innerHTML = '&#9776;';
+             }
+         }
+
+         // Inicializar layout correto
+          document.addEventListener('DOMContentLoaded', updateLayout);
+
+
+        // --- Floating Tools Panel Toggle ---
+        if (toggleToolsPanelBtn && floatingToolsPanel) {
+             toggleToolsPanelBtn.addEventListener('click', (e) => {
+                  e.stopPropagation(); // Impede que o clique no botão também dispare o do header
+                  toggleFloatingToolsPanel();
+             });
+             // Clicar no header também colapsa/expande
+             const panelHeader = floatingToolsPanel.querySelector('.tools-panel-header');
+             if(panelHeader) {
+                 panelHeader.addEventListener('click', toggleFloatingToolsPanel);
+             }
+        }
+
+        function toggleFloatingToolsPanel() {
+            const isCollapsed = floatingToolsPanel.classList.toggle('collapsed');
+            toggleToolsPanelBtn.innerHTML = isCollapsed ? '&#9650;' : '&#9660;'; // Muda seta (Cima/Baixo)
+            // Opcional: Salvar estado
+            // localStorage.setItem('toolsPanelCollapsed', isCollapsed);
+        }
+        // Restaurar estado colapsado (opcional)
+        // if (localStorage.getItem('toolsPanelCollapsed') === 'true') {
+        //     toggleFloatingToolsPanel();
+        // }
+
+        // --- Mostrar/Esconder Ferramentas Dentro do Painel Flutuante ---
+        const toolPanels = floatingToolsPanel.querySelectorAll('.tool-panel');
+
+        function toggleTool(panelIdToShow) {
+            // Garante que o painel flutuante não esteja colapsado
+            if (floatingToolsPanel.classList.contains('collapsed')) {
+                toggleFloatingToolsPanel();
+            }
+
+            let panelWasVisible = false;
+            toolPanels.forEach(panel => {
+                if (panel.id === panelIdToShow) {
+                    if (panel.style.display === 'block') {
+                        panel.style.display = 'none'; // Esconde se já estava visível
+                        panelWasVisible = true;
+                    } else {
+                        panel.style.display = 'block'; // Mostra o painel clicado
+                    }
                 } else {
-                    panel.style.display = 'none';
+                    panel.style.display = 'none'; // Esconde os outros painéis
                 }
             });
+             // Se o painel clicado foi escondido (porque já estava visível),
+             // talvez colapsar o painel flutuante? (Opcional)
+             // if (panelWasVisible && !floatingToolsPanel.classList.contains('collapsed')) {
+             //     let anyPanelVisible = false;
+             //     toolPanels.forEach(p => { if(p.style.display === 'block') anyPanelVisible = true; });
+             //     if (!anyPanelVisible) toggleFloatingToolsPanel();
+             // }
         }
 
-        // Música
-        const musicUrls = {
-            lofi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-            classical: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-            nature: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-        };
-
-        let currentAudio = null;
+        // --- Música (Simplificado) ---
+        // SUBSTITUA PELA URL REAL DO SEU ARQUIVO DE ÁUDIO
+        const musicUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+        let isMusicPlaying = false;
 
         function playMusic() {
-            const musicSelect = document.getElementById('musicSelect');
-            const audioPlayer = document.getElementById('audioPlayer');
-            const musicType = musicSelect.value;
-
-            if (!musicType) {
-                alert('Por favor, selecione uma música.');
-                return;
+            if (!audioPlayer.src) {
+                audioPlayer.src = musicUrl;
             }
-
-            if (currentAudio) {
-                currentAudio.pause();
-            }
-
-            audioPlayer.src = musicUrls[musicType];
-            audioPlayer.play().catch(error => {
+            audioPlayer.play().then(() => {
+                 isMusicPlaying = true;
+                 console.log("Música tocando");
+                 // Opcional: Mudar ícone do botão, etc.
+            }).catch(error => {
                 console.error('Erro ao tocar música:', error);
-                alert('Erro ao tocar música.');
+                if (error.name === 'NotAllowedError') {
+                     alert('O navegador bloqueou a reprodução automática. Interaja com a página primeiro (clique em algo).');
+                } else {
+                     alert('Não foi possível tocar a música. Verifique a URL ou a conexão.');
+                }
+                isMusicPlaying = false;
             });
-            currentAudio = audioPlayer;
-
-            saveSalaConfig({ music: musicType });
         }
 
         function pauseMusic() {
-            const audioPlayer = document.getElementById('audioPlayer');
             audioPlayer.pause();
+            isMusicPlaying = false;
+            console.log("Música pausada");
+             // Opcional: Mudar ícone do botão, etc.
         }
 
-        // Pomodoro
+        // --- Pomodoro ---
         let pomodoroInterval = null;
-        let timeRemaining = 0;
+        let timeRemaining = 0; // em segundos
         let isBreak = false;
+        let initialFocusTime = 50 * 60; // Padrão inicial (50 min)
 
         function startPomodoro() {
-            if (pomodoroInterval) return;
+            if (pomodoroInterval) {
+                 console.log("Pomodoro já em andamento.");
+                 return; // Evita múltiplos intervalos
+            }
 
-            const timeSelect = document.getElementById('pomodoroTime');
-            const minutes = parseInt(timeSelect.value);
-            timeRemaining = minutes * 60;
             isBreak = false;
+            const selectedMinutes = parseInt(pomodoroTimeSelect.value);
+            initialFocusTime = selectedMinutes * 60; // Atualiza tempo de foco
+            timeRemaining = initialFocusTime;
 
-            saveSalaConfig({ pomodoro: minutes });
+            console.log(`Iniciando foco: ${selectedMinutes} minutos.`);
+            pomodoroStatus.innerText = `Foco: ${selectedMinutes} min em andamento...`;
+            updatePomodoroTimer(); // Mostra o tempo inicial
 
-            document.getElementById('pomodoroStatus').innerText = `Foco: ${minutes} minutos em andamento...`;
-            updatePomodoroTimer();
             pomodoroInterval = setInterval(() => {
                 timeRemaining--;
                 updatePomodoroTimer();
@@ -833,51 +882,80 @@
                 if (timeRemaining <= 0) {
                     clearInterval(pomodoroInterval);
                     pomodoroInterval = null;
-
-                    if (!isBreak) {
-                        alert('Tempo de foco concluído! Iniciando pausa de 10 minutos.');
-                        timeRemaining = 10 * 60;
-                        isBreak = true;
-                        document.getElementById('pomodoroStatus').innerText = 'Pausa: 10 minutos em andamento...';
-                        pomodoroInterval = setInterval(() => {
-                            timeRemaining--;
-                            updatePomodoroTimer();
-
-                            if (timeRemaining <= 0) {
-                                clearInterval(pomodoroInterval);
-                                pomodoroInterval = null;
-                                alert('Pausa de 10 minutos concluída! Pronto para outra sessão de foco?');
-                                document.getElementById('pomodoroStatus').innerText = 'Selecione o tempo e inicie sua sessão de foco.';
-                                document.getElementById('pomodoroTimer').innerText = '00:00';
-                            }
-                        }, 1000);
-                    }
+                     handlePomodoroCompletion();
                 }
-            }, 1000);
+            }, 1000); // Atualiza a cada segundo
         }
 
+        function handlePomodoroCompletion() {
+             if (!isBreak) {
+                 // Foco terminou, iniciar pausa
+                 console.log("Foco concluído. Iniciando pausa.");
+                 alert('Tempo de foco concluído! Hora da pausa (5 minutos).'); // Pausa de 5 min
+                 isBreak = true;
+                 timeRemaining = 5 * 60; // 5 minutos de pausa
+                 pomodoroStatus.innerText = 'Pausa: 5 min em andamento...';
+                 updatePomodoroTimer();
+
+                 pomodoroInterval = setInterval(() => {
+                     timeRemaining--;
+                     updatePomodoroTimer();
+                     if (timeRemaining <= 0) {
+                         clearInterval(pomodoroInterval);
+                         pomodoroInterval = null;
+                         handlePomodoroCompletion(); // Chama de novo para finalizar a pausa
+                     }
+                 }, 1000);
+
+             } else {
+                 // Pausa terminou
+                 console.log("Pausa concluída.");
+                 alert('Pausa concluída! Pronto para a próxima sessão de foco?');
+                 isBreak = false;
+                 pomodoroStatus.innerText = 'Selecione o tempo e inicie sua sessão de foco.';
+                 // Resetar display para o tempo de foco selecionado, mas não iniciar
+                 timeRemaining = initialFocusTime; // Volta ao tempo de foco
+                 updatePomodoroTimer(); // Mostra o tempo de foco novamente
+                 // Ou resetar para 00:00? Decisão de UX.
+                 // pomodoroTimerDisplay.innerText = '00:00';
+
+             }
+        }
+
+
         function updatePomodoroTimer() {
+            if (timeRemaining < 0) timeRemaining = 0; // Garante que não fique negativo
             const minutes = Math.floor(timeRemaining / 60);
             const seconds = timeRemaining % 60;
-            document.getElementById('pomodoroTimer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            pomodoroTimerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            // Atualizar título da página (opcional)
+            // document.title = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} - Sala de Estudos`;
         }
 
         function stopPomodoro() {
             if (pomodoroInterval) {
                 clearInterval(pomodoroInterval);
                 pomodoroInterval = null;
-                timeRemaining = 0;
-                isBreak = false;
-                document.getElementById('pomodoroTimer').innerText = '00:00';
-                document.getElementById('pomodoroStatus').innerText = 'Temporizador pausado. Inicie uma nova sessão.';
+                console.log("Pomodoro parado pelo usuário.");
             }
+            // Resetar estado
+            timeRemaining = initialFocusTime; // Volta ao tempo de foco inicial selecionado
+            isBreak = false;
+            updatePomodoroTimer(); // Atualiza display
+            pomodoroStatus.innerText = 'Temporizador parado. Pronto para iniciar.';
+             // document.title = 'Sala de Estudos - NVP Concursos'; // Resetar título da página
         }
 
-        // Atualizar o ano no rodapé
+
+        // --- Atualizar o ano no rodapé ---
         document.addEventListener('DOMContentLoaded', () => {
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+             // Chamar updateLayout para garantir o estado inicial correto
+             updateLayout();
         });
+
     </script>
 </body>
 </html>
