@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia da Sala de Estudos - PRO Concursos</title>
+    <title>Guia do Método - PRO Concursos</title>
     <style>
         :root {
             --header-height: 55px;
@@ -185,103 +185,43 @@
             color: var(--text-muted);
             font-size: 1.1em;
         }
-        .preview-section {
-            border: 2px solid var(--header-border);
-            padding: 20px;
-            background-color: var(--header-bg);
-            text-align: center;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s;
+        .method-section {
+            margin-bottom: 30px;
         }
-        .preview-section img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-        }
-        .options-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .option-card {
-            background-color: var(--header-bg);
-            border: 1px solid var(--header-border);
-            padding: 15px;
-            width: 200px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .option-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .option-card h3 {
-            font-size: 1.2em;
+        .method-section h2 {
+            font-size: 1.5em;
             color: var(--main-color);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        .option-card p {
-            color: var(--text-muted);
-            font-size: 0.95em;
+        .method-section p {
+            font-size: 1em;
+            color: var(--text-dark);
+            line-height: 1.6;
         }
-        button {
+        .video-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .video-section iframe {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .contact-section {
+            text-align: center;
+        }
+        .contact-section a {
+            display: inline-block;
             background-color: var(--accent-1);
             color: var(--button-text-dark);
-            border: none;
             padding: 10px 20px;
-            cursor: pointer;
             border-radius: 5px;
-            font-size: 1em;
+            text-decoration: none;
             font-weight: bold;
             transition: background-color 0.3s, transform 0.2s;
-            margin-top: 10px;
         }
-        button:hover {
+        .contact-section a:hover {
             background-color: var(--accent-1-darker);
             transform: translateY(-2px);
-        }
-        .tips-section {
-            margin-top: 20px;
-            background-color: var(--light-highlight-bg);
-            padding: 15px;
-            border-left: 5px solid var(--main-color);
-            border-radius: 4px;
-        }
-        .tips-section h3 {
-            margin-top: 0;
-            color: var(--main-color);
-        }
-        .tips-section p {
-            margin: 5px 0;
-            color: var(--text-dark);
-        }
-        .music-player, .pomodoro-player {
-            margin-top: 20px;
-            background-color: var(--header-bg);
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--header-border);
-            text-align: center;
-        }
-        .music-player select, .pomodoro-player select {
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            margin-right: 10px;
-            background-color: var(--main-content-bg);
-            color: var(--text-dark);
-        }
-        .music-player button, .pomodoro-player button {
-            padding: 8px 16px;
-        }
-        .timer-display {
-            font-size: 1.5em;
-            margin: 10px 0;
-            color: var(--main-color);
         }
 
         .footer {
@@ -353,10 +293,6 @@
             color: var(--text-muted);
         }
 
-        @media screen and (max-width: 992px) {
-            .options-section { flex-direction: column; align-items: center; }
-            .option-card { width: 80%; max-width: 300px; }
-        }
         @media screen and (max-width: 768px) {
             .container { padding: 0 15px; }
             main { padding: 20px 0; }
@@ -379,7 +315,7 @@
                     <span class="icon theme-icon-light">☀️</span>
                     <span class="icon theme-icon-dark" style="display: none;">🌙</span>
                 </button>
-                <a href="meu cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
+                <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
                 <a href="saladeestudos.html" title="Minha Sala de Estudos"><span class="icon">📚</span> <span class="link-text">Sala de Estudos</span></a>
                 <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
             </div>
@@ -389,84 +325,31 @@
     <main>
         <div class="container">
             <div class="guide-header">
-                <h1>Guia da Sala de Estudos</h1>
-                <p>Personalize sua experiência de estudos de forma prática e eficiente!</p>
+                <h1>Nosso Método de Estudo</h1>
+                <p>Entenda como o NVP Concursos pode transformar sua preparação para concursos públicos.</p>
             </div>
 
-            <h2>O que é a Sala de Estudos?</h2>
-            <p>A Sala de Estudos é um ambiente virtual projetado para maximizar sua produtividade. Aqui, você pode personalizar o layout, cores, lembretes e até música de fundo para criar o espaço perfeito para seus estudos.</p>
-
-            <h2>Prévia da Sala</h2>
-            <div class="preview-section" id="salaPreview">
-                <img src="https://picsum.photos/600/300?random=1" alt="Prévia da Sala" id="salaImage">
+            <div class="method-section">
+                <h2>O Método NVP</h2>
+                <p>No NVP Concursos, utilizamos o <strong>Método de Estudo Ativo e Personalizado</strong>, baseado em técnicas comprovadas para maximizar a retenção e o aprendizado. Nosso método inclui:</p>
+                <ul>
+                    <li><strong>Personalização</strong>: Escolha os cursos, módulos e subitens que deseja estudar, focando no que é mais relevante para você.</li>
+                    <li><strong>Técnica Pomodoro</strong>: Estude em sessões focadas com pausas estratégicas para aumentar a produtividade.</li>
+                    <li><strong>Revisão Ativa</strong>: Utilize questões e flashcards para reforçar o aprendizado e fixar os conteúdos.</li>
+                    <li><strong>Ambiente Customizável</strong>: Ajuste sua sala de estudos com cores e músicas que te ajudam a se concentrar.</li>
+                </ul>
+                <p>Nosso objetivo é tornar sua jornada de estudos mais eficiente, organizada e motivadora!</p>
             </div>
 
-            <h2>Personalize sua Sala</h2>
-            <div class="options-section">
-                <div class="option-card" onclick="toggleColorPicker()">
-                    <h3>Cor de Fundo</h3>
-                    <p>Escolha uma cor que te inspire!</p>
-                </div>
-                <div class="option-card" onclick="toggleLayoutPicker()">
-                    <h3>Layout</h3>
-                    <p>Minimalista, clássico ou moderno.</p>
-                </div>
-                <div class="option-card" onclick="togglePomodoroPlayer()">
-                    <h3>Pomodoro ⏰</h3>
-                    <p>Configure sessões de foco e pausas.</p>
-                </div>
-                <div class="option-card" onclick="toggleMusicPlayer()">
-                    <h3>Música de Fundo</h3>
-                    <p>Escolha uma trilha relaxante.</p>
-                </div>
+            <div class="video-section">
+                <h2>Assista ao Vídeo Explicativo</h2>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Vídeo Explicativo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
 
-            <div class="music-player" id="musicPlayer" style="display: none;">
-                <h3>Player de Música</h3>
-                <select id="musicSelect">
-                    <option value="">Selecione uma música</option>
-                    <option value="lofi">Lo-Fi Relaxante</option>
-                    <option value="classical">Clássica (Canon in D)</option>
-                    <option value="nature">Sons da Natureza</option>
-                </select>
-                <button onclick="playMusic()">Tocar</button>
-                <button onclick="pauseMusic()">Pausar</button>
-                <audio id="audioPlayer"></audio>
-            </div>
-
-            <div class="music-player" id="colorPicker" style="display: none;">
-                <h3>Escolha a Cor de Fundo</h3>
-                <input type="color" id="colorInput" value="#3498db">
-                <button onclick="changeColor()">Aplicar</button>
-            </div>
-
-            <div class="music-player" id="layoutPicker" style="display: none;">
-                <h3>Escolha o Layout</h3>
-                <select id="layoutSelect">
-                    <option value="minimalista">Minimalista</option>
-                    <option value="classico">Clássico</option>
-                    <option value="moderno">Moderno</option>
-                </select>
-                <button onclick="changeLayout()">Aplicar</button>
-            </div>
-
-            <div class="pomodoro-player" id="pomodoroPlayer" style="display: none;">
-                <h3>Temporizador Pomodoro</h3>
-                <select id="pomodoroTime">
-                    <option value="20">20 minutos</option>
-                    <option value="30">30 minutos</option>
-                    <option value="40">40 minutos</option>
-                    <option value="50">50 minutos</option>
-                </select>
-                <button onclick="startPomodoro()">Iniciar Foco</button>
-                <button onclick="stopPomodoro()">Parar</button>
-                <div class="timer-display" id="pomodoroTimer">00:00</div>
-                <p id="pomodoroStatus">Selecione o tempo e inicie sua sessão de foco.</p>
-            </div>
-
-            <div class="tips-section">
-                <h3>Dica Interativa</h3>
-                <p id="tipText">Clique nas opções acima para personalizar sua sala!</p>
+            <div class="contact-section">
+                <h2>Entre em Contato</h2>
+                <p>Tem dúvidas ou precisa de suporte? Fale conosco!</p>
+                <a href="mailto:contato@proconcursos.com.br">Fale Conosco</a>
             </div>
         </div>
     </main>
@@ -482,7 +365,6 @@
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
         // Configuração Firebase
         const firebaseConfig = {
@@ -495,19 +377,13 @@
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();
 
         // Autenticação
-        let userId = null;
         auth.onAuthStateChanged(user => {
             console.log('Usuário autenticado:', user);
             if (!user) {
                 console.log('Nenhum usuário autenticado, redirecionando para index.html');
                 window.location.href = 'index.html';
-            } else {
-                userId = user.uid;
-                console.log('userId:', userId);
-                loadSalaConfig();
             }
         });
 
@@ -551,206 +427,6 @@
                 alert('Erro ao fazer logout: ' + error.message);
             });
         });
-
-        // Configuração da Sala (Usando o backend)
-        const apiUrl = "https://api.proconcursos.com.br/api/sala";
-
-        async function loadSalaConfig() {
-            if (!userId) {
-                console.log('userId não definido, abortando loadSalaConfig');
-                return;
-            }
-            try {
-                console.log('Carregando configurações para userId:', userId);
-                const response = await fetch(`${apiUrl}/${userId}`);
-                console.log('Resposta do backend:', response);
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log('Dados recebidos:', data);
-                if (data) {
-                    document.getElementById('salaPreview').style.backgroundColor = data.color || '#ffffff';
-                    document.getElementById('salaImage').src = `https://picsum.photos/600/300?random=${Math.random()}`;
-                    document.getElementById('tipText').innerText = "Configurações carregadas!";
-                    if (data.music) {
-                        document.getElementById('musicSelect').value = data.music;
-                    }
-                    if (data.pomodoro) {
-                        document.getElementById('pomodoroTime').value = data.pomodoro;
-                    }
-                }
-            } catch (error) {
-                console.error("Erro ao carregar configurações:", error);
-                document.getElementById('tipText').innerText = "Erro ao carregar configurações. Usando valores padrão.";
-                document.getElementById('salaPreview').style.backgroundColor = '#ffffff';
-                document.getElementById('salaImage').src = `https://picsum.photos/600/300?random=${Math.random()}`;
-            }
-        }
-
-        async function saveSalaConfig(config) {
-            if (!userId) {
-                console.log('userId não definido, abortando saveSalaConfig');
-                return;
-            }
-            try {
-                console.log('Salvando configurações para userId:', userId, config);
-                const response = await fetch(`${apiUrl}/${userId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
-                console.log('Resposta do backend:', response);
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP: ${response.status}`);
-                }
-                const result = await response.json();
-                console.log('Resultado do salvamento:', result);
-                document.getElementById('tipText').innerText = result.message || "Configurações salvas!";
-            } catch (error) {
-                console.error("Erro ao salvar configurações:", error);
-                document.getElementById('tipText').innerText = "Erro ao salvar configurações.";
-            }
-        }
-
-        // Funções de Personalização
-        function toggleColorPicker() {
-            const colorPicker = document.getElementById('colorPicker');
-            colorPicker.style.display = colorPicker.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function changeColor() {
-            const color = document.getElementById('colorInput').value;
-            document.getElementById('salaPreview').style.backgroundColor = color;
-            saveSalaConfig({ color });
-            document.getElementById('tipText').innerText = `Cor ${color} aplicada!`;
-        }
-
-        function toggleLayoutPicker() {
-            const layoutPicker = document.getElementById('layoutPicker');
-            layoutPicker.style.display = layoutPicker.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function changeLayout() {
-            const layout = document.getElementById('layoutSelect').value;
-            document.getElementById('salaImage').src = `https://picsum.photos/600/300?random=${Math.random()}`;
-            saveSalaConfig({ layout });
-            document.getElementById('tipText').innerText = `Layout ${layout} aplicado!`;
-        }
-
-        // Música de Fundo
-        const musicUrls = {
-            lofi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-            classical: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-            nature: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-        };
-
-        let currentAudio = null;
-
-        function toggleMusicPlayer() {
-            const musicPlayer = document.getElementById('musicPlayer');
-            musicPlayer.style.display = musicPlayer.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function playMusic() {
-            const musicSelect = document.getElementById('musicSelect');
-            const audioPlayer = document.getElementById('audioPlayer');
-            const musicType = musicSelect.value;
-
-            if (!musicType) {
-                alert('Por favor, selecione uma música.');
-                return;
-            }
-
-            if (currentAudio) {
-                currentAudio.pause();
-            }
-
-            audioPlayer.src = musicUrls[musicType];
-            audioPlayer.play().catch(error => {
-                console.error('Erro ao tocar música:', error);
-                document.getElementById('tipText').innerText = 'Erro ao tocar música.';
-            });
-            currentAudio = audioPlayer;
-
-            saveSalaConfig({ music: musicType });
-            document.getElementById('tipText').innerText = `Música ${musicType} aplicada!`;
-        }
-
-        function pauseMusic() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            audioPlayer.pause();
-            document.getElementById('tipText').innerText = 'Música pausada.';
-        }
-
-        // Pomodoro
-        let pomodoroInterval = null;
-        let timeRemaining = 0;
-        let isBreak = false;
-
-        function togglePomodoroPlayer() {
-            const pomodoroPlayer = document.getElementById('pomodoroPlayer');
-            pomodoroPlayer.style.display = pomodoroPlayer.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function startPomodoro() {
-            if (pomodoroInterval) return;
-
-            const timeSelect = document.getElementById('pomodoroTime');
-            const minutes = parseInt(timeSelect.value);
-            timeRemaining = minutes * 60;
-            isBreak = false;
-
-            saveSalaConfig({ pomodoro: minutes });
-
-            document.getElementById('pomodoroStatus').innerText = `Foco: ${minutes} minutos em andamento...`;
-            updatePomodoroTimer();
-            pomodoroInterval = setInterval(() => {
-                timeRemaining--;
-                updatePomodoroTimer();
-
-                if (timeRemaining <= 0) {
-                    clearInterval(pomodoroInterval);
-                    pomodoroInterval = null;
-
-                    if (!isBreak) {
-                        alert('Tempo de foco concluído! Iniciando pausa de 10 minutos.');
-                        timeRemaining = 10 * 60;
-                        isBreak = true;
-                        document.getElementById('pomodoroStatus').innerText = 'Pausa: 10 minutos em andamento...';
-                        pomodoroInterval = setInterval(() => {
-                            timeRemaining--;
-                            updatePomodoroTimer();
-
-                            if (timeRemaining <= 0) {
-                                clearInterval(pomodoroInterval);
-                                pomodoroInterval = null;
-                                alert('Pausa de 10 minutos concluída! Pronto para outra sessão de foco?');
-                                document.getElementById('pomodoroStatus').innerText = 'Selecione o tempo e inicie sua sessão de foco.';
-                                document.getElementById('pomodoroTimer').innerText = '00:00';
-                            }
-                        }, 1000);
-                    }
-                }
-            }, 1000);
-        }
-
-        function updatePomodoroTimer() {
-            const minutes = Math.floor(timeRemaining / 60);
-            const seconds = timeRemaining % 60;
-            document.getElementById('pomodoroTimer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function stopPomodoro() {
-            if (pomodoroInterval) {
-                clearInterval(pomodoroInterval);
-                pomodoroInterval = null;
-                timeRemaining = 0;
-                isBreak = false;
-                document.getElementById('pomodoroTimer').innerText = '00:00';
-                document.getElementById('pomodoroStatus').innerText = 'Temporizador pausado. Inicie uma nova sessão.';
-            }
-        }
 
         // Atualizar o ano no rodapé
         document.addEventListener('DOMContentLoaded', () => {

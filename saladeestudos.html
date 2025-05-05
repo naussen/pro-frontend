@@ -31,6 +31,9 @@
             --footer-h4: #f1f1f1;
             --dark-blue-hover: #113a54;
             --error-color: #D32F2F;
+            --sidebar-width: 250px;
+            --sidebar-bg: #f1f1f1;
+            --sidebar-border: #ddd;
         }
 
         body.dark-mode {
@@ -58,6 +61,8 @@
             --footer-h4: var(--text-light);
             --dark-blue-hover: #1a6fba;
             --error-color: #FF5252;
+            --sidebar-bg: #22272e;
+            --sidebar-border: #30363d;
         }
 
         html { height: 100%; }
@@ -69,7 +74,6 @@
             min-height: 100vh;
             background-color: var(--light-grey-bg);
             color: var(--text-dark);
-            padding-top: var(--header-height);
             box-sizing: border-box;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
@@ -160,17 +164,150 @@
         }
         #theme-toggle .icon { font-size: 1.3em; }
 
+        .w3s-nav-menu {
+            display: flex;
+            gap: 10px;
+        }
+        .nav-item {
+            position: relative;
+        }
+        .nav-btn {
+            background-color: var(--subnav-bg);
+            color: var(--text-light);
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .nav-btn:hover {
+            background-color: var(--dark-blue-hover);
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--header-bg);
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 4px;
+            top: 100%;
+            left: 0;
+        }
+        .dropdown-content a {
+            color: var(--text-dark);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.2s;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--light-highlight-bg);
+        }
+        body.dark-mode .dropdown-content {
+            background-color: var(--subnav-bg);
+        }
+        body.dark-mode .dropdown-content a {
+            color: var(--text-light);
+        }
+        body.dark-mode .dropdown-content a:hover {
+            background-color: var(--dark-bg);
+        }
+
+        .content-wrapper {
+            display: flex;
+            min-height: calc(100vh - var(--header-height));
+            padding-top: var(--header-height);
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            padding: 20px;
+            position: fixed;
+            top: var(--header-height);
+            bottom: 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 102;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .sidebar-toggle {
+            position: fixed;
+            top: calc(var(--header-height) + 10px);
+            left: 10px;
+            z-index: 104;
+            background-color: var(--accent-1);
+            color: var(--button-text-dark);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .sidebar-toggle.hidden {
+            left: 10px;
+        }
+        .sidebar-toggle:hover {
+            background-color: var(--accent-1-darker);
+        }
+        .sidebar h2 {
+            font-size: 1.5em;
+            color: var(--main-color);
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar ul li a, .sidebar ul li button {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 1em;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+        .sidebar ul li a:hover, .sidebar ul li button:hover {
+            background-color: var(--light-highlight-bg);
+        }
+        body.dark-mode .sidebar ul li a, body.dark-mode .sidebar ul li button {
+            color: var(--text-light);
+        }
+        body.dark-mode .sidebar ul li a:hover, body.dark-mode .sidebar ul li button:hover {
+            background-color: var(--subnav-bg);
+        }
+
         main {
             flex-grow: 1;
             background-color: var(--main-content-bg);
-            width: 100%;
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
             box-sizing: border-box;
-            padding: 40px 0;
+            padding: 40px 20px;
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        main.full-width {
+            width: 100%;
+            margin-left: 0;
         }
         .container {
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            margin: 0 auto;
         }
         .study-room-header {
             text-align: center;
@@ -218,6 +355,47 @@
         }
         .course-card ul li ul {
             padding-left: 15px;
+        }
+
+        .tool-panel {
+            background-color: var(--header-bg);
+            border: 1px solid var(--header-border);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        .tool-panel h3 {
+            font-size: 1.2em;
+            color: var(--main-color);
+            margin-bottom: 10px;
+        }
+        .tool-panel select, .tool-panel input {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-right: 10px;
+            background-color: var(--main-content-bg);
+            color: var(--text-dark);
+        }
+        .tool-panel button {
+            background-color: var(--accent-1);
+            color: var(--button-text-dark);
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .tool-panel button:hover {
+            background-color: var(--accent-1-darker);
+        }
+        .timer-display {
+            font-size: 1.5em;
+            margin: 10px 0;
+            color: var(--main-color);
         }
 
         .footer {
@@ -290,50 +468,85 @@
         }
 
         @media screen and (max-width: 992px) {
+            .sidebar { width: 200px; }
+            main { width: calc(100% - 200px); margin-left: 200px; }
             .course-list { grid-template-columns: 1fr; }
         }
         @media screen and (max-width: 768px) {
+            .sidebar { width: 100%; transform: translateX(-100%); }
+            .sidebar.visible { transform: translateX(0); }
+            main { width: 100%; margin-left: 0; }
+            main.full-width { width: 100%; }
             .container { padding: 0 15px; }
-            main { padding: 20px 0; }
+            .sidebar-toggle { display: block; }
+            .w3s-nav-menu { flex-wrap: wrap; }
         }
     </style>
 </head>
 <body>
-    <header class="w3s-header" id="mainHeader">
-        <div class="w3s-logo-area">
-            <a href="index.html" title="Página Inicial">
-                <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="48"/>
-                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
-                </svg>
-            </a>
-        </div>
-        <div class="w3s-header-right-group">
-            <div class="w3s-header-actions">
-                <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
-                    <span class="icon theme-icon-light">☀️</span>
-                    <span class="icon theme-icon-dark" style="display: none;">🌙</span>
-                </button>
-                <a href="meucadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
-                <a href="guia.html" title="Guia da Sala de Estudos"><span class="icon">📖</span> <span class="link-text">Guia</span></a>
-                <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
-            </div>
-        </div>
-    </header>
+    <div class="content-wrapper">
+        <nav class="sidebar" id="sidebar">
+            <h2>Ferramentas</h2>
+            <ul>
+                <li><button onclick="toggleTool('questionsPanel')">Questões</button></li>
+                <li><button onclick="toggleTool('flashcardsPanel')">Flashcards</button></li>
+                <li><button onclick="toggleTool('pomodoroPanel')">Pomodoro</button></li>
+                <li><button onclick="toggleTool('musicPanel')">Música</button></li>
+            </ul>
+        </nav>
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
 
-    <main>
-        <div class="container">
-            <div class="study-room-header">
-                <h1>Sala de Estudos</h1>
-                <p>Acesse os conteúdos que você selecionou para estudar de forma organizada.</p>
-            </div>
+        <main id="mainContent">
+            <div class="container">
+                <div class="study-room-header">
+                    <h1>Sala de Estudos</h1>
+                    <p>Acesse os conteúdos que você selecionou para estudar de forma organizada.</p>
+                </div>
 
-            <h2>Meus Cursos</h2>
-            <div class="course-list" id="courseList">
-                <!-- Cursos serão adicionados dinamicamente aqui -->
+                <div class="tool-panel" id="questionsPanel">
+                    <h3>Questões</h3>
+                    <p>Pratique com questões dos seus cursos selecionados. (Funcionalidade em desenvolvimento)</p>
+                </div>
+
+                <div class="tool-panel" id="flashcardsPanel">
+                    <h3>Flashcards</h3>
+                    <p>Revise os conteúdos com flashcards interativos. (Funcionalidade em desenvolvimento)</p>
+                </div>
+
+                <div class="tool-panel" id="pomodoroPanel">
+                    <h3>Temporizador Pomodoro</h3>
+                    <select id="pomodoroTime">
+                        <option value="20">20 minutos</option>
+                        <option value="30">30 minutos</option>
+                        <option value="40">40 minutos</option>
+                        <option value="50">50 minutos</option>
+                    </select>
+                    <button onclick="startPomodoro()">Iniciar Foco</button>
+                    <button onclick="stopPomodoro()">Parar</button>
+                    <div class="timer-display" id="pomodoroTimer">00:00</div>
+                    <p id="pomodoroStatus">Selecione o tempo e inicie sua sessão de foco.</p>
+                </div>
+
+                <div class="tool-panel" id="musicPanel">
+                    <h3>Player de Música</h3>
+                    <select id="musicSelect">
+                        <option value="">Selecione uma música</option>
+                        <option value="lofi">Lo-Fi Relaxante</option>
+                        <option value="classical">Clássica (Canon in D)</option>
+                        <option value="nature">Sons da Natureza</option>
+                    </select>
+                    <button onclick="playMusic()">Tocar</button>
+                    <button onclick="pauseMusic()">Pausar</button>
+                    <audio id="audioPlayer"></audio>
+                </div>
+
+                <h2>Meus Cursos</h2>
+                <div class="course-list" id="courseList">
+                    <!-- Cursos serão adicionados dinamicamente aqui -->
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <footer class="footer">
         <div class="footer-content">
@@ -347,7 +560,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="header.js"></script>
     <script>
+
         // Configuração Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
@@ -372,6 +587,7 @@
                 userId = user.uid;
                 console.log('userId:', userId);
                 loadCourses();
+                loadSalaConfig();
             }
         });
 
@@ -416,30 +632,75 @@
             });
         });
 
+        // Configuração da Sala (Usando o backend)
+        const apiUrl = "https://api.proconcursos.com.br/api/sala";
+
+        async function loadSalaConfig() {
+            if (!userId) return;
+            try {
+                const response = await fetch(`${apiUrl}/${userId}`);
+                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+                const data = await response.json();
+                if (data) {
+                    document.body.style.backgroundColor = data.color || '#ffffff';
+                    if (data.music) {
+                        document.getElementById('musicSelect').value = data.music;
+                    }
+                    if (data.pomodoro) {
+                        document.getElementById('pomodoroTime').value = data.pomodoro;
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao carregar configurações:", error);
+                document.body.style.backgroundColor = '#ffffff';
+            }
+        }
+
+        async function saveSalaConfig(config) {
+            if (!userId) return;
+            try {
+                const response = await fetch(`${apiUrl}/${userId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+                const result = await response.json();
+                console.log('Configurações salvas:', result);
+            } catch (error) {
+                console.error("Erro ao salvar configurações:", error);
+            }
+        }
+
+        // Mudar Cor de Fundo
+        const colorPickerBtn = document.getElementById('color-picker-btn');
+        colorPickerBtn.addEventListener('click', () => {
+            const colorInput = document.createElement('input');
+            colorInput.type = 'color';
+            colorInput.value = document.body.style.backgroundColor || '#ffffff';
+            colorInput.addEventListener('change', () => {
+                const color = colorInput.value;
+                document.body.style.backgroundColor = color;
+                saveSalaConfig({ color });
+            });
+            colorInput.click();
+        });
+
         // Carregar Cursos
         async function loadCourses() {
-            if (!userId) {
-                console.log('userId não definido, abortando loadCourses');
-                return;
-            }
-
+            if (!userId) return;
             const courseList = document.getElementById('courseList');
-            courseList.innerHTML = ''; // Limpar a lista
-
+            courseList.innerHTML = '';
             try {
-                // Carregar seleções do usuário
                 const userDoc = await db.collection('users').doc(userId).get();
                 let selectedCourses = [];
                 if (userDoc.exists && userDoc.data().selectedCourses) {
                     selectedCourses = userDoc.data().selectedCourses;
                 }
-
-                // Se o usuário não selecionou cursos, carregar todos os cursos disponíveis
                 if (!selectedCourses || selectedCourses.length === 0) {
                     const coursesSnapshot = await db.collection('courses').get();
                     selectedCourses = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 } else {
-                    // Carregar apenas os cursos selecionados
                     const coursesPromises = selectedCourses.map(courseId =>
                         db.collection('courses').doc(courseId).get()
                     );
@@ -448,27 +709,21 @@
                         .filter(doc => doc.exists)
                         .map(doc => ({ id: doc.id, ...doc.data() }));
                 }
-
-                // Exibir os cursos
                 if (selectedCourses.length === 0) {
                     courseList.innerHTML = '<p>Nenhum curso disponível.</p>';
                     return;
                 }
-
                 selectedCourses.forEach(course => {
                     const courseCard = document.createElement('div');
                     courseCard.className = 'course-card';
-
                     const courseTitle = document.createElement('h3');
                     courseTitle.textContent = course.name || 'Curso Sem Nome';
                     courseCard.appendChild(courseTitle);
-
                     if (course.modules && course.modules.length > 0) {
                         const moduleList = document.createElement('ul');
                         course.modules.forEach(module => {
                             const moduleItem = document.createElement('li');
                             moduleItem.textContent = module.name || 'Módulo Sem Nome';
-
                             if (module.subitems && module.subitems.length > 0) {
                                 const subitemList = document.createElement('ul');
                                 module.subitems.forEach(subitem => {
@@ -478,17 +733,143 @@
                                 });
                                 moduleItem.appendChild(subitemList);
                             }
-
                             moduleList.appendChild(moduleItem);
                         });
                         courseCard.appendChild(moduleList);
                     }
-
                     courseList.appendChild(courseCard);
                 });
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
                 courseList.innerHTML = '<p>Erro ao carregar cursos. Tente novamente mais tarde.</p>';
+            }
+        }
+
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mainContent = document.getElementById('mainContent');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('visible');
+            mainContent.classList.toggle('full-width');
+            sidebarToggle.classList.toggle('hidden');
+            sidebarToggle.textContent = sidebar.classList.contains('hidden') ? '☰' : '✖';
+        }
+
+        // Ferramentas (Pomodoro, Música)
+        function toggleTool(panelId) {
+            const panels = ['questionsPanel', 'flashcardsPanel', 'pomodoroPanel', 'musicPanel'];
+            panels.forEach(id => {
+                const panel = document.getElementById(id);
+                if (id === panelId) {
+                    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+                } else {
+                    panel.style.display = 'none';
+                }
+            });
+        }
+
+        // Música
+        const musicUrls = {
+            lofi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            classical: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+            nature: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+        };
+
+        let currentAudio = null;
+
+        function playMusic() {
+            const musicSelect = document.getElementById('musicSelect');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const musicType = musicSelect.value;
+
+            if (!musicType) {
+                alert('Por favor, selecione uma música.');
+                return;
+            }
+
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            audioPlayer.src = musicUrls[musicType];
+            audioPlayer.play().catch(error => {
+                console.error('Erro ao tocar música:', error);
+                alert('Erro ao tocar música.');
+            });
+            currentAudio = audioPlayer;
+
+            saveSalaConfig({ music: musicType });
+        }
+
+        function pauseMusic() {
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.pause();
+        }
+
+        // Pomodoro
+        let pomodoroInterval = null;
+        let timeRemaining = 0;
+        let isBreak = false;
+
+        function startPomodoro() {
+            if (pomodoroInterval) return;
+
+            const timeSelect = document.getElementById('pomodoroTime');
+            const minutes = parseInt(timeSelect.value);
+            timeRemaining = minutes * 60;
+            isBreak = false;
+
+            saveSalaConfig({ pomodoro: minutes });
+
+            document.getElementById('pomodoroStatus').innerText = `Foco: ${minutes} minutos em andamento...`;
+            updatePomodoroTimer();
+            pomodoroInterval = setInterval(() => {
+                timeRemaining--;
+                updatePomodoroTimer();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(pomodoroInterval);
+                    pomodoroInterval = null;
+
+                    if (!isBreak) {
+                        alert('Tempo de foco concluído! Iniciando pausa de 10 minutos.');
+                        timeRemaining = 10 * 60;
+                        isBreak = true;
+                        document.getElementById('pomodoroStatus').innerText = 'Pausa: 10 minutos em andamento...';
+                        pomodoroInterval = setInterval(() => {
+                            timeRemaining--;
+                            updatePomodoroTimer();
+
+                            if (timeRemaining <= 0) {
+                                clearInterval(pomodoroInterval);
+                                pomodoroInterval = null;
+                                alert('Pausa de 10 minutos concluída! Pronto para outra sessão de foco?');
+                                document.getElementById('pomodoroStatus').innerText = 'Selecione o tempo e inicie sua sessão de foco.';
+                                document.getElementById('pomodoroTimer').innerText = '00:00';
+                            }
+                        }, 1000);
+                    }
+                }
+            }, 1000);
+        }
+
+        function updatePomodoroTimer() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('pomodoroTimer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopPomodoro() {
+            if (pomodoroInterval) {
+                clearInterval(pomodoroInterval);
+                pomodoroInterval = null;
+                timeRemaining = 0;
+                isBreak = false;
+                document.getElementById('pomodoroTimer').innerText = '00:00';
+                document.getElementById('pomodoroStatus').innerText = 'Temporizador pausado. Inicie uma nova sessão.';
             }
         }
 
