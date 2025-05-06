@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Estudos - PRO Concursos</title>
     <style>
+		
         /* --- :ROOT Variables --- */
         :root {
             --header-height: 55px;
@@ -420,6 +421,83 @@
             .mega-menu-column { min-width: 100%; padding: 0; }
             .mega-menu-panel { width: 100%; left: 0; }
         }
+		.module-content {
+			padding: 1rem;
+			color: var(--text-dark);
+		}
+
+		body.dark-mode .module-content {
+			color: var(--text-light);
+		}
+
+		.module-title {
+			color: var(--main-color);
+			margin-bottom: 1.5rem;
+			border-bottom: 1px solid var(--border-color);
+			padding-bottom: 0.5rem;
+			font-size: 1.5em;
+		}
+
+		.section-title {
+			color: var(--main-color);
+			margin-top: 2rem;
+			margin-bottom: 1rem;
+			font-size: 1.2em;
+		}
+
+		.module-content p {
+			margin-bottom: 1rem;
+			line-height: 1.6;
+		}
+
+		.content-list,
+		.content-list-disc,
+		.content-list-circle {
+			margin-left: 1.5rem;
+			margin-bottom: 1rem;
+			line-height: 1.6;
+		}
+
+		.content-list li,
+		.content-list-disc li,
+		.content-list-circle li {
+			margin-bottom: 0.5rem;
+		}
+
+		.content-list-disc {
+			list-style-type: disc;
+		}
+
+		.content-list-circle {
+			list-style-type: circle;
+		}
+
+		.content-note {
+			background-color: var(--light-highlight-bg);
+			padding: 0.8rem;
+			border-radius: 4px;
+			margin-bottom: 1rem;
+		}
+
+		body.dark-mode .content-note {
+			background-color: var(--dark-bg);
+		}
+
+		.highlight-yellow {
+			color: var(--accent-1);
+		}
+
+		.highlight-red {
+			color: var(--error-color);
+		}
+
+		.highlight-blue {
+			color: var(--main-color);
+		}
+
+		.italic {
+			font-style: italic;
+		}
     </style>
 </head>
 <body class="">
@@ -566,22 +644,38 @@
 <script>
     // --- Carrega o Cabeçalho Dinamicamente ---
     fetch('header.html')
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro ao carregar header.html: ${response.status}`);
+            }
+            return response.text();
+        })
         .then(data => {
             document.getElementById('header-placeholder').innerHTML = data;
             initializeHeaderEvents();
         })
-        .catch(error => console.error('Erro ao carregar o header:', error));
+        .catch(error => {
+            console.error('Erro ao carregar o header:', error);
+            document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho. Tente novamente mais tarde.</p>';
+        });
 
     // --- Carrega o Rodapé Dinamicamente ---
     fetch('footer.html')
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro ao carregar footer.html: ${response.status}`);
+            }
+            return response.text();
+        })
         .then(data => {
             document.getElementById('footer-placeholder').innerHTML = data;
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
         })
-        .catch(error => console.error('Erro ao carregar o footer:', error));
+        .catch(error => {
+            console.error('Erro ao carregar o footer:', error);
+            document.getElementById('footer-placeholder').innerHTML = '<p>Erro ao carregar o rodapé.</p>';
+        });
 
     // --- Configuração Firebase ---
     const firebaseConfig = {
@@ -622,12 +716,10 @@
         const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
         const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
 
-        // Evento para o botão de sidebar
         if (sidebarToggleBtn && sidebar && mainContent) {
             sidebarToggleBtn.addEventListener('click', toggleSidebar);
         }
 
-        // Evento para alternância de tema
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', () => {
                 let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
@@ -641,7 +733,6 @@
             }
         });
 
-        // Evento para o seletor de cor
         if (colorPickerBtn && mainContent) {
             colorPickerBtn.addEventListener('click', () => {
                 const colorInput = document.createElement('input');
@@ -659,7 +750,6 @@
             });
         }
 
-        // Evento para o botão de logout
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
                 auth.signOut()
@@ -673,7 +763,6 @@
             });
         }
 
-        // Eventos para o mega menu
         const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
         const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
         megaMenuButtons.forEach(button => {
@@ -699,11 +788,9 @@
             }
         });
 
-        // Atualiza o layout após inicializar os eventos
         updateLayout();
     }
 
-    // --- Função para fechar os Mega Menus ---
     function closeAllMegaMenus(excludePanelId = null) {
         const megaMenuContainer = document.getElementById('megaMenuContainer');
         const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
@@ -769,141 +856,158 @@
 
     // --- Carregar Cursos para o Menu Lateral ---
     async function loadCourses() {
-        if (!userId || !courseMenuContainer) return;
-        courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
-        try {
-            const userDocRef = db.collection('users').doc(userId);
-            const userDoc = await userDocRef.get();
-            let coursesToDisplay = [];
+		if (!userId || !courseMenuContainer) return;
+		courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
+		try {
+			const userDocRef = db.collection('users').doc(userId);
+			const userDoc = await userDocRef.get();
+			let coursesToDisplay = [];
 
-            if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics && userDoc.data().selectedSubtopics.length > 0) {
-                const selectedSubtopics = userDoc.data().selectedSubtopics;
-                console.log("Carregando cursos personalizados:", selectedSubtopics);
+			if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics && userDoc.data().selectedSubtopics.length > 0) {
+				const selectedSubtopics = userDoc.data().selectedSubtopics;
+				console.log("Carregando cursos personalizados:", selectedSubtopics);
 
-                for (const selection of selectedSubtopics) {
-                    const { courseId, moduleId, subtopicId } = selection;
-                    const courseRef = db.collection('courses').doc(courseId);
-                    const courseDoc = await courseRef.get();
-                    if (!courseDoc.exists) {
-                        console.warn(`Curso ${courseId} não encontrado.`);
-                        continue;
-                    }
+				for (const selection of selectedSubtopics) {
+					const { courseId, moduleId, subtopicId } = selection;
+					const courseRef = db.collection('courses').doc(courseId);
+					const courseDoc = await courseRef.get();
+					if (!courseDoc.exists) {
+						console.warn(`Curso ${courseId} não encontrado.`);
+						continue;
+					}
 
-                    const courseData = courseDoc.data();
-                    const moduleRef = courseRef.collection('modules').doc(moduleId);
-                    const moduleDoc = await moduleRef.get();
-                    if (!moduleDoc.exists) {
-                        console.warn(`Módulo ${moduleId} não encontrado no curso ${courseId}.`);
-                        continue;
-                    }
+					const courseData = courseDoc.data();
+					const moduleRef = courseRef.collection('modules').doc(moduleId);
+					const moduleDoc = await moduleRef.get();
+					if (!moduleDoc.exists) {
+						console.warn(`Módulo ${moduleId} não encontrado no curso ${courseId}.`);
+						continue;
+					}
 
-                    const moduleData = moduleDoc.data();
-                    const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
-                    const subtopicDoc = await subtopicRef.get();
-                    if (!subtopicDoc.exists) {
-                        console.warn(`Subtema ${subtopicId} não encontrado no módulo ${moduleId}.`);
-                        continue;
-                    }
+					const moduleData = moduleDoc.data();
+					const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
+					const subtopicDoc = await subtopicRef.get();
+					if (!subtopicDoc.exists) {
+						console.warn(`Subtema ${subtopicId} não encontrado no módulo ${moduleId}.`);
+						continue;
+					}
 
-                    const subtopicData = subtopicDoc.data();
-                    let course = coursesToDisplay.find(c => c.id === courseId);
-                    if (!course) {
-                        course = {
-                            id: courseId,
-                            name: courseData.name || 'Curso s/ Nome',
-                            order: courseData.order || 0,
-                            modules: []
-                        };
-                        coursesToDisplay.push(course);
-                    }
-                    let module = course.modules.find(m => m.id === moduleId);
-                    if (!module) {
-                        module = {
-                            id: moduleId,
-                            name: moduleData.name || 'Módulo s/ Nome',
-                            order: moduleData.order || 0,
-                            subtopics: []
-                        };
-                        course.modules.push(module);
-                    }
-                    module.subtopics.push({
-                        id: subtopicId,
-                        name: subtopicData.name || 'Aula s/ Nome',
-                        order: subtopicData.order || 0,
-                        content: subtopicData.content || ''
-                    });
-                }
+					const subtopicData = subtopicDoc.data();
+					let course = coursesToDisplay.find(c => c.id === courseId);
+					if (!course) {
+						course = {
+							id: courseId,
+							name: courseData.name || 'Curso s/ Nome',
+							order: courseData.order || 0,
+							modules: []
+						};
+						coursesToDisplay.push(course);
+					}
+					let module = course.modules.find(m => m.id === moduleId);
+					if (!module) {
+						module = {
+							id: moduleId,
+							name: moduleData.name || 'Módulo s/ Nome',
+							order: moduleData.order || 0,
+							subtopics: []
+						};
+						course.modules.push(module);
+					}
+					module.subtopics.push({
+						id: subtopicId,
+						name: subtopicData.name || 'Aula s/ Nome',
+						order: subtopicData.order || 0,
+						content: subtopicData.content || '',
+						content_url: subtopicData.content_url || '' // Inclui o content_url
+					});
+				}
 
-                if (coursesToDisplay.length === 0) {
-                    console.log("Nenhum curso personalizado válido encontrado.");
-                    courseMenuContainer.innerHTML = '<p>Nenhum curso personalizado disponível. Por favor, selecione cursos em Personalizar.</p>';
-                    return;
-                }
-            } else {
-                console.log("Carregando todos os cursos (sem personalização).");
-                const coursesRef = db.collection('courses').orderBy('order');
-                const coursesSnapshot = await coursesRef.get();
-                if (coursesSnapshot.empty) {
-                    courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
-                    return;
-                }
+				if (coursesToDisplay.length === 0) {
+					console.log("Nenhum curso personalizado válido encontrado.");
+					courseMenuContainer.innerHTML = '<p>Nenhum curso personalizado disponível. Por favor, selecione cursos em Personalizar.</p>';
+					return;
+				}
+			} else {
+				console.log("Carregando todos os cursos (sem personalização).");
+				const coursesRef = db.collection('courses').orderBy('order');
+				const coursesSnapshot = await coursesRef.get();
+				if (coursesSnapshot.empty) {
+					courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
+					return;
+				}
 
-                for (const courseDoc of coursesSnapshot.docs) {
-                    const courseData = courseDoc.data();
-                    const courseId = courseDoc.id;
-                    const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
-                    const modulesSnapshot = await modulesRef.get();
-                    const modules = [];
+				for (const courseDoc of coursesSnapshot.docs) {
+					const courseData = courseDoc.data();
+					const courseId = courseDoc.id;
+					const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
+					const modulesSnapshot = await modulesRef.get();
+					const modules = [];
 
-                    for (const moduleDoc of modulesSnapshot.docs) {
-                        const moduleData = moduleDoc.data();
-                        const moduleId = moduleDoc.id;
-                        const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
-                        const subtopicsSnapshot = await subtopicsRef.get();
-                        const subtopics = [];
+					for (const moduleDoc of modulesSnapshot.docs) {
+						const moduleData = moduleDoc.data();
+						const moduleId = moduleDoc.id;
+						const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
+						const subtopicsSnapshot = await subtopicsRef.get();
+						const subtopics = [];
 
-                        subtopicsSnapshot.forEach(subtopicDoc => {
-                            const subtopicData = subtopicDoc.data();
-                            subtopics.push({
-                                id: subtopicDoc.id,
-                                name: subtopicData.name || 'Aula s/ Nome',
-                                order: subtopicData.order || 0,
-                                content: subtopicData.content || ''
-                            });
-                        });
+						subtopicsSnapshot.forEach(subtopicDoc => {
+							const subtopicData = subtopicDoc.data();
+							subtopics.push({
+								id: subtopicDoc.id,
+								name: subtopicData.name || 'Aula s/ Nome',
+								order: subtopicData.order || 0,
+								content: subtopicData.content || '',
+								content_url: subtopicData.content_url || '' // Inclui o content_url
+							});
+						});
 
-                        modules.push({
-                            id: moduleId,
-                            name: moduleData.name || 'Módulo s/ Nome',
-                            order: moduleData.order || 0,
-                            subtopics: subtopics
-                        });
-                    }
+						modules.push({
+							id: moduleId,
+							name: moduleData.name || 'Módulo s/ Nome',
+							order: moduleData.order || 0,
+							subtopics: subtopics
+						});
+					}
 
-                    coursesToDisplay.push({
-                        id: courseId,
-                        name: courseData.name || 'Curso s/ Nome',
-                        order: courseData.order || 0,
-                        modules: modules
-                    });
-                }
-            }
+					coursesToDisplay.push({
+						id: courseId,
+						name: courseData.name || 'Curso s/ Nome',
+						order: courseData.order || 0,
+						modules: modules
+					});
+				}
+			}
 
-            loadedCoursesData = coursesToDisplay;
-            loadedCoursesData.sort((a, b) => a.order - b.order);
-            loadedCoursesData.forEach(course => {
-                course.modules.sort((a, b) => a.order - b.order);
-                course.modules.forEach(module => {
-                    module.subtopics.sort((a, b) => a.order - b.order);
-                });
-            });
+			loadedCoursesData = coursesToDisplay;
+			loadedCoursesData.sort((a, b) => a.order - b.order);
+			loadedCoursesData.forEach(course => {
+				course.modules.sort((a, b) => a.order - b.order);
+				course.modules.forEach(module => {
+					module.subtopics.sort((a, b) => a.order - b.order);
+				});
+			});
 
-            renderCourseMenu(loadedCoursesData);
-        } catch (error) {
-            console.error('Erro ao carregar cursos:', error);
-            courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos. Tente novamente mais tarde.</p>';
-        }
-    }
+			renderCourseMenu(loadedCoursesData);
+
+			// Carrega automaticamente o primeiro subtema disponível
+			if (loadedCoursesData.length > 0 && loadedCoursesData[0].modules.length > 0 && loadedCoursesData[0].modules[0].subtopics.length > 0) {
+				const firstCourse = loadedCoursesData[0];
+				const firstModule = firstCourse.modules[0];
+				const firstSubtopic = firstModule.subtopics[0];
+				loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
+
+				const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
+				if (firstSubtopicLink) {
+					firstSubtopicLink.classList.add('active');
+				}
+			} else {
+				lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
+			}
+		} catch (error) {
+			console.error('Erro ao carregar cursos:', error);
+			courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos. Tente novamente mais tarde.</p>';
+		}
+	}
 
     function renderCourseMenu(courses) {
         if (!courseMenuContainer) return;
@@ -987,25 +1091,41 @@
         });
     }
 
-    async function loadLessonContent(courseId, moduleId, subtopicId) {
-        if (!lessonContent) return;
-        lessonContent.innerHTML = '<p>Carregando aula...</p>';
-        try {
-            const course = loadedCoursesData.find(c => c.id === courseId);
-            const module = course?.modules.find(m => m.id === moduleId);
-            const subtopic = module?.subtopics.find(s => s.id === subtopicId);
+	async function loadLessonContent(courseId, moduleId, subtopicId) {
+		if (!lessonContent) return;
+		lessonContent.innerHTML = '<p>Carregando aula...</p>';
+		try {
+			const course = loadedCoursesData.find(c => c.id === courseId);
+			const module = course?.modules.find(m => m.id === moduleId);
+			const subtopic = module?.subtopics.find(s => s.id === subtopicId);
 
-            if (!subtopic || !subtopic.content) {
-                lessonContent.innerHTML = '<p>Conteúdo não encontrado para esta aula.</p>';
-                return;
-            }
+			console.log('Carregando conteúdo:', { courseId, moduleId, subtopicId, subtopic });
 
-            lessonContent.innerHTML = subtopic.content;
-        } catch (error) {
-            console.error('Erro ao carregar conteúdo da aula:', error);
-            lessonContent.innerHTML = '<p>Erro ao carregar a aula. Tente novamente mais tarde.</p>';
-        }
-    }
+			if (!course || !module || !subtopic) {
+				lessonContent.innerHTML = '<p>Erro: Aula não encontrada. Tente selecionar outra aula.</p>';
+				return;
+			}
+
+			// Verifica se existe content_url
+			if (subtopic.content_url) {
+				// Faz uma requisição para buscar o HTML do content_url
+				const response = await fetch(subtopic.content_url);
+				if (!response.ok) {
+					throw new Error(`Erro ao carregar o conteúdo de ${subtopic.content_url}: ${response.status}`);
+				}
+				const htmlContent = await response.text();
+				lessonContent.innerHTML = htmlContent;
+			} else if (subtopic.content) {
+				// Caso ainda exista o campo content, usa ele
+				lessonContent.innerHTML = subtopic.content;
+			} else {
+				lessonContent.innerHTML = '<p>Conteúdo não disponível para esta aula.</p>';
+			}
+		} catch (error) {
+			console.error('Erro ao carregar conteúdo da aula:', error);
+			lessonContent.innerHTML = '<p>Erro ao carregar a aula. Tente novamente mais tarde.</p>';
+		}
+	}
 
     // --- Sidebar Toggle ---
     function toggleSidebar() {
