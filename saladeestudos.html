@@ -5,6 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Estudos - PRO Concursos</title>
     <style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0; left: 0;
+		width: 100%; height: 100%;
+		background-color: rgba(0, 0, 0, 0.6);
+		z-index: 9999;
+		justify-content: center;
+		align-items: center;
+	}
+	.modal-content {
+		background-color: var(--floating-panel-bg);
+		padding: 20px;
+		border-radius: 8px;
+		width: 90%;
+		max-width: 600px;
+		box-shadow: var(--floating-panel-shadow);
+	}
+	.close-btn {
+		float: right;
+		cursor: pointer;
+		font-size: 1.5em;
+	}
+	.navigation-buttons {
+		margin-top: 15px;
+		text-align: right;
+	}
 		
         /* --- :ROOT Variables --- */
         :root {
@@ -538,40 +565,17 @@
         </div>
 
         <!-- Questões -->
-        <div class="mega-menu-panel" id="questoes-menu">
-            <div class="mega-menu-column">
-                <h4>Por Disciplina</h4>
-                <a href="">Direito Constitucional</a>
-                <a href="">Matemática Básica</a>
-                <a href="">Português</a>
-                <a href="">Informática</a>
-            </div>
-            <div class="mega-menu-column">
-                <h4>Por Concurso</h4>
-                <a href="">Polícia Federal</a>
-                <a href="">INSS</a>
-                <a href="">Receita Federal</a>
-                <a href="">Tribunais</a>
-            </div>
-        </div>
-
-        <!-- Flashcards -->
-        <div class="mega-menu-panel" id="flashcards-menu">
-            <div class="mega-menu-column">
-                <h4>Por Disciplina</h4>
-                <a href="">Direito Constitucional</a>
-                <a href="">Matemática Básica</a>
-                <a href="">Português</a>
-                <a href="">Informática</a>
-            </div>
-            <div class="mega-menu-column">
-                <h4>Por Concurso</h4>
-                <a href="">Polícia Federal</a>
-                <a href="">INSS</a>
-                <a href="">Receita Federal</a>
-                <a href="">Tribunais</a>
-            </div>
-        </div>
+        <a href="#" onclick="loadQuestions('Direito Constitucional')">Direito Constitucional</a>
+		<a href="#" onclick="loadQuestions('Matemática Básica')">Matemática Básica</a>
+		<a href="#" onclick="loadQuestions('Português')">Português</a>
+		<a href="#" onclick="loadQuestions('Informática')">Informática</a>
+		
+		<!-- Flashcards -->
+		<a href="#" onclick="loadFlashcards('Direito Constitucional')">Direito Constitucional</a>
+		<a href="#" onclick="loadFlashcards('Matemática Básica')">Matemática Básica</a>
+		<a href="#" onclick="loadFlashcards('Português')">Português</a>
+		<a href="#" onclick="loadFlashcards('Informática')">Informática</a>
+		
     </div>
 
     <div class="content-wrapper">
@@ -637,6 +641,33 @@
             </div>
         </div>
     </div>
+	<!-- Modal de Questões -->
+	<div id="questionOverlay" class="overlay">
+		<div class="modal-content">
+			<span class="close-btn" onclick="hideQuestionOverlay()">×</span>
+			<h2>Questão</h2>
+			<div id="currentQuestion"></div>
+			<div class="navigation-buttons">
+				<button onclick="prevQuestion()">Anterior</button>
+				<button onclick="nextQuestion()">Próxima</button>
+				<button onclick="randomQuestion()">Aleatória</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal de Flashcards -->
+	<div id="flashcardOverlay" class="overlay">
+		<div class="modal-content">
+			<span class="close-btn" onclick="hideFlashcardOverlay()">×</span>
+			<h2>Flashcard</h2>
+			<div id="currentFlashcard"></div>
+			<div class="navigation-buttons">
+				<button onclick="prevFlashcard()">Anterior</button>
+				<button onclick="nextFlashcard()">Próximo</button>
+				<button onclick="randomFlashcard()">Aleatório</button>
+			</div>
+		</div>
+	</div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -1252,6 +1283,126 @@
             applySavedPreferences();
         }
     });
+		
+		// --- Funções para Questões ---
+	let questionList = [];
+	let currentQuestionIndex = 0;
+
+	function showQuestionOverlay() {
+		document.getElementById('questionOverlay').style.display = 'flex';
+	}
+
+	function hideQuestionOverlay() {
+		document.getElementById('questionOverlay').style.display = 'none';
+	}
+
+	function loadQuestions(category) {
+		// Exemplo fixo - substitua com dados reais do Firebase
+		questionList = [
+			{ statement: "Qual é a capital do Brasil?", options: ["Brasília", "São Paulo", "Rio de Janeiro"], answer: "Brasília" },
+			{ statement: "Quanto é 2 + 2?", options: ["3", "4", "5"], answer: "4" }
+		];
+		currentQuestionIndex = 0;
+		showCurrentQuestion();
+		showQuestionOverlay();
+	}
+
+	function showCurrentQuestion() {
+		const q = questionList[currentQuestionIndex];
+		const html = `
+			<p><strong>Pergunta:</strong> ${q.statement}</p>
+			<ul>${q.options.map(opt => `<li>${opt}</li>`).join('')}</ul>
+			<p><strong>Resposta:</strong> ${q.answer}</p>
+		`;
+		document.getElementById('currentQuestion').innerHTML = html;
+	}
+
+	function nextQuestion() {
+		if (currentQuestionIndex < questionList.length - 1) {
+			currentQuestionIndex++;
+			showCurrentQuestion();
+		}
+	}
+
+	function prevQuestion() {
+		if (currentQuestionIndex > 0) {
+			currentQuestionIndex--;
+			showCurrentQuestion();
+		}
+	}
+
+	function randomQuestion() {
+		currentQuestionIndex = Math.floor(Math.random() * questionList.length);
+		showCurrentQuestion();
+	}
+
+	// --- Funções para Flashcards ---
+	let flashcardList = [];
+	let currentFlashcardIndex = 0;
+
+	function showFlashcardOverlay() {
+		document.getElementById('flashcardOverlay').style.display = 'flex';
+	}
+
+	function hideFlashcardOverlay() {
+		document.getElementById('flashcardOverlay').style.display = 'none';
+	}
+
+	function loadFlashcards(category) {
+		// Exemplo fixo - substitua com dados reais do Firebase
+		flashcardList = [
+			{ front: "O que é um verbo?", back: "Palavra que indica ação, estado ou fenômeno da natureza." },
+			{ front: "Exemplo de substantivo", back: "Casa, mesa, João." }
+		];
+		currentFlashcardIndex = 0;
+		showCurrentFlashcard();
+		showFlashcardOverlay();
+	}
+
+	function showCurrentFlashcard() {
+		const f = flashcardList[currentFlashcardIndex];
+		const html = `
+			<p><strong>Frente:</strong> ${f.front}</p>
+			<p><strong>Verso:</strong> ${f.back}</p>
+		`;
+		document.getElementById('currentFlashcard').innerHTML = html;
+	}
+
+	function nextFlashcard() {
+		if (currentFlashcardIndex < flashcardList.length - 1) {
+			currentFlashcardIndex++;
+			showCurrentFlashcard();
+		}
+	}
+
+	function prevFlashcard() {
+		if (currentFlashcardIndex > 0) {
+			currentFlashcardIndex--;
+			showCurrentFlashcard();
+		}
+	}
+
+	function randomFlashcard() {
+		currentFlashcardIndex = Math.floor(Math.random() * flashcardList.length);
+		showCurrentFlashcard();
+	}
+	
+	
+	function saveLastQuestions(list) {
+		localStorage.setItem("lastQuestions", JSON.stringify(list));
+	}
+
+	function getLastQuestions() {
+		return JSON.parse(localStorage.getItem("lastQuestions")) || [];
+	}
+
+	function saveLastFlashcards(list) {
+		localStorage.setItem("lastFlashcards", JSON.stringify(list));
+	}
+
+	function getLastFlashcards() {
+		return JSON.parse(localStorage.getItem("lastFlashcards")) || [];
+	}
 </script>
 </body>
 </html>
