@@ -20,10 +20,10 @@
             --text-light: #f8f9fa;
             --text-muted: #6c757d;
             --border-color: #ccc;
-            --light-grey-bg: #f1f1f1; /* Fundo geral do body */
+            --light-grey-bg: #f1f1f1;
             --header-bg: #ffffff;
             --header-border: #e7e7e7;
-            --main-content-bg: #ffffff; /* Fundo da área <main> (DEFAULT) */
+            --main-content-bg: #ffffff;
             --code-bg: #f1f1f1;
             --button-text-dark: #333;
             --footer-text-muted: #ccc;
@@ -68,10 +68,10 @@
             --text-light: #f0f6fc;
             --text-muted: #8b949e;
             --border-color: #444c56;
-            --light-grey-bg: #0d1117; /* Fundo geral do body */
+            --light-grey-bg: #0d1117;
             --header-bg: #161b22;
             --header-border: #30363d;
-            --main-content-bg: #161b22; /* Fundo da área <main> (DARK) */
+            --main-content-bg: #161b22;
             --code-bg: #22272e;
             --button-text-dark: #161b22;
             --footer-text-muted: #8b949e;
@@ -102,7 +102,6 @@
             --mega-menu-heading-color: #ced4da;
         }
 
-
         html { height: 100%; box-sizing: border-box; }
         *, *:before, *:after { box-sizing: inherit; }
 
@@ -131,13 +130,19 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 105; /* Header acima de tudo */
+            z-index: 105;
             border-bottom: 1px solid var(--header-border);
             gap: 5px;
         }
         .w3s-sidebar-toggle {
-            background-color: transparent; border: none; font-size: 24px; cursor: pointer;
-            padding: 0 15px; color: var(--text-dark); line-height: var(--header-height); margin-right: 5px;
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 15px;
+            color: var(--text-dark);
+            line-height: var(--header-height);
+            margin-right: 5px;
         }
         .w3s-sidebar-toggle:hover { background-color: var(--light-grey-bg); }
         .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
@@ -148,9 +153,19 @@
         /* --- Top Navigation (Esquerda com Dropdowns) --- */
         .w3s-top-nav { display: flex; align-items: center; height: 100%; margin-left: 10px; position: relative; }
         .w3s-top-nav button.nav-button {
-            display: flex; align-items: center; padding: 0 12px; height: 100%; text-decoration: none;
-            color: var(--top-nav-link-color); font-size: 15px; font-family: inherit; background-color: transparent;
-            border: none; border-right: 1px solid var(--header-border); cursor: pointer; transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 100%;
+            text-decoration: none;
+            color: var(--top-nav-link-color);
+            font-size: 15px;
+            font-family: inherit;
+            background-color: transparent;
+            border: none;
+            border-right: 1px solid var(--header-border);
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
         .w3s-top-nav button.nav-button:first-child { border-left: 1px solid var(--header-border); }
         .w3s-top-nav button.nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
@@ -158,28 +173,25 @@
 
         /* --- Mega Menu Panel --- */
         .mega-menu-panel {
-            display: none; /* Começa escondido */
-            /* CORREÇÃO: position: fixed para ficar relativo à viewport e abaixo do header */
+            display: none;
             position: fixed;
-            top: var(--header-height); /* Posiciona abaixo do header fixo */
+            top: var(--header-height);
             left: 0;
-            width: 100%; /* Largura total */
-            max-height: calc(100vh - var(--header-height) - 20px); /* Altura max */
+            width: 100%;
+            max-height: calc(100vh - var(--header-height));
             overflow-y: auto;
             background-color: var(--mega-menu-bg);
-            border-top: 1px solid var(--mega-menu-border); /* Borda só no topo */
+            border-top: 1px solid var(--mega-menu-border);
             box-shadow: var(--mega-menu-shadow);
-            /* CORREÇÃO: z-index abaixo do header(105), mas acima do resto (e.g., sidebar 102) */
             z-index: 104;
             padding: 25px 30px;
-            box-sizing: border-box; /* Inclui padding na largura/altura */
-            /* Removida animation para simplificar */
+            box-sizing: border-box;
         }
         .mega-menu-panel.active {
-            display: flex; /* Usar flex para colunas */
+            display: flex;
             flex-wrap: wrap;
             gap: 20px;
-         }
+        }
 
         .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
         .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
@@ -187,14 +199,23 @@
         .mega-menu-column a { display: block; color: var(--mega-menu-link-color); text-decoration: none; padding: 6px 0; font-size: 0.95em; transition: color 0.2s; }
         .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
 
-
         /* --- Header Actions (Direita) --- */
-        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px;}
+        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px; }
         .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
         .w3s-header-actions a, .w3s-header-actions button {
-            color: var(--text-dark); text-decoration: none; font-size: 14px; display: flex; align-items: center;
-            gap: 5px; transition: color 0.2s, background-color 0.2s; padding: 6px 10px; border-radius: 4px;
-            background: none; border: none; cursor: pointer; white-space: nowrap;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s, background-color 0.2s;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
         }
         .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; width: 1em; height: 1em; line-height: 1em; text-align: center; color: #666; }
         body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); }
@@ -210,12 +231,19 @@
         /* --- Content Wrapper --- */
         .content-wrapper { display: flex; flex-grow: 1; }
 
-        /* --- Sidebar (Estilo W3Schools) --- */
+        /* --- Sidebar --- */
         .sidebar {
-            width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border);
-            padding: 0; position: fixed; top: var(--header-height); left: 0; bottom: 0; overflow-y: auto;
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            padding: 0;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
             transition: transform 0.3s ease, width 0.3s ease;
-            z-index: 102; /* Sidebar abaixo do header e mega-menu */
+            z-index: 102;
             transform: translateX(0);
         }
         .sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-width))); width: 0; border-right: none; }
@@ -228,14 +256,13 @@
         /* --- Main Content Area --- */
         main {
             flex-grow: 1;
-            /* CORREÇÃO: Background agora vem da variável --main-content-bg */
             background-color: var(--main-content-bg);
             margin-left: var(--sidebar-width);
             box-sizing: border-box;
             padding: 30px 25px;
             transition: margin-left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
             position: relative;
-            z-index: 1; /* Main content fica abaixo de tudo */
+            z-index: 1;
         }
         main.sidebar-hidden { margin-left: 0; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -256,13 +283,22 @@
 
         /* --- Floating Tools Panel --- */
         #floatingToolsPanel {
-            position: fixed; bottom: 20px; right: 20px; width: var(--floating-panel-width); max-height: 80vh;
-            background-color: var(--floating-panel-bg); border: 1px solid var(--floating-panel-border);
-            border-radius: 8px; box-shadow: var(--floating-panel-shadow);
-            z-index: 103; /* Acima da sidebar, abaixo do mega-menu/header */
-            overflow: hidden; display: flex; flex-direction: column;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: var(--floating-panel-width);
+            max-height: 80vh;
+            background-color: var(--floating-panel-bg);
+            border: 1px solid var(--floating-panel-border);
+            border-radius: 8px;
+            box-shadow: var(--floating-panel-shadow);
+            z-index: 103;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-            transform: translateY(0); opacity: 1;
+            transform: translateY(0);
+            opacity: 1;
         }
         #floatingToolsPanel.collapsed { transform: translateY(calc(100% - 50px)); height: 50px; opacity: 0.9; }
         .tools-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--light-grey-bg); border-bottom: 1px solid var(--floating-panel-border); cursor: pointer; }
@@ -271,27 +307,56 @@
         .tools-panel-content { padding: 15px; overflow-y: auto; flex-grow: 1; }
         .tool-buttons { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .tool-buttons button {
-             flex-grow: 1; background-color: var(--accent-1); color: var(--button-text-dark);
-             border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px; font-weight: bold;
-             transition: background-color 0.3s; font-size: 0.9em; text-align: center;
+            flex-grow: 1;
+            background-color: var(--accent-1);
+            color: var(--button-text-dark);
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 0.9em;
+            text-align: center;
         }
         .tool-buttons button:hover { background-color: var(--accent-1-darker); }
 
-        /* --- Tool Panels (Dentro do Flutuante) --- */
+        /* --- Tool Panels --- */
         .tool-panel {
-            background-color: transparent; border: none; padding: 0; margin-top: 0; text-align: left; display: none;
-            border-top: 1px dashed var(--border-color); margin-top: 15px; padding-top: 15px;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            margin-top: 0;
+            text-align: left;
+            display: none;
+            border-top: 1px dashed var(--border-color);
+            margin-top: 15px;
+            padding-top: 15px;
         }
         .tool-panel h4 { font-size: 1.1em; color: var(--main-color); margin-bottom: 10px; margin-top: 0; }
-        .tool-panel p { font-size: 0.95em; margin-bottom: 10px; color: var(--text-dark);}
+        .tool-panel p { font-size: 0.95em; margin-bottom: 10px; color: var(--text-dark); }
         .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
-            padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-right: 10px; margin-bottom: 10px;
-            background-color: var(--main-content-bg); color: var(--text-dark);
-            width: calc(100% - 20px); max-width: 200px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            background-color: var(--main-content-bg);
+            color: var(--text-dark);
+            width: calc(100% - 20px);
+            max-width: 200px;
         }
         .tool-panel button {
-            background-color: var(--accent-2); color: white; border: none; padding: 8px 16px; cursor: pointer;
-            border-radius: 5px; font-weight: bold; transition: background-color 0.3s; margin-right: 5px; margin-bottom: 10px;
+            background-color: var(--accent-2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-right: 5px;
+            margin-bottom: 10px;
         }
         .tool-panel button:hover { background-color: #a05a17; }
         body.dark-mode .tool-panel button:hover { background-color: #f8961e; }
@@ -302,8 +367,15 @@
 
         /* --- Footer --- */
         .footer {
-            background-color: var(--dark-bg); color: var(--footer-text-muted); padding: 30px 20px; text-align: left;
-            width: 100%; box-sizing: border-box; z-index: 101; flex-shrink: 0; margin-top: 40px;
+            background-color: var(--dark-bg);
+            color: var(--footer-text-muted);
+            padding: 30px 20px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 101;
+            flex-shrink: 0;
+            margin-top: 40px;
         }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap; gap: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--footer-separator); margin-bottom: 15px; }
         .footer-section { min-width: 200px; flex-grow: 1; }
@@ -315,15 +387,14 @@
         .footer-section p { color: var(--footer-link-color); font-size: 0.9em; margin: 0 0 8px 0; line-height: 1.5; }
         .footer-copyright { text-align: center; font-size: 0.85em; color: var(--footer-text-muted); width: 100%; padding-top: 15px; }
 
-
         /* --- Responsividade --- */
         @media screen and (max-width: 992px) {
-             :root { --sidebar-width: 200px; }
-             .w3s-top-nav button.nav-button { font-size: 14px; padding: 0 8px; }
-             .w3s-header-actions .link-text { display: none; }
-             .w3s-header-actions a, .w3s-header-actions button { padding: 6px 8px; }
-             #floatingToolsPanel { width: 300px; }
-             .mega-menu-column { min-width: 180px; }
+            :root { --sidebar-width: 200px; }
+            .w3s-top-nav button.nav-button { font-size: 14px; padding: 0 8px; }
+            .w3s-header-actions .link-text { display: none; }
+            .w3s-header-actions a, .w3s-header-actions button { padding: 6px 8px; }
+            #floatingToolsPanel { width: 300px; }
+            .mega-menu-column { min-width: 180px; }
         }
 
         @media screen and (max-width: 768px) {
@@ -331,67 +402,112 @@
             .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); width: var(--sidebar-width); }
             .sidebar.visible { transform: translateX(0); }
             main { margin-left: 0; }
-             .w3s-sidebar-toggle { display: block; }
-             #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
-             .mega-menu-panel { padding: 15px; }
-             .mega-menu-column { min-width: calc(50% - 20px); }
-             .mega-menu-column:not(:last-child) { border-right: none; }
-             .mega-menu-column:nth-child(odd) { padding-right: 10px;}
-             .mega-menu-column:nth-child(even) { padding-left: 10px;}
+            .w3s-sidebar-toggle { display: block; }
+            #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
+            .mega-menu-panel { padding: 15px; }
+            .mega-menu-column { min-width: calc(50% - 20px); }
+            .mega-menu-column:not(:last-child) { border-right: none; }
+            .mega-menu-column:nth-child(odd) { padding-right: 10px; }
+            .mega-menu-column:nth-child(even) { padding-left: 10px; }
         }
-         @media screen and (max-width: 480px) {
-              .course-list { grid-template-columns: 1fr; }
-              #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
-              .tool-buttons button { font-size: 0.85em; padding: 6px 8px;}
-              .mega-menu-column { min-width: 100%; padding: 0;}
-              /* Mega menu em mobile pode precisar de mais ajustes finos de posição/largura */
-              .mega-menu-panel { width: 100%; left: 0; }
-         }
 
+        @media screen and (max-width: 480px) {
+            .course-list { grid-template-columns: 1fr; }
+            #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
+            .tool-buttons button { font-size: 0.85em; padding: 6px 8px; }
+            .mega-menu-column { min-width: 100%; padding: 0; }
+            .mega-menu-panel { width: 100%; left: 0; }
+        }
     </style>
 </head>
-<body class=""> <header class="w3s-header" id="mainHeader">
-        <button class="w3s-sidebar-toggle" id="sidebarToggleBtn" title="Abrir/Fechar Menu">☰</button>
-
-        <div class="w3s-logo-area">
-            <a href="index.html" title="Página Inicial">
-                <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="48"/>
-                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">PRO</text>
-                </svg>
-            </a>
-        </div>
-
-        <nav class="w3s-top-nav" id="topNav">
-            <button class="nav-button" data-target="cursos-menu">Cursos</button>
-            <button class="nav-button" data-target="questoes-menu">Questões</button>
-            <button class="nav-button" data-target="flashcards-menu">Flashcards</button>
-        </nav>
-
-        <div class="w3s-header-right-group">
-            <div class="w3s-header-actions">
-                <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
-                    <span class="icon theme-icon-light">☀️</span>
-                    <span class="icon theme-icon-dark" style="display: none;">🌙</span>
-                </button>
-                <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
-                <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
-                <a href="guia.html" title="Guia do Método"><span class="icon">📖</span> <span class="link-text">Guia</span></a>
-                <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
-            </div>
-        </div>
-    </header>
+<body class="">
+    <!-- Carrega o cabeçalho dinamicamente -->
+    <div id="header-placeholder"></div>
 
     <div id="megaMenuContainer">
-        <div class="mega-menu-panel" id="cursos-menu"> /* ... (Conteúdo do menu Cursos mantido) ... */ </div>
-        <div class="mega-menu-panel" id="questoes-menu"> /* ... (Conteúdo do menu Questões mantido) ... */ </div>
-        <div class="mega-menu-panel" id="flashcards-menu"> /* ... (Conteúdo do menu Flashcards mantido) ... */ </div>
+        <!-- Cursos -->
+        <div class="mega-menu-panel" id="cursos-menu">
+            <div class="mega-menu-column">
+                <h4>Direito</h4>
+                <a href="">Direito Constitucional</a>
+                <a href="">Direito Administrativo</a>
+                <a href="">Direito Penal</a>
+                <a href="">Direito Civil</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Matemática</h4>
+                <a href="">Matemática Básica</a>
+                <a href="">Raciocínio Lógico</a>
+                <a href="">Estatística</a>
+                <a href="">Matemática Financeira</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Português</h4>
+                <a href="">Gramática</a>
+                <a href="">Interpretação de Texto</a>
+                <a href="">Redação Oficial</a>
+                <a href="">Literatura</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Informática</h4>
+                <a href="">Informática Básica</a>
+                <a href="">Sistemas Operacionais</a>
+                <a href="">Redes de Computadores</a>
+                <a href="">Segurança da Informação</a>
+            </div>
+        </div>
+
+        <!-- Questões -->
+        <div class="mega-menu-panel" id="questoes-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="">Direito Constitucional</a>
+                <a href="">Matemática Básica</a>
+                <a href="">Português</a>
+                <a href="">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="">Polícia Federal</a>
+                <a href="">INSS</a>
+                <a href="">Receita Federal</a>
+                <a href="">Tribunais</a>
+            </div>
+        </div>
+
+        <!-- Flashcards -->
+        <div class="mega-menu-panel" id="flashcards-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="">Direito Constitucional</a>
+                <a href="">Matemática Básica</a>
+                <a href="">Português</a>
+                <a href="">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="">Polícia Federal</a>
+                <a href="">INSS</a>
+                <a href="">Receita Federal</a>
+                <a href="">Tribunais</a>
+            </div>
+        </div>
     </div>
 
     <div class="content-wrapper">
-        <nav class="sidebar" id="sidebar"> /* ... (Conteúdo da Sidebar mantido) ... */ </nav>
+        <nav class="sidebar" id="sidebar">
+            <h2>Menu</h2>
+            <div class="sidebar-nav">
+                <a href="index.html" class="active">Sala de Estudos</a>
+                <a href="calendario.html">Calendário</a>
+                <a href="desempenho.html">Desempenho</a>
+                <a href="notas.html">Notas</a>
+                <a href="recursos.html">Recursos</a>
+            </div>
+        </nav>
 
-        <main id="mainContent"> <div class="container">
+        <main id="mainContent">
+            <div class="container">
                 <div class="study-room-header">
                     <h1>Sala de Estudos</h1>
                     <p>Acesse os conteúdos que você selecionou para estudar de forma organizada.</p>
@@ -399,29 +515,132 @@
 
                 <h2>Meus Cursos</h2>
                 <div class="course-list" id="courseList">
-                    <p>Carregando seus cursos...</p>
+                    <!-- Cursos diversos com links em branco -->
+                    <div class="course-card">
+                        <h3>Direito Constitucional</h3>
+                        <ul>
+                            <li><a href="">Introdução ao Direito Constitucional</a></li>
+                            <li><a href="">Princípios Fundamentais</a></li>
+                            <li><a href="">Direitos e Garantias Fundamentais</a></li>
+                        </ul>
+                    </div>
+                    <div class="course-card">
+                        <h3>Matemática Básica</h3>
+                        <ul>
+                            <li><a href="">Operações Fundamentais</a></li>
+                            <li><a href="">Frações e Porcentagens</a></li>
+                            <li><a href="">Equações</a></li>
+                        </ul>
+                    </div>
+                    <div class="course-card">
+                        <h3>Português</h3>
+                        <ul>
+                            <li><a href="">Gramática Básica</a></li>
+                            <li><a href="">Interpretação de Texto</a></li>
+                            <li><a href="">Redação</a></li>
+                        </ul>
+                    </div>
+                    <div class="course-card">
+                        <h3>Informática</h3>
+                        <ul>
+                            <li><a href="">Conceitos Básicos</a></li>
+                            <li><a href="">Sistemas Operacionais</a></li>
+                            <li><a href="">Segurança Digital</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <footer class="footer"> /* ... (Conteúdo do Footer mantido) ... */ </footer>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Sobre Nós</h4>
+                <p>PRO Concursos é uma plataforma dedicada a ajudar você a alcançar seus objetivos em concursos públicos.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Links Úteis</h4>
+                <ul>
+                    <li><a href="">Termos de Uso</a></li>
+                    <li><a href="">Política de Privacidade</a></li>
+                    <li><a href="">Contato</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contato</h4>
+                <p>Email: <a href="mailto:suporte@proconcursos.com">suporte@proconcursos.com</a></p>
+                <p>Telefone: (11) 99999-9999</p>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; <span id="current-year"></span> PRO Concursos. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
-    <div id="floatingToolsPanel"> /* ... (Conteúdo do painel mantido) ... */ </div>
+    <div id="floatingToolsPanel">
+        <div class="tools-panel-header" onclick="toggleFloatingToolsPanel()">
+            <h3>Ferramentas de Estudo</h3>
+            <button id="toggleToolsPanelBtn">−</button>
+        </div>
+        <div class="tools-panel-content">
+            <div class="tool-buttons">
+                <button onclick="toggleTool('pomodoroPanel')">Pomodoro</button>
+                <button onclick="toggleTool('musicPanel')">Música</button>
+                <button onclick="toggleTool('notesPanel')">Notas</button>
+            </div>
+
+            <div id="pomodoroPanel" class="tool-panel">
+                <h4>Timer Pomodoro</h4>
+                <select id="pomodoroTime">
+                    <option value="25">25 minutos (Foco)</option>
+                    <option value="5">5 minutos (Pausa)</option>
+                    <option value="15">15 minutos (Pausa Longa)</option>
+                </select>
+                <button onclick="startPomodoro()">Iniciar</button>
+                <button onclick="stopPomodoro()">Parar</button>
+                <div id="pomodoroTimer" class="timer-display">25:00</div>
+                <p id="pomodoroStatus">Foco</p>
+            </div>
+
+            <div id="musicPanel" class="tool-panel">
+                <h4>Música de Fundo</h4>
+                <p>Escolha uma música para relaxar enquanto estuda:</p>
+                <button onclick="playMusic()">Tocar</button>
+                <button onclick="pauseMusic()">Pausar</button>
+                <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+            </div>
+
+            <div id="notesPanel" class="tool-panel">
+                <h4>Notas Rápidas</h4>
+                <textarea id="quickNotes" placeholder="Digite suas anotações aqui..." rows="5" style="width: 100%;"></textarea>
+            </div>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // --- Configuração Firebase (MANTENHA SUA KEY) ---
+        // --- Carrega o Cabeçalho Dinamicamente ---
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                // Após carregar o header, inicializar os eventos relacionados ao header
+                initializeHeaderEvents();
+            })
+            .catch(error => console.error('Erro ao carregar o header:', error));
+
+        // --- Configuração Firebase ---
         const firebaseConfig = {
-            apiKey: "SUA_API_KEY", // Substitua pela sua chave real
+            apiKey: "SUA_API_KEY",
             authDomain: "nvp-concursos.firebaseapp.com",
             projectId: "nvp-concursos",
             storageBucket: "nvp-concursos.appspot.com",
             messagingSenderId: "397960760271",
             appId: "1:397960760271:web:1550ff01910ae927d860ba"
-         };
+        };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -429,157 +648,308 @@
         // --- Referências Globais ---
         let userId = null;
         const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent'); // Referência para o <main>
-        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+        const mainContent = document.getElementById('mainContent');
         const floatingToolsPanel = document.getElementById('floatingToolsPanel');
-        const toggleToolsPanelBtn = document.getElementById('toggleToolsPanelBtn');
-        const colorPickerBtn = document.getElementById('color-picker-btn');
-        const logoutBtn = document.getElementById('logout-btn');
         const courseListContainer = document.getElementById('courseList');
         const audioPlayer = document.getElementById('audioPlayer');
         const pomodoroTimerDisplay = document.getElementById('pomodoroTimer');
         const pomodoroStatus = document.getElementById('pomodoroStatus');
         const pomodoroTimeSelect = document.getElementById('pomodoroTime');
-        const topNav = document.getElementById('topNav');
-        const megaMenuContainer = document.getElementById('megaMenuContainer'); // Container real dos painéis
-        const themeToggleBtn = document.getElementById('theme-toggle');
         const bodyElement = document.body;
-        const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
-        const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
 
+        // --- Função para Inicializar Eventos do Header ---
+        function initializeHeaderEvents() {
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            const colorPickerBtn = document.getElementById('color-picker-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const topNav = document.getElementById('topNav');
+            const megaMenuContainer = document.getElementById('megaMenuContainer');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
+            const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
+
+            // --- Sidebar Toggle ---
+            if (sidebarToggleBtn && sidebar && mainContent) {
+                sidebarToggleBtn.addEventListener('click', toggleSidebar);
+            }
+
+            // --- Tema Claro/Escuro ---
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                });
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+
+            // --- Mudar Cor de Fundo ---
+            if (colorPickerBtn && mainContent) {
+                colorPickerBtn.addEventListener('click', () => {
+                    const colorInput = document.createElement('input');
+                    colorInput.type = 'color';
+                    const currentMainBg = mainContent.style.backgroundColor;
+                    const defaultColor = getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
+                    colorInput.value = currentMainBg ? rgbToHex(currentMainBg) : defaultColor;
+
+                    colorInput.addEventListener('input', () => {
+                        const color = colorInput.value;
+                        mainContent.style.backgroundColor = color;
+                        localStorage.setItem('userMainBgColor', color);
+                    });
+                    colorInput.click();
+                });
+            }
+
+            // --- Logout ---
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    auth.signOut().then(() => {
+                        window.location.href = 'index.html';
+                    }).catch(error => {
+                        console.error('Erro logout:', error);
+                        alert('Erro ao sair: ' + error.message);
+                    });
+                });
+            }
+
+            // --- Mega Menu Logic ---
+            const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
+            const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
+            megaMenuButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const targetId = button.getAttribute('data-target');
+                    const targetPanel = document.getElementById(targetId);
+                    if (!targetPanel) return;
+                    const isAlreadyActive = targetPanel.classList.contains('active');
+                    closeAllMegaMenus(targetId);
+                    if (!isAlreadyActive) {
+                        targetPanel.classList.add('active');
+                        button.classList.add('active');
+                    }
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                const clickedInsideMenu = megaMenuContainer && megaMenuContainer.contains(event.target);
+                const clickedInsideNav = topNav && topNav.contains(event.target);
+                if (!clickedInsideMenu && !clickedInsideNav) {
+                    closeAllMegaMenus();
+                }
+            });
+
+            function closeAllMegaMenus(excludePanelId = null) {
+                allMegaPanels.forEach(panel => {
+                    if (panel.id !== excludePanelId) {
+                        panel.classList.remove('active');
+                    }
+                });
+                megaMenuButtons.forEach(btn => {
+                    if (btn.getAttribute('data-target') !== excludePanelId) {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        }
 
         // --- Autenticação ---
         auth.onAuthStateChanged(user => {
-             if (!user) { /* Redirecionar se necessário */ }
-             else { userId = user.uid; loadCourses(); adjustLayoutForUser(); applySavedPreferences(); }
-         });
+            if (!user) { /* Redirecionar se necessário */ }
+            else {
+                userId = user.uid;
+                loadCourses();
+                adjustLayoutForUser();
+                applySavedPreferences();
+            }
+        });
 
-        function adjustLayoutForUser() { /* ... (mantido) ... */ }
+        function adjustLayoutForUser() { /* Mantido */ }
 
         function applySavedPreferences() {
-             // CORREÇÃO: Aplicar cor salva ao <main>
-             const savedMainBgColor = localStorage.getItem('userMainBgColor'); // Chave específica
-             if (savedMainBgColor && mainContent) {
-                 mainContent.style.backgroundColor = savedMainBgColor;
-             }
+            const savedMainBgColor = localStorage.getItem('userMainBgColor');
+            if (savedMainBgColor && mainContent) {
+                mainContent.style.backgroundColor = savedMainBgColor;
+            }
 
-             const savedTheme = localStorage.getItem('theme');
-             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-             let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
-             applyTheme(currentTheme);
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+            applyTheme(currentTheme);
         }
 
-
-        // --- Logout ---
-        if(logoutBtn) { logoutBtn.addEventListener('click', () => { auth.signOut().then(() => { window.location.href = 'index.html'; }).catch(error => { console.error('Erro logout:', error); alert('Erro ao sair: ' + error.message); }); }); }
-
-        // --- Tema Claro/Escuro ---
-        function applyTheme(theme) { /* ... (código mantido) ... */
-             bodyElement.classList.toggle('dark-mode', theme === 'dark');
-             if (sunIcon && moonIcon) { sunIcon.style.display = theme === 'dark' ? 'none' : 'inline'; moonIcon.style.display = theme === 'dark' ? 'inline' : 'none'; }
-             localStorage.setItem('theme', theme);
+        function applyTheme(theme) {
+            const sunIcon = document.querySelector('.theme-icon-light');
+            const moonIcon = document.querySelector('.theme-icon-dark');
+            bodyElement.classList.toggle('dark-mode', theme === 'dark');
+            if (sunIcon && moonIcon) {
+                sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+                moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+            }
+            localStorage.setItem('theme', theme);
         }
-        if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); }); }
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { if (!localStorage.getItem('theme')) { applyTheme(e.matches ? 'dark' : 'light'); } });
 
-
-        // --- Mudar Cor de Fundo (TARGET <main>) ---
-        if (colorPickerBtn && mainContent) { // Garante que mainContent exista
-             colorPickerBtn.addEventListener('click', () => {
-                 const colorInput = document.createElement('input');
-                 colorInput.type = 'color';
-                 // CORREÇÃO: Pega a cor atual do <main> ou um padrão
-                 const currentMainBg = mainContent.style.backgroundColor;
-                 // Usa a cor padrão definida na variável CSS se não houver estilo inline
-                 const defaultColor = getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
-                 colorInput.value = currentMainBg ? rgbToHex(currentMainBg) : defaultColor;
-
-                 colorInput.addEventListener('input', () => {
-                     const color = colorInput.value;
-                     // CORREÇÃO: Aplica a cor ao <main>
-                     mainContent.style.backgroundColor = color;
-                     // CORREÇÃO: Salva no localStorage com chave específica
-                     localStorage.setItem('userMainBgColor', color);
-                 });
-                 colorInput.click();
-             });
+        function rgbToHex(rgb) {
+            if (!rgb || rgb === '') return '#ffffff';
+            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!rgbMatch) return rgb;
+            const r = parseInt(rgbMatch[1]);
+            const g = parseInt(rgbMatch[2]);
+            const b = parseInt(rgbMatch[3]);
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
         }
-        function rgbToHex(rgb) { /* ... (mantido) ... */ }
-
 
         // --- Carregar Cursos ---
-        async function loadCourses() { /* ... (código mantido) ... */ }
+        async function loadCourses() {
+            if (!userId || !courseListContainer) return;
+            courseListContainer.innerHTML = '<p>Carregando seus cursos...</p>';
+            try {
+                const userCoursesRef = db.collection('users').doc(userId).collection('courses');
+                const snapshot = await userCoursesRef.get();
+                if (snapshot.empty) {
+                    courseListContainer.innerHTML = '<p>Nenhum curso encontrado. Adicione cursos para começar!</p>';
+                    return;
+                }
+                courseListContainer.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const course = doc.data();
+                    const courseCard = `
+                        <div class="course-card">
+                            <h3>${course.title}</h3>
+                            <ul>
+                                ${course.topics ? course.topics.map(topic => `<li>${topic}</li>`).join('') : '<li>Sem tópicos disponíveis</li>'}
+                            </ul>
+                        </div>
+                    `;
+                    courseListContainer.insertAdjacentHTML('beforeend', courseCard);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar cursos:', error);
+                courseListContainer.innerHTML = '<p>Erro ao carregar cursos. Tente novamente mais tarde.</p>';
+            }
+        }
 
         // --- Sidebar Toggle ---
-        if (sidebarToggleBtn && sidebar && mainContent) { sidebarToggleBtn.addEventListener('click', toggleSidebar); }
-        function toggleSidebar() { /* ... (código mantido, incluindo closeAllMegaMenus()) ... */
-             const isVisible = sidebar.classList.toggle('visible');
-             if (window.innerWidth <= 768) { sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰'; }
-             else { sidebar.classList.toggle('hidden', !isVisible); mainContent.classList.toggle('sidebar-hidden', !isVisible); sidebarToggleBtn.innerHTML = '☰'; }
-             closeAllMegaMenus();
-         }
+        function toggleSidebar() {
+            const isVisible = sidebar.classList.toggle('visible');
+            if (window.innerWidth <= 768) {
+                sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
+            } else {
+                sidebar.classList.toggle('hidden', !isVisible);
+                mainContent.classList.toggle('sidebar-hidden', !isVisible);
+                sidebarToggleBtn.innerHTML = '☰';
+            }
+            closeAllMegaMenus();
+        }
+
         window.addEventListener('resize', updateLayout);
-        function updateLayout() { /* ... (código mantido) ... */ }
-
-
-        // --- Mega Menu Logic ---
-        const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
-        const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
-        megaMenuButtons.forEach(button => { button.addEventListener('click', (event) => { /* ... (lógica mantida) ... */
-             event.stopPropagation();
-             const targetId = button.getAttribute('data-target');
-             const targetPanel = document.getElementById(targetId);
-             if (!targetPanel) return;
-             const isAlreadyActive = targetPanel.classList.contains('active');
-             closeAllMegaMenus(targetId);
-             if (!isAlreadyActive) { targetPanel.classList.add('active'); button.classList.add('active'); }
-         }); });
-         document.addEventListener('click', (event) => { /* ... (lógica mantida para fechar ao clicar fora) ... */
-             // Verifica se o clique foi fora do container dos painéis E fora da barra de navegação superior
-            const clickedInsideMenu = megaMenuContainer && megaMenuContainer.contains(event.target);
-            const clickedInsideNav = topNav && topNav.contains(event.target);
-
-             if (!clickedInsideMenu && !clickedInsideNav) {
-                 closeAllMegaMenus();
-             }
-         });
-         function closeAllMegaMenus(excludePanelId = null) { /* ... (código mantido) ... */
-             allMegaPanels.forEach(panel => { if (panel.id !== excludePanelId) { panel.classList.remove('active'); } });
-             megaMenuButtons.forEach(btn => { if (btn.getAttribute('data-target') !== excludePanelId) { btn.classList.remove('active'); } });
-          }
-
+        function updateLayout() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('visible');
+                sidebar.classList.toggle('hidden', false);
+                mainContent.classList.toggle('sidebar-hidden', false);
+                sidebarToggleBtn.innerHTML = '☰';
+            } else {
+                sidebar.classList.add('hidden');
+                mainContent.classList.add('sidebar-hidden');
+            }
+        }
 
         // --- Floating Tools Panel Toggle ---
-        if (toggleToolsPanelBtn && floatingToolsPanel) { /* ... (lógica mantida) ... */ }
-        function toggleFloatingToolsPanel() { /* ... (lógica mantida) ... */ }
+        if (document.getElementById('toggleToolsPanelBtn') && floatingToolsPanel) {
+            document.getElementById('toggleToolsPanelBtn').addEventListener('click', toggleFloatingToolsPanel);
+        }
+        function toggleFloatingToolsPanel() {
+            floatingToolsPanel.classList.toggle('collapsed');
+            document.getElementById('toggleToolsPanelBtn').textContent = floatingToolsPanel.classList.contains('collapsed') ? '+' : '−';
+        }
 
         // --- Mostrar/Esconder Ferramentas Dentro do Painel Flutuante ---
         const toolPanels = floatingToolsPanel ? floatingToolsPanel.querySelectorAll('.tool-panel') : [];
-        function toggleTool(panelIdToShow) { /* ... (lógica mantida) ... */ }
+        function toggleTool(panelIdToShow) {
+            toolPanels.forEach(panel => {
+                if (panel.id === panelIdToShow) {
+                    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+                } else {
+                    panel.style.display = 'none';
+                }
+            });
+        }
 
-        // --- Música (Simplificado) ---
-        const musicUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'; // Substituir URL
+        // --- Música ---
+        const musicUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
         let isMusicPlaying = false;
-        function playMusic() { /* ... (lógica mantida) ... */ }
-        function pauseMusic() { /* ... (lógica mantida) ... */ }
+        function playMusic() {
+            if (!isMusicPlaying && audioPlayer) {
+                audioPlayer.play();
+                isMusicPlaying = true;
+            }
+        }
+        function pauseMusic() {
+            if (isMusicPlaying && audioPlayer) {
+                audioPlayer.pause();
+                isMusicPlaying = false;
+            }
+        }
 
         // --- Pomodoro ---
-        let pomodoroInterval = null; let timeRemaining = 0; let isBreak = false; let initialFocusTime = 50 * 60;
-        function startPomodoro() { /* ... (lógica mantida) ... */ }
-        function handlePomodoroCompletion() { /* ... (lógica mantida) ... */ }
-        function updatePomodoroTimer() { /* ... (lógica mantida) ... */ }
-        function stopPomodoro() { /* ... (lógica mantida) ... */ }
-
+        let pomodoroInterval = null;
+        let timeRemaining = 0;
+        let isBreak = false;
+        let initialFocusTime = 25 * 60;
+        function startPomodoro() {
+            if (pomodoroInterval) return;
+            const selectedTime = parseInt(pomodoroTimeSelect.value) * 60;
+            timeRemaining = selectedTime;
+            initialFocusTime = selectedTime;
+            isBreak = pomodoroTimeSelect.value !== '25';
+            pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
+            updatePomodoroTimer();
+            pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+        }
+        function handlePomodoroCompletion() {
+            clearInterval(pomodoroInterval);
+            pomodoroInterval = null;
+            pomodoroStatus.textContent = 'Concluído!';
+            setTimeout(() => {
+                timeRemaining = initialFocusTime;
+                pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+                pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
+            }, 2000);
+        }
+        function updatePomodoroTimer() {
+            if (timeRemaining <= 0) {
+                handlePomodoroCompletion();
+                return;
+            }
+            timeRemaining--;
+            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+        }
+        function stopPomodoro() {
+            clearInterval(pomodoroInterval);
+            pomodoroInterval = null;
+            timeRemaining = parseInt(pomodoroTimeSelect.value) * 60;
+            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+            pomodoroStatus.textContent = 'Foco';
+        }
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
 
         // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
             updateLayout();
-            // Aplica prefs apenas se o usuário NÃO estiver logado (auth fará isso se logado)
-            if (!auth.currentUser) { applySavedPreferences(); }
+            if (!auth.currentUser) {
+                applySavedPreferences();
+            }
         });
-
     </script>
 </body>
 </html>
