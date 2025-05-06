@@ -563,536 +563,575 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script>
-        // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-                initializeHeaderEvents();
-            })
-            .catch(error => console.error('Erro ao carregar o header:', error));
+<script>
+    // --- Carrega o Cabeçalho Dinamicamente ---
+    fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-placeholder').innerHTML = data;
+            initializeHeaderEvents();
+        })
+        .catch(error => console.error('Erro ao carregar o header:', error));
 
-        // --- Carrega o Rodapé Dinamicamente ---
-        fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-                const yearSpan = document.getElementById('current-year');
-                if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-            })
-            .catch(error => console.error('Erro ao carregar o footer:', error));
+    // --- Carrega o Rodapé Dinamicamente ---
+    fetch('footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-placeholder').innerHTML = data;
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+        })
+        .catch(error => console.error('Erro ao carregar o footer:', error));
 
-        // --- Configuração Firebase ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
-            authDomain: "nvp-concursos.firebaseapp.com",
-            projectId: "nvp-concursos",
-            storageBucket: "nvp-concursos.firebasestorage.app",
-            messagingSenderId: "397960760271",
-            appId: "1:397960760271:web:1550ff01910ae927d860ba"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    // --- Configuração Firebase ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+        authDomain: "nvp-concursos.firebaseapp.com",
+        projectId: "nvp-concursos",
+        storageBucket: "nvp-concursos.firebasestorage.app",
+        messagingSenderId: "397960760271",
+        appId: "1:397960760271:web:1550ff01910ae927d860ba"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        // --- Referências Globais ---
-        let userId = null;
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        const floatingToolsPanel = document.getElementById('floatingToolsPanel');
-        const courseMenuContainer = document.getElementById('courseMenu');
-        const lessonContent = document.getElementById('lessonContent');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const pomodoroTimerDisplay = document.getElementById('pomodoroTimer');
-        const pomodoroStatus = document.getElementById('pomodoroStatus');
-        const pomodoroTimeSelect = document.getElementById('pomodoroTime');
-        const bodyElement = document.body;
-        let loadedCoursesData = [];
+    // --- Referências Globais ---
+    let userId = null;
+    let sidebarToggleBtn = null;
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const floatingToolsPanel = document.getElementById('floatingToolsPanel');
+    const courseMenuContainer = document.getElementById('courseMenu');
+    const lessonContent = document.getElementById('lessonContent');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const pomodoroTimerDisplay = document.getElementById('pomodoroTimer');
+    const pomodoroStatus = document.getElementById('pomodoroStatus');
+    const pomodoroTimeSelect = document.getElementById('pomodoroTime');
+    const bodyElement = document.body;
+    let loadedCoursesData = [];
 
-        // --- Função para Inicializar Eventos do Header ---
-        function initializeHeaderEvents() {
-            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-            const colorPickerBtn = document.getElementById('color-picker-btn');
-            const logoutBtn = document.getElementById('logout-btn');
-            const topNav = document.getElementById('topNav');
-            const megaMenuContainer = document.getElementById('megaMenuContainer');
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
-            const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
+    // --- Função para Inicializar Eventos do Header ---
+    function initializeHeaderEvents() {
+        sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+        const colorPickerBtn = document.getElementById('color-picker-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const topNav = document.getElementById('topNav');
+        const megaMenuContainer = document.getElementById('megaMenuContainer');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
+        const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
 
-            if (sidebarToggleBtn && sidebar && mainContent) {
-                sidebarToggleBtn.addEventListener('click', toggleSidebar);
-            }
-
-            if (themeToggleBtn) {
-                themeToggleBtn.addEventListener('click', () => {
-                    let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
-                    applyTheme(newTheme);
-                });
-            }
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem('theme')) {
-                    applyTheme(e.matches ? 'dark' : 'light');
-                }
-            });
-
-            if (colorPickerBtn && mainContent) {
-                colorPickerBtn.addEventListener('click', () => {
-                    const colorInput = document.createElement('input');
-                    colorInput.type = 'color';
-                    const currentMainBg = mainContent.style.backgroundColor;
-                    const defaultColor = getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
-                    colorInput.value = currentMainBg ? rgbToHex(currentMainBg) : defaultColor;
-
-                    colorInput.addEventListener('input', () => {
-                        const color = colorInput.value;
-                        mainContent.style.backgroundColor = color;
-                        localStorage.setItem('userMainBgColor', color);
-                    });
-                    colorInput.click();
-                });
-            }
-
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    auth.signOut().then(() => {
-                        window.location.href = 'index.html';
-                    }).catch(error => {
-                        console.error('Erro logout:', error);
-                        alert('Erro ao sair: ' + error.message);
-                    });
-                });
-            }
-
-            const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
-            const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
-            megaMenuButtons.forEach(button => {
-                button.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const targetId = button.getAttribute('data-target');
-                    const targetPanel = document.getElementById(targetId);
-                    if (!targetPanel) return;
-                    const isAlreadyActive = targetPanel.classList.contains('active');
-                    closeAllMegaMenus(targetId);
-                    if (!isAlreadyActive) {
-                        targetPanel.classList.add('active');
-                        button.classList.add('active');
-                    }
-                });
-            });
-
-            document.addEventListener('click', (event) => {
-                const clickedInsideMenu = megaMenuContainer && megaMenuContainer.contains(event.target);
-                const clickedInsideNav = topNav && topNav.contains(event.target);
-                if (!clickedInsideMenu && !clickedInsideNav) {
-                    closeAllMegaMenus();
-                }
-            });
-
-            function closeAllMegaMenus(excludePanelId = null) {
-                allMegaPanels.forEach(panel => {
-                    if (panel.id !== excludePanelId) {
-                        panel.classList.remove('active');
-                    }
-                });
-                megaMenuButtons.forEach(btn => {
-                    if (btn.getAttribute('data-target') !== excludePanelId) {
-                        btn.classList.remove('active');
-                    }
-                });
-            }
+        // Evento para o botão de sidebar
+        if (sidebarToggleBtn && sidebar && mainContent) {
+            sidebarToggleBtn.addEventListener('click', toggleSidebar);
         }
 
-        // --- Autenticação ---
-        auth.onAuthStateChanged(user => {
-            if (!user) {
-                console.log("Usuário não logado, redirecionando para index.html.");
-                window.location.href = 'index.html';
-            } else {
-                userId = user.uid;
-                loadCourses();
-                adjustLayoutForUser();
-                applySavedPreferences();
+        // Evento para alternância de tema
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
+                applyTheme(newTheme);
+            });
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'dark' : 'light');
             }
         });
 
-        function adjustLayoutForUser() { /* Mantido para futuras expansões */ }
+        // Evento para o seletor de cor
+        if (colorPickerBtn && mainContent) {
+            colorPickerBtn.addEventListener('click', () => {
+                const colorInput = document.createElement('input');
+                colorInput.type = 'color';
+                const currentMainBg = mainContent.style.backgroundColor;
+                const defaultColor = getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
+                colorInput.value = currentMainBg ? rgbToHex(currentMainBg) : defaultColor;
 
-        function applySavedPreferences() {
-            const savedMainBgColor = localStorage.getItem('userMainBgColor');
-            if (savedMainBgColor && mainContent) {
-                mainContent.style.backgroundColor = savedMainBgColor;
+                colorInput.addEventListener('input', () => {
+                    const color = colorInput.value;
+                    mainContent.style.backgroundColor = color;
+                    localStorage.setItem('userMainBgColor', color);
+                });
+                colorInput.click();
+            });
+        }
+
+        // Evento para o botão de logout
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                auth.signOut()
+                    .then(() => {
+                        window.location.href = 'index.html';
+                    })
+                    .catch(error => {
+                        console.error('Erro ao fazer logout:', error);
+                        alert('Erro ao sair: ' + error.message);
+                    });
+            });
+        }
+
+        // Eventos para o mega menu
+        const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
+        const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
+        megaMenuButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const targetId = button.getAttribute('data-target');
+                const targetPanel = document.getElementById(targetId);
+                if (!targetPanel) return;
+                const isAlreadyActive = targetPanel.classList.contains('active');
+                closeAllMegaMenus(targetId);
+                if (!isAlreadyActive) {
+                    targetPanel.classList.add('active');
+                    button.classList.add('active');
+                }
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            const clickedInsideMenu = megaMenuContainer && megaMenuContainer.contains(event.target);
+            const clickedInsideNav = topNav && topNav.contains(event.target);
+            if (!clickedInsideMenu && !clickedInsideNav) {
+                closeAllMegaMenus();
             }
+        });
 
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-            let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
-            applyTheme(currentTheme);
-        }
+        // Atualiza o layout após inicializar os eventos
+        updateLayout();
+    }
 
-        function applyTheme(theme) {
-            const sunIcon = document.querySelector('.theme-icon-light');
-            const moonIcon = document.querySelector('.theme-icon-dark');
-            bodyElement.classList.toggle('dark-mode', theme === 'dark');
-            if (sunIcon && moonIcon) {
-                sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
-                moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+    // --- Função para fechar os Mega Menus ---
+    function closeAllMegaMenus(excludePanelId = null) {
+        const megaMenuContainer = document.getElementById('megaMenuContainer');
+        const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
+        const topNav = document.getElementById('topNav');
+        const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
+
+        allMegaPanels.forEach(panel => {
+            if (panel.id !== excludePanelId) {
+                panel.classList.remove('active');
             }
-            localStorage.setItem('theme', theme);
+        });
+        megaMenuButtons.forEach(btn => {
+            if (btn.getAttribute('data-target') !== excludePanelId) {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // --- Autenticação ---
+    auth.onAuthStateChanged(user => {
+        if (!user) {
+            console.log("Usuário não logado, redirecionando para index.html.");
+            window.location.href = 'index.html';
+        } else {
+            userId = user.uid;
+            loadCourses();
+            applySavedPreferences();
+        }
+    });
+
+    function applySavedPreferences() {
+        const savedMainBgColor = localStorage.getItem('userMainBgColor');
+        if (savedMainBgColor && mainContent) {
+            mainContent.style.backgroundColor = savedMainBgColor;
         }
 
-        function rgbToHex(rgb) {
-            if (!rgb || rgb === '') return '#ffffff';
-            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!rgbMatch) return rgb;
-            const r = parseInt(rgbMatch[1]);
-            const g = parseInt(rgbMatch[2]);
-            const b = parseInt(rgbMatch[3]);
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+        applyTheme(currentTheme);
+    }
+
+    function applyTheme(theme) {
+        const sunIcon = document.querySelector('.theme-icon-light');
+        const moonIcon = document.querySelector('.theme-icon-dark');
+        bodyElement.classList.toggle('dark-mode', theme === 'dark');
+        if (sunIcon && moonIcon) {
+            sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+            moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
         }
+        localStorage.setItem('theme', theme);
+    }
 
-        // --- Carregar Cursos para o Menu Lateral ---
-        async function loadCourses() {
-            if (!userId || !courseMenuContainer) return;
-            courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
-            try {
-                const userDocRef = db.collection('users').doc(userId);
-                const userDoc = await userDocRef.get();
-                let coursesToDisplay = [];
+    function rgbToHex(rgb) {
+        if (!rgb || rgb === '') return '#ffffff';
+        const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        if (!rgbMatch) return rgb;
+        const r = parseInt(rgbMatch[1]);
+        const g = parseInt(rgbMatch[2]);
+        const b = parseInt(rgbMatch[3]);
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    }
 
-                if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics && userDoc.data().selectedSubtopics.length > 0) {
-                    const selectedSubtopics = userDoc.data().selectedSubtopics;
-                    console.log("Carregando cursos personalizados:", selectedSubtopics);
+    // --- Carregar Cursos para o Menu Lateral ---
+    async function loadCourses() {
+        if (!userId || !courseMenuContainer) return;
+        courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
+        try {
+            const userDocRef = db.collection('users').doc(userId);
+            const userDoc = await userDocRef.get();
+            let coursesToDisplay = [];
 
-                    for (const selection of selectedSubtopics) {
-                        const { courseId, moduleId, subtopicId } = selection;
-                        const courseRef = db.collection('courses').doc(courseId);
-                        const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) continue;
+            if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics && userDoc.data().selectedSubtopics.length > 0) {
+                const selectedSubtopics = userDoc.data().selectedSubtopics;
+                console.log("Carregando cursos personalizados:", selectedSubtopics);
 
-                        const courseData = courseDoc.data();
-                        const moduleRef = courseRef.collection('modules').doc(moduleId);
-                        const moduleDoc = await moduleRef.get();
-                        if (!moduleDoc.exists) continue;
-
-                        const moduleData = moduleDoc.data();
-                        const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
-                        const subtopicDoc = await subtopicRef.get();
-                        if (!subtopicDoc.exists) continue;
-
-                        const subtopicData = subtopicDoc.data();
-                        let course = coursesToDisplay.find(c => c.id === courseId);
-                        if (!course) {
-                            course = {
-                                id: courseId,
-                                name: courseData.name || 'Curso s/ Nome',
-                                order: courseData.order || 0,
-                                modules: []
-                            };
-                            coursesToDisplay.push(course);
-                        }
-                        let module = course.modules.find(m => m.id === moduleId);
-                        if (!module) {
-                            module = {
-                                id: moduleId,
-                                name: moduleData.name || 'Módulo s/ Nome',
-                                order: moduleData.order || 0,
-                                subtopics: []
-                            };
-                            course.modules.push(module);
-                        }
-                        module.subtopics.push({
-                            id: subtopicId,
-                            name: subtopicData.name || 'Aula s/ Nome',
-                            order: subtopicData.order || 0,
-                            content: subtopicData.content || ''
-                        });
-                    }
-                } else {
-                    console.log("Carregando todos os cursos (sem personalização).");
-                    const coursesRef = db.collection('courses').orderBy('order');
-                    const coursesSnapshot = await coursesRef.get();
-                    if (coursesSnapshot.empty) {
-                        courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
-                        return;
+                for (const selection of selectedSubtopics) {
+                    const { courseId, moduleId, subtopicId } = selection;
+                    const courseRef = db.collection('courses').doc(courseId);
+                    const courseDoc = await courseRef.get();
+                    if (!courseDoc.exists) {
+                        console.warn(`Curso ${courseId} não encontrado.`);
+                        continue;
                     }
 
-                    for (const courseDoc of coursesSnapshot.docs) {
-                        const courseData = courseDoc.data();
-                        const courseId = courseDoc.id;
-                        const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
-                        const modulesSnapshot = await modulesRef.get();
-                        const modules = [];
+                    const courseData = courseDoc.data();
+                    const moduleRef = courseRef.collection('modules').doc(moduleId);
+                    const moduleDoc = await moduleRef.get();
+                    if (!moduleDoc.exists) {
+                        console.warn(`Módulo ${moduleId} não encontrado no curso ${courseId}.`);
+                        continue;
+                    }
 
-                        for (const moduleDoc of modulesSnapshot.docs) {
-                            const moduleData = moduleDoc.data();
-                            const moduleId = moduleDoc.id;
-                            const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
-                            const subtopicsSnapshot = await subtopicsRef.get();
-                            const subtopics = [];
+                    const moduleData = moduleDoc.data();
+                    const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
+                    const subtopicDoc = await subtopicRef.get();
+                    if (!subtopicDoc.exists) {
+                        console.warn(`Subtema ${subtopicId} não encontrado no módulo ${moduleId}.`);
+                        continue;
+                    }
 
-                            subtopicsSnapshot.forEach(subtopicDoc => {
-                                const subtopicData = subtopicDoc.data();
-                                subtopics.push({
-                                    id: subtopicDoc.id,
-                                    name: subtopicData.name || 'Aula s/ Nome',
-                                    order: subtopicData.order || 0,
-                                    content: subtopicData.content || ''
-                                });
-                            });
-
-                            modules.push({
-                                id: moduleId,
-                                name: moduleData.name || 'Módulo s/ Nome',
-                                order: moduleData.order || 0,
-                                subtopics: subtopics
-                            });
-                        }
-
-                        coursesToDisplay.push({
+                    const subtopicData = subtopicDoc.data();
+                    let course = coursesToDisplay.find(c => c.id === courseId);
+                    if (!course) {
+                        course = {
                             id: courseId,
                             name: courseData.name || 'Curso s/ Nome',
                             order: courseData.order || 0,
-                            modules: modules
-                        });
+                            modules: []
+                        };
+                        coursesToDisplay.push(course);
                     }
+                    let module = course.modules.find(m => m.id === moduleId);
+                    if (!module) {
+                        module = {
+                            id: moduleId,
+                            name: moduleData.name || 'Módulo s/ Nome',
+                            order: moduleData.order || 0,
+                            subtopics: []
+                        };
+                        course.modules.push(module);
+                    }
+                    module.subtopics.push({
+                        id: subtopicId,
+                        name: subtopicData.name || 'Aula s/ Nome',
+                        order: subtopicData.order || 0,
+                        content: subtopicData.content || ''
+                    });
                 }
 
-                loadedCoursesData = coursesToDisplay;
-                loadedCoursesData.sort((a, b) => a.order - b.order);
-                loadedCoursesData.forEach(course => {
-                    course.modules.sort((a, b) => a.order - b.order);
-                    course.modules.forEach(module => {
-                        module.subtopics.sort((a, b) => a.order - b.order);
-                    });
-                });
-
-                renderCourseMenu(loadedCoursesData);
-            } catch (error) {
-                console.error('Erro ao carregar cursos:', error);
-                courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos. Tente novamente mais tarde.</p>';
-            }
-        }
-
-        function renderCourseMenu(courses) {
-            if (!courseMenuContainer) return;
-            if (!courses || courses.length === 0) {
-                courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
-                return;
-            }
-
-            let htmlContent = '';
-            courses.forEach(course => {
-                htmlContent += `
-                    <div class="course-item">
-                        <div class="course-header" data-course-id="${course.id}">
-                            <span>${course.name}</span>
-                            <span class="toggle-icon">▶</span>
-                        </div>
-                        <ul class="module-list" id="modules-${course.id}">
-                            ${course.modules.map(module => `
-                                <li class="module-item">
-                                    <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                        <span>${module.name}</span>
-                                        <span class="toggle-icon">▶</span>
-                                    </div>
-                                    <ul class="subtopic-list" id="subtopics-${module.id}">
-                                        ${module.subtopics.map(subtopic => `
-                                            <li class="subtopic-item">
-                                                <a href="#" class="subtopic-link" data-subtopic-id="${subtopic.id}" data-module-id="${module.id}" data-course-id="${course.id}">${subtopic.name}</a>
-                                            </li>
-                                        `).join('')}
-                                    </ul>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `;
-            });
-
-            courseMenuContainer.innerHTML = htmlContent;
-            addMenuEventListeners();
-        }
-
-        function addMenuEventListeners() {
-            const courseHeaders = document.querySelectorAll('.course-header');
-            const moduleHeaders = document.querySelectorAll('.module-header');
-            const subtopicLinks = document.querySelectorAll('.subtopic-link');
-
-            courseHeaders.forEach(header => {
-                header.addEventListener('click', () => {
-                    const courseId = header.dataset.courseId;
-                    const moduleList = document.getElementById(`modules-${courseId}`);
-                    const toggleIcon = header.querySelector('.toggle-icon');
-                    moduleList.classList.toggle('visible');
-                    toggleIcon.classList.toggle('expanded');
-                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
-                });
-            });
-
-            moduleHeaders.forEach(header => {
-                header.addEventListener('click', () => {
-                    const moduleId = header.dataset.moduleId;
-                    const subtopicList = document.getElementById(`subtopics-${moduleId}`);
-                    const toggleIcon = header.querySelector('.toggle-icon');
-                    subtopicList.classList.toggle('visible');
-                    toggleIcon.classList.toggle('expanded');
-                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
-                });
-            });
-
-            subtopicLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const subtopicId = link.dataset.subtopicId;
-                    const moduleId = link.dataset.moduleId;
-                    const courseId = link.dataset.courseId;
-
-                    document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-
-                    loadLessonContent(courseId, moduleId, subtopicId);
-                });
-            });
-        }
-
-        async function loadLessonContent(courseId, moduleId, subtopicId) {
-            if (!lessonContent) return;
-            lessonContent.innerHTML = '<p>Carregando aula...</p>';
-            try {
-                const course = loadedCoursesData.find(c => c.id === courseId);
-                const module = course?.modules.find(m => m.id === moduleId);
-                const subtopic = module?.subtopics.find(s => s.id === subtopicId);
-
-                if (!subtopic || !subtopic.content) {
-                    lessonContent.innerHTML = '<p>Conteúdo não encontrado para esta aula.</p>';
+                if (coursesToDisplay.length === 0) {
+                    console.log("Nenhum curso personalizado válido encontrado.");
+                    courseMenuContainer.innerHTML = '<p>Nenhum curso personalizado disponível. Por favor, selecione cursos em Personalizar.</p>';
+                    return;
+                }
+            } else {
+                console.log("Carregando todos os cursos (sem personalização).");
+                const coursesRef = db.collection('courses').orderBy('order');
+                const coursesSnapshot = await coursesRef.get();
+                if (coursesSnapshot.empty) {
+                    courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
                     return;
                 }
 
-                lessonContent.innerHTML = subtopic.content;
-            } catch (error) {
-                console.error('Erro ao carregar conteúdo da aula:', error);
-                lessonContent.innerHTML = '<p>Erro ao carregar a aula. Tente novamente mais tarde.</p>';
-            }
-        }
+                for (const courseDoc of coursesSnapshot.docs) {
+                    const courseData = courseDoc.data();
+                    const courseId = courseDoc.id;
+                    const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
+                    const modulesSnapshot = await modulesRef.get();
+                    const modules = [];
 
-        // --- Sidebar Toggle ---
-        function toggleSidebar() {
-            const isVisible = sidebar.classList.toggle('visible');
-            if (window.innerWidth <= 768) {
-                sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
-            } else {
-                sidebar.classList.toggle('hidden', !isVisible);
-                mainContent.classList.toggle('sidebar-hidden', !isVisible);
-                sidebarToggleBtn.innerHTML = '☰';
-            }
-            closeAllMegaMenus();
-        }
+                    for (const moduleDoc of modulesSnapshot.docs) {
+                        const moduleData = moduleDoc.data();
+                        const moduleId = moduleDoc.id;
+                        const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
+                        const subtopicsSnapshot = await subtopicsRef.get();
+                        const subtopics = [];
 
-        window.addEventListener('resize', updateLayout);
-        function updateLayout() {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('visible');
-                sidebar.classList.toggle('hidden', false);
-                mainContent.classList.toggle('sidebar-hidden', false);
-                sidebarToggleBtn.innerHTML = '☰';
-            } else {
-                sidebar.classList.add('hidden');
-                mainContent.classList.add('sidebar-hidden');
-            }
-        }
+                        subtopicsSnapshot.forEach(subtopicDoc => {
+                            const subtopicData = subtopicDoc.data();
+                            subtopics.push({
+                                id: subtopicDoc.id,
+                                name: subtopicData.name || 'Aula s/ Nome',
+                                order: subtopicData.order || 0,
+                                content: subtopicData.content || ''
+                            });
+                        });
 
-        // --- Floating Tools Panel Toggle ---
-        if (document.getElementById('toggleToolsPanelBtn') && floatingToolsPanel) {
-            document.getElementById('toggleToolsPanelBtn').addEventListener('click', toggleFloatingToolsPanel);
-        }
-        function toggleFloatingToolsPanel() {
-            floatingToolsPanel.classList.toggle('collapsed');
-            document.getElementById('toggleToolsPanelBtn').textContent = floatingToolsPanel.classList.contains('collapsed') ? '+' : '−';
-        }
+                        modules.push({
+                            id: moduleId,
+                            name: moduleData.name || 'Módulo s/ Nome',
+                            order: moduleData.order || 0,
+                            subtopics: subtopics
+                        });
+                    }
 
-        // --- Mostrar/Esconder Ferramentas Dentro do Painel Flutuante ---
-        const toolPanels = floatingToolsPanel ? floatingToolsPanel.querySelectorAll('.tool-panel') : [];
-        function toggleTool(panelIdToShow) {
-            toolPanels.forEach(panel => {
-                if (panel.id === panelIdToShow) {
-                    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-                } else {
-                    panel.style.display = 'none';
+                    coursesToDisplay.push({
+                        id: courseId,
+                        name: courseData.name || 'Curso s/ Nome',
+                        order: courseData.order || 0,
+                        modules: modules
+                    });
                 }
+            }
+
+            loadedCoursesData = coursesToDisplay;
+            loadedCoursesData.sort((a, b) => a.order - b.order);
+            loadedCoursesData.forEach(course => {
+                course.modules.sort((a, b) => a.order - b.order);
+                course.modules.forEach(module => {
+                    module.subtopics.sort((a, b) => a.order - b.order);
+                });
             });
+
+            renderCourseMenu(loadedCoursesData);
+        } catch (error) {
+            console.error('Erro ao carregar cursos:', error);
+            courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos. Tente novamente mais tarde.</p>';
+        }
+    }
+
+    function renderCourseMenu(courses) {
+        if (!courseMenuContainer) return;
+        if (!courses || courses.length === 0) {
+            courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
+            return;
         }
 
-        // --- Música ---
-        const musicUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-        let isMusicPlaying = false;
-        function playMusic() {
-            if (!isMusicPlaying && audioPlayer) {
-                audioPlayer.play();
-                isMusicPlaying = true;
-            }
-        }
-        function pauseMusic() {
-            if (isMusicPlaying && audioPlayer) {
-                audioPlayer.pause();
-                isMusicPlaying = false;
-            }
-        }
+        let htmlContent = '';
+        courses.forEach(course => {
+            htmlContent += `
+                <div class="course-item">
+                    <div class="course-header" data-course-id="${course.id}">
+                        <span>${course.name}</span>
+                        <span class="toggle-icon">▶</span>
+                    </div>
+                    <ul class="module-list" id="modules-${course.id}">
+                        ${course.modules.map(module => `
+                            <li class="module-item">
+                                <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
+                                    <span>${module.name}</span>
+                                    <span class="toggle-icon">▶</span>
+                                </div>
+                                <ul class="subtopic-list" id="subtopics-${module.id}">
+                                    ${module.subtopics.map(subtopic => `
+                                        <li class="subtopic-item">
+                                            <a href="#" class="subtopic-link" data-subtopic-id="${subtopic.id}" data-module-id="${module.id}" data-course-id="${course.id}">${subtopic.name}</a>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        });
 
-        // --- Pomodoro ---
-        let pomodoroInterval = null;
-        let timeRemaining = 0;
-        let isBreak = false;
-        let initialFocusTime = 25 * 60;
-        function startPomodoro() {
-            if (pomodoroInterval) return;
-            const selectedTime = parseInt(pomodoroTimeSelect.value) * 60;
-            timeRemaining = selectedTime;
-            initialFocusTime = selectedTime;
-            isBreak = pomodoroTimeSelect.value !== '25';
-            pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
-            updatePomodoroTimer();
-            pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
-        }
-        function handlePomodoroCompletion() {
-            clearInterval(pomodoroInterval);
-            pomodoroInterval = null;
-            pomodoroStatus.textContent = 'Concluído!';
-            setTimeout(() => {
-                timeRemaining = initialFocusTime;
-                pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-                pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
-            }, 2000);
-        }
-        function updatePomodoroTimer() {
-            if (timeRemaining <= 0) {
-                handlePomodoroCompletion();
+        courseMenuContainer.innerHTML = htmlContent;
+        addMenuEventListeners();
+    }
+
+    function addMenuEventListeners() {
+        const courseHeaders = document.querySelectorAll('.course-header');
+        const moduleHeaders = document.querySelectorAll('.module-header');
+        const subtopicLinks = document.querySelectorAll('.subtopic-link');
+
+        courseHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const courseId = header.dataset.courseId;
+                const moduleList = document.getElementById(`modules-${courseId}`);
+                const toggleIcon = header.querySelector('.toggle-icon');
+                moduleList.classList.toggle('visible');
+                toggleIcon.classList.toggle('expanded');
+                toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
+            });
+        });
+
+        moduleHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const moduleId = header.dataset.moduleId;
+                const subtopicList = document.getElementById(`subtopics-${moduleId}`);
+                const toggleIcon = header.querySelector('.toggle-icon');
+                subtopicList.classList.toggle('visible');
+                toggleIcon.classList.toggle('expanded');
+                toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
+            });
+        });
+
+        subtopicLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const subtopicId = link.dataset.subtopicId;
+                const moduleId = link.dataset.moduleId;
+                const courseId = link.dataset.courseId;
+
+                document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                loadLessonContent(courseId, moduleId, subtopicId);
+            });
+        });
+    }
+
+    async function loadLessonContent(courseId, moduleId, subtopicId) {
+        if (!lessonContent) return;
+        lessonContent.innerHTML = '<p>Carregando aula...</p>';
+        try {
+            const course = loadedCoursesData.find(c => c.id === courseId);
+            const module = course?.modules.find(m => m.id === moduleId);
+            const subtopic = module?.subtopics.find(s => s.id === subtopicId);
+
+            if (!subtopic || !subtopic.content) {
+                lessonContent.innerHTML = '<p>Conteúdo não encontrado para esta aula.</p>';
                 return;
             }
-            timeRemaining--;
-            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-        }
-        function stopPomodoro() {
-            clearInterval(pomodoroInterval);
-            pomodoroInterval = null;
-            timeRemaining = parseInt(pomodoroTimeSelect.value) * 60;
-            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-            pomodoroStatus.textContent = 'Foco';
-        }
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
 
-        // --- Inicialização ---
-        document.addEventListener('DOMContentLoaded', () => {
-            updateLayout();
-            if (!auth.currentUser) {
-                applySavedPreferences();
+            lessonContent.innerHTML = subtopic.content;
+        } catch (error) {
+            console.error('Erro ao carregar conteúdo da aula:', error);
+            lessonContent.innerHTML = '<p>Erro ao carregar a aula. Tente novamente mais tarde.</p>';
+        }
+    }
+
+    // --- Sidebar Toggle ---
+    function toggleSidebar() {
+        const isVisible = sidebar.classList.toggle('visible');
+        if (window.innerWidth <= 768) {
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
+            }
+        } else {
+            sidebar.classList.toggle('hidden', !isVisible);
+            mainContent.classList.toggle('sidebar-hidden', !isVisible);
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.innerHTML = '☰';
+            }
+        }
+        closeAllMegaMenus();
+    }
+
+    window.addEventListener('resize', updateLayout);
+    function updateLayout() {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('visible');
+            sidebar.classList.toggle('hidden', false);
+            mainContent.classList.toggle('sidebar-hidden', false);
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.innerHTML = '☰';
+            }
+        } else {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('sidebar-hidden');
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.innerHTML = '☰';
+            }
+        }
+    }
+
+    // --- Floating Tools Panel Toggle ---
+    if (document.getElementById('toggleToolsPanelBtn') && floatingToolsPanel) {
+        document.getElementById('toggleToolsPanelBtn').addEventListener('click', toggleFloatingToolsPanel);
+    }
+    function toggleFloatingToolsPanel() {
+        floatingToolsPanel.classList.toggle('collapsed');
+        document.getElementById('toggleToolsPanelBtn').textContent = floatingToolsPanel.classList.contains('collapsed') ? '+' : '−';
+    }
+
+    // --- Mostrar/Esconder Ferramentas Dentro do Painel Flutuante ---
+    const toolPanels = floatingToolsPanel ? floatingToolsPanel.querySelectorAll('.tool-panel') : [];
+    function toggleTool(panelIdToShow) {
+        toolPanels.forEach(panel => {
+            if (panel.id === panelIdToShow) {
+                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            } else {
+                panel.style.display = 'none';
             }
         });
-    </script>
+    }
+
+    // --- Música ---
+    const musicUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+    let isMusicPlaying = false;
+    function playMusic() {
+        if (!isMusicPlaying && audioPlayer) {
+            audioPlayer.play();
+            isMusicPlaying = true;
+        }
+    }
+    function pauseMusic() {
+        if (isMusicPlaying && audioPlayer) {
+            audioPlayer.pause();
+            isMusicPlaying = false;
+        }
+    }
+
+    // --- Pomodoro ---
+    let pomodoroInterval = null;
+    let timeRemaining = 0;
+    let isBreak = false;
+    let initialFocusTime = 25 * 60;
+    function startPomodoro() {
+        if (pomodoroInterval) return;
+        const selectedTime = parseInt(pomodoroTimeSelect.value) * 60;
+        timeRemaining = selectedTime;
+        initialFocusTime = selectedTime;
+        isBreak = pomodoroTimeSelect.value !== '25';
+        pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
+        updatePomodoroTimer();
+        pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+    }
+    function handlePomodoroCompletion() {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        pomodoroStatus.textContent = 'Concluído!';
+        setTimeout(() => {
+            timeRemaining = initialFocusTime;
+            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+            pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
+        }, 2000);
+    }
+    function updatePomodoroTimer() {
+        if (timeRemaining <= 0) {
+            handlePomodoroCompletion();
+            return;
+        }
+        timeRemaining--;
+        pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+    }
+    function stopPomodoro() {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        timeRemaining = parseInt(pomodoroTimeSelect.value) * 60;
+        pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+        pomodoroStatus.textContent = 'Foco';
+    }
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // --- Inicialização ---
+    document.addEventListener('DOMContentLoaded', () => {
+        updateLayout();
+        if (!auth.currentUser) {
+            applySavedPreferences();
+        }
+    });
+</script>
 </body>
 </html>
