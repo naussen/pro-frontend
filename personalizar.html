@@ -4,509 +4,615 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalize seus Estudos - PRO Concursos</title>
-    <?php // wp_head(); ?>
+    <style>
+        /* === CSS COMPLETO PARA PERSONALIZAR.HTML (Mantido com ajustes para compatibilidade) === */
+        :root {
+            --header-height: 55px;
+            --sidebar-width: 240px; /* Adicionado para consistência com index.html */
+            --main-color: #1A5276;
+            --light-highlight-bg: #EAF2F8;
+            --accent-1: #D4AC0D;
+            --accent-1-darker: #b3910b;
+            --accent-2: #CA6F1E;
+            --dark-bg: #154360;
+            --subnav-bg: #282A35;
+            --text-dark: #333;
+            --text-light: #f8f9fa;
+            --text-muted: #6c757d;
+            --border-color: #ccc;
+            --light-grey-bg: #f1f1f1;
+            --header-bg: #ffffff;
+            --header-border: #e7e7e7;
+            --main-content-bg: #ffffff;
+            --code-bg: #f1f1f1;
+            --button-text-dark: #333;
+            --footer-text-muted: #ccc;
+            --footer-link-color: #ccc;
+            --footer-link-hover: var(--accent-1);
+            --footer-separator: #555;
+            --footer-h4: #f1f1f1;
+            --dark-blue-hover: #113a54;
+            --error-color: #D32F2F;
+            --sidebar-bg: #f1f1f1; /* Adicionado para consistência */
+            --sidebar-border: #d4d4d4;
+            --top-nav-bg: #ffffff; /* Adicionado para consistência */
+            --top-nav-link-color: #333;
+            --top-nav-link-hover-bg: #f1f1f1;
+            --top-nav-link-active-bg: #ddd;
+            --mega-menu-bg: #f8f9fa;
+            --mega-menu-border: #dee2e6;
+            --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            --mega-menu-link-color: #212529;
+            --mega-menu-link-hover-color: #0056b3;
+            --mega-menu-heading-color: #495057;
+        }
 
-<style>
-/* === CSS COMPLETO PARA PERSONALIZAR.HTML === */
-:root {
-  --header-height: 55px;
-  --main-color: #1A5276;
-  --light-highlight-bg: #EAF2F8;
-  --accent-1: #D4AC0D;
-  --accent-1-darker: #b3910b;
-  --accent-2: #CA6F1E;
-  --dark-bg: #154360;
-  --subnav-bg: #282A35;
-  --text-dark: #333;
-  --text-light: #f8f9fa;
-  --text-muted: #6c757d;
-  --border-color: #ccc;
-  --light-grey-bg: #f1f1f1;
-  --header-bg: #ffffff;
-  --header-border: #e7e7e7;
-  --main-content-bg: #ffffff;
-  --code-bg: #f1f1f1;
-  --button-text-dark: #333;
-  --footer-text-muted: #ccc;
-  --footer-link-color: #ccc;
-  --footer-link-hover: var(--accent-1);
-  --footer-separator: #555;
-  --footer-h4: #f1f1f1;
-  --dark-blue-hover: #113a54;
-  --error-color: #D32F2F;
-}
+        body.dark-mode {
+            --main-color: #6cb6ff;
+            --light-highlight-bg: #2d333b;
+            --accent-1: #e4c05c;
+            --accent-1-darker: #cfae51;
+            --accent-2: #d98234;
+            --dark-bg: #0d1117;
+            --subnav-bg: #22272e;
+            --text-dark: #c9d1d9;
+            --text-light: #f0f6fc;
+            --text-muted: #8b949e;
+            --border-color: #444c56;
+            --light-grey-bg: #0d1117;
+            --header-bg: #161b22;
+            --header-border: #30363d;
+            --main-content-bg: #161b22;
+            --code-bg: #22272e;
+            --button-text-dark: #161b22;
+            --footer-text-muted: #8b949e;
+            --footer-link-color: #8b949e;
+            --footer-link-hover: var(--accent-1);
+            --footer-separator: #30363d;
+            --footer-h4: var(--text-light);
+            --dark-blue-hover: #1a6fba;
+            --error-color: #FF5252;
+            --sidebar-bg: #161b22;
+            --sidebar-border: #30363d;
+            --top-nav-bg: #161b22;
+            --top-nav-link-color: var(--text-light);
+            --top-nav-link-hover-bg: #2d333b;
+            --top-nav-link-active-bg: #0d1117;
+            --mega-menu-bg: #212529;
+            --mega-menu-border: #343a40;
+            --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            --mega-menu-link-color: #adb5bd;
+            --mega-menu-link-hover-color: #dee2e6;
+            --mega-menu-heading-color: #ced4da;
+        }
 
-body.dark-mode {
-  --main-color: #6cb6ff;
-  --light-highlight-bg: #2d333b;
-  --accent-1: #e4c05c;
-  --accent-1-darker: #cfae51;
-  --accent-2: #d98234;
-  --dark-bg: #0d1117;
-  --subnav-bg: #22272e;
-  --text-dark: #c9d1d9;
-  --text-light: #f0f6fc;
-  --text-muted: #8b949e;
-  --border-color: #444c56;
-  --light-grey-bg: #0d1117;
-  --header-bg: #161b22;
-  --header-border: #30363d;
-  --main-content-bg: #161b22;
-  --code-bg: #22272e;
-  --button-text-dark: #161b22;
-  --footer-text-muted: #8b949e;
-  --footer-link-color: #8b949e;
-  --footer-link-hover: var(--accent-1);
-  --footer-separator: #30363d;
-  --footer-h4: var(--text-light);
-  --dark-blue-hover: #1a6fba;
-  --error-color: #FF5252;
-}
+        html { height: 100%; box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: inherit; }
 
-html { height: 100%; }
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--light-grey-bg);
-  color: var(--text-dark);
-  padding-top: var(--header-height);
-  box-sizing: border-box;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--light-grey-bg);
+            color: var(--text-dark);
+            padding-top: var(--header-height);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-/* Cabeçalho */
-.w3s-header {
-  background-color: var(--header-bg);
-  color: var(--text-dark);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  height: var(--header-height);
-  width: 100%;
-  box-sizing: border-box;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 103;
-  border-bottom: 1px solid var(--header-border);
-  gap: 15px;
-}
-.w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
-.w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
-.w3s-logo-placeholder text {
-  font-size: 35px;
-  fill: var(--main-color);
-  font-weight: bold;
-  font-family: sans-serif;
-}
-.w3s-logo-placeholder circle {
-  fill: transparent;
-  stroke: var(--main-color);
-  stroke-width: 5;
-}
-.w3s-header-right-group {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  gap: 10px;
-}
-.w3s-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  position: relative;
-}
-.w3s-header-actions a, .w3s-header-actions button {
-  color: var(--text-dark);
-  text-decoration: none;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: color 0.2s, background-color 0.2s;
-  padding: 5px 8px;
-  border-radius: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-.w3s-header-actions a .icon, .w3s-header-actions button .icon {
-  font-size: 1.1em;
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  line-height: 1em;
-  text-align: center;
-  color: #666;
-}
-body.dark-mode .w3s-header-actions a, body.dark-mode .w3s-header-actions button {
-  color: var(--text-muted);
-}
-body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon {
-  color: var(--text-muted);
-}
-.w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
-.w3s-header-actions a[title="Minha Sala de Estudos"] .icon { color: #3fb950; }
-.w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
-.w3s-header-actions a:hover, .w3s-header-actions button:hover {
-  color: var(--main-color);
-  background-color: rgba(0, 0, 0, 0.03);
-}
-body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-.w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon {
-  color: var(--main-color);
-}
-#theme-toggle .icon { font-size: 1.3em; }
+        /* Cabeçalho (Estilização mantida para compatibilidade) */
+        .w3s-header {
+            background-color: var(--header-bg);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 10px 0 0;
+            height: var(--header-height);
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 105;
+            border-bottom: 1px solid var(--header-border);
+            gap: 5px;
+        }
+        .w3s-sidebar-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 15px;
+            color: var(--text-dark);
+            line-height: var(--header-height);
+            margin-right: 5px;
+        }
+        .w3s-sidebar-toggle:hover { background-color: var(--light-grey-bg); }
+        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
+        .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
+        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; }
+        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
 
-/* Conteúdo Principal */
-main {
-  flex-grow: 1;
-  background-color: var(--main-content-bg);
-  width: 100%;
-  box-sizing: border-box;
-  padding: 40px 0;
-}
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-.personalization-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-.personalization-header h1 {
-  font-size: 2em;
-  color: var(--main-color);
-  margin-bottom: 10px;
-}
-.personalization-header .skip-link {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.9em;
-}
-.personalization-header .skip-link:hover {
-  color: var(--main-color);
-  text-decoration: underline;
-}
+        /* Top Navigation (Adicionado para consistência com index.html) */
+        .w3s-top-nav { display: flex; align-items: center; height: 100%; margin-left: 10px; position: relative; }
+        .w3s-top-nav button.nav-button {
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 100%;
+            text-decoration: none;
+            color: var(--top-nav-link-color);
+            font-size: 15px;
+            font-family: inherit;
+            background-color: transparent;
+            border: none;
+            border-right: 1px solid var(--header-border);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .w3s-top-nav button.nav-button:first-child { border-left: 1px solid var(--header-border); }
+        .w3s-top-nav button.nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
+        .w3s-top-nav button.nav-button.active { background-color: var(--top-nav-link-active-bg); }
 
-/* Área de Personalização */
-.personalization-area {
-  display: flex;
-  gap: 30px;
-  background-color: var(--header-bg);
-  padding: 25px;
-  border-radius: 8px;
-  border: 1px solid var(--header-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-}
-.course-list-nav {
-  flex: 1;
-  min-width: 300px;
-  max-height: 60vh;
-  overflow-y: auto;
-  border-right: 1px solid var(--header-border);
-  padding-right: 20px;
-}
-.course-list-nav h2 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.3em;
-  color: var(--main-color);
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 8px;
-}
-.course-item {
-  margin-bottom: 10px;
-  display: block; /* Garante que o curso seja visível */
-}
-.course-header {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 5px 0;
-}
-.course-header input[type="checkbox"] {
-  margin-right: 8px;
-  width: 16px;
-  height: 16px;
-  accent-color: var(--main-color);
-}
-.course-header label {
-  font-weight: bold;
-  font-size: 1.1em;
-  flex-grow: 1;
-  cursor: pointer;
-}
-.course-header .toggle-icon {
-  margin-left: auto;
-  font-size: 0.8em;
-  transition: transform 0.2s ease;
-}
-.course-header .toggle-icon.expanded {
-  transform: rotate(90deg);
-}
-.module-list {
-  list-style: none;
-  padding-left: 30px;
-  margin-top: 5px;
-  display: none; /* Inicialmente escondido */
-  border-left: 2px solid var(--light-highlight-bg);
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-.module-list.visible {
-  display: block;
-}
-.module-item {
-  margin-bottom: 5px;
-}
-.module-header {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 5px 0;
-}
-.module-header input[type="checkbox"] {
-  margin-right: 8px;
-  width: 15px;
-  height: 15px;
-  accent-color: var(--main-color);
-}
-.module-header label {
-  font-size: 1em;
-  color: var(--text-dark);
-  cursor: pointer;
-}
-body.dark-mode .module-header label {
-  color: var(--text-light);
-}
-.module-header .toggle-icon {
-  margin-left: auto;
-  font-size: 0.8em;
-  transition: transform 0.2s ease;
-}
-.module-header .toggle-icon.expanded {
-  transform: rotate(90deg);
-}
-.subtopic-list {
-    list-style: none;
-    padding-left: 40px;
-    margin-top: 5px;
-    display: none; /* Inicialmente escondido */
-    border-left: 2px solid var(--light-highlight-bg);
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-.subtopic-list.visible {
-    display: block !important; /* Forçar a visibilidade */
-}
-.subtopic-item {
-  margin-bottom: 5px;
-  display: flex;
-  align-items: center;
-}
-.subtopic-item input[type="checkbox"] {
-  margin-right: 8px;
-  width: 14px;
-  height: 14px;
-  accent-color: var(--main-color);
-}
-.subtopic-item label {
-  font-size: 0.95em;
-  color: var(--text-dark);
-  cursor: pointer;
-}
-body.dark-mode .subtopic-item label {
-  color: var(--text-light);
-}
-.selected-items-display {
-  flex: 1;
-  min-width: 300px;
-  background-color: var(--light-highlight-bg);
-  border-radius: 6px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-.selected-items-display h2 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.3em;
-  color: var(--main-color);
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 8px;
-}
-#selected-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px 0;
-  flex-grow: 1;
-  overflow-y: auto;
-  max-height: calc(60vh - 100px);
-}
-#selected-list li {
-  background-color: var(--header-bg);
-  padding: 8px 12px;
-  border-radius: 4px;
-  margin-bottom: 6px;
-  font-size: 0.95em;
-  border: 1px solid var(--border-color);
-  color: var(--text-dark);
-}
-#confirm-personalization-btn {
-  display: block;
-  width: 100%;
-  padding: 12px 20px;
-  background-color: var(--accent-1);
-  color: var(--button-text-dark);
-  border: none;
-  border-radius: 5px;
-  font-size: 1.1em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  margin-top: auto;
-}
-#confirm-personalization-btn:hover {
-  background-color: var(--accent-1-darker);
-  transform: translateY(-2px);
-}
-#confirm-personalization-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-  transform: none;
-}
-body.dark-mode #confirm-personalization-btn:disabled {
-  background-color: #555;
-}
+        /* Mega Menu Panel (Adicionado para consistência) */
+        .mega-menu-panel {
+            display: none;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: 100%;
+            max-height: calc(100vh - var(--header-height));
+            overflow-y: auto;
+            background-color: var(--mega-menu-bg);
+            border-top: 1px solid var(--mega-menu-border);
+            box-shadow: var(--mega-menu-shadow);
+            z-index: 104;
+            padding: 25px 30px;
+            box-sizing: border-box;
+        }
+        .mega-menu-panel.active {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
+        .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
+        .mega-menu-column h4 { font-size: 1.1em; color: var(--mega-menu-heading-color); margin-top: 0; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid var(--mega-menu-border); }
+        .mega-menu-column a { display: block; color: var(--mega-menu-link-color); text-decoration: none; padding: 6px 0; font-size: 0.95em; transition: color 0.2s; }
+        .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
 
-/* Rodapé */
-.footer {
-  background-color: var(--dark-bg);
-  color: var(--footer-text-muted);
-  padding: 30px 20px;
-  text-align: left;
-  width: 100%;
-  box-sizing: border-box;
-  z-index: 101;
-  flex-shrink: 0;
-  margin-top: 40px;
-}
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--footer-separator);
-  margin-bottom: 15px;
-}
-.footer-section {
-  min-width: 200px;
-  flex-grow: 1;
-}
-.footer h4 {
-  color: var(--footer-h4);
-  margin-top: 0;
-  margin-bottom: 15px;
-  border-bottom: 1px solid var(--footer-separator);
-  padding-bottom: 8px;
-  font-size: 1.1em;
-}
-.footer ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.footer ul li {
-  margin-bottom: 8px;
-}
-.footer ul li a, .footer-section p a {
-  color: var(--footer-link-color);
-  text-decoration: none;
-  font-size: 0.9em;
-  transition: color 0.3s;
-}
-.footer ul li a:hover, .footer-section p a:hover {
-  color: var(--footer-link-hover);
-}
-.footer-section p {
-  color: var(--footer-link-color);
-  font-size: 0.9em;
-  margin: 0 0 8px 0;
-  line-height: 1.5;
-}
-.footer-copyright {
-  text-align: center;
-  font-size: 0.85em;
-  color: #a8c0d1;
-  width: 100%;
-  padding-top: 15px;
-}
-body.dark-mode .footer-copyright {
-  color: var(--text-muted);
-}
-.footer-copyright a {
-  color: var(--footer-link-color);
-}
-.footer-copyright a:hover {
-  color: var(--footer-link-hover);
-}
+        /* Header Actions (Direita) */
+        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px; }
+        .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+        .w3s-header-actions a, .w3s-header-actions button {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s, background-color 0.2s;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; width: 1em; height: 1em; line-height: 1em; text-align: center; color: #666; }
+        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); }
+        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); }
+        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
+        .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
+        .w3s-header-actions a[title="Guia do Método"] .icon { color: #3fb950; }
+        .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
+        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; }
+        #theme-toggle .icon { font-size: 1.3em; }
 
-/* Responsividade */
-@media screen and (max-width: 992px) {
-  .personalization-area { flex-direction: column; }
-  .course-list-nav {
-    border-right: none;
-    padding-right: 0;
-    margin-bottom: 20px;
-    max-height: 40vh;
-  }
-  .selected-items-display { max-height: 40vh; }
-  #selected-list { max-height: calc(40vh - 100px); }
-  .w3s-header-actions a span.link-text, .w3s-header-actions button span.link-text {
-    display: none;
-  }
-}
-@media screen and (max-width: 768px) {
-  .container { padding: 0 15px; }
-  main { padding: 20px 0; }
-}
-/* --- Fim Estilos --- */
-</style>
+        /* Conteúdo Principal */
+        main {
+            flex-grow: 1;
+            background-color: var(--main-content-bg);
+            width: 100%;
+            box-sizing: border-box;
+            padding: 40px 0;
+            transition: background-color 0.3s ease; /* Adicionado para consistência */
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .personalization-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .personalization-header h1 {
+            font-size: 2em;
+            color: var(--main-color);
+            margin-bottom: 10px;
+        }
+        .personalization-header .skip-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .personalization-header .skip-link:hover {
+            color: var(--main-color);
+            text-decoration: underline;
+        }
+
+        /* Área de Personalização */
+        .personalization-area {
+            display: flex;
+            gap: 30px;
+            background-color: var(--header-bg);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--header-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+        .course-list-nav {
+            flex: 1;
+            min-width: 300px;
+            max-height: 60vh;
+            overflow-y: auto;
+            border-right: 1px solid var(--header-border);
+            padding-right: 20px;
+        }
+        .course-list-nav h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            color: var(--main-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        .course-item {
+            margin-bottom: 10px;
+            display: block;
+        }
+        .course-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        .course-header input[type="checkbox"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--main-color);
+        }
+        .course-header label {
+            font-weight: bold;
+            font-size: 1.1em;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        .course-header .toggle-icon {
+            margin-left: auto;
+            font-size: 0.8em;
+            transition: transform 0.2s ease;
+        }
+        .course-header .toggle-icon.expanded {
+            transform: rotate(90deg);
+        }
+        .module-list {
+            list-style: none;
+            padding-left: 30px;
+            margin-top: 5px;
+            display: none;
+            border-left: 2px solid var(--light-highlight-bg);
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .module-list.visible {
+            display: block;
+        }
+        .module-item {
+            margin-bottom: 5px;
+        }
+        .module-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        .module-header input[type="checkbox"] {
+            margin-right: 8px;
+            width: 15px;
+            height: 15px;
+            accent-color: var(--main-color);
+        }
+        .module-header label {
+            font-size: 1em;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        body.dark-mode .module-header label {
+            color: var(--text-light);
+        }
+        .module-header .toggle-icon {
+            margin-left: auto;
+            font-size: 0.8em;
+            transition: transform 0.2s ease;
+        }
+        .module-header .toggle-icon.expanded {
+            transform: rotate(90deg);
+        }
+        .subtopic-list {
+            list-style: none;
+            padding-left: 40px;
+            margin-top: 5px;
+            display: none;
+            border-left: 2px solid var(--light-highlight-bg);
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .subtopic-list.visible {
+            display: block !important;
+        }
+        .subtopic-item {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .subtopic-item input[type="checkbox"] {
+            margin-right: 8px;
+            width: 14px;
+            height: 14px;
+            accent-color: var(--main-color);
+        }
+        .subtopic-item label {
+            font-size: 0.95em;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        body.dark-mode .subtopic-item label {
+            color: var(--text-light);
+        }
+        .selected-items-display {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--light-highlight-bg);
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .selected-items-display h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            color: var(--main-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        #selected-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: calc(60vh - 100px);
+        }
+        #selected-list li {
+            background-color: var(--header-bg);
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+        #confirm-personalization-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--accent-1);
+            color: var(--button-text-dark);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: auto;
+        }
+        #confirm-personalization-btn:hover {
+            background-color: var(--accent-1-darker);
+            transform: translateY(-2px);
+        }
+        #confirm-personalization-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        body.dark-mode #confirm-personalization-btn:disabled {
+            background-color: #555;
+        }
+
+        /* Rodapé */
+        .footer {
+            background-color: var(--dark-bg);
+            color: var(--footer-text-muted);
+            padding: 30px 20px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 101;
+            flex-shrink: 0;
+            margin-top: 40px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--footer-separator);
+            margin-bottom: 15px;
+        }
+        .footer-section {
+            min-width: 200px;
+            flex-grow: 1;
+        }
+        .footer h4 {
+            color: var(--footer-h4);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--footer-separator);
+            padding-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .footer ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer ul li {
+            margin-bottom: 8px;
+        }
+        .footer ul li a, .footer-section p a {
+            color: var(--footer-link-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+        .footer ul li a:hover, .footer-section p a:hover {
+            color: var(--footer-link-hover);
+        }
+        .footer-section p {
+            color: var(--footer-link-color);
+            font-size: 0.9em;
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+        }
+        .footer-copyright {
+            text-align: center;
+            font-size: 0.85em;
+            color: #a8c0d1;
+            width: 100%;
+            padding-top: 15px;
+        }
+        body.dark-mode .footer-copyright {
+            color: var(--text-muted);
+        }
+        .footer-copyright a {
+            color: var(--footer-link-color);
+        }
+        .footer-copyright a:hover {
+            color: var(--footer-link-hover);
+        }
+
+        /* Responsividade */
+        @media screen and (max-width: 992px) {
+            .personalization-area { flex-direction: column; }
+            .course-list-nav {
+                border-right: none;
+                padding-right: 0;
+                margin-bottom: 20px;
+                max-height: 40vh;
+            }
+            .selected-items-display { max-height: 40vh; }
+            #selected-list { max-height: calc(40vh - 100px); }
+            .w3s-header-actions a span.link-text, .w3s-header-actions button span.link-text {
+                display: none;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .container { padding: 0 15px; }
+            main { padding: 20px 0; }
+            .mega-menu-column { min-width: calc(50% - 20px); } /* Adicionado para consistência */
+            .mega-menu-column:not(:last-child) { border-right: none; }
+        }
+        @media screen and (max-width: 480px) {
+            .mega-menu-column { min-width: 100%; padding: 0; } /* Adicionado para consistência */
+        }
+        /* --- Fim Estilos --- */
+    </style>
 </head>
-<body <?php // body_class(); ?>>
-    <header class="w3s-header" id="mainHeader">
-        <div class="w3s-logo-area">
-            <a href="index.html" title="Página Inicial">
-                <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="48"/>
-                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
-                </svg>
-            </a>
-        </div>
-        <div class="w3s-header-right-group">
-            <div class="w3s-header-actions">
-                <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
-                    <span class="icon theme-icon-light">☀️</span>
-                    <span class="icon theme-icon-dark" style="display: none;">🌙</span>
-                </button>
-                <a href="meucadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
-                <a href="saladeestudos.html" title="Minha Sala de Estudos"><span class="icon">📚</span> <span class="link-text">Sala de Estudos</span></a>
-                <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+<body>
+    <!-- Carrega o cabeçalho dinamicamente -->
+    <div id="header-placeholder"></div>
+
+    <!-- Mega Menu Container (Adicionado para consistência com index.html) -->
+    <div id="megaMenuContainer">
+        <!-- Cursos -->
+        <div class="mega-menu-panel" id="cursos-menu">
+            <div class="mega-menu-column">
+                <h4>Direito</h4>
+                <a href="">Direito Constitucional</a>
+                <a href="">Direito Administrativo</a>
+                <a href="">Direito Penal</a>
+                <a href="">Direito Civil</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Matemática</h4>
+                <a href="">Matemática Básica</a>
+                <a href="">Raciocínio Lógico</a>
+                <a href="">Estatística</a>
+                <a href="">Matemática Financeira</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Português</h4>
+                <a href="">Gramática</a>
+                <a href="">Interpretação de Texto</a>
+                <a href="">Redação Oficial</a>
+                <a href="">Literatura</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Informática</h4>
+                <a href="">Informática Básica</a>
+                <a href="">Sistemas Operacionais</a>
+                <a href="">Redes de Computadores</a>
+                <a href="">Segurança da Informação</a>
             </div>
         </div>
-    </header>
+
+        <!-- Questões -->
+        <div class="mega-menu-panel" id="questoes-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="">Direito Constitucional</a>
+                <a href="">Matemática Básica</a>
+                <a href="">Português</a>
+                <a href="">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="">Polícia Federal</a>
+                <a href="">INSS</a>
+                <a href="">Receita Federal</a>
+                <a href="">Tribunais</a>
+            </div>
+        </div>
+
+        <!-- Flashcards -->
+        <div class="mega-menu-panel" id="flashcards-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="">Direito Constitucional</a>
+                <a href="">Matemática Básica</a>
+                <a href="">Português</a>
+                <a href="">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="">Polícia Federal</a>
+                <a href="">INSS</a>
+                <a href="">Receita Federal</a>
+                <a href="">Tribunais</a>
+            </div>
+        </div>
+    </div>
+
     <main>
         <div class="container">
             <div class="personalization-header">
@@ -528,462 +634,551 @@ body.dark-mode .footer-copyright {
             </div>
         </div>
     </main>
+
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section"><h4>Recursos Adicionais</h4><ul><li><a href="#">Questões Comentadas</a></li><li><a href="#">Mapas Mentais</a></li><li><a href="#">Legislação Compilada</a></li></ul></div>
             <div class="footer-section"><h4>Próximos Módulos</h4><p><a href="#">Direito Administrativo</a></p><p><a href="#">Português para Concursos</a></p></div>
             <div class="footer-section"><h4>Links Úteis</h4><ul><li><a href="#">Termos de Uso</a></li><li><a href="#">Política de Privacidade</a></li><li><a href="#">Sobre Nós</a></li><li><a href="#">Mapa do Site</a></li></ul></div>
         </div>
-        <div class="footer-copyright"><span>© <span id="current-year">2025</span> NVP Concursos. Todos os direitos reservados.</span></div>
+        <div class="footer-copyright"><span>© <span id="current-year">2025</span> PRO Concursos. Todos os direitos reservados.</span></div>
     </footer>
-    <?php // wp_footer(); ?>
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-		// --- Configuração Firebase ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
-        authDomain: "nvp-concursos.firebaseapp.com",
-        projectId: "nvp-concursos",
-        storageBucket: "nvp-concursos.firebasestorage.app",
-        messagingSenderId: "397960760271",
-        appId: "1:397960760271:web:1550ff01910ae927d860ba"
-    };
-    let db;
-    let auth;
-    try {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        auth = firebase.auth();
-        db = firebase.firestore();
-        console.log("Firebase inicializado com sucesso (Personalizar).");
-    } catch (e) {
-        console.error("Firebase initialization error:", e);
-        alert("Erro crítico ao inicializar a plataforma. A personalização pode não funcionar.");
-        const container = document.getElementById('course-list-container');
-        const confirmButton = document.getElementById('confirm-personalization-btn');
-        if (container) container.innerHTML = '<h2 style="color:var(--error-color)">Erro de Inicialização</h2><p>Não foi possível conectar ao Firebase. Verifique as credenciais e o console (F12).</p>';
-        if (confirmButton) confirmButton.disabled = true;
-    }
-    // --- Bloco Dark Mode ---
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const bodyElement = document.body;
-    const sunIcon = themeToggleBtn?.querySelector('.theme-icon-light');
-    const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
-    function applyTheme(theme) {
-        bodyElement.classList.toggle('dark-mode', theme === 'dark');
-        if (sunIcon) sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
-        if (moonIcon) moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
-    }
-    try {
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        let initialTheme = savedTheme ? savedTheme : (prefersDarkScheme.matches ? 'dark' : 'light');
-        applyTheme(initialTheme);
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', () => {
-                let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
-                applyTheme(newTheme);
-                localStorage.setItem('theme', newTheme);
-            });
-        } else {
-            console.warn("Botão de tema '#theme-toggle' não encontrado.");
-        }
-        prefersDarkScheme.addEventListener('change', (e) => {
-            if (!localStorage.getItem('theme')) {
-                let osTheme = e.matches ? 'dark' : 'light';
-                applyTheme(osTheme);
+        // --- Carrega o Cabeçalho Dinamicamente ---
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                initializeHeaderEvents();
+            })
+            .catch(error => console.error('Erro ao carregar o header:', error));
+
+        // --- Configuração Firebase ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+            authDomain: "nvp-concursos.firebaseapp.com",
+            projectId: "nvp-concursos",
+            storageBucket: "nvp-concursos.firebasestorage.app",
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1550ff01910ae927d860ba"
+        };
+        let db;
+        let auth;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
             }
-        });
-    } catch (e) {
-        console.error("Error setting up theme:", e);
-    }
-    // --- Lógica de Logout ---
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            if (!auth) {
-                console.error("Firebase Auth não inicializado para logout.");
+            auth = firebase.auth();
+            db = firebase.firestore();
+            console.log("Firebase inicializado com sucesso (Personalizar).");
+        } catch (e) {
+            console.error("Firebase initialization error:", e);
+            alert("Erro crítico ao inicializar a plataforma. A personalização pode não funcionar.");
+            const container = document.getElementById('course-list-container');
+            const confirmButton = document.getElementById('confirm-personalization-btn');
+            if (container) container.innerHTML = '<h2 style="color:var(--error-color)">Erro de Inicialização</h2><p>Não foi possível conectar ao Firebase. Verifique as credenciais e o console (F12).</p>';
+            if (confirmButton) confirmButton.disabled = true;
+        }
+
+        // --- Função para Inicializar Eventos do Header ---
+        function initializeHeaderEvents() {
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            const colorPickerBtn = document.getElementById('color-picker-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const topNav = document.getElementById('topNav');
+            const megaMenuContainer = document.getElementById('megaMenuContainer');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
+            const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
+
+            // --- Sidebar Toggle (Não necessário nesta página, mas mantido para consistência) ---
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.addEventListener('click', toggleSidebar);
+            }
+
+            // --- Tema Claro/Escuro ---
+            if (themeToggleBtn) {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+                let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+                applyTheme(currentTheme);
+
+                themeToggleBtn.addEventListener('click', () => {
+                    let newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                });
+
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    if (!localStorage.getItem('theme')) {
+                        applyTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
+
+            // --- Mudar Cor de Fundo ---
+            if (colorPickerBtn) {
+                colorPickerBtn.addEventListener('click', () => {
+                    const colorInput = document.createElement('input');
+                    colorInput.type = 'color';
+                    const mainContent = document.querySelector('main');
+                    const currentMainBg = mainContent.style.backgroundColor;
+                    const defaultColor = getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
+                    colorInput.value = currentMainBg ? rgbToHex(currentMainBg) : defaultColor;
+
+                    colorInput.addEventListener('input', () => {
+                        const color = colorInput.value;
+                        mainContent.style.backgroundColor = color;
+                        localStorage.setItem('userMainBgColor', color);
+                    });
+                    colorInput.click();
+                });
+            }
+
+            // --- Logout ---
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    auth.signOut().then(() => {
+                        window.location.href = 'index.html';
+                    }).catch(error => {
+                        console.error('Erro logout:', error);
+                        alert('Erro ao sair: ' + error.message);
+                    });
+                });
+            }
+
+            // --- Mega Menu Logic ---
+            const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
+            const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
+            megaMenuButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const targetId = button.getAttribute('data-target');
+                    const targetPanel = document.getElementById(targetId);
+                    if (!targetPanel) return;
+                    const isAlreadyActive = targetPanel.classList.contains('active');
+                    closeAllMegaMenus(targetId);
+                    if (!isAlreadyActive) {
+                        targetPanel.classList.add('active');
+                        button.classList.add('active');
+                    }
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                const clickedInsideMenu = megaMenuContainer && megaMenuContainer.contains(event.target);
+                const clickedInsideNav = topNav && topNav.contains(event.target);
+                if (!clickedInsideMenu && !clickedInsideNav) {
+                    closeAllMegaMenus();
+                }
+            });
+
+            function closeAllMegaMenus(excludePanelId = null) {
+                allMegaPanels.forEach(panel => {
+                    if (panel.id !== excludePanelId) {
+                        panel.classList.remove('active');
+                    }
+                });
+                megaMenuButtons.forEach(btn => {
+                    if (btn.getAttribute('data-target') !== excludePanelId) {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        function applyTheme(theme) {
+            const sunIcon = document.querySelector('.theme-icon-light');
+            const moonIcon = document.querySelector('.theme-icon-dark');
+            document.body.classList.toggle('dark-mode', theme === 'dark');
+            if (sunIcon && moonIcon) {
+                sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+                moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function rgbToHex(rgb) {
+            if (!rgb || rgb === '') return '#ffffff';
+            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!rgbMatch) return rgb;
+            const r = parseInt(rgbMatch[1]);
+            const g = parseInt(rgbMatch[2]);
+            const b = parseInt(rgbMatch[3]);
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        }
+
+        // Função dummy para toggleSidebar (mantida para compatibilidade com header.html)
+        function toggleSidebar() {
+            console.log("Sidebar toggle não implementado nesta página.");
+        }
+
+        // --- Lógica da Página de Personalização ---
+        const courseListContainer = document.getElementById('course-list-container');
+        const selectedListUl = document.getElementById('selected-list');
+        const confirmBtn = document.getElementById('confirm-personalization-btn');
+        let loadedCoursesData = [];
+
+        // Setup MutationObserver to monitor changes in courseListContainer
+        if (courseListContainer) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    console.log("MutationObserver: DOM changed in courseListContainer:", mutation);
+                    console.log("Current courseListContainer content after mutation:", courseListContainer.innerHTML);
+                });
+            });
+            observer.observe(courseListContainer, { childList: true, subtree: true });
+        }
+
+        async function loadCoursesFromFirestore() {
+            if (!db) {
+                console.error("Firestore DB não inicializado para carregar cursos.");
+                courseListContainer.innerHTML = '<h2 style="color:var(--error-color)">Erro</h2><p>Firestore não inicializado. Verifique o console (F12).</p>';
                 return;
             }
-            auth.signOut().then(() => {
-                console.log('Logout bem-sucedido.');
-                window.location.href = 'index.html';
-            }).catch((error) => {
-                console.error('Erro ao fazer logout:', error);
-                alert('Erro ao tentar sair. Tente novamente.');
-            });
-        });
-    } else {
-        console.warn("Botão de logout '#logout-btn' não encontrado.");
-    }
-    // --- Lógica da Página de Personalização ---
-    const courseListContainer = document.getElementById('course-list-container');
-    const selectedListUl = document.getElementById('selected-list');
-    const confirmBtn = document.getElementById('confirm-personalization-btn');
-    let loadedCoursesData = [];
-
-    // Setup MutationObserver to monitor changes in courseListContainer
-    if (courseListContainer) {
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                console.log("MutationObserver: DOM changed in courseListContainer:", mutation);
-                console.log("Current courseListContainer content after mutation:", courseListContainer.innerHTML);
-            });
-        });
-        observer.observe(courseListContainer, { childList: true, subtree: true });
-    }
-
-async function loadCoursesFromFirestore() {
-    if (!db) {
-        console.error("Firestore DB não inicializado para carregar cursos.");
-        courseListContainer.innerHTML = '<h2 style="color:var(--error-color)">Erro</h2><p>Firestore não inicializado. Verifique o console (F12).</p>';
-        return;
-    }
-    console.log("Personalizar: Iniciando busca de cursos...");
-    const collectionName = 'courses';
-    const coursesRef = db.collection(collectionName).orderBy('order');
-    try {
-        console.log("Buscando cursos na coleção 'courses'...");
-        const coursesSnapshot = await coursesRef.get();
-        if (coursesSnapshot.empty) {
-			console.warn(`Nenhum curso encontrado na coleção '${collectionName}'.`);
-			loadedCoursesData = [];
-			if (courseListContainer) {
-			    courseListContainer.innerHTML = '<h2>Nenhum curso disponível.</h2><p>Entre em contato com o suporte para adicionar cursos.</p>';
-			}
-			return;
-		}
-        console.log(`Personalizar: Encontrados ${coursesSnapshot.size} cursos.`);
-        const coursePromises = coursesSnapshot.docs.map(async (courseDoc) => {
-            const courseData = courseDoc.data();
-            const courseId = courseDoc.id;
-            console.log(`Carregando módulos para o curso ${courseId} (${courseData.name || 'Sem nome'})...`);
-            const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
-            const modulesSnapshot = await modulesRef.get();
-            if (modulesSnapshot.empty) {
-                console.log(`Nenhum módulo encontrado para o curso ${courseId}.`);
-            }
-            const modulePromises = modulesSnapshot.docs.map(async (moduleDoc) => {
-                const moduleData = moduleDoc.data();
-                const moduleId = moduleDoc.id;
-                console.log(`Carregando subtemas para o módulo ${moduleId} (${moduleData.name || 'Sem nome'})...`);
-                const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
-                const subtopicsSnapshot = await subtopicsRef.get();
-                if (subtopicsSnapshot.empty) {
-                    console.log(`Nenhum subtema encontrado para o módulo ${moduleId}.`);
+            console.log("Personalizar: Iniciando busca de cursos...");
+            const collectionName = 'courses';
+            const coursesRef = db.collection(collectionName).orderBy('order');
+            try {
+                console.log("Buscando cursos na coleção 'courses'...");
+                const coursesSnapshot = await coursesRef.get();
+                if (coursesSnapshot.empty) {
+                    console.warn(`Nenhum curso encontrado na coleção '${collectionName}'.`);
+                    loadedCoursesData = [];
+                    if (courseListContainer) {
+                        courseListContainer.innerHTML = '<h2>Nenhum curso disponível.</h2><p>Entre em contato com o suporte para adicionar cursos.</p>';
+                    }
+                    return;
                 }
-                const subtopics = subtopicsSnapshot.docs.map(subtopicDoc => ({
-                    id: subtopicDoc.id,
-                    name: subtopicDoc.data().name || 'Subtema s/ Nome',
-                    order: typeof subtopicDoc.data().order === 'number' ? subtopicDoc.data().order : Infinity
-                }));
-                return {
-                    id: moduleId,
-                    name: moduleData.name || 'Módulo s/ Nome',
-                    order: typeof moduleData.order === 'number' ? moduleData.order : Infinity,
-                    subtopics: subtopics || []
-                };
+                console.log(`Personalizar: Encontrados ${coursesSnapshot.size} cursos.`);
+                const coursePromises = coursesSnapshot.docs.map(async (courseDoc) => {
+                    const courseData = courseDoc.data();
+                    const courseId = courseDoc.id;
+                    console.log(`Carregando módulos para o curso ${courseId} (${courseData.name || 'Sem nome'})...`);
+                    const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
+                    const modulesSnapshot = await modulesRef.get();
+                    const modules = [];
+                    if (!modulesSnapshot.empty) {
+                        const modulePromises = modulesSnapshot.docs.map(async (moduleDoc) => {
+                            const moduleData = moduleDoc.data();
+                            const moduleId = moduleDoc.id;
+                            console.log(`Carregando aulas (subtopics) para o módulo ${moduleId} (${moduleData.name || 'Sem nome'})...`);
+                            const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
+                            const subtopicsSnapshot = await subtopicsRef.get();
+                            const subtopics = [];
+                            if (!subtopicsSnapshot.empty) {
+                                subtopicsSnapshot.docs.forEach(subtopicDoc => {
+                                    const subtopicData = subtopicDoc.data();
+                                    subtopics.push({
+                                        id: subtopicDoc.id,
+                                        name: subtopicData.name || 'Aula s/ Nome',
+                                        order: typeof subtopicData.order === 'number' ? subtopicData.order : Infinity,
+                                        content: subtopicData.content || '' // Adicionando conteúdo para uso futuro
+                                    });
+                                });
+                            } else {
+                                console.log(`Nenhum subtema/aula encontrado para o módulo ${moduleId}.`);
+                            }
+                            return {
+                                id: moduleId,
+                                name: moduleData.name || 'Módulo s/ Nome',
+                                order: typeof moduleData.order === 'number' ? moduleData.order : Infinity,
+                                subtopics: subtopics
+                            };
+                        });
+                        const resolvedModules = await Promise.all(modulePromises);
+                        resolvedModules.forEach(module => modules.push(module));
+                    } else {
+                        console.log(`Nenhum módulo encontrado para o curso ${courseId}.`);
+                    }
+                    return {
+                        id: courseId,
+                        name: courseData.name || 'Curso s/ Nome',
+                        order: typeof courseData.order === 'number' ? courseData.order : Infinity,
+                        modules: modules
+                    };
+                });
+                loadedCoursesData = await Promise.all(coursePromises);
+                loadedCoursesData.sort((a, b) => a.order - b.order);
+                loadedCoursesData.forEach(course => {
+                    course.modules.sort((a, b) => a.order - b.order);
+                    course.modules.forEach(module => {
+                        module.subtopics.sort((a, b) => a.order - b.order);
+                    });
+                });
+                console.log("Personalizar: Estrutura final carregada:", JSON.stringify(loadedCoursesData, null, 2));
+            } catch (error) {
+                console.error(`Erro ao buscar da coleção '${collectionName}' ou subcoleções:`, error);
+                if (courseListContainer) courseListContainer.innerHTML = `<h2 style="color:var(--error-color)">Erro ao Carregar Cursos</h2><p>${error.message || 'Erro desconhecido.'} Verifique o console (F12) para mais detalhes.</p>`;
+                loadedCoursesData = [];
+            }
+        }
+
+        function renderCourseList(courses) {
+            console.log("Personalizar: renderCourseList foi chamada com:", JSON.stringify(courses, null, 2));
+            if (!courseListContainer) {
+                console.error("#course-list-container não encontrado!");
+                return;
+            }
+            if (!courses || courses.length === 0) {
+                console.log("Personalizar: Nenhum curso para renderizar.");
+                if (courseListContainer.innerHTML.includes('Carregando')) {
+                    courseListContainer.innerHTML = '<h2>Nenhum curso encontrado.</h2>';
+                }
+                return;
+            }
+            let htmlContent = '<h2>Escolha seus Cursos, Módulos e Seções</h2>';
+            console.log("Conteúdo inicial de courseListContainer:", courseListContainer.innerHTML);
+            courses.forEach((course) => {
+                if (!course || !course.id || !course.modules) {
+                    console.warn("Item de curso inválido ou faltando ID/módulos:", course);
+                    return;
+                }
+                const courseHtml = `
+                    <div class="course-item" data-render-marker="course-${course.id}">
+                        <div class="course-header">
+                            <input type="checkbox" id="course-${course.id}" data-course-id="${course.id}" class="course-checkbox">
+                            <label for="course-${course.id}">${course.name || 'Curso sem nome'}</label>
+                            <span class="toggle-icon">▶</span>
+                        </div>
+                        <ul class="module-list" id="modules-${course.id}">
+                            ${course.modules.length > 0 ? course.modules.map(module => {
+                                if (!module || !module.id) {
+                                    console.warn("Item de módulo inválido ou faltando ID:", module);
+                                    return '';
+                                }
+                                return `
+                                    <li class="module-item">
+                                        <div class="module-header">
+                                            <input type="checkbox" id="module-${module.id}" data-module-id="${module.id}" data-course-parent="${course.id}" class="module-checkbox">
+                                            <label for="module-${module.id}">${module.name || 'Módulo sem nome'}</label>
+                                            ${module.subtopics && module.subtopics.length > 0 ? '<span class="toggle-icon">▶</span>' : ''}
+                                        </div>
+                                        <ul class="subtopic-list" id="subtopics-${module.id}">
+                                            ${module.subtopics && module.subtopics.length > 0 ? module.subtopics.map(subtopic => {
+                                                if (!subtopic || !subtopic.id) {
+                                                    console.warn("Item de subtema inválido ou faltando ID:", subtopic);
+                                                    return '';
+                                                }
+                                                return `
+                                                    <li class="subtopic-item">
+                                                        <input type="checkbox" id="subtopic-${subtopic.id}" data-subtopic-id="${subtopic.id}" data-module-parent="${module.id}" data-course-parent="${course.id}" class="subtopic-checkbox">
+                                                        <label for="subtopic-${subtopic.id}">${subtopic.name || 'Aula sem nome'}</label>
+                                                    </li>
+                                                `;
+                                            }).join('') : '<li>Nenhuma aula neste módulo.</li>'}
+                                        </ul>
+                                    </li>
+                                `;
+                            }).join('') : '<li>Nenhum módulo neste curso.</li>'}
+                        </ul>
+                    </div>
+                `;
+                console.log(`HTML gerado para o curso ${course.id}:`, courseHtml);
+                htmlContent += courseHtml;
             });
-            const modules = await Promise.all(modulePromises);
-            return {
-                id: courseId,
-                name: courseData.name || 'Curso s/ Nome',
-                order: typeof courseData.order === 'number' ? courseData.order : Infinity,
-                modules: modules || []
-            };
-        });
-        loadedCoursesData = await Promise.all(coursePromises);
-        loadedCoursesData.sort((a, b) => a.order - b.order);
-        console.log("Personalizar: Estrutura final carregada:", JSON.stringify(loadedCoursesData, null, 2));
-    } catch (error) {
-        console.error(`Erro ao buscar da coleção '${collectionName}' ou subcoleções:`, error);
-        if (courseListContainer) courseListContainer.innerHTML = `<h2 style="color:var(--error-color)">Erro ao Carregar Cursos</h2><p>${error.message || 'Erro desconhecido.'} Verifique o console (F12) para mais detalhes.</p>`;
-        loadedCoursesData = [];
-    }
-}
+            courseListContainer.innerHTML = htmlContent;
+            courseListContainer.offsetHeight; // Forçar repaint
+            console.log("Conteúdo final de courseListContainer:", courseListContainer.innerHTML);
+            console.log("Personalizar: Renderização concluída.");
+            addEventListeners();
+            updateSelectedDisplay();
+        }
 
-function renderCourseList(courses) {
-    console.log("Personalizar: renderCourseList foi chamada com:", JSON.stringify(courses, null, 2));
-    if (!courseListContainer) {
-        console.error("#course-list-container não encontrado!");
-        return;
-    }
-    if (!courses || courses.length === 0) {
-        console.log("Personalizar: Nenhum curso para renderizar.");
-        if (courseListContainer.innerHTML.includes('Carregando')) {
-            courseListContainer.innerHTML = '<h2>Nenhum curso encontrado.</h2>';
-        }
-        return;
-    }
-    // Alterar o texto do cabeçalho
-    let htmlContent = '<h2>Escolha seus Cursos, Módulos e Seções</h2>';
-    console.log("Conteúdo inicial de courseListContainer:", courseListContainer.innerHTML);
-    courses.forEach((course) => {
-        if (!course || !course.id || !course.modules) {
-            console.warn("Item de curso inválido ou faltando ID/módulos:", course);
-            return;
-        }
-        const courseHtml = `
-            <div class="course-item" data-render-marker="course-${course.id}">
-                <div class="course-header">
-                    <input type="checkbox" id="course-${course.id}" data-course-id="${course.id}" class="course-checkbox">
-                    <label for="course-${course.id}">${course.name || 'Curso sem nome'}</label>
-                    <span class="toggle-icon">▶</span>
-                </div>
-                <ul class="module-list" id="modules-${course.id}">
-                    ${course.modules.length > 0 ? course.modules.map(module => {
-                        if (!module || !module.id) {
-                            console.warn("Item de módulo inválido ou faltando ID:", module);
-                            return '';
-                        }
-                        return `
-                            <li class="module-item">
-                                <div class="module-header">
-                                    <input type="checkbox" id="module-${module.id}" data-module-id="${module.id}" data-course-parent="${course.id}" class="module-checkbox">
-                                    <label for="module-${module.id}">${module.name || 'Módulo sem nome'}</label>
-                                    ${module.subtopics && module.subtopics.length > 0 ? '<span class="toggle-icon">▶</span>' : ''}
-                                </div>
-                                <ul class="subtopic-list" id="subtopics-${module.id}">
-                                    ${module.subtopics && module.subtopics.length > 0 ? module.subtopics.map(subtopic => {
-                                        if (!subtopic || !subtopic.id) {
-                                            console.warn("Item de subtema inválido ou faltando ID:", subtopic);
-                                            return '';
-                                        }
-                                        return `
-                                            <li class="subtopic-item">
-                                                <input type="checkbox" id="subtopic-${subtopic.id}" data-subtopic-id="${subtopic.id}" data-module-parent="${module.id}" data-course-parent="${course.id}" class="subtopic-checkbox">
-                                                <label for="subtopic-${subtopic.id}">${subtopic.name || 'Subtema sem nome'}</label>
-                                            </li>
-                                        `;
-                                    }).join('') : '<li>Nenhum subtema neste módulo.</li>'}
-                                </ul>
-                            </li>
-                        `;
-                    }).join('') : '<li>Nenhum módulo neste curso.</li>'}
-                </ul>
-            </div>
-        `;
-        console.log(`HTML gerado para o curso ${course.id}:`, courseHtml);
-        htmlContent += courseHtml;
-    });
-    courseListContainer.innerHTML = htmlContent;
-    courseListContainer.offsetHeight; // Forçar repaint
-    console.log("Conteúdo final de courseListContainer:", courseListContainer.innerHTML);
-    console.log("Personalizar: Renderização (tentativa) concluída.");
-    addEventListeners();
-    updateSelectedDisplay();
-}
+        function addEventListeners() {
+            if (!courseListContainer) return;
+            console.log("Personalizar: Adicionando event listeners...");
+            courseListContainer.addEventListener('click', function handleContainerClick(event) {
+                const header = event.target.closest('.course-header, .module-header');
+                if (header && !event.target.matches('input[type="checkbox"]')) {
+                    const list = header.nextElementSibling;
+                    const icon = header.querySelector('.toggle-icon');
+                    if (list && (list.classList.contains('module-list') || list.classList.contains('subtopic-list')) && icon) {
+                        const isVisible = list.classList.contains('visible');
+                        list.classList.toggle('visible');
+                        icon.classList.toggle('expanded');
+                        icon.textContent = icon.classList.contains('expanded') ? '▼' : '▶';
+                        console.log(`Toggling visibility for list ${list.id}: ${isVisible ? 'Hiding' : 'Showing'}`);
+                    }
+                }
+            });
 
-function addEventListeners() {
-    if (!courseListContainer) return;
-    console.log("Personalizar: Adicionando event listeners...");
-    courseListContainer.addEventListener('click', function handleContainerClick(event) {
-        const header = event.target.closest('.course-header, .module-header');
-        if (header && !event.target.matches('input[type="checkbox"]')) {
-            const list = header.nextElementSibling;
-            const icon = header.querySelector('.toggle-icon');
-            if (list && (list.classList.contains('module-list') || list.classList.contains('subtopic-list')) && icon) {
-                const isVisible = list.classList.contains('visible');
-                list.classList.toggle('visible');
-                icon.classList.toggle('expanded');
-                icon.textContent = icon.classList.contains('expanded') ? '▼' : '▶';
-                console.log(`Toggling visibility for list ${list.id}: ${isVisible ? 'Hiding' : 'Showing'}`);
-                console.log(`List ${list.id} classes after toggle:`, list.className);
-                console.log(`List ${list.id} style after toggle:`, list.style.display);
-            } else {
-                console.warn("List or icon not found for header:", header);
+            courseListContainer.addEventListener('change', function handleContainerChange(event) {
+                const target = event.target;
+                if (target.classList.contains('course-checkbox')) {
+                    const courseId = target.dataset.courseId;
+                    const isChecked = target.checked;
+                    document.querySelectorAll(`.module-checkbox[data-course-parent="${courseId}"]`)
+                        .forEach(moduleCheckbox => { moduleCheckbox.checked = isChecked; });
+                    document.querySelectorAll(`.subtopic-checkbox[data-course-parent="${courseId}"]`)
+                        .forEach(subtopicCheckbox => { subtopicCheckbox.checked = isChecked; });
+                }
+                if (target.classList.contains('module-checkbox')) {
+                    const moduleId = target.dataset.moduleId;
+                    const courseId = target.dataset.courseParent;
+                    const isChecked = target.checked;
+                    document.querySelectorAll(`.subtopic-checkbox[data-module-parent="${moduleId}"]`)
+                        .forEach(subtopicCheckbox => { subtopicCheckbox.checked = isChecked; });
+                    const courseCheckbox = document.getElementById(`course-${courseId}`);
+                    if (courseCheckbox) {
+                        const allModules = document.querySelectorAll(`.module-checkbox[data-course-parent="${courseId}"]`);
+                        const allSubtopics = document.querySelectorAll(`.subtopic-checkbox[data-course-parent="${courseId}"]`);
+                        const allModulesChecked = Array.from(allModules).every(cb => cb.checked);
+                        const someModulesChecked = Array.from(allModules).some(cb => cb.checked);
+                        const allSubtopicsChecked = Array.from(allSubtopics).every(cb => cb.checked);
+                        const someSubtopicsChecked = Array.from(allSubtopics).some(cb => cb.checked);
+                        courseCheckbox.checked = allModulesChecked && allSubtopicsChecked;
+                        courseCheckbox.indeterminate = (!allModulesChecked || !allSubtopicsChecked) && (someModulesChecked || someSubtopicsChecked);
+                    }
+                }
+                if (target.classList.contains('subtopic-checkbox')) {
+                    const moduleId = target.dataset.moduleParent;
+                    const courseId = target.dataset.courseParent;
+                    const moduleCheckbox = document.getElementById(`module-${moduleId}`);
+                    if (moduleCheckbox) {
+                        const allSubtopics = document.querySelectorAll(`.subtopic-checkbox[data-module-parent="${moduleId}"]`);
+                        const allSubtopicsChecked = Array.from(allSubtopics).every(cb => cb.checked);
+                        const someSubtopicsChecked = Array.from(allSubtopics).some(cb => cb.checked);
+                        moduleCheckbox.checked = allSubtopicsChecked;
+                        moduleCheckbox.indeterminate = !allSubtopicsChecked && someSubtopicsChecked;
+                    }
+                    const courseCheckbox = document.getElementById(`course-${courseId}`);
+                    if (courseCheckbox) {
+                        const allModules = document.querySelectorAll(`.module-checkbox[data-course-parent="${courseId}"]`);
+                        const allSubtopics = document.querySelectorAll(`.subtopic-checkbox[data-course-parent="${courseId}"]`);
+                        const allModulesChecked = Array.from(allModules).every(cb => cb.checked);
+                        const someModulesChecked = Array.from(allModules).some(cb => cb.checked);
+                        const allSubtopicsChecked = Array.from(allSubtopics).every(cb => cb.checked);
+                        const someSubtopicsChecked = Array.from(allSubtopics).some(cb => cb.checked);
+                        courseCheckbox.checked = allModulesChecked && allSubtopicsChecked;
+                        courseCheckbox.indeterminate = (!allModulesChecked || !allSubtopicsChecked) && (someModulesChecked || someSubtopicsChecked);
+                    }
+                }
+                updateSelectedDisplay();
+            });
+            console.log("Personalizar: Event listeners adicionados.");
+        }
+
+        function updateSelectedDisplay() {
+            if (!selectedListUl) {
+                console.error("Elemento #selected-list não encontrado.");
+                return;
             }
-        }
-    });
-    courseListContainer.addEventListener('change', function handleContainerChange(event) {
-        const target = event.target;
-        if (target.classList.contains('course-checkbox')) {
-            const courseId = target.dataset.courseId;
-            const isChecked = target.checked;
-            document.querySelectorAll(`.module-checkbox[data-course-parent="${courseId}"]`)
-                .forEach(moduleCheckbox => { moduleCheckbox.checked = isChecked; });
-            document.querySelectorAll(`.subtopic-checkbox[data-course-parent="${courseId}"]`)
-                .forEach(subtopicCheckbox => { subtopicCheckbox.checked = isChecked; });
-        }
-        if (target.classList.contains('module-checkbox')) {
-            const moduleId = target.dataset.moduleId;
-            const courseId = target.dataset.courseParent;
-            const isChecked = target.checked;
-            document.querySelectorAll(`.subtopic-checkbox[data-module-parent="${moduleId}"]`)
-                .forEach(subtopicCheckbox => { subtopicCheckbox.checked = isChecked; });
-            const courseCheckbox = document.getElementById(`course-${courseId}`);
-            if (courseCheckbox) {
-                const allModules = document.querySelectorAll(`.module-checkbox[data-course-parent="${courseId}"]`);
-                const allSubtopics = document.querySelectorAll(`.subtopic-checkbox[data-course-parent="${courseId}"]`);
-                const allModulesChecked = Array.from(allModules).every(cb => cb.checked);
-                const someModulesChecked = Array.from(allModules).some(cb => cb.checked);
-                const allSubtopicsChecked = Array.from(allSubtopics).every(cb => cb.checked);
-                const someSubtopicsChecked = Array.from(allSubtopics).some(cb => cb.checked);
-                courseCheckbox.checked = allModulesChecked && allSubtopicsChecked;
-                courseCheckbox.indeterminate = (!allModulesChecked || !allSubtopicsChecked) && (someModulesChecked || someSubtopicsChecked);
-            }
-        }
-        if (target.classList.contains('subtopic-checkbox')) {
-            const moduleId = target.dataset.moduleParent;
-            const courseId = target.dataset.courseParent;
-            const moduleCheckbox = document.getElementById(`module-${moduleId}`);
-            if (moduleCheckbox) {
-                const allSubtopics = document.querySelectorAll(`.subtopic-checkbox[data-module-parent="${moduleId}"]`);
-                const allSubtopicsChecked = Array.from(allSubtopics).every(cb => cb.checked);
-                const someSubtopicsChecked = Array.from(allSubtopics).some(cb => cb.checked);
-                moduleCheckbox.checked = allSubtopicsChecked;
-                moduleCheckbox.indeterminate = !allSubtopicsChecked && someSubtopicsChecked;
-            }
-            const courseCheckbox = document.getElementById(`course-${courseId}`);
-            if (courseCheckbox) {
-                const allModules = document.querySelectorAll(`.module-checkbox[data-course-parent="${courseId}"]`);
-                const allSubtopics = document.querySelectorAll(`.subtopic-checkbox[data-course-parent="${courseId}"]`);
-                const allModulesChecked = Array.from(allModules).every(cb => cb.checked);
-                const someModulesChecked = Array.from(allModules).some(cb => cb.checked);
-                const allSubtopicsChecked = Array.from(allSubtopics).every(cb => cb.checked);
-                const someSubtopicsChecked = Array.from(allSubtopics).some(cb => cb.checked);
-                courseCheckbox.checked = allModulesChecked && allSubtopicsChecked;
-                courseCheckbox.indeterminate = (!allModulesChecked || !allSubtopicsChecked) && (someModulesChecked || someSubtopicsChecked);
-            }
-        }
-        updateSelectedDisplay();
-    });
-    console.log("Personalizar: Event listeners adicionados.");
-}
-    function updateSelectedDisplay() {
-        if (!selectedListUl) {
-            console.error("Elemento #selected-list não encontrado.");
-            return;
-        }
-        selectedListUl.innerHTML = '';
-        let hasSelection = false;
-        const selectedSubtopicsCheckboxes = document.querySelectorAll('.subtopic-checkbox:checked');
-        console.log(`Personalizar: Atualizando display com ${selectedSubtopicsCheckboxes.length} subtemas selecionados.`);
-        selectedSubtopicsCheckboxes.forEach(checkbox => {
-            hasSelection = true;
-            const subtopicId = checkbox.dataset.subtopicId;
-            const moduleId = checkbox.dataset.moduleParent;
-            const courseId = checkbox.dataset.courseParent;
-            const course = loadedCoursesData.find(c => c.id === courseId);
-            const module = course?.modules.find(m => m.id === moduleId);
-            const subtopic = module?.subtopics.find(s => s.id === subtopicId);
-            if (course && module && subtopic) {
-                const li = document.createElement('li');
-                li.textContent = `${course.name} - ${module.name} - ${subtopic.name}`;
-                selectedListUl.appendChild(li);
-            } else {
-                console.warn(`Subtema ${subtopicId}, Módulo ${moduleId} ou Curso ${courseId} não encontrado em loadedCoursesData.`);
-                const label = document.querySelector(`label[for="subtopic-${subtopicId}"]`);
-                if (label) {
+            selectedListUl.innerHTML = '';
+            let hasSelection = false;
+            const selectedSubtopicsCheckboxes = document.querySelectorAll('.subtopic-checkbox:checked');
+            console.log(`Personalizar: Atualizando display com ${selectedSubtopicsCheckboxes.length} subtemas selecionados.`);
+            selectedSubtopicsCheckboxes.forEach(checkbox => {
+                hasSelection = true;
+                const subtopicId = checkbox.dataset.subtopicId;
+                const moduleId = checkbox.dataset.moduleParent;
+                const courseId = checkbox.dataset.courseParent;
+                const course = loadedCoursesData.find(c => c.id === courseId);
+                const module = course?.modules.find(m => m.id === moduleId);
+                const subtopic = module?.subtopics.find(s => s.id === subtopicId);
+                if (course && module && subtopic) {
                     const li = document.createElement('li');
-                    li.textContent = `(Erro) - ${label.textContent || subtopicId}`;
+                    li.textContent = `${course.name} - ${module.name} - ${subtopic.name}`;
                     selectedListUl.appendChild(li);
                 }
-            }
-        });
-        if (!hasSelection) {
-            const li = document.createElement('li');
-            li.textContent = 'Nenhum subtema selecionado.';
-            selectedListUl.appendChild(li);
-        }
-        if (confirmBtn) {
-            confirmBtn.disabled = !hasSelection;
-        }
-    }
-    if (confirmBtn) {
-        confirmBtn.addEventListener('click', () => {
-            if (!auth || !db) {
-                alert("Erro de conexão com Firebase. Tente recarregar.");
-                return;
-            }
-            const selectedSubtopicIds = [];
-            document.querySelectorAll('.subtopic-checkbox:checked').forEach(checkbox => {
-                selectedSubtopicIds.push(checkbox.dataset.subtopicId);
             });
-            console.log('Confirmando seleção. Subtemas:', selectedSubtopicIds);
-            const currentUser = auth.currentUser;
-            if (currentUser) {
-                const userId = currentUser.uid;
-                console.log('Salvando preferências para usuário:', userId);
-                confirmBtn.disabled = true;
-                confirmBtn.textContent = 'Salvando...';
-                const userDocRef = db.collection('users').doc(userId);
-                userDocRef.set({
-                    selectedSubtopics: selectedSubtopicIds,
-                    hasPersonalized: true
-                }, { merge: true })
-                    .then(() => {
-                        console.log('Preferências salvas com sucesso.');
-                        window.location.href = 'saladeestudos.html';
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao salvar preferências:', error);
-                        alert('Erro ao salvar suas preferências. Verifique o console (F12) e tente novamente.');
-                        confirmBtn.disabled = false;
-                        confirmBtn.textContent = 'CONFIRMAR E IR PARA A SUA SALA DE ESTUDOS';
+            if (!hasSelection) {
+                const li = document.createElement('li');
+                li.textContent = 'Nenhum subtema selecionado.';
+                selectedListUl.appendChild(li);
+            }
+            if (confirmBtn) {
+                confirmBtn.disabled = !hasSelection;
+            }
+        }
+
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => {
+                if (!auth || !db) {
+                    alert("Erro de conexão com Firebase. Tente recarregar.");
+                    return;
+                }
+                const selectedSubtopics = [];
+                document.querySelectorAll('.subtopic-checkbox:checked').forEach(checkbox => {
+                    selectedSubtopics.push({
+                        subtopicId: checkbox.dataset.subtopicId,
+                        moduleId: checkbox.dataset.moduleParent,
+                        courseId: checkbox.dataset.courseParent
                     });
-            } else {
-                console.error('Usuário NULO ao tentar salvar preferências!');
-                alert('Erro: Sessão expirada ou inválida. Faça login novamente.');
-                window.location.href = 'index.html';
-            }
-        });
-    } else {
-        console.error("Botão de confirmação '#confirm-personalization-btn' não encontrado.");
-    }
-    async function initializePage(persisted = false) {
-        if (courseListContainer) {
-            courseListContainer.innerHTML = '<h2>Carregando cursos...</h2>';
-        } else {
-            console.error("Container #course-list-container não encontrado.");
-            return;
+                });
+                console.log('Confirmando seleção. Subtemas:', selectedSubtopics);
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    const userId = currentUser.uid;
+                    console.log('Salvando preferências para usuário:', userId);
+                    confirmBtn.disabled = true;
+                    confirmBtn.textContent = 'Salvando...';
+                    const userDocRef = db.collection('users').doc(userId);
+                    userDocRef.set({
+                        selectedSubtopics: selectedSubtopics,
+                        hasPersonalized: true
+                    }, { merge: true })
+                        .then(() => {
+                            console.log('Preferências salvas com sucesso.');
+                            window.location.href = 'saladeestudos.html';
+                        })
+                        .catch((error) => {
+                            console.error('Erro ao salvar preferências:', error);
+                            alert('Erro ao salvar suas preferências. Verifique o console (F12) e tente novamente.');
+                            confirmBtn.disabled = false;
+                            confirmBtn.textContent = 'CONFIRMAR E IR PARA A SUA SALA DE ESTUDOS';
+                        });
+                } else {
+                    console.error('Usuário NULO ao tentar salvar preferências!');
+                    alert('Erro: Sessão expirada ou inválida. Faça login novamente.');
+                    window.location.href = 'index.html';
+                }
+            });
         }
-        try {
-            await loadCoursesFromFirestore();
-            renderCourseList(loadedCoursesData);
-            if (persisted) {
-                console.log("Page restored from bfcache, forcing re-render...");
+
+        async function initializePage(persisted = false) {
+            if (courseListContainer) {
+                courseListContainer.innerHTML = '<h2>Carregando cursos...</h2>';
+            }
+            try {
+                await loadCoursesFromFirestore();
                 renderCourseList(loadedCoursesData);
+                if (persisted) {
+                    console.log("Page restored from bfcache, forcing re-render...");
+                    renderCourseList(loadedCoursesData);
+                }
+            } catch (error) {
+                console.error("Erro durante carregamento/renderização inicial:", error);
+                if (courseListContainer) courseListContainer.innerHTML = `<h2 style="color:var(--error-color)">Erro ao Carregar</h2><p>${error.message || 'Erro desconhecido.'} Verifique o console (F12).</p>`;
+                if (confirmBtn) confirmBtn.disabled = true;
             }
-        } catch (error) {
-            console.error("Erro durante carregamento/renderização inicial:", error);
-            if (courseListContainer) courseListContainer.innerHTML = `<h2 style="color:var(--error-color)">Erro ao Carregar</h2><p>${error.message || 'Erro desconhecido.'} Verifique o console (F12).</p>`;
-            if (confirmBtn) confirmBtn.disabled = true;
         }
-    }
-    if (auth) {
-        auth.onAuthStateChanged(async user => {
-            console.log("Personalizar: Auth state changed. User:", user ? user.uid : 'null');
-            if (user) {
-                await initializePage();
-            } else {
-                console.log("Personalizar: Usuário não logado, redirecionando para index.html.");
-                window.location.href = 'index.html';
-            }
+
+        if (auth) {
+            auth.onAuthStateChanged(async user => {
+                console.log("Personalizar: Auth state changed. User:", user ? user.uid : 'null');
+                if (user) {
+                    await initializePage();
+                } else {
+                    console.log("Personalizar: Usuário não logado, redirecionando para index.html.");
+                    window.location.href = 'index.html';
+                }
+            });
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    console.log("Page restored from bfcache, re-initializing...");
+                    initializePage(true);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
         });
-        // Handle page restore from bfcache
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                console.log("Page restored from bfcache, re-initializing...");
-                initializePage(true);
-            }
-        });
-    } else {
-        console.error("Firebase Auth não foi inicializado. Verifique a configuração.");
-        const container = document.getElementById('course-list-container');
-        const confirmButton = document.getElementById('confirm-personalization-btn');
-        if (container) container.innerHTML = '<h2 style="color:var(--error-color)">Erro Crítico</h2><p>Configuração do Firebase falhou. Verifique o console (F12).</p>';
-        if (confirmButton) confirmButton.disabled = true;
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const yearSpan = document.getElementById('current-year');
-        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-    });
-    window.addEventListener('resize', () => {});
-	
-</script>
+    </script>
 </body>
 </html>
