@@ -589,12 +589,12 @@
 
         // --- Configuração Firebase ---
         const firebaseConfig = {
-            apiKey: "SUA_API_KEY",
+            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
             authDomain: "nvp-concursos.firebaseapp.com",
             projectId: "nvp-concursos",
             storageBucket: "nvp-concursos.firebasestorage.app",
-            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-            appId: "SEU_APP_ID"
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1550ff01910ae927d860ba"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -624,10 +624,42 @@
             const megaMenuContainer = document.getElementById('megaMenuContainer');
             const themeToggleBtn = document.getElementById('theme-toggle');
 
-            if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', toggleSidebar);
-            if (themeToggleBtn) themeToggleBtn.addEventListener('click', () => applyTheme(bodyElement.classList.contains('dark-mode') ? 'light' : 'dark'));
-            if (colorPickerBtn) colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
-            if (logoutBtn) logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html').catch(error => alert('Erro ao sair: ' + error.message)));
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.addEventListener('click', toggleSidebar);
+            } else {
+                console.warn('Botão sidebarToggleBtn não encontrado no header.html');
+            }
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    const newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                });
+            } else {
+                console.warn('Botão theme-toggle não encontrado no header.html');
+            }
+
+            if (colorPickerBtn) {
+                colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
+            } else {
+                console.warn('Botão color-picker-btn não encontrado no header.html');
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    auth.signOut()
+                        .then(() => {
+                            console.log('Logout bem-sucedido');
+                            window.location.href = 'index.html';
+                        })
+                        .catch(error => {
+                            console.error('Erro ao fazer logout:', error);
+                            alert('Erro ao sair: ' + error.message);
+                        });
+                });
+            } else {
+                console.warn('Botão logout-btn não encontrado no header.html');
+            }
 
             const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
             megaMenuButtons.forEach(button => {
@@ -670,9 +702,11 @@
         // --- Autenticação ---
         auth.onAuthStateChanged(user => {
             if (!user) {
+                console.log("Usuário não logado, redirecionando para index.html.");
                 window.location.href = 'index.html';
             } else {
                 userId = user.uid;
+                console.log("Usuário autenticado:", userId);
                 loadCourses();
                 applySavedPreferences();
             }
@@ -680,20 +714,27 @@
 
         function applySavedPreferences() {
             const savedMainBgColor = localStorage.getItem('userMainBgColor');
-            if (savedMainBgColor && mainContent) mainContent.style.backgroundColor = savedMainBgColor;
+            if (savedMainBgColor && mainContent) {
+                mainContent.style.backgroundColor = savedMainBgColor;
+                console.log("Cor de fundo aplicada:", savedMainBgColor);
+            }
 
             const savedTheme = localStorage.getItem('theme');
             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(savedTheme || (prefersDarkScheme ? 'dark' : 'light'));
+            const themeToApply = savedTheme || (prefersDarkScheme ? 'dark' : 'light');
+            applyTheme(themeToApply);
         }
 
         function applyTheme(theme) {
+            console.log("Aplicando tema:", theme);
+            bodyElement.classList.toggle('dark-mode', theme === 'dark');
             const sunIcon = document.querySelector('.theme-icon-light');
             const moonIcon = document.querySelector('.theme-icon-dark');
-            bodyElement.classList.toggle('dark-mode', theme === 'dark');
             if (sunIcon && moonIcon) {
                 sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
                 moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+            } else {
+                console.warn('Ícones de tema (.theme-icon-light ou .theme-icon-dark) não encontrados no header.html');
             }
             localStorage.setItem('theme', theme);
         }
@@ -707,6 +748,7 @@
                 const color = colorInput.value;
                 mainContent.style.backgroundColor = color;
                 localStorage.setItem('userMainBgColor', color);
+                console.log("Cor de fundo alterada para:", color);
             });
             colorInput.click();
         }
@@ -723,30 +765,47 @@
 
         // --- Carregar Cursos para o Menu Lateral ---
         async function loadCourses() {
-            if (!userId || !courseMenuContainer) return;
+            if (!userId || !courseMenuContainer) {
+                console.error("userId ou courseMenuContainer não definidos:", { userId, courseMenuContainer });
+                return;
+            }
             courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
             try {
+                console.log("Iniciando carregamento de cursos para o usuário:", userId);
                 const userDocRef = db.collection('users').doc(userId);
                 const userDoc = await userDocRef.get();
                 let coursesToDisplay = [];
 
                 if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
+                    console.log("Usuário tem cursos personalizados. Carregando...");
                     const selectedSubtopics = userDoc.data().selectedSubtopics;
+                    console.log("Subtemas selecionados:", selectedSubtopics);
+
                     for (const selection of selectedSubtopics) {
                         const { courseId, moduleId, subtopicId } = selection;
+                        console.log(`Processando seleção: courseId=${courseId}, moduleId=${moduleId}, subtopicId=${subtopicId}`);
                         const courseRef = db.collection('courses').doc(courseId);
                         const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) continue;
+                        if (!courseDoc.exists) {
+                            console.warn(`Curso ${courseId} não encontrado.`);
+                            continue;
+                        }
 
                         const courseData = courseDoc.data();
                         const moduleRef = courseRef.collection('modules').doc(moduleId);
                         const moduleDoc = await moduleRef.get();
-                        if (!moduleDoc.exists) continue;
+                        if (!moduleDoc.exists) {
+                            console.warn(`Módulo ${moduleId} não encontrado no curso ${courseId}.`);
+                            continue;
+                        }
 
                         const moduleData = moduleDoc.data();
                         const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
                         const subtopicDoc = await subtopicRef.get();
-                        if (!subtopicDoc.exists) continue;
+                        if (!subtopicDoc.exists) {
+                            console.warn(`Subtema ${subtopicId} não encontrado no módulo ${moduleId}.`);
+                            continue;
+                        }
 
                         const subtopicData = subtopicDoc.data();
                         let course = coursesToDisplay.find(c => c.id === courseId);
@@ -767,9 +826,11 @@
                         });
                     }
                 } else {
+                    console.log("Carregando todos os cursos (sem personalização).");
                     const coursesRef = db.collection('courses').orderBy('order');
                     const coursesSnapshot = await coursesRef.get();
                     if (coursesSnapshot.empty) {
+                        console.log("Nenhum curso encontrado no Firestore.");
                         courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
                         return;
                     }
@@ -777,6 +838,7 @@
                     for (const courseDoc of coursesSnapshot.docs) {
                         const courseData = courseDoc.data();
                         const courseId = courseDoc.id;
+                        console.log(`Carregando curso: ${courseId} - ${courseData.name}`);
                         const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
                         const modulesSnapshot = await modulesRef.get();
                         const modules = [];
@@ -784,12 +846,14 @@
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
                             const moduleId = moduleDoc.id;
+                            console.log(`Carregando módulo: ${moduleId} - ${moduleData.name}`);
                             const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
                             const subtopicsSnapshot = await subtopicsRef.get();
                             const subtopics = [];
 
                             subtopicsSnapshot.forEach(subtopicDoc => {
                                 const subtopicData = subtopicDoc.data();
+                                console.log(`Carregando subtema: ${subtopicDoc.id} - ${subtopicData.name}`);
                                 subtopics.push({
                                     id: subtopicDoc.id,
                                     name: subtopicData.name || 'Aula s/ Nome',
@@ -816,6 +880,7 @@
                 }
 
                 if (coursesToDisplay.length === 0) {
+                    console.log("Nenhum curso disponível para exibir.");
                     courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
                     return;
                 }
@@ -829,6 +894,7 @@
                     });
                 });
 
+                console.log("Cursos carregados com sucesso:", loadedCoursesData);
                 renderCourseMenu(loadedCoursesData);
 
                 // Carrega automaticamente o primeiro subtema disponível
@@ -836,19 +902,27 @@
                     const firstCourse = loadedCoursesData[0];
                     const firstModule = firstCourse.modules[0];
                     const firstSubtopic = firstModule.subtopics[0];
+                    console.log("Carregando automaticamente o primeiro subtema:", firstSubtopic);
                     loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
                     const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
                     if (firstSubtopicLink) firstSubtopicLink.classList.add('active');
+                } else {
+                    console.log("Nenhum subtema disponível para carregar automaticamente.");
+                    lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
                 }
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
-                courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos.</p>';
+                courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos: ' + error.message + '</p>';
             }
         }
 
         function renderCourseMenu(courses) {
-            if (!courseMenuContainer) return;
+            if (!courseMenuContainer) {
+                console.error("courseMenuContainer não encontrado.");
+                return;
+            }
             if (!courses || courses.length === 0) {
+                console.log("Nenhum curso para renderizar.");
                 courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
                 return;
             }
@@ -883,6 +957,7 @@
             });
 
             courseMenuContainer.innerHTML = htmlContent;
+            console.log("Menu de cursos renderizado com sucesso.");
             addMenuEventListeners();
         }
 
@@ -923,35 +998,45 @@
                     document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
 
+                    console.log(`Carregando aula: courseId=${courseId}, moduleId=${moduleId}, subtopicId=${subtopicId}`);
                     loadLessonContent(courseId, moduleId, subtopicId);
                 });
             });
         }
 
         async function loadLessonContent(courseId, moduleId, subtopicId) {
-            if (!lessonContent) return;
+            if (!lessonContent) {
+                console.error("lessonContent não encontrado.");
+                return;
+            }
             lessonContent.innerHTML = '<p>Carregando aula...</p>';
             try {
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 const subtopic = module?.subtopics.find(s => s.id === subtopicId);
 
+                console.log("Dados do subtema:", { courseId, moduleId, subtopicId, subtopic });
+
                 if (!course || !module || !subtopic) {
+                    console.error("Aula não encontrada:", { courseId, moduleId, subtopicId });
                     lessonContent.innerHTML = '<p>Erro: Aula não encontrada.</p>';
                     return;
                 }
 
                 if (subtopic.content_url) {
+                    console.log("Carregando conteúdo de:", subtopic.content_url);
                     const response = await fetch(subtopic.content_url);
                     if (!response.ok) throw new Error(`Erro ao carregar o conteúdo: ${response.status}`);
                     const htmlContent = await response.text();
                     lessonContent.innerHTML = htmlContent;
+                    console.log("Conteúdo carregado com sucesso.");
                 } else {
+                    console.warn("Subtema sem content_url:", subtopic);
                     lessonContent.innerHTML = '<p>Conteúdo não disponível para esta aula.</p>';
                 }
             } catch (error) {
                 console.error('Erro ao carregar conteúdo da aula:', error);
-                lessonContent.innerHTML = '<p>Erro ao carregar a aula.</p>';
+                lessonContent.innerHTML = '<p>Erro ao carregar a aula: ' + error.message + '</p>';
             }
         }
 
@@ -1001,12 +1086,14 @@
             if (!isMusicPlaying && audioPlayer) {
                 audioPlayer.play();
                 isMusicPlaying = true;
+                console.log("Música iniciada.");
             }
         }
         function pauseMusic() {
             if (isMusicPlaying && audioPlayer) {
                 audioPlayer.pause();
                 isMusicPlaying = false;
+                console.log("Música pausada.");
             }
         }
 
@@ -1024,6 +1111,7 @@
             pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
             updatePomodoroTimer();
             pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+            console.log("Pomodoro iniciado:", selectedTime / 60, "minutos");
         }
         function updatePomodoroTimer() {
             if (timeRemaining <= 0) {
@@ -1035,6 +1123,7 @@
                     pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
                     pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
                 }, 2000);
+                console.log("Pomodoro concluído.");
                 return;
             }
             timeRemaining--;
@@ -1046,6 +1135,7 @@
             timeRemaining = parseInt(pomodoroTimeSelect.value) * 60;
             pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
             pomodoroStatus.textContent = 'Foco';
+            console.log("Pomodoro parado.");
         }
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
@@ -1055,6 +1145,7 @@
 
         // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("Página carregada. Inicializando...");
             updateLayout();
             if (!auth.currentUser) applySavedPreferences();
         });
