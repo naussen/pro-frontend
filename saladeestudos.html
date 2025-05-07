@@ -23,6 +23,14 @@
 		max-width: 600px;
 		box-shadow: var(--floating-panel-shadow);
 	}
+	#content-container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 20px;
+		color: #f1f5f9;
+		background-color: #1f2937;
+	}
+
 	.close-btn {
 		float: right;
 		cursor: pointer;
@@ -589,8 +597,7 @@
         <main id="mainContent">
             <div class="container">
                 <div class="study-room-header">
-                    <h1>Sala de Estudos</h1>
-                    <p>Acesse os conteúdos que você selecionou para estudar de forma organizada.</p>
+                    <h1> <div id="content-container"> </h1>                  
                 </div>
                 <div id="lessonContent">
                     <p>&lt;--- Selecione uma aula no menu</p>
@@ -720,6 +727,47 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+
+	// Função para carregar o conteúdo do subtopic
+	async function loadSubtopicContent() {
+    try {
+      // Referência ao documento do subtopic
+      const subtopicRef = db
+        .collection("courses")
+        .doc("direito-constitucional")
+        .collection("modules")
+        .doc("dc-controle")
+        .collection("subtopics")
+        .doc("dc-controle-adc");
+
+      // Busca o documento
+      const doc = await subtopicRef.get();
+
+      if (doc.exists) {
+        const data = doc.data();
+        const contentUrl = data.content_url;
+
+        // Faz uma requisição para carregar o conteúdo HTML
+        const response = await fetch(contentUrl);
+        if (!response.ok) {
+          throw new Error("Erro ao carregar o conteúdo HTML");
+        }
+        const htmlContent = await response.text();
+
+        // Insere o conteúdo no contêiner
+        document.getElementById("content-container").innerHTML = htmlContent;
+      } else {
+        console.error("Subtopic não encontrado!");
+        document.getElementById("content-container").innerHTML = "<p>Conteúdo não encontrado.</p>";
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      document.getElementById("content-container").innerHTML = "<p>Erro ao carregar o conteúdo.</p>";
+    }
+	}
+
+  // Chama a função ao carregar a página
+  window.onload = loadSubtopicContent;
 
     // --- Referências Globais ---
     let userId = null;
@@ -1404,5 +1452,8 @@
 		return JSON.parse(localStorage.getItem("lastFlashcards")) || [];
 	}
 </script>
+	<!-- Firebase SDK -->
+	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 </body>
 </html>
