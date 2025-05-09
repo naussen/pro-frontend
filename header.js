@@ -3,19 +3,18 @@ function renderHeader() {
     header.className = 'w3s-header';
     header.id = 'mainHeader';
 
-	// Logo
-	const logoArea = document.createElement('div');
-	logoArea.className = 'w3s-logo-area';
-	logoArea.innerHTML = `
-		<a href="index.html" title="Página Inicial" class="logo-link">
-			<svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="20" cy="20" r="18" fill="#007bff"/>
-				<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold">PC</text>
-			</svg>
-			<span class="logo-text">PRO Concursos</span>
-		</a>
-	`;
-	header.appendChild(logoArea);
+    // Logo
+    const logoArea = document.createElement('div');
+    logoArea.className = 'w3s-logo-area';
+    logoArea.innerHTML = `
+        <a href="index.html" title="Página Inicial">
+            <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48"/>
+                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
+            </svg>
+        </a>
+    `;
+    header.appendChild(logoArea);
 
     // Menu Topo Esquerdo (Cursos, Questões, Flashcards)
     const navMenu = document.createElement('nav');
@@ -63,51 +62,24 @@ function renderHeader() {
 
     document.body.prepend(header);
 
-	const navItems = document.querySelectorAll('.nav-item');
-	navItems.forEach(item => {
-		const btn = item.querySelector('.nav-btn');
-		const dropdown = item.querySelector('.dropdown-content');
-
-		const toggleDropdown = () => {
-			const isVisible = dropdown.style.display === 'block';
-			// Fecha todos os dropdowns
-			document.querySelectorAll('.dropdown-content').forEach(dd => {
-				dd.style.display = 'none';
-				dd.classList.remove('active');
-			});
-			// Alterna o dropdown clicado
-			if (!isVisible) {
-				dropdown.style.display = 'block';
-				dropdown.classList.add('active');
-			}
-		};
-
-		// Clique no botão
-		btn.addEventListener('click', (e) => {
-			e.stopPropagation(); // Evita que o clique propague e feche imediatamente
-			toggleDropdown();
-		});
-
-		// Suporte a teclado (Enter ou Espaço)
-		btn.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				toggleDropdown();
-			}
-		});
-	});
-
-// Fechar dropdowns ao clicar fora
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-item')) {
-        document.querySelectorAll('.dropdown-content').forEach(dd => {
-            dd.style.display = 'none';
-            dd.classList.remove('active');
+    // Lógica do Dropdown
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        const btn = item.querySelector('.nav-btn');
+        const dropdown = item.querySelector('.dropdown-content');
+        btn.addEventListener('click', () => {
+            const isVisible = dropdown.style.display === 'block';
+            document.querySelectorAll('.dropdown-content').forEach(dd => dd.style.display = 'none');
+            dropdown.style.display = isVisible ? 'none' : 'block';
         });
-    }
-});
+    });
 
-
+    // Fechar dropdowns ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-item')) {
+            document.querySelectorAll('.dropdown-content').forEach(dd => dd.style.display = 'none');
+        }
+    });
 
     // Tema Claro/Escuro
     const themeToggleBtn = document.getElementById('theme-toggle');
