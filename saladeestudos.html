@@ -510,9 +510,6 @@
         </main>
     </div>
 
-    <!-- Carrega o rodapé dinamicamente -->
-    <div id="footer-placeholder"></div>
-
     <!-- Painel Flutuante de Ferramentas -->
     <div id="floatingToolsPanel">
         <div class="tools-panel-header" onclick="toggleFloatingToolsPanel()">
@@ -569,22 +566,6 @@
             .catch(error => {
                 console.error('Erro ao carregar o header:', error);
                 document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
-            });
-
-        // --- Carrega o Rodapé Dinamicamente ---
-        fetch('footer.html')
-            .then(response => {
-                if (!response.ok) throw new Error(`Erro ao carregar footer.html: ${response.status}`);
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-                const yearSpan = document.getElementById('current-year');
-                if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-            })
-            .catch(error => {
-                console.error('Erro ao carregar o footer:', error);
-                document.getElementById('footer-placeholder').innerHTML = '<p>Erro ao carregar o rodapé.</p>';
             });
 
         // --- Configuração Firebase ---
