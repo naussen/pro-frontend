@@ -516,7 +516,6 @@
     <div class="content-wrapper">
         <nav class="sidebar" id="sidebar">
             <h2>
-                <button id="sidebarToggleBtn" class="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu">☰</button>
                 Meus Cursos
             </h2>
             <div class="sidebar-nav" id="courseMenu">
@@ -1057,30 +1056,36 @@
 
         // --- Sidebar Toggle ---
         function toggleSidebar() {
-            const isVisible = sidebar.classList.toggle('visible');
             if (window.innerWidth <= 768) {
+                // Para dispositivos móveis, alternar a visibilidade com a classe 'visible'
+                const isVisible = sidebar.classList.toggle('visible');
                 if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
             } else {
-                sidebar.classList.toggle('hidden', !isVisible);
-                mainContent.classList.toggle('sidebar-hidden', !isVisible);
+                // Para desktop, usar a classe 'hidden'
+                const isHidden = sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('sidebar-hidden', isHidden);
                 if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
             }
             closeAllMegaMenus();
         }
 
-        window.addEventListener('resize', updateLayout);
         function updateLayout() {
-            if (window.innerWidth > 768) {
+            if (window.innerWidth <= 768) {
+                // Em dispositivos móveis, sidebar começa oculta
+                sidebar.classList.remove('hidden');
                 sidebar.classList.remove('visible');
-                sidebar.classList.toggle('hidden', false);
-                mainContent.classList.toggle('sidebar-hidden', false);
+                mainContent.classList.add('sidebar-hidden');
                 if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
             } else {
-                sidebar.classList.add('hidden');
-                mainContent.classList.add('sidebar-hidden');
+                // Em desktop, sidebar começa visível
+                sidebar.classList.remove('visible');
+                sidebar.classList.remove('hidden');
+                mainContent.classList.remove('sidebar-hidden');
                 if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
             }
         }
+        
+        window.addEventListener('resize', updateLayout);
 
         // --- Floating Tools Panel ---
         function toggleFloatingToolsPanel() {

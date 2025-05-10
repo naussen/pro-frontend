@@ -1,5 +1,6 @@
 <!-- header.html -->
 <header class="w3s-header" id="mainHeader">
+    <button id="sidebarToggleBtn" class="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu">☰</button>
     <div class="w3s-logo-area">
         <a href="index.html" title="Página Inicial" class="logo-link">
             <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
@@ -80,6 +81,21 @@
         z-index: 105;
         border-bottom: 1px solid var(--header-border, #e7e7e7);
         gap: 10px;
+    }
+    
+    /* Botão do menu sidebar */
+    .w3s-sidebar-toggle {
+        background-color: transparent;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0 15px;
+        color: var(--text-dark, #333);
+        line-height: var(--header-height, 55px);
+        transition: color 0.3s;
+    }
+    .w3s-sidebar-toggle:hover {
+        color: var(--main-color, #1A5276);
     }
     
     /* Logo */
