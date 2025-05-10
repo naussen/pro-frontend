@@ -458,6 +458,341 @@
             .tool-buttons button { font-size: 0.85em; padding: 6px 8px; }
             .mega-menu-column { min-width: 100%; padding: 0; }
         }
+
+        /* --- Botão de Questões --- */
+        #questoesBtn {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            z-index: 99;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        #questoesBtn:hover {
+            background-color: #45a049;
+        }
+        #questoesBtn .icon {
+            font-size: 1.2em;
+        }
+        body.dark-mode #questoesBtn {
+            background-color: #2e7d32;
+        }
+        body.dark-mode #questoesBtn:hover {
+            background-color: #1b5e20;
+        }
+
+        /* --- Container do App de Questões --- */
+        #questoesAppContainer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 110;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        #questoesAppContainer.visible {
+            display: flex;
+        }
+        #questoesApp {
+            width: 90%;
+            max-width: 800px;
+            height: 90%;
+            max-height: 700px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        body.dark-mode #questoesApp {
+            background-color: #22272e;
+            border-color: #30363d;
+        }
+        
+        /* --- Cabeçalho do App de Questões --- */
+        #questoesAppHeader {
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        body.dark-mode #questoesAppHeader {
+            background-color: #161b22;
+            border-bottom-color: #30363d;
+        }
+        #questoesAppHeader h2 {
+            margin: 0;
+            color: #1A5276;
+            font-size: 1.4em;
+        }
+        body.dark-mode #questoesAppHeader h2 {
+            color: #6cb6ff;
+        }
+        #questoesAppInfo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #questaoInfo {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        body.dark-mode #questaoInfo {
+            color: #8b949e;
+        }
+        #questoesAppClose, #questoesAppClose2 {
+            background-color: #D32F2F;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        #questoesAppClose:hover, #questoesAppClose2:hover {
+            background-color: #C62828;
+        }
+        body.dark-mode #questoesAppClose, 
+        body.dark-mode #questoesAppClose2 {
+            background-color: #c62828;
+        }
+        body.dark-mode #questoesAppClose:hover, 
+        body.dark-mode #questoesAppClose2:hover {
+            background-color: #b71c1c;
+        }
+        
+        /* --- Conteúdo do App de Questões --- */
+        #questoesAppContent {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #questaoEnunciado {
+            background-color: #EAF2F8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        body.dark-mode #questaoEnunciado {
+            background-color: #2d333b;
+        }
+        #questaoEnunciadoId {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        body.dark-mode #questaoEnunciadoId {
+            color: #8b949e;
+        }
+        #questaoEnunciadoTexto {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #333;
+        }
+        body.dark-mode #questaoEnunciadoTexto {
+            color: #e6edf3;
+        }
+        #questaoAlternativas {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .alternativa {
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        body.dark-mode .alternativa {
+            border-color: #30363d;
+            color: #e6edf3;
+        }
+        .alternativa:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        body.dark-mode .alternativa:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+        .alternativa input[type="radio"] {
+            margin: 0;
+        }
+        .alternativa.correta {
+            background-color: rgba(76, 175, 80, 0.2);
+            border-color: #4CAF50;
+        }
+        .alternativa.incorreta {
+            background-color: rgba(244, 67, 54, 0.2);
+            border-color: #F44336;
+        }
+        #questaoLoading, #questaoError {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        #questaoError {
+            color: #D32F2F;
+        }
+        body.dark-mode #questaoError {
+            color: #FF5252;
+        }
+        #questaoControles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        #questaoControles button {
+            padding: 8px 12px;
+            background-color: #D4AC0D;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            flex: 1;
+            min-width: 100px;
+            transition: background-color 0.3s;
+        }
+        body.dark-mode #questaoControles button {
+            background-color: #e4c05c;
+            color: #161b22;
+        }
+        #questaoControles button:hover {
+            background-color: #b3910b;
+        }
+        body.dark-mode #questaoControles button:hover {
+            background-color: #cfae51;
+        }
+        #questaoControles button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* --- Rodapé do App de Questões --- */
+        #questoesAppFooter {
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+        }
+        body.dark-mode #questoesAppFooter {
+            background-color: #161b22;
+            border-top-color: #30363d;
+        }
+        #questoesAppClose2 {
+            background-color: #D32F2F;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+            width: auto;
+            height: auto;
+        }
+        
+        /* --- Estilos Responsivos para o App de Questões --- */
+        @media screen and (max-width: 768px) {
+            #questoesBtn {
+                bottom: 70px;
+                right: 15px;
+                padding: 8px 12px;
+                font-size: 0.85em;
+            }
+            #questoesApp {
+                width: 95%;
+                height: 95%;
+            }
+            #questaoControles button {
+                padding: 8px;
+                font-size: 0.85em;
+                min-width: 80px;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            #questoesBtn {
+                bottom: 60px;
+                right: 10px;
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+            #questoesAppHeader h2 {
+                font-size: 1.2em;
+            }
+            #questoesAppContent {
+                padding: 15px;
+            }
+            #questaoControles {
+                flex-direction: column;
+                gap: 8px;
+            }
+            #questaoControles button {
+                flex: none;
+                width: 100%;
+            }
+        }
+        
+        #questaoComentarioBox {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #EAF2F8;
+            border-radius: 5px;
+            border-left: 4px solid #1A5276;
+        }
+        body.dark-mode #questaoComentarioBox {
+            background-color: #2d333b;
+            border-left-color: #6cb6ff;
+        }
+        #questaoComentarioBox h4 {
+            margin-top: 0;
+            color: #1A5276;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        body.dark-mode #questaoComentarioBox h4 {
+            color: #6cb6ff;
+        }
+        #questaoComentarioBox p {
+            margin: 0;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -517,10 +852,10 @@
                             </a>
                             <ul class="subtopic-list">
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 1.1: Números e Operações</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub1.1" data-module-id="mod1" data-course-id="math">Subtópico 1.1: Números e Operações</a>
                                 </li>
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 1.2: Geometria Básica</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub1.2" data-module-id="mod1" data-course-id="math">Subtópico 1.2: Geometria Básica</a>
                                 </li>
                             </ul>
                         </li>
@@ -532,10 +867,10 @@
                             </a>
                             <ul class="subtopic-list">
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 2.1: Equações</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub2.1" data-module-id="mod2" data-course-id="math">Subtópico 2.1: Equações</a>
                                 </li>
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 2.2: Funções</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub2.2" data-module-id="mod2" data-course-id="math">Subtópico 2.2: Funções</a>
                                 </li>
                             </ul>
                         </li>
@@ -556,10 +891,10 @@
                             </a>
                             <ul class="subtopic-list">
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 1.1: Substantivos</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub1.1" data-module-id="mod1" data-course-id="port">Subtópico 1.1: Substantivos</a>
                                 </li>
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 1.2: Adjetivos</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub1.2" data-module-id="mod1" data-course-id="port">Subtópico 1.2: Adjetivos</a>
                                 </li>
                             </ul>
                         </li>
@@ -571,10 +906,10 @@
                             </a>
                             <ul class="subtopic-list">
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 2.1: Autores</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub2.1" data-module-id="mod2" data-course-id="port">Subtópico 2.1: Autores</a>
                                 </li>
                                 <li class="subtopic-item">
-                                    <a href="#" class="subtopic-link">Subtópico 2.2: Gêneros</a>
+                                    <a href="#" class="subtopic-link" data-subtopic-id="sub2.2" data-module-id="mod2" data-course-id="port">Subtópico 2.2: Gêneros</a>
                                 </li>
                             </ul>
                         </li>
@@ -623,7 +958,11 @@
             </div>
         </div>
     </div>
+    
+    <!-- Botão Questões Fixo -->
     <button id="questoesBtn"><span class="icon">❓</span> Questões</button>
+    
+    <!-- Container do Aplicativo de Questões -->
     <div id="questoesAppContainer">
         <div id="questoesApp">
             <div id="questoesAppHeader">
@@ -656,489 +995,71 @@
             </div>
         </div>
     </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script>
-        // --- :ROOT Variables ---
-        :root {
-            --header-height: 55px;
-            --sidebar-width: 240px;
-            --main-color: #1A5276;
-            --light-highlight-bg: #EAF2F8;
-            --accent-1: #D4AC0D;
-            --accent-1-darker: #b3910b;
-            --accent-2: #CA6F1E;
-            --dark-bg: #154360;
-            --subnav-bg: #ddd;
-            --text-dark: #333;
-            --text-light: #f8f9fa;
-            --text-muted: #6c757d;
-            --border-color: #ccc;
-            --light-grey-bg: #f1f1f1;
-            --header-bg: #ffffff;
-            --header-border: #e7e7e7;
-            --main-content-bg: #ffffff;
-            --code-bg: #f1f1f1;
-            --button-text-dark: #333;
-            --footer-text-muted: #ccc;
-            --footer-link-color: #ccc;
-            --footer-link-hover: var(--accent-1);
-            --footer-separator: #555;
-            --footer-h4: #f1f1f1;
-            --dark-blue-hover: #113a54;
-            --error-color: #D32F2F;
-            --sidebar-bg: #f1f1f1;
-            --sidebar-border: #d4d4d4;
-            --sidebar-link-color: #000;
-            --sidebar-link-hover-bg: #ddd;
-            --sidebar-link-active-bg: #4CAF50;
-            --sidebar-link-active-color: #fff;
-            --floating-panel-bg: #fdfdfd;
-            --floating-panel-border: #ccc;
-            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            --floating-panel-width: 350px;
-            --top-nav-bg: #ffffff;
-            --top-nav-link-color: #333;
-            --top-nav-link-hover-bg: #f1f1f1;
-            --top-nav-link-active-bg: #ddd;
-            --mega-menu-bg: #f8f9fa;
-            --mega-menu-border: #dee2e6;
-            --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            --mega-menu-link-color: #212529;
-            --mega-menu-link-hover-color: #0056b3;
-            --mega-menu-heading-color: #495057;
-            --questions-app-bg: #fff;
-            --questions-app-border: #e0e0e0;
-            --questions-app-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            --questions-app-text: #333;
-            --questions-button-bg: #4CAF50;
-            --questions-button-hover-bg: #45a049;
-            --questions-button-text: #fff;
-            --questions-close-button-bg: #D32F2F;
-            --questions-close-button-hover-bg: #C62828;
-        }
+        // --- Firebase Config ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDBXCLiWY9UCeQvvW-wzBPRUvkJR0h7dGM",
+            authDomain: "pro-concursos-app.firebaseapp.com",
+            projectId: "pro-concursos-app",
+            storageBucket: "pro-concursos-app.appspot.com",
+            messagingSenderId: "123412341234",
+            appId: "1:123412341234:web:123412341234123412341234"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
 
-        // --- Dark Mode Variables ---
-        body.dark-mode {
-            --main-color: #6cb6ff;
-            --light-highlight-bg: #2d333b;
-            --accent-1: #e4c05c;
-            --accent-1-darker: #cfae51;
-            --accent-2: #d98234;
-            --dark-bg: #0d1117;
-            --subnav-bg: #22272e;
-            --text-dark: #e6edf3;
-            --text-light: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #444c56;
-            --light-grey-bg: #0d1117;
-            --header-bg: #161b22;
-            --header-border: #30363d;
-            --main-content-bg: #0d1117;
-            --code-bg: #22272e;
-            --button-text-dark: #161b22;
-            --footer-text-muted: #8b949e;
-            --footer-link-color: #8b949e;
-            --footer-link-hover: var(--accent-1);
-            --footer-separator: #30363d;
-            --footer-h4: var(--text-light);
-            --dark-blue-hover: #1a6fba;
-            --error-color: #FF5252;
-            --sidebar-bg: #161b22;
-            --sidebar-border: #30363d;
-            --sidebar-link-color: var(--text-light);
-            --sidebar-link-hover-bg: #22272e;
-            --sidebar-link-active-bg: #007bff;
-            --sidebar-link-active-color: #fff;
-            --floating-panel-bg: #22272e;
-            --floating-panel-border: #30363d;
-            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            --top-nav-bg: #161b22;
-            --top-nav-link-color: var(--text-light);
-            --top-nav-link-hover-bg: #2d333b;
-            --top-nav-link-active-bg: #0d1117;
-            --mega-menu-bg: #212529;
-            --mega-menu-border: #343a40;
-            --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.4);
-            --mega-menu-link-color: #adb5bd;
-            --mega-menu-link-hover-color: #dee2e6;
-            --mega-menu-heading-color: #ced4da;
-            --questions-app-bg: #22272e;
-            --questions-app-border: #30363d;
-            --questions-app-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            --questions-app-text: #e6edf3;
-            --questions-button-bg: #2e7d32;
-            --questions-button-hover-bg: #1b5e20;
-            --questions-button-text: #fff;
-            --questions-close-button-bg: #c62828;
-            --questions-close-button-hover-bg: #b71c1c;
-        }
-
-        // --- Reset e Base ---
-        html { height: 100%; box-sizing: border-box; }
-        *, *:before, *:after { box-sizing: inherit; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: var(--light-grey-bg);
-            color: var(--text-dark);
-            padding-top: var(--header-height);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        // --- Header ---
-        .w3s-header {
-            background-color: var(--header-bg);
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            padding: 0 10px 0 0;
-            height: var(--header-height);
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 105;
-            border-bottom: 1px solid var(--header-border);
-            gap: 5px;
-        }
-        .w3s-sidebar-toggle {
-            background-color: transparent;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 0 15px;
-            color: var(--text-dark);
-            line-height: var(--header-height);
-            margin-right: 5px;
-        }
-        .w3s-sidebar-toggle:hover { background-color: var(--light-grey-bg); }
-        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
-        .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
-        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; }
-        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
-
-        // --- Top Navigation (Esquerda com Dropdowns) ---
-        .w3s-top-nav { display: flex; align-items: center; height: 100%; margin-left: 10px; position: relative; }
-        .w3s-top-nav button.nav-button {
-            display: flex;
-            align-items: center;
-            padding: 0 12px;
-            height: 100%;
-            color: var(--top-nav-link-color);
-            font-size: 15px;
-            background-color: transparent;
-            border: none;
-            border-right: 1px solid var(--header-border);
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .w3s-top-nav button.nav-button:first-child { border-left: 1px solid var(--header-border); }
-        .w3s-top-nav button.nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
-        .w3s-top-nav button.nav-button.active { background-color: var(--top-nav-link-active-bg); }
-
-        // --- Mega Menu Panel ---
-        .mega-menu-panel {
-            display: none;
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            width: 100%;
-            max-height: calc(100vh - var(--header-height));
-            overflow-y: auto;
-            background-color: var(--mega-menu-bg);
-            border-top: 1px solid var(--mega-menu-border);
-            box-shadow: var(--mega-menu-shadow);
-            z-index: 104;
-            padding: 25px 30px;
-        }
-        .mega-menu-panel.active {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
-        .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
-        .mega-menu-column h4 { font-size: 1.1em; color: var(--mega-menu-heading-color); margin: 0 0 15px; padding-bottom: 8px; border-bottom: 1px solid var(--mega-menu-border); }
-        .mega-menu-column a { display: block; color: var(--mega-menu-link-color); text-decoration: none; padding: 6px 0; font-size: 0.95em; transition: color 0.2s; }
-        .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
-
-        // --- Header Actions (Direita) ---
-        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px; }
-        .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-        .w3s-header-actions a, .w3s-header-actions button {
-            color: var(--text-dark);
-            text-decoration: none;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 10px;
-            border-radius: 4px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; color: #666; }
-        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); }
-        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); }
-        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover { background-color: rgba(255, 255, 255, 0.05); }
-        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
-        .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
-        .w3s-header-actions a[title="Guia do Método"] .icon { color: #3fb950; }
-        .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
-        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; }
-        #theme-toggle .icon { font-size: 1.3em; }
-
-        // --- Content Wrapper ---
-        .content-wrapper { display: flex; flex-grow: 1; }
-
-        // --- Sidebar ---
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--sidebar-border);
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            bottom: 0;
-            overflow-y: auto;
-            transition: transform 0.3s ease, width 0.3s ease;
-            z-index: 102;
-            transform: translateX(0);
-        }
-        .sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-width))); }
-        .sidebar h2 { 
-            font-size: 1.3em; 
-            color: var(--text-dark); 
-            margin: 0; 
-            padding: 15px 20px; 
-            font-weight: 600; 
-            border-bottom: 1px solid var(--sidebar-border);
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 10px;
-        }
-        .w3s-sidebar-toggle {
-            background-color: transparent;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-dark);
-            padding: 0;
-            line-height: 1;
-        }
-        .sidebar-nav { list-style: none; padding: 0; margin: 0; }
-        .course-item { margin-bottom: 10px; }
-        .course-header {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            cursor: pointer;
-            color: var(--sidebar-link-color);
-            font-size: 0.95em;
-            font-weight: bold;
-        }
-        .course-header:hover { background-color: var(--sidebar-link-hover-bg); }
-        .course-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
-        .course-header .toggle-icon.expanded { transform: rotate(90deg); }
-        .module-list { list-style: none; padding: 0; margin: 0; display: none; }
-        .module-list.visible { display: block; }
-        .module-item { margin-bottom: 5px; }
-        .module-header {
-            display: flex;
-            align-items: center;
-            padding: 8px 30px;
-            cursor: pointer;
-            color: var(--sidebar-link-color);
-            font-size: 0.95em;
-        }
-        .module-header:hover { background-color: var(--sidebar-link-hover-bg); }
-        .module-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
-        .module-header .toggle-icon.expanded { transform: rotate(90deg); }
-        .subtopic-list { list-style: none; padding: 0; margin: 0; display: none; }
-        .subtopic-list.visible { display: block; }
-        .subtopic-item a {
-            display: block;
-            padding: 8px 40px;
-            color: var(--sidebar-link-color);
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: background-color 0.2s;
-        }
-        .subtopic-item a:hover { background-color: var(--sidebar-link-hover-bg); }
-        .subtopic-item a.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); }
-
-        // --- Main Content Area ---
-        main {
-            flex-grow: 1;
-            background-color: var(--main-content-bg);
-            color: var(--text-dark);
-            margin-left: var(--sidebar-width);
-            padding: 30px 25px;
-            transition: margin-left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-        main.sidebar-hidden { margin-left: 0; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .study-room-header { text-align: center; margin-bottom: 30px; }
-        .study-room-header h1 { font-size: 2em; color: var(--main-color); margin-bottom: 10px; }
-        .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
-        #lessonContent { min-height: 300px; }
-
-        // --- Floating Tools Panel ---
-        #floatingToolsPanel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: var(--floating-panel-width);
-            max-height: 80vh;
-            background-color: var(--floating-panel-bg);
-            border: 1px solid var(--floating-panel-border);
-            border-radius: 8px;
-            box-shadow: var(--floating-panel-shadow);
-            z-index: 103;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-            transform: translateY(0);
-            opacity: 1;
-        }
-        #floatingToolsPanel.collapsed { transform: translateY(calc(100% - 50px)); height: 50px; opacity: 0.9; }
-        .tools-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--light-grey-bg); border-bottom: 1px solid var(--floating-panel-border); cursor: pointer; }
-        .tools-panel-header h3 { margin: 0; font-size: 1.1em; color: var(--main-color); }
-        #toggleToolsPanelBtn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-muted); padding: 0 5px; }
-        .tools-panel-content { padding: 15px; overflow-y: auto; flex-grow: 1; }
-        .tool-buttons { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .tool-buttons button {
-            flex-grow: 1;
-            background-color: var(--accent-1);
-            color: var(--button-text-dark);
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            font-size: 0.9em;
-        }
-        .tool-buttons button:hover { background-color: var(--accent-1-darker); }
-
-        // --- Tool Panels ---
-        .tool-panel {
-            display: none;
-            border-top: 1px dashed var(--border-color);
-            margin-top: 15px;
-            padding-top: 15px;
-        }
-        .tool-panel h4 { font-size: 1.1em; color: var(--main-color); margin-bottom: 10px; margin-top: 0; }
-        .tool-panel p { font-size: 0.95em; margin-bottom: 10px; color: var(--text-dark); }
-        .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            margin-bottom: 10px;
-            background-color: var(--main-content-bg);
-            color: var(--text-dark);
-            width: calc(100% - 20px);
-            max-width: 200px;
-        }
-        .tool-panel button {
-            background-color: var(--accent-2);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            margin-bottom: 10px;
-        }
-        .tool-panel button:hover { background-color: #a05a17; }
-        body.dark-mode .tool-panel button:hover { background-color: #f8961e; }
-        .timer-display { font-size: 1.8em; margin: 15px 0; color: var(--main-color); font-weight: bold; text-align: center; }
-        #pomodoroStatus { font-size: 0.9em; color: var(--text-muted); text-align: center; }
-        #musicPanel p { color: var(--text-dark); }
-        #musicPanel audio { display: none; }
-
-        // --- Estilos do Conteúdo Carregado ---
-        .module-content { padding: 1rem; color: var(--text-dark); }
-        body.dark-mode .module-content { color: var(--text-light); }
-        .module-title { color: var(--main-color); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; font-size: 1.5em; }
-        .section-title { color: var(--main-color); margin: 2rem 0 1rem; font-size: 1.2em; }
-        .module-content p { margin-bottom: 1rem; line-height: 1.6; }
-        .content-list, .content-list-disc, .content-list-circle { margin-left: 1.5rem; margin-bottom: 1rem; line-height: 1.6; }
-        .content-list li, .content-list-disc li, .content-list-circle li { margin-bottom: 0.5rem; }
-        .content-list-disc { list-style-type: disc; }
-        .content-list-circle { list-style-type: circle; }
-        .content-note { background-color: var(--light-highlight-bg); padding: 0.8rem; border-radius: 4px; margin-bottom: 1rem; }
-        body.dark-mode .content-note { background-color: var(--dark-bg); }
-        .highlight-yellow { color: var(--accent-1); }
-        .highlight-red { color: var(--error-color); }
-        .highlight-blue { color: var(--main-color); }
-        .italic { font-style: italic; }
-
-        // --- Responsividade ---
-        @media screen and (max-width: 992px) {
-            :root { --sidebar-width: 200px; }
-            .w3s-top-nav button.nav-button { font-size: 14px; padding: 0 8px; }
-            .w3s-header-actions .link-text { display: none; }
-            .w3s-header-actions a, .w3s-header-actions button { padding: 6px 8px; }
-            #floatingToolsPanel { width: 300px; }
-            .mega-menu-column { min-width: 180px; }
-        }
-        @media screen and (max-width: 768px) {
-            :root { --sidebar-width: 240px; }
-            .sidebar { 
-                transform: translateX(calc(-1 * var(--sidebar-width))); 
-                width: var(--sidebar-width);
-            }
-            .sidebar.visible { transform: translateX(0); }
-            main { margin-left: 0; }
-            .w3s-sidebar-toggle { display: block; }
-            #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
-            .mega-menu-panel { padding: 15px; }
-            .mega-menu-column { min-width: calc(50% - 20px); }
-            .mega-menu-column:not(:last-child) { border-right: none; }
-        }
-        @media screen and (max-width: 480px) {
-            #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
-            .tool-buttons button { font-size: 0.85em; padding: 6px 8px; }
-            .mega-menu-column { min-width: 100%; padding: 0; }
-        }
-
-        // --- Questões App ---
+        // --- Variáveis Globais ---
         let currentQuestionIndex = 0;
         let questoes = [];
         let currentQuestion = null;
         let currentSubtopicId = null;
-        let currentCourseId = null;
         let currentModuleId = null;
+        let currentCourseId = null;
         let isQuestoesAppVisible = false;
         let questaoComentarioVisible = false;
+        let loadedCoursesData = [];
 
-        const questoesBtn = document.getElementById('questoesBtn');
-        const questoesAppContainer = document.getElementById('questoesAppContainer');
-        const questoesAppClose = document.getElementById('questoesAppClose');
-        const questoesAppClose2 = document.getElementById('questoesAppClose2');
-        const questaoInfo = document.getElementById('questaoInfo');
-        const questaoEnunciadoId = document.getElementById('questaoEnunciadoId');
-        const questaoEnunciadoTexto = document.getElementById('questaoEnunciadoTexto');
-        const questaoAlternativas = document.getElementById('questaoAlternativas');
-        const questaoLoading = document.getElementById('questaoLoading');
-        const questaoError = document.getElementById('questaoError');
-        const btnAnterior = document.getElementById('btnAnterior');
-        const btnProxima = document.getElementById('btnProxima');
-        const btnAleatoria = document.getElementById('btnAleatoria');
-        const btnComentario = document.getElementById('btnComentario');
-        const btnComentariosUsuarios = document.getElementById('btnComentariosUsuarios');
-        const btnFavoritar = document.getElementById('btnFavoritar');
-        const btnFiltrar = document.getElementById('btnFiltrar');
+        // --- Funções de Layout e Tema ---
+        function updateLayout() {
+            const isMobile = window.innerWidth <= 768;
+            const sidebar = document.querySelector('.sidebar');
+            const main = document.querySelector('main');
+            
+            if (isMobile) {
+                sidebar.classList.add('hidden');
+                main.classList.add('sidebar-hidden');
+            } else {
+                sidebar.classList.remove('hidden');
+                main.classList.remove('sidebar-hidden');
+            }
+        }
 
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode ? 'true' : 'false');
+        }
+
+        function applySavedPreferences() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            if (savedDarkMode === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        function toggleToolsPanel() {
+            const panel = document.getElementById('floatingToolsPanel');
+            panel.classList.toggle('collapsed');
+        }
+
+        // --- Aplicativo de Questões ---
         function getQueryParam(paramName) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(paramName);
@@ -1146,7 +1067,7 @@
 
         function toggleQuestoesApp() {
             isQuestoesAppVisible = !isQuestoesAppVisible;
-            questoesAppContainer.classList.toggle('visible', isQuestoesAppVisible);
+            document.getElementById('questoesAppContainer').classList.toggle('visible', isQuestoesAppVisible);
             
             if (isQuestoesAppVisible && questoes.length === 0) {
                 loadQuestoes();
@@ -1154,6 +1075,13 @@
         }
 
         async function loadQuestoes() {
+            const questaoLoading = document.getElementById('questaoLoading');
+            const questaoAlternativas = document.getElementById('questaoAlternativas');
+            const questaoEnunciadoId = document.getElementById('questaoEnunciadoId');
+            const questaoEnunciadoTexto = document.getElementById('questaoEnunciadoTexto');
+            const questaoError = document.getElementById('questaoError');
+            const questaoInfo = document.getElementById('questaoInfo');
+            
             questaoLoading.style.display = 'block';
             questaoAlternativas.innerHTML = '';
             questaoEnunciadoId.textContent = '';
@@ -1229,6 +1157,15 @@
         }
 
         function showQuestion(index) {
+            const questaoLoading = document.getElementById('questaoLoading');
+            const questaoAlternativas = document.getElementById('questaoAlternativas');
+            const questaoEnunciadoId = document.getElementById('questaoEnunciadoId');
+            const questaoEnunciadoTexto = document.getElementById('questaoEnunciadoTexto');
+            const questaoError = document.getElementById('questaoError');
+            const questaoInfo = document.getElementById('questaoInfo');
+            const btnAnterior = document.getElementById('btnAnterior');
+            const btnProxima = document.getElementById('btnProxima');
+            
             if (questoes.length === 0) {
                 questaoError.textContent = 'Nenhuma questão disponível.';
                 questaoError.style.display = 'block';
@@ -1240,7 +1177,7 @@
                 console.warn('Índice de questão inválido:', index);
                 return;
             }
-            
+
             questaoLoading.style.display = 'none';
             questaoError.style.display = 'none';
             
@@ -1270,13 +1207,14 @@
                     
                     const label = document.createElement('label');
                     label.htmlFor = `alternativa${letra}`;
-                    label.textContent = alternativa;
+                    label.textContent = `${letra}. ${alternativa}`;
                     
                     li.appendChild(input);
                     li.appendChild(label);
                     
                     li.addEventListener('click', () => {
                         input.checked = true;
+                        checkAnswer(letra);
                     });
                     
                     questaoAlternativas.appendChild(li);
@@ -1291,30 +1229,23 @@
             console.log('Questão exibida:', currentQuestion);
         }
 
-        questoesBtn.addEventListener('click', toggleQuestoesApp);
-        questoesAppClose.addEventListener('click', toggleQuestoesApp);
-        questoesAppClose2.addEventListener('click', toggleQuestoesApp);
+        function checkAnswer(alternativa) {
+            if (!currentQuestion) return;
+            
+            const correta = currentQuestion.RESPOSTA;
+            const alternativas = document.querySelectorAll('.alternativa');
+            
+            alternativas.forEach(alt => {
+                alt.classList.remove('correta', 'incorreta');
+                if (alt.dataset.alternativa === correta) {
+                    alt.classList.add('correta');
+                } else if (alt.dataset.alternativa === alternativa && alternativa !== correta) {
+                    alt.classList.add('incorreta');
+                }
+            });
+        }
 
-        btnAnterior.addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                showQuestion(currentQuestionIndex - 1);
-            }
-        });
-
-        btnProxima.addEventListener('click', () => {
-            if (currentQuestionIndex < questoes.length - 1) {
-                showQuestion(currentQuestionIndex + 1);
-            }
-        });
-
-        btnAleatoria.addEventListener('click', () => {
-            if (questoes.length > 0) {
-                const randomIndex = Math.floor(Math.random() * questoes.length);
-                showQuestion(randomIndex);
-            }
-        });
-
-        btnComentario.addEventListener('click', () => {
+        function handleComentarioClick() {
             if (!currentQuestion) return;
             
             questaoComentarioVisible = !questaoComentarioVisible;
@@ -1338,36 +1269,13 @@
                 comentarioBox.appendChild(comentarioTitulo);
                 comentarioBox.appendChild(comentarioTexto);
                 
-                questaoEnunciado.appendChild(comentarioBox);
+                document.getElementById('questaoEnunciado').appendChild(comentarioBox);
             } else {
                 const comentarioBox = document.getElementById('questaoComentarioBox');
                 if (comentarioBox) comentarioBox.remove();
             }
-        });
+        }
 
-        btnComentariosUsuarios.addEventListener('click', () => {
-            alert('Funcionalidade de Comentários de Usuários será implementada em breve!');
-        });
-
-        btnFavoritar.addEventListener('click', () => {
-            alert('Funcionalidade de Favoritar será implementada em breve!');
-        });
-
-        btnFiltrar.addEventListener('click', () => {
-            alert('Funcionalidade de Filtro será implementada em breve!');
-        });
-
-        // Atualiza as questões quando o subtópico é alterado
-        document.addEventListener('subtopicChanged', (event) => {
-            if (isQuestoesAppVisible) {
-                currentSubtopicId = event.detail.subtopicId;
-                currentModuleId = event.detail.moduleId;
-                currentCourseId = event.detail.courseId;
-                loadQuestoes();
-            }
-        });
-
-        // Função para disparar evento de mudança de subtópico (chamada quando um novo subtópico é selecionado)
         function dispatchSubtopicChanged(subtopicId, moduleId, courseId) {
             const subtopicChangedEvent = new CustomEvent('subtopicChanged', {
                 detail: {
@@ -1380,6 +1288,92 @@
             console.log('Evento subtopicChanged disparado:', { subtopicId, moduleId, courseId });
         }
 
+        function setupSidebarEvents() {
+            document.querySelectorAll('.course-header').forEach(header => {
+                const toggleIcon = document.createElement('span');
+                toggleIcon.className = 'toggle-icon';
+                toggleIcon.textContent = '▶';
+                header.appendChild(toggleIcon);
+                
+                header.addEventListener('click', e => {
+                    e.preventDefault();
+                    const courseItem = header.closest('.course-item');
+                    const moduleList = courseItem.querySelector('.module-list');
+                    moduleList.classList.toggle('visible');
+                    toggleIcon.classList.toggle('expanded');
+                });
+            });
+
+            document.querySelectorAll('.module-header').forEach(header => {
+                const toggleIcon = document.createElement('span');
+                toggleIcon.className = 'toggle-icon';
+                toggleIcon.textContent = '▶';
+                header.appendChild(toggleIcon);
+                
+                header.addEventListener('click', e => {
+                    e.preventDefault();
+                    const moduleItem = header.closest('.module-item');
+                    const subtopicList = moduleItem.querySelector('.subtopic-list');
+                    subtopicList.classList.toggle('visible');
+                    toggleIcon.classList.toggle('expanded');
+                });
+            });
+
+            document.querySelectorAll('.subtopic-link').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    
+                    document.querySelectorAll('.subtopic-link').forEach(l => {
+                        l.classList.remove('active');
+                    });
+                    
+                    link.classList.add('active');
+                    
+                    const subtopicId = link.getAttribute('data-subtopic-id');
+                    const moduleId = link.getAttribute('data-module-id');
+                    const courseId = link.getAttribute('data-course-id');
+                    
+                    // Atualiza URL e parâmetros
+                    const url = new URL(window.location);
+                    url.searchParams.set('course', courseId);
+                    url.searchParams.set('module', moduleId);
+                    url.searchParams.set('subtopic', subtopicId);
+                    window.history.pushState({}, '', url);
+                    
+                    // Dispara evento de mudança de subtópico
+                    dispatchSubtopicChanged(subtopicId, moduleId, courseId);
+                    
+                    // Carrega conteúdo para o subtópico selecionado
+                    loadSubtopicContent(subtopicId);
+                });
+            });
+        }
+
+        function loadSubtopicContent(subtopicId) {
+            const lessonContent = document.getElementById('lessonContent');
+            lessonContent.innerHTML = '<p>Carregando conteúdo...</p>';
+            
+            // Aqui você carregaria o conteúdo real do subtópico do Firebase
+            // Por enquanto, apenas um exemplo
+            setTimeout(() => {
+                lessonContent.innerHTML = `
+                    <div class="module-content">
+                        <h2 class="module-title">Conteúdo do Subtópico ${subtopicId}</h2>
+                        <p>Este é um exemplo de conteúdo para o subtópico selecionado.</p>
+                        <p>Em uma implementação real, o conteúdo seria carregado do Firebase.</p>
+                        <h3 class="section-title">Seção 1</h3>
+                        <p>Conteúdo da seção 1 do subtópico...</p>
+                        <h3 class="section-title">Seção 2</h3>
+                        <p>Conteúdo da seção 2 do subtópico...</p>
+                        <div class="content-note">
+                            <p>Esta é uma nota importante sobre o conteúdo.</p>
+                        </div>
+                    </div>
+                `;
+            }, 500);
+        }
+
+        // --- Event Listeners e Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
             console.log("Página carregada. Inicializando...");
             updateLayout();
@@ -1397,6 +1391,87 @@
                         dispatchSubtopicChanged(subtopicId, moduleId, courseId);
                     }
                 });
+            });
+            
+            // Event listeners para aplicativo de questões
+            const questoesBtn = document.getElementById('questoesBtn');
+            const questoesAppClose = document.getElementById('questoesAppClose');
+            const questoesAppClose2 = document.getElementById('questoesAppClose2');
+            const btnAnterior = document.getElementById('btnAnterior');
+            const btnProxima = document.getElementById('btnProxima');
+            const btnAleatoria = document.getElementById('btnAleatoria');
+            const btnComentario = document.getElementById('btnComentario');
+            const btnComentariosUsuarios = document.getElementById('btnComentariosUsuarios');
+            const btnFavoritar = document.getElementById('btnFavoritar');
+            const btnFiltrar = document.getElementById('btnFiltrar');
+            
+            if (questoesBtn) {
+                questoesBtn.addEventListener('click', toggleQuestoesApp);
+            }
+            
+            if (questoesAppClose) {
+                questoesAppClose.addEventListener('click', toggleQuestoesApp);
+            }
+            
+            if (questoesAppClose2) {
+                questoesAppClose2.addEventListener('click', toggleQuestoesApp);
+            }
+            
+            if (btnAnterior) {
+                btnAnterior.addEventListener('click', () => {
+                    if (currentQuestionIndex > 0) {
+                        showQuestion(currentQuestionIndex - 1);
+                    }
+                });
+            }
+            
+            if (btnProxima) {
+                btnProxima.addEventListener('click', () => {
+                    if (currentQuestionIndex < questoes.length - 1) {
+                        showQuestion(currentQuestionIndex + 1);
+                    }
+                });
+            }
+            
+            if (btnAleatoria) {
+                btnAleatoria.addEventListener('click', () => {
+                    if (questoes.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * questoes.length);
+                        showQuestion(randomIndex);
+                    }
+                });
+            }
+            
+            if (btnComentario) {
+                btnComentario.addEventListener('click', handleComentarioClick);
+            }
+            
+            if (btnComentariosUsuarios) {
+                btnComentariosUsuarios.addEventListener('click', () => {
+                    alert('Funcionalidade de Comentários de Usuários será implementada em breve!');
+                });
+            }
+            
+            if (btnFavoritar) {
+                btnFavoritar.addEventListener('click', () => {
+                    alert('Funcionalidade de Favoritar será implementada em breve!');
+                });
+            }
+            
+            if (btnFiltrar) {
+                btnFiltrar.addEventListener('click', () => {
+                    alert('Funcionalidade de Filtro será implementada em breve!');
+                });
+            }
+            
+            // Event listener para mudança de subtópico
+            document.addEventListener('subtopicChanged', (event) => {
+                if (isQuestoesAppVisible) {
+                    currentSubtopicId = event.detail.subtopicId;
+                    currentModuleId = event.detail.moduleId;
+                    currentCourseId = event.detail.courseId;
+                    loadQuestoes();
+                }
             });
             
             if (!auth.currentUser) applySavedPreferences();
