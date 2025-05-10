@@ -64,7 +64,7 @@
             --accent-2: #d98234;
             --dark-bg: #0d1117;
             --subnav-bg: #22272e;
-            --text-dark: #c9d1d9;
+            --text-dark: #e6edf3;
             --text-light: #f0f6fc;
             --text-muted: #8b949e;
             --border-color: #444c56;
@@ -238,7 +238,7 @@
             z-index: 102;
             transform: translateX(0);
         }
-        .sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-width))); width: 0; border-right: none; }
+        .sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-width))); }
         .sidebar h2 { 
             font-size: 1.3em; 
             color: var(--text-dark); 
@@ -305,6 +305,7 @@
         main {
             flex-grow: 1;
             background-color: var(--main-content-bg);
+            color: var(--text-dark);
             margin-left: var(--sidebar-width);
             padding: 30px 25px;
             transition: margin-left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
@@ -422,7 +423,10 @@
         }
         @media screen and (max-width: 768px) {
             :root { --sidebar-width: 240px; }
-            .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); width: var(--sidebar-width); }
+            .sidebar { 
+                transform: translateX(calc(-1 * var(--sidebar-width))); 
+                width: var(--sidebar-width);
+            }
             .sidebar.visible { transform: translateX(0); }
             main { margin-left: 0; }
             .w3s-sidebar-toggle { display: block; }
@@ -576,7 +580,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // --- Carrega o Cabeçalho Dinamicamente --- //
+        // --- Carrega o Cabeçalho Dinamicamente ---
         fetch('header.html')
             .then(response => {
                 if (!response.ok) throw new Error(`Erro ao carregar header.html: ${response.status}`);
