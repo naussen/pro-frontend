@@ -1,40 +1,38 @@
 <!-- Header exclusivo da Sala de Estudos -->
-<header class="w3s-header" id="mainHeaderSala">
-    <div class="w3s-logo-area">
-        <a href="index.html" title="Página Inicial" class="logo-link">
-            <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+<header class="w3s-header" id="mainHeaderSala" style="display: flex; align-items: center; padding: 0 15px; height: 55px; width: 100%; position: fixed; top: 0; left: 0; z-index: 105; border-bottom: 1px solid #e7e7e7; gap: 10px; background: var(--header-bg, #fff);">
+    <div class="w3s-logo-area" style="display: flex; align-items: center; flex-shrink: 0; padding-left: 10px;">
+        <a href="index.html" title="Página Inicial" class="logo-link" style="display: flex; align-items: center; text-decoration: none; color: var(--text-dark, #333);">
+            <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width: 35px; height: 35px; margin-right: 8px;">
                 <circle cx="20" cy="20" r="18" fill="#007bff"/>
                 <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
             </svg>
-            <span class="logo-text">PRO Concursos</span>
+            <span class="logo-text" style="font-weight: bold; font-size: 18px;">PRO Concursos</span>
         </a>
     </div>
-    <nav class="w3s-nav-menu">
-        <div class="nav-item">
-            <button class="nav-btn">Cursos ▼</button>
-            <div class="dropdown-content">
-                <a href="saladeestudos.html">Meus Cursos</a>
-                <a href="personalizar.html">Personalizar Cursos</a>
+    <nav class="w3s-nav-menu" style="display: flex; align-items: center; height: 100%; margin-left: 15px;">
+        <div class="nav-item" style="height: 100%; position: relative;">
+            <button class="nav-btn" style="display: flex; align-items: center; padding: 0 15px; height: 100%; color: #333; font-size: 15px; background: none; border: none; border-right: 1px solid #e7e7e7; cursor: pointer;">Cursos ▼</button>
+            <div class="dropdown-content" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #ccc; border-radius: 4px; min-width: 180px; z-index: 200;">
+                <a href="saladeestudos.html" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Meus Cursos</a>
+                <a href="personalizar.html" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Personalizar Cursos</a>
             </div>
         </div>
-        <div class="nav-item">
-            <button class="nav-btn">Questões ▼</button>
-            <div class="dropdown-content">
-                <a href="saladeestudos.html#questionsPanel">Praticar Questões</a>
+        <div class="nav-item" style="height: 100%; position: relative;">
+            <button class="nav-btn" style="display: flex; align-items: center; padding: 0 15px; height: 100%; color: #333; font-size: 15px; background: none; border: none; border-right: 1px solid #e7e7e7; cursor: pointer;">Questões ▼</button>
+            <div class="dropdown-content" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #ccc; border-radius: 4px; min-width: 180px; z-index: 200;">
+                <a href="saladeestudos.html#questionsPanel" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Praticar Questões</a>
             </div>
         </div>
-        <div class="nav-item">
-            <button class="nav-btn">Flashcards ▼</button>
-            <div class="dropdown-content">
-                <a href="saladeestudos.html#flashcardsPanel">Revisar Flashcards</a>
+        <div class="nav-item" style="height: 100%; position: relative;">
+            <button class="nav-btn" style="display: flex; align-items: center; padding: 0 15px; height: 100%; color: #333; font-size: 15px; background: none; border: none; cursor: pointer;">Flashcards ▼</button>
+            <div class="dropdown-content" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #ccc; border-radius: 4px; min-width: 180px; z-index: 200;">
+                <a href="saladeestudos.html#flashcardsPanel" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Revisar Flashcards</a>
             </div>
         </div>
     </nav>
-    <div class="w3s-header-right-group">
-        <div class="w3s-header-actions">
-            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
-                <span class="icon">🍅</span>
-            </button>
+    <div class="w3s-header-right-group" style="display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 10px;">
+        <div class="w3s-header-actions" style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;"><span class="icon">🍅</span></button>
             <div id="pomodoro-header-dropdown" style="display:none; position:absolute; top:50px; right:160px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
                 <h4 style="margin:0 0 10px 0; color:#219653;">Timer Pomodoro</h4>
                 <select id="pomodoroTimeHeader" style="width:100%; margin-bottom:10px;">
@@ -47,9 +45,7 @@
                 <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#219653; font-weight:bold; text-align:center;">25:00</div>
                 <p id="pomodoroStatusHeader" style="font-size:0.95em; color:#888; text-align:center; margin:0;">Foco</p>
             </div>
-            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
-                <span class="icon">🎵</span>
-            </button>
+            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;"><span class="icon">🎵</span></button>
             <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
                 <h4 style="margin:0 0 10px 0; color:#219653;">Música de Fundo</h4>
                 <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
@@ -57,19 +53,38 @@
                 <button id="pauseMusicHeader">Pausar</button>
                 <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
             </div>
-            <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
-                <span class="icon theme-icon-light">☀️</span>
-                <span class="icon theme-icon-dark" style="display: none;">🌙</span>
-            </button>
+            <button id="theme-toggle" title="Alternar Tema Claro/Escuro"><span class="icon theme-icon-light">☀️</span><span class="icon theme-icon-dark" style="display: none;">🌙</span></button>
             <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
             <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
-            <a href="personalizar.html" title="Personalizar Cursos" style="margin-left: 10px;"> <span class="icon">⚙️</span>
-            <a href="guia.html" title="Guia do Método"><span class="icon">📖</span> <span class="link-text">Guia</span></a> <span class="link-text">Personalizar</span>
+            <a href="personalizar.html" title="Personalizar Cursos" style="display: flex; align-items: center; gap: 4px;"><span class="icon">⚙️</span><span class="link-text">Personalizar</span></a>
+            <a href="guia.html" title="Guia do Método" style="display: flex; align-items: center; gap: 4px;"><span class="icon">📖</span> <span class="link-text">Guia</span></a>
             <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
         </div>
     </div>
 </header>
 <script>
+// Dropdown funcionalidade para o megamenu
+(function() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        const btn = item.querySelector('.nav-btn');
+        const dropdown = item.querySelector('.dropdown-content');
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Fecha todos os outros dropdowns
+            document.querySelectorAll('.dropdown-content').forEach(dd => {
+                if (dd !== dropdown) dd.style.display = 'none';
+            });
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-item')) {
+            document.querySelectorAll('.dropdown-content').forEach(dd => dd.style.display = 'none');
+        }
+    });
+})();
+// Pomodoro e Música (mantém igual)
 function initializeHeaderSalaEvents() {
     // Dropdown Pomodoro
     const pomodoroBtn = document.getElementById('pomodoro-header-btn');
