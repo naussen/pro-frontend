@@ -1,0 +1,135 @@
+<!-- Header exclusivo da Sala de Estudos -->
+<header class="w3s-header" id="mainHeaderSala">
+    <div class="w3s-logo-area">
+        <a href="index.html" title="Página Inicial" class="logo-link">
+            <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="18" fill="#007bff"/>
+                <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
+            </svg>
+            <span class="logo-text">PRO Concursos</span>
+        </a>
+    </div>
+    <nav class="w3s-nav-menu">
+        <div class="nav-item">
+            <button class="nav-btn">Cursos ▼</button>
+            <div class="dropdown-content">
+                <a href="saladeestudos.html">Meus Cursos</a>
+                <a href="personalizar.html">Personalizar Cursos</a>
+            </div>
+        </div>
+        <div class="nav-item">
+            <button class="nav-btn">Questões ▼</button>
+            <div class="dropdown-content">
+                <a href="saladeestudos.html#questionsPanel">Praticar Questões</a>
+            </div>
+        </div>
+        <div class="nav-item">
+            <button class="nav-btn">Flashcards ▼</button>
+            <div class="dropdown-content">
+                <a href="saladeestudos.html#flashcardsPanel">Revisar Flashcards</a>
+            </div>
+        </div>
+    </nav>
+    <div class="w3s-header-right-group">
+        <div class="w3s-header-actions">
+            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🍅</span>
+            </button>
+            <div id="pomodoro-header-dropdown" style="display:none; position:absolute; top:50px; right:160px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#219653;">Timer Pomodoro</h4>
+                <select id="pomodoroTimeHeader" style="width:100%; margin-bottom:10px;">
+                    <option value="25">25 minutos (Foco)</option>
+                    <option value="5">5 minutos (Pausa)</option>
+                    <option value="15">15 minutos (Pausa Longa)</option>
+                </select>
+                <button id="startPomodoroHeader" style="margin-right:8px;">Iniciar</button>
+                <button id="stopPomodoroHeader">Parar</button>
+                <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#219653; font-weight:bold; text-align:center;">25:00</div>
+                <p id="pomodoroStatusHeader" style="font-size:0.95em; color:#888; text-align:center; margin:0;">Foco</p>
+            </div>
+            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🎵</span>
+            </button>
+            <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#219653;">Música de Fundo</h4>
+                <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
+                <button id="playMusicHeader" style="margin-right:8px;">Tocar</button>
+                <button id="pauseMusicHeader">Pausar</button>
+                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+            </div>
+            <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                <span class="icon theme-icon-light">☀️</span>
+                <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+            </button>
+            <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
+            <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
+            <a href="personalizar.html" title="Personalizar Cursos" style="margin-left: 10px;"> <span class="icon">⚙️</span>
+            <a href="guia.html" title="Guia do Método"><span class="icon">📖</span> <span class="link-text">Guia</span></a> <span class="link-text">Personalizar</span>
+            <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+        </div>
+    </div>
+</header>
+<script>
+function initializeHeaderSalaEvents() {
+    // Dropdown Pomodoro
+    const pomodoroBtn = document.getElementById('pomodoro-header-btn');
+    const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
+    let pomodoroInterval = null;
+    let pomodoroTime = 25 * 60;
+    let pomodoroStatus = 'Foco';
+    function updatePomodoroDisplay() {
+        const min = String(Math.floor(pomodoroTime / 60)).padStart(2, '0');
+        const sec = String(pomodoroTime % 60).padStart(2, '0');
+        document.getElementById('pomodoroTimerHeader').textContent = `${min}:${sec}`;
+        document.getElementById('pomodoroStatusHeader').textContent = pomodoroStatus;
+    }
+    pomodoroBtn.onclick = () => {
+        pomodoroDropdown.style.display = pomodoroDropdown.style.display === 'block' ? 'none' : 'block';
+    };
+    document.getElementById('pomodoroTimeHeader').onchange = function() {
+        pomodoroTime = parseInt(this.value) * 60;
+        pomodoroStatus = this.options[this.selectedIndex].text.split(' ')[1] || 'Foco';
+        updatePomodoroDisplay();
+    };
+    document.getElementById('startPomodoroHeader').onclick = function() {
+        if (pomodoroInterval) clearInterval(pomodoroInterval);
+        pomodoroInterval = setInterval(() => {
+            if (pomodoroTime > 0) {
+                pomodoroTime--;
+                updatePomodoroDisplay();
+            } else {
+                clearInterval(pomodoroInterval);
+                pomodoroStatus = 'Fim!';
+                updatePomodoroDisplay();
+            }
+        }, 1000);
+    };
+    document.getElementById('stopPomodoroHeader').onclick = function() {
+        if (pomodoroInterval) clearInterval(pomodoroInterval);
+        pomodoroTime = parseInt(document.getElementById('pomodoroTimeHeader').value) * 60;
+        pomodoroStatus = document.getElementById('pomodoroTimeHeader').options[document.getElementById('pomodoroTimeHeader').selectedIndex].text.split(' ')[1] || 'Foco';
+        updatePomodoroDisplay();
+    };
+    updatePomodoroDisplay();
+    // Dropdown Música
+    const musicBtn = document.getElementById('music-header-btn');
+    const musicDropdown = document.getElementById('music-header-dropdown');
+    const audioPlayer = document.getElementById('audioPlayerHeader');
+    musicBtn.onclick = () => {
+        musicDropdown.style.display = musicDropdown.style.display === 'block' ? 'none' : 'block';
+    };
+    document.getElementById('playMusicHeader').onclick = function() {
+        audioPlayer.play();
+    };
+    document.getElementById('pauseMusicHeader').onclick = function() {
+        audioPlayer.pause();
+    };
+    // Fecha dropdowns ao clicar fora
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.w3s-header-actions')) {
+            pomodoroDropdown.style.display = 'none';
+            musicDropdown.style.display = 'none';
+        }
+    });
+}
+</script> 
