@@ -300,8 +300,27 @@
     </style>
 </head>
 <body>
-    <!-- --- Carrega o Cabeçalho Dinamicamente --- -->
-    <div id="header-placeholder"></div>
+    <header class="w3s-header" id="mainHeader">
+        <div class="w3s-logo-area">
+            <a href="index.html" title="Página Inicial">
+                <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48"/>
+                    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
+                </svg>
+            </a>
+        </div>
+        <div class="w3s-header-right-group">
+            <div class="w3s-header-actions">
+                <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                    <span class="icon theme-icon-light">☀️</span>
+                    <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+                </button>
+                <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
+                <a href="saladeestudos.html" title="Minha Sala de Estudos"><span class="icon">📚</span> <span class="link-text">Sala de Estudos</span></a>
+                <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+            </div>
+        </div>
+    </header>
 
     <main>
         <div class="container">
@@ -414,21 +433,6 @@
             const yearSpan = document.getElementById('current-year');
             if (yearSpan) yearSpan.textContent = new Date().getFullYear();
         });
-
-        // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('header-inner.html')
-            .then(response => {
-                if (!response.ok) throw new Error(`Erro ao carregar header-inner.html: ${response.status}`);
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-                // Se necessário, chame initializeHeaderEvents();
-            })
-            .catch(error => {
-                console.error('Erro ao carregar o header:', error);
-                document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
-            });
     </script>
 </body>
 </html>
