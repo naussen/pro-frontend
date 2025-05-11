@@ -48,13 +48,17 @@ function renderHeader() {
     rightGroup.className = 'w3s-header-right-group';
     rightGroup.innerHTML = `
         <div class="w3s-header-actions">
+            <a href="https://proconcursos.com.br/saladeestudos.html" title="Sala de Estudos" style="font-size:1.1em; display:flex; align-items:center; gap:4px;">
+                <span class="icon">🏫</span>
+                <span class="link-text">Sala de Estudos</span>
+            </a>
             <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
                 <span class="icon theme-icon-light">☀️</span>
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>
             </button>
             <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
             <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
-			<a href="personalizar.html" title="Personalizar Cursos" style="margin-left: 10px;"> <span class="icon">⚙️</span>
+            <a href="personalizar.html" title="Personalizar Cursos" style="margin-left: 10px;"> <span class="icon">⚙️</span>
             <a href="guia.html" title="Guia do Método"><span class="icon">📖</span> <span class="link-text">Guia</span></a> <span class="link-text">Personalizar</span>
             <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
         </div>
