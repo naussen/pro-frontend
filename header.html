@@ -29,6 +29,35 @@
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
         <div class="w3s-header-actions">
+            <!-- Botão Pomodoro -->
+            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🍅</span>
+            </button>
+            <!-- Dropdown Pomodoro -->
+            <div id="pomodoro-header-dropdown" style="display:none; position:absolute; top:50px; right:160px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Timer Pomodoro</h4>
+                <select id="pomodoroTimeHeader" style="width:100%; margin-bottom:10px;">
+                    <option value="25">25 minutos (Foco)</option>
+                    <option value="5">5 minutos (Pausa)</option>
+                    <option value="15">15 minutos (Pausa Longa)</option>
+                </select>
+                <button onclick="startPomodoroHeader()" style="margin-right:8px;">Iniciar</button>
+                <button onclick="stopPomodoroHeader()">Parar</button>
+                <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#4CAF50; font-weight:bold; text-align:center;">25:00</div>
+                <p id="pomodoroStatusHeader" style="font-size:0.95em; color:#888; text-align:center; margin:0;">Foco</p>
+            </div>
+            <!-- Botão Música -->
+            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🎵</span>
+            </button>
+            <!-- Dropdown Música -->
+            <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Música de Fundo</h4>
+                <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
+                <button onclick="playMusicHeader()" style="margin-right:8px;">Tocar</button>
+                <button onclick="pauseMusicHeader()">Pausar</button>
+                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+            </div>
             <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
                 <span class="icon theme-icon-light">☀️</span>
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>
@@ -370,6 +399,106 @@
                 // Aqui você pode adicionar a lógica para registro com Firebase
                 console.log('Cadastro com:', email, password);
             });
+        }
+    });
+
+    // Dropdown Pomodoro
+    const pomodoroBtn = document.getElementById('pomodoro-header-btn');
+    const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
+    let pomodoroIntervalHeader = null;
+    let timeRemainingHeader = 25 * 60;
+    let isBreakHeader = false;
+    let initialFocusTimeHeader = 25 * 60;
+
+    function formatTimeHeader(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function startPomodoroHeader() {
+        if (pomodoroIntervalHeader) return;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        const selectedTime = parseInt(select.value) * 60;
+        timeRemainingHeader = selectedTime;
+        initialFocusTimeHeader = selectedTime;
+        isBreakHeader = select.value !== '25';
+        status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+        pomodoroIntervalHeader = setInterval(updatePomodoroTimerHeader, 1000);
+    }
+
+    function updatePomodoroTimerHeader() {
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        if (timeRemainingHeader <= 0) {
+            clearInterval(pomodoroIntervalHeader);
+            pomodoroIntervalHeader = null;
+            status.textContent = 'Concluído!';
+            setTimeout(() => {
+                timeRemainingHeader = initialFocusTimeHeader;
+                timer.textContent = formatTimeHeader(timeRemainingHeader);
+                status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+            }, 2000);
+            return;
+        }
+        timeRemainingHeader--;
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+    }
+
+    function stopPomodoroHeader() {
+        clearInterval(pomodoroIntervalHeader);
+        pomodoroIntervalHeader = null;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        timeRemainingHeader = parseInt(select.value) * 60;
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+        status.textContent = 'Foco';
+    }
+
+    // Dropdown Música
+    const musicBtn = document.getElementById('music-header-btn');
+    const musicDropdown = document.getElementById('music-header-dropdown');
+    const audioPlayerHeader = document.getElementById('audioPlayerHeader');
+    let isMusicPlayingHeader = false;
+
+    function playMusicHeader() {
+        if (!isMusicPlayingHeader && audioPlayerHeader) {
+            audioPlayerHeader.play();
+            isMusicPlayingHeader = true;
+        }
+    }
+    function pauseMusicHeader() {
+        if (isMusicPlayingHeader && audioPlayerHeader) {
+            audioPlayerHeader.pause();
+            isMusicPlayingHeader = false;
+        }
+    }
+
+    // Mostrar/ocultar dropdowns
+    if (pomodoroBtn && pomodoroDropdown) {
+        pomodoroBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            pomodoroDropdown.style.display = pomodoroDropdown.style.display === 'block' ? 'none' : 'block';
+            musicDropdown.style.display = 'none';
+        });
+    }
+    if (musicBtn && musicDropdown) {
+        musicBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            musicDropdown.style.display = musicDropdown.style.display === 'block' ? 'none' : 'block';
+            pomodoroDropdown.style.display = 'none';
+        });
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#pomodoro-header-dropdown') && !e.target.closest('#pomodoro-header-btn')) {
+            pomodoroDropdown.style.display = 'none';
+        }
+        if (!e.target.closest('#music-header-dropdown') && !e.target.closest('#music-header-btn')) {
+            musicDropdown.style.display = 'none';
         }
     });
 </script>
