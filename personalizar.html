@@ -649,13 +649,19 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
         // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('header.html')
-            .then(response => response.text())
+        fetch('header-inner.html')
+            .then(response => {
+                if (!response.ok) throw new Error(`Erro ao carregar header-inner.html: ${response.status}`);
+                return response.text();
+            })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
                 initializeHeaderEvents();
             })
-            .catch(error => console.error('Erro ao carregar o header:', error));
+            .catch(error => {
+                console.error('Erro ao carregar o header:', error);
+                document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
+            });
 
         // --- Configuração Firebase ---
         const firebaseConfig = {

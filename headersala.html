@@ -1,150 +1,209 @@
-<!-- Header exclusivo da Sala de Estudos -->
-<header class="w3s-header" id="mainHeaderSala" style="display: flex; align-items: center; padding: 0 15px; height: 55px; width: 100%; position: fixed; top: 0; left: 0; z-index: 105; border-bottom: 1px solid #e7e7e7; gap: 10px; background: var(--header-bg, #fff);">
-    <div class="w3s-logo-area" style="display: flex; align-items: center; flex-shrink: 0; padding-left: 10px;">
-        <a href="index.html" title="Página Inicial" class="logo-link" style="display: flex; align-items: center; text-decoration: none; color: var(--text-dark, #333);">
-            <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width: 35px; height: 35px; margin-right: 8px;">
+<!-- headersala.html -->
+<header class="w3s-header" id="mainHeader">
+    <button id="sidebarToggleBtn" class="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu">☰</button>
+    <div class="w3s-logo-area">
+        <a href="index.html" title="Página Inicial" class="logo-link">
+            <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="20" cy="20" r="18" fill="#007bff"/>
                 <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
             </svg>
-            <span class="logo-text" style="font-weight: bold; font-size: 18px;">PRO Concursos</span>
+            <span class="logo-text">PRO Concursos</span>
         </a>
     </div>
-    <nav class="w3s-nav-menu" style="display: flex; align-items: center; height: 100%; margin-left: 15px;">
-        <div class="nav-item" style="height: 100%; position: relative;">
-            <button class="nav-btn" style="display: flex; align-items: center; padding: 0 15px; height: 100%; color: #333; font-size: 15px; background: none; border: none; border-right: 1px solid #e7e7e7; cursor: pointer;">Cursos ▼</button>
-            <div class="dropdown-content" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #ccc; border-radius: 4px; min-width: 180px; z-index: 200;">
-                <a href="saladeestudos.html" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Meus Cursos</a>
-                <a href="personalizar.html" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Personalizar Cursos</a>
-            </div>
+    
+    <nav class="w3s-nav-menu" id="topNav">
+        <div class="nav-item">
+            <button class="nav-button" data-target="cursos-menu">Cursos ▼</button>
         </div>
-        <div class="nav-item" style="height: 100%; position: relative;">
-            <button class="nav-btn" style="display: flex; align-items: center; padding: 0 15px; height: 100%; color: #333; font-size: 15px; background: none; border: none; border-right: 1px solid #e7e7e7; cursor: pointer;">Questões ▼</button>
-            <div class="dropdown-content" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #ccc; border-radius: 4px; min-width: 180px; z-index: 200;">
-                <a href="saladeestudos.html#questionsPanel" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Praticar Questões</a>
-            </div>
+        <div class="nav-item">
+            <button class="nav-button" data-target="questoes-menu">Questões ▼</button>
         </div>
-        <div class="nav-item" style="height: 100%; position: relative;">
-            <button class="nav-btn" style="display: flex; align-items: center; padding: 0 15px; height: 100%; color: #333; font-size: 15px; background: none; border: none; cursor: pointer;">Flashcards ▼</button>
-            <div class="dropdown-content" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #ccc; border-radius: 4px; min-width: 180px; z-index: 200;">
-                <a href="saladeestudos.html#flashcardsPanel" style="display: block; padding: 10px 16px; color: #333; text-decoration: none;">Revisar Flashcards</a>
-            </div>
+        <div class="nav-item">
+            <button class="nav-button" data-target="flashcards-menu">Flashcards ▼</button>
         </div>
     </nav>
-    <div class="w3s-header-right-group" style="display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 10px;">
-        <div class="w3s-header-actions" style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
-            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;"><span class="icon">🍅</span></button>
+    
+    <div class="w3s-header-right-group">
+        <div class="w3s-search-area">
+            <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
+            <button type="submit" aria-label="Buscar">🔍</button>
+        </div>
+        <div class="w3s-header-actions">
+            <!-- Botão Pomodoro -->
+            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🍅</span>
+            </button>
+            <!-- Dropdown Pomodoro -->
             <div id="pomodoro-header-dropdown" style="display:none; position:absolute; top:50px; right:160px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
-                <h4 style="margin:0 0 10px 0; color:#219653;">Timer Pomodoro</h4>
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Timer Pomodoro</h4>
                 <select id="pomodoroTimeHeader" style="width:100%; margin-bottom:10px;">
                     <option value="25">25 minutos (Foco)</option>
                     <option value="5">5 minutos (Pausa)</option>
                     <option value="15">15 minutos (Pausa Longa)</option>
                 </select>
-                <button id="startPomodoroHeader" style="margin-right:8px;">Iniciar</button>
-                <button id="stopPomodoroHeader">Parar</button>
-                <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#219653; font-weight:bold; text-align:center;">25:00</div>
+                <button id="startPomodoroHeaderBtn" style="margin-right:8px;">Iniciar</button>
+                <button id="stopPomodoroHeaderBtn">Parar</button>
+                <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#4CAF50; font-weight:bold; text-align:center;">25:00</div>
                 <p id="pomodoroStatusHeader" style="font-size:0.95em; color:#888; text-align:center; margin:0;">Foco</p>
             </div>
-            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;"><span class="icon">🎵</span></button>
-            <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
-                <h4 style="margin:0 0 10px 0; color:#219653;">Música de Fundo</h4>
-                <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
-                <button id="playMusicHeader" style="margin-right:8px;">Tocar</button>
-                <button id="pauseMusicHeader">Pausar</button>
-                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+            <!-- Botão Música -->
+            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🎵</span>
+            </button>
+            <!-- Dropdown Música -->
+            <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:260px;">
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Música de Fundo</h4>
+                <p style="margin:0 0 10px 0;">Clique para tocar música relaxante do YouTube:</p>
+                <button id="playMusicHeaderBtn" style="margin-right:8px;">Tocar</button>
+                <button id="pauseMusicHeaderBtn">Pausar</button>
+                <div id="youtubePlayerContainer" style="margin-top:10px; display:none;">
+                    <iframe id="youtubePlayerHeader" width="220" height="60" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
             </div>
-            <button id="theme-toggle" title="Alternar Tema Claro/Escuro"><span class="icon theme-icon-light">☀️</span><span class="icon theme-icon-dark" style="display: none;">🌙</span></button>
+            <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                <span class="icon theme-icon-light">☀️</span>
+                <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+            </button>
             <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
-            <a href="alterar-cadastro.html" title="Meu Cadastro"><span class="icon">⚙️</span> <span class="link-text">Meu Cadastro</span></a>
-            <a href="personalizar.html" title="Personalizar Cursos" style="display: flex; align-items: center; gap: 4px;"><span class="icon">⚙️</span><span class="link-text">Personalizar</span></a>
-            <a href="guia.html" title="Guia do Método" style="display: flex; align-items: center; gap: 4px;"><span class="icon">📖</span> <span class="link-text">Guia</span></a>
-            <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+            <a href="#" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">Contato</span></a>
+            <a href="https://proconcursos.com.br/personalizar.html" title="Personalizar Sala de Estudos"><span class="icon">🛠️</span> <span class="link-text">Personalizar Sala de Estudos</span></a>
+            <div class="login-container">
+                <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+            </div>
         </div>
     </div>
 </header>
+
+<!-- O CSS pode ser igual ao do header.html -->
+<style>
+    /* ... (copie o CSS do header.html aqui, igual) ... */
+</style>
+
 <script>
-// Dropdown funcionalidade para o megamenu
-(function() {
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        const btn = item.querySelector('.nav-btn');
-        const dropdown = item.querySelector('.dropdown-content');
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            // Fecha todos os outros dropdowns
-            document.querySelectorAll('.dropdown-content').forEach(dd => {
-                if (dd !== dropdown) dd.style.display = 'none';
-            });
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        });
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.nav-item')) {
-            document.querySelectorAll('.dropdown-content').forEach(dd => dd.style.display = 'none');
-        }
-    });
-})();
-// Pomodoro e Música (mantém igual)
-function initializeHeaderSalaEvents() {
+// Script para dropdowns de login/cadastro (igual ao header.html)
+document.addEventListener('DOMContentLoaded', function() {
+    // ... (copie o script de login/cadastro do header.html aqui) ...
+
     // Dropdown Pomodoro
     const pomodoroBtn = document.getElementById('pomodoro-header-btn');
     const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
-    let pomodoroInterval = null;
-    let pomodoroTime = 25 * 60;
-    let pomodoroStatus = 'Foco';
-    function updatePomodoroDisplay() {
-        const min = String(Math.floor(pomodoroTime / 60)).padStart(2, '0');
-        const sec = String(pomodoroTime % 60).padStart(2, '0');
-        document.getElementById('pomodoroTimerHeader').textContent = `${min}:${sec}`;
-        document.getElementById('pomodoroStatusHeader').textContent = pomodoroStatus;
+    let pomodoroIntervalHeader = null;
+    let timeRemainingHeader = 25 * 60;
+    let isBreakHeader = false;
+    let initialFocusTimeHeader = 25 * 60;
+
+    function formatTimeHeader(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-    pomodoroBtn.onclick = () => {
-        pomodoroDropdown.style.display = pomodoroDropdown.style.display === 'block' ? 'none' : 'block';
-    };
-    document.getElementById('pomodoroTimeHeader').onchange = function() {
-        pomodoroTime = parseInt(this.value) * 60;
-        pomodoroStatus = this.options[this.selectedIndex].text.split(' ')[1] || 'Foco';
-        updatePomodoroDisplay();
-    };
-    document.getElementById('startPomodoroHeader').onclick = function() {
-        if (pomodoroInterval) clearInterval(pomodoroInterval);
-        pomodoroInterval = setInterval(() => {
-            if (pomodoroTime > 0) {
-                pomodoroTime--;
-                updatePomodoroDisplay();
-            } else {
-                clearInterval(pomodoroInterval);
-                pomodoroStatus = 'Fim!';
-                updatePomodoroDisplay();
-            }
-        }, 1000);
-    };
-    document.getElementById('stopPomodoroHeader').onclick = function() {
-        if (pomodoroInterval) clearInterval(pomodoroInterval);
-        pomodoroTime = parseInt(document.getElementById('pomodoroTimeHeader').value) * 60;
-        pomodoroStatus = document.getElementById('pomodoroTimeHeader').options[document.getElementById('pomodoroTimeHeader').selectedIndex].text.split(' ')[1] || 'Foco';
-        updatePomodoroDisplay();
-    };
-    updatePomodoroDisplay();
+
+    function startPomodoroHeader() {
+        if (pomodoroIntervalHeader) return;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        const selectedTime = parseInt(select.value) * 60;
+        timeRemainingHeader = selectedTime;
+        initialFocusTimeHeader = selectedTime;
+        isBreakHeader = select.value !== '25';
+        status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+        pomodoroIntervalHeader = setInterval(updatePomodoroTimerHeader, 1000);
+    }
+
+    function updatePomodoroTimerHeader() {
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        if (timeRemainingHeader <= 0) {
+            clearInterval(pomodoroIntervalHeader);
+            pomodoroIntervalHeader = null;
+            status.textContent = 'Concluído!';
+            setTimeout(() => {
+                timeRemainingHeader = initialFocusTimeHeader;
+                timer.textContent = formatTimeHeader(timeRemainingHeader);
+                status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+            }, 2000);
+            return;
+        }
+        timeRemainingHeader--;
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+    }
+
+    function stopPomodoroHeader() {
+        clearInterval(pomodoroIntervalHeader);
+        pomodoroIntervalHeader = null;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        timeRemainingHeader = parseInt(select.value) * 60;
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+        status.textContent = 'Foco';
+    }
+
+    document.getElementById('startPomodoroHeaderBtn').onclick = startPomodoroHeader;
+    document.getElementById('stopPomodoroHeaderBtn').onclick = stopPomodoroHeader;
+
     // Dropdown Música
     const musicBtn = document.getElementById('music-header-btn');
     const musicDropdown = document.getElementById('music-header-dropdown');
-    const audioPlayer = document.getElementById('audioPlayerHeader');
-    musicBtn.onclick = () => {
-        musicDropdown.style.display = musicDropdown.style.display === 'block' ? 'none' : 'block';
-    };
-    document.getElementById('playMusicHeader').onclick = function() {
-        audioPlayer.play();
-    };
-    document.getElementById('pauseMusicHeader').onclick = function() {
-        audioPlayer.pause();
-    };
-    // Fecha dropdowns ao clicar fora
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.w3s-header-actions')) {
+    const playMusicBtn = document.getElementById('playMusicHeaderBtn');
+    const pauseMusicBtn = document.getElementById('pauseMusicHeaderBtn');
+    const youtubePlayerContainer = document.getElementById('youtubePlayerContainer');
+    const youtubePlayer = document.getElementById('youtubePlayerHeader');
+    let isMusicPlayingHeader = false;
+
+    function playMusicHeader() {
+        youtubePlayerContainer.style.display = 'block';
+        youtubePlayer.src = 'https://www.youtube.com/embed/UW2XiPwRcy4?autoplay=1';
+        isMusicPlayingHeader = true;
+    }
+    function pauseMusicHeader() {
+        youtubePlayer.src = '';
+        youtubePlayerContainer.style.display = 'none';
+        isMusicPlayingHeader = false;
+    }
+    playMusicBtn.onclick = playMusicHeader;
+    pauseMusicBtn.onclick = pauseMusicHeader;
+
+    // Mostrar/ocultar dropdowns
+    if (pomodoroBtn && pomodoroDropdown) {
+        pomodoroBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            pomodoroDropdown.style.display = pomodoroDropdown.style.display === 'block' ? 'none' : 'block';
+            musicDropdown.style.display = 'none';
+        });
+    }
+    if (musicBtn && musicDropdown) {
+        musicBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            musicDropdown.style.display = musicDropdown.style.display === 'block' ? 'none' : 'block';
             pomodoroDropdown.style.display = 'none';
+        });
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#pomodoro-header-dropdown') && !e.target.closest('#pomodoro-header-btn')) {
+            pomodoroDropdown.style.display = 'none';
+        }
+        if (!e.target.closest('#music-header-dropdown') && !e.target.closest('#music-header-btn')) {
             musicDropdown.style.display = 'none';
         }
     });
-}
+
+    // Botão de logout
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            // Se estiver usando Firebase Auth:
+            if (window.firebase && firebase.auth) {
+                firebase.auth().signOut().then(function() {
+                    window.location.href = 'index.html';
+                });
+            } else {
+                // Apenas redireciona se não houver auth
+                window.location.href = 'index.html';
+            }
+        });
+    }
+});
 </script> 
