@@ -898,20 +898,6 @@
 
                 console.log("Cursos carregados com sucesso:", loadedCoursesData);
                 renderCourseMenu(loadedCoursesData);
-
-                // Carrega automaticamente o primeiro subtema disponível
-                if (loadedCoursesData.length > 0 && loadedCoursesData[0].modules.length > 0 && loadedCoursesData[0].modules[0].subtopics.length > 0) {
-                    const firstCourse = loadedCoursesData[0];
-                    const firstModule = firstCourse.modules[0];
-                    const firstSubtopic = firstModule.subtopics[0];
-                    console.log("Carregando automaticamente o primeiro subtema:", firstSubtopic);
-                    loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
-                    const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
-                    if (firstSubtopicLink) firstSubtopicLink.classList.add('active');
-                } else {
-                    console.log("Nenhum subtema disponível para carregar automaticamente.");
-                    lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
-                }
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
                 courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos: ' + error.message + '</p>';
@@ -961,6 +947,22 @@
             courseMenuContainer.innerHTML = htmlContent;
             console.log("Menu de cursos renderizado com sucesso.");
             addMenuEventListeners();
+
+            // --- Seleção automática do primeiro subtema após renderização ---
+            if (courses.length > 0 && courses[0].modules.length > 0 && courses[0].modules[0].subtopics.length > 0) {
+                const firstCourse = courses[0];
+                const firstModule = firstCourse.modules[0];
+                const firstSubtopic = firstModule.subtopics[0];
+                const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
+                if (firstSubtopicLink) {
+                    // Remove qualquer .active anterior
+                    document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
+                    firstSubtopicLink.classList.add('active');
+                    loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
+                }
+            } else {
+                lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
+            }
         }
 
         function addMenuEventListeners() {
