@@ -29,11 +29,35 @@
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
         <div class="w3s-header-actions">
-            <!-- Botão Sala de Estudos -->
-            <a href="https://proconcursos.com.br/saladeestudos.html" title="Sala de Estudos" style="font-size:1.1em; display:flex; align-items:center; gap:4px;">
-                <span class="icon">🏫</span>
-                <span class="link-text">Sala de Estudos</span>
-            </a>
+            <!-- Botão Pomodoro -->
+            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🍅</span>
+            </button>
+            <!-- Dropdown Pomodoro -->
+            <div id="pomodoro-header-dropdown" style="display:none; position:absolute; top:50px; right:160px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Timer Pomodoro</h4>
+                <select id="pomodoroTimeHeader" style="width:100%; margin-bottom:10px;">
+                    <option value="25">25 minutos (Foco)</option>
+                    <option value="5">5 minutos (Pausa)</option>
+                    <option value="15">15 minutos (Pausa Longa)</option>
+                </select>
+                <button onclick="startPomodoroHeader()" style="margin-right:8px;">Iniciar</button>
+                <button onclick="stopPomodoroHeader()">Parar</button>
+                <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#4CAF50; font-weight:bold; text-align:center;">25:00</div>
+                <p id="pomodoroStatusHeader" style="font-size:0.95em; color:#888; text-align:center; margin:0;">Foco</p>
+            </div>
+            <!-- Botão Música -->
+            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🎵</span>
+            </button>
+            <!-- Dropdown Música -->
+            <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Música de Fundo</h4>
+                <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
+                <button onclick="playMusicHeader()" style="margin-right:8px;">Tocar</button>
+                <button onclick="pauseMusicHeader()">Pausar</button>
+                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+            </div>
             <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
                 <span class="icon theme-icon-light">☀️</span>
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>

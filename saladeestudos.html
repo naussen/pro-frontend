@@ -443,42 +443,74 @@
     </style>
 </head>
 <body>
-    <!-- Painel Flutuante de QUESTÕES -->
-    <div id="questoesFloatingPanel" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
-        <button id="questoesPanelBtn" style="display: flex; align-items: center; gap: 8px; background: #219653; color: #fff; border: none; border-radius: 30px; padding: 14px 32px; font-weight: bold; font-size: 1.1em; box-shadow: 0 2px 10px rgba(0,0,0,0.15); cursor: pointer; transition: background 0.2s;">
-            <span style="font-size: 1.5em; display: flex; align-items: center;">❓</span>
-            <span style="display: flex; align-items: center;">QUESTÕES</span>
-        </button>
-    </div>
+    <!-- Carrega o cabeçalho dinamicamente -->
     <div id="header-placeholder"></div>
-    <script src="questoes-injector.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var btn = document.getElementById('questoesPanelBtn');
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    var fab = document.getElementById('questoes-fab');
-                    if (fab) fab.click();
-                });
-            }
-        });
 
-        // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('headersala.html')
-            .then(response => {
-                if (!response.ok) throw new Error(`Erro ao carregar headersala.html: ${response.status}`);
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-                if (typeof initializeHeaderSalaEvents === 'function') initializeHeaderSalaEvents();
-            })
-            .catch(error => {
-                console.error('Erro ao carregar o header:', error);
-                document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
-            });
-    </script>
-    <!-- Fim do painel QUESTÕES -->
+    <!-- Mega Menu -->
+    <div id="megaMenuContainer">
+        <div class="mega-menu-panel" id="cursos-menu">
+            <div class="mega-menu-column">
+                <h4>Direito</h4>
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Direito Administrativo</a>
+                <a href="#">Direito Penal</a>
+                <a href="#">Direito Civil</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Matemática</h4>
+                <a href="#">Matemática Básica</a>
+                <a href="#">Raciocínio Lógico</a>
+                <a href="#">Estatística</a>
+                <a href="#">Matemática Financeira</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Português</h4>
+                <a href="#">Gramática</a>
+                <a href="#">Interpretação de Texto</a>
+                <a href="#">Redação Oficial</a>
+                <a href="#">Literatura</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Informática</h4>
+                <a href="#">Informática Básica</a>
+                <a href="#">Sistemas Operacionais</a>
+                <a href="#">Redes de Computadores</a>
+                <a href="#">Segurança da Informação</a>
+            </div>
+        </div>
+        <div class="mega-menu-panel" id="questoes-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Matemática Básica</a>
+                <a href="#">Português</a>
+                <a href="#">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="#">Polícia Federal</a>
+                <a href="#">INSS</a>
+                <a href="#">Receita Federal</a>
+                <a href="#">Tribunais</a>
+            </div>
+        </div>
+        <div class="mega-menu-panel" id="flashcards-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Matemática Básica</a>
+                <a href="#">Português</a>
+                <a href="#">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="#">Polícia Federal</a>
+                <a href="#">INSS</a>
+                <a href="#">Receita Federal</a>
+                <a href="#">Tribunais</a>
+            </div>
+        </div>
+    </div>
 
     <!-- Conteúdo Principal -->
     <div class="content-wrapper">
@@ -504,6 +536,29 @@
         </main>
     </div>
 
+    <!-- Painel Flutuante de QUESTÕES -->
+    <div id="questoesFloatingPanel" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
+        <button id="questoesPanelBtn" style="display: flex; align-items: center; gap: 8px; background: #4CAF50; color: #fff; border: none; border-radius: 30px; padding: 16px 28px; font-weight: bold; font-size: 1.1em; box-shadow: 0 2px 10px rgba(0,0,0,0.15); cursor: pointer; transition: background 0.2s;">
+            <span style="font-size: 1.5em;">❓</span>
+            <span>QUESTÕES</span>
+        </button>
+    </div>
+    <script src="questoes-injector.js"></script>
+    <script>
+        // Ao clicar no botão QUESTÕES, aciona o app QUESTÕES (já injetado pelo questoes-injector.js)
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('questoesPanelBtn');
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    // Simula clique no botão do questoes-injector.js
+                    var fab = document.getElementById('questoes-fab');
+                    if (fab) fab.click();
+                });
+            }
+        });
+    </script>
+    <!-- Fim do painel QUESTÕES -->
+
     <!-- Painel Flutuante de Ferramentas -->
     <div id="floatingToolsPanel" style="display:none;"></div>
 
@@ -513,14 +568,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
         // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('headersala.html')
+        fetch('header.html')
             .then(response => {
-                if (!response.ok) throw new Error(`Erro ao carregar headersala.html: ${response.status}`);
+                if (!response.ok) throw new Error(`Erro ao carregar header.html: ${response.status}`);
                 return response.text();
             })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
-                if (typeof initializeHeaderSalaEvents === 'function') initializeHeaderSalaEvents();
+                initializeHeaderEvents();
             })
             .catch(error => {
                 console.error('Erro ao carregar o header:', error);
