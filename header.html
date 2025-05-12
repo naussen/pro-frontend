@@ -27,6 +27,172 @@
             <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
+        
+        // Dentro do <script> no final do seu header.html, DENTRO de document.addEventListener('DOMContentLoaded', function() { ... });
+
+// Dentro do <script> no final do seu header.html, DENTRO de document.addEventListener('DOMContentLoaded', function() { ... });
+
+// Pomodoro do Header - Início
+const pomodoroBtnHeader = document.getElementById('pomodoro-header-btn');
+const pomodoroDropdownHeader = document.getElementById('pomodoro-header-dropdown');
+const startPomodoroBtnHeader = document.getElementById('startPomodoroHeaderBtn');
+const stopPomodoroBtnHeader = document.getElementById('stopPomodoroHeaderBtn');
+const pomodoroTimeSelectHeader = document.getElementById('pomodoroTimeHeader');
+const pomodoroTimerDisplayHeader = document.getElementById('pomodoroTimerHeader');
+const pomodoroStatusDisplayHeader = document.getElementById('pomodoroStatusHeader');
+
+let pomodoroIntervalInstanceHeader = null;
+let timeRemainingValueHeader;
+let isBreakStateHeader = false;
+let initialFocusDurationHeader;
+
+// Inicializa o display com o valor do select, se os elementos existirem
+if (pomodoroTimeSelectHeader && pomodoroTimerDisplayHeader) {
+    try {
+        timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
+        initialFocusDurationHeader = timeRemainingValueHeader;
+        pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+        if (pomodoroStatusDisplayHeader) pomodoroStatusDisplayHeader.textContent = "Foco";
+    } catch (e) {
+        console.error("Pomodoro (Header): Erro na inicialização dos valores de tempo.", e);
+        // Define valores padrão em caso de erro para evitar que o resto quebre
+        timeRemainingValueHeader = 25 * 60;
+        initialFocusDurationHeader = 25 * 60;
+        if(pomodoroTimerDisplayHeader) pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+
+    }
+} else {
+    console.warn("Pomodoro (Header): Elementos de display/select não encontrados na inicialização. O Pomodoro do header pode não funcionar.");
+}
+
+if (pomodoroBtnHeader && pomodoroDropdownHeader) {
+    pomodoroBtnHeader.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isVisible = pomodoroDropdownHeader.style.display === 'block';
+        // Assumindo que você tem uma função closeAllHeaderDropdowns() no escopo do header.html
+        if (typeof closeAllHeaderDropdowns === 'function') {
+            closeAllHeaderDropdowns(); 
+        } else {
+            console.warn("Função closeAllHeaderDropdowns não definida no escopo do header.html");
+            // Fallback simples para outros dropdowns conhecidos
+            const musicDropdown = document.getElementById('music-header-dropdown');
+            if (musicDropdown) musicDropdown.style.display = 'none';
+            const loginDropdown = document.getElementById('login-dropdown');
+            if (loginDropdown) loginDropdown.style.display = 'none';
+            const signupDropdown = document.getElementById('signup-dropdown');
+            if (signupDropdown) signupDropdown.style.display = 'none';
+        }
+        if (!isVisible) pomodoroDropdownHeader.style.display = 'block';
+    });
+}
+
+if (startPomodoroBtnHeader) {
+    startPomodoroBtnHeader.addEventListener('click', () => {
+        console.log("Pomodoro (Header): Botão Iniciar clicado.");
+        handleStartPomodoroHeader();
+    });
+}
+if (stopPomodoroBtnHeader) {
+    stopPomodoroBtnHeader.addEventListener('click', () => {
+        console.log("Pomodoro (Header): Botão Parar clicado.");
+        handleStopPomodoroHeader();
+    });
+}
+
+if (pomodoroTimeSelectHeader) {
+    pomodoroTimeSelectHeader.addEventListener('change', () => {
+        if (!pomodoroIntervalInstanceHeader) { // Só atualiza se estiver parado
+            console.log("Pomodoro (Header): Tempo alterado no select.");
+            if (!pomodoroTimeSelectHeader || !pomodoroTimerDisplayHeader || !pomodoroStatusDisplayHeader) {
+                 console.warn("Pomodoro (Header): Elementos não encontrados ao tentar atualizar pelo select.");
+                 return;
+            }
+            timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
+            initialFocusDurationHeader = timeRemainingValueHeader;
+            isBreakStateHeader = pomodoroTimeSelectHeader.value !== '25'; // Atualiza estado de pausa
+            pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+            pomodoroStatusDisplayHeader.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
+        }
+    });
+}
+
+function formatTimeHeaderInternal(seconds) { // Renomeada para evitar conflito global se este script vazar
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function handleStartPomodoroHeader() {
+    if (pomodoroIntervalInstanceHeader) {
+        console.log("Pomodoro (Header): Timer já está rodando.");
+        return;
+    }
+    // Re-verificar elementos no momento do clique
+    const currentSelect = document.getElementById('pomodoroTimeHeader');
+    const currentDisplay = document.getElementById('pomodoroTimerHeader');
+    const currentStatus = document.getElementById('pomodoroStatusHeader');
+
+    if (!currentSelect || !currentDisplay || !currentStatus) {
+        console.error("Pomodoro (Header): Elementos cruciais não encontrados para iniciar.");
+        return;
+    }
+    console.log("Pomodoro (Header): Iniciando timer...");
+    timeRemainingValueHeader = parseInt(currentSelect.value) * 60;
+    initialFocusDurationHeader = timeRemainingValueHeader;
+    isBreakStateHeader = currentSelect.value !== '25';
+    currentStatus.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
+    currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+    pomodoroIntervalInstanceHeader = setInterval(handleUpdatePomodoroTimerHeader, 1000);
+}
+
+function handleUpdatePomodoroTimerHeader() {
+    // Re-verificar elementos no momento da atualização
+    const currentDisplay = document.getElementById('pomodoroTimerHeader');
+    const currentStatus = document.getElementById('pomodoroStatusHeader');
+
+    if (!currentDisplay || !currentStatus) {
+        console.error("Pomodoro (Header): Elementos de display não encontrados durante atualização. Parando timer.");
+        clearInterval(pomodoroIntervalInstanceHeader);
+        pomodoroIntervalInstanceHeader = null;
+        return;
+    }
+
+    if (timeRemainingValueHeader <= 0) {
+        console.log("Pomodoro (Header): Ciclo concluído.");
+        clearInterval(pomodoroIntervalInstanceHeader);
+        pomodoroIntervalInstanceHeader = null;
+        currentStatus.textContent = 'Concluído!';
+        // Notificação sonora aqui (opcional)
+        // Ex: const audio = new Audio('caminho/para/som.mp3'); audio.play();
+        setTimeout(() => {
+            timeRemainingValueHeader = initialFocusDurationHeader; 
+            currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+            currentStatus.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
+            console.log("Pomodoro (Header): Timer resetado para próximo ciclo.");
+        }, 3000);
+        return;
+    }
+    timeRemainingValueHeader--;
+    currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+}
+
+function handleStopPomodoroHeader() {
+    console.log("Pomodoro (Header): Parando timer.");
+    clearInterval(pomodoroIntervalInstanceHeader);
+    pomodoroIntervalInstanceHeader = null;
+
+    const currentSelect = document.getElementById('pomodoroTimeHeader');
+    const currentDisplay = document.getElementById('pomodoroTimerHeader');
+    const currentStatus = document.getElementById('pomodoroStatusHeader');
+
+    if (currentSelect && currentDisplay) {
+        timeRemainingValueHeader = parseInt(currentSelect.value) * 60;
+        currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+    }
+    if (currentStatus) currentStatus.textContent = 'Foco';
+}
+// Pomodoro do Header - Fim            
+
         <div class="w3s-header-actions">
             <button id="pomodoro-header-btn" class="header-tool-btn" title="Pomodoro"><span class="icon">🍅</span></button>
             <div id="pomodoro-header-dropdown" class="header-dropdown">
