@@ -297,7 +297,18 @@
             <span>QUESTÕES</span>
         </button>
     </div>
-
+    <script src="questoes-injector.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('questoesPanelBtn');
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    var fab = document.getElementById('questoes-fab');
+                    if (fab) fab.click();
+                });
+            }
+        });
+    </script>
     <div id="floatingToolsPanel" class="collapsed" style="display:block;"> <div class="tools-panel-header" id="toolsPanelHeader">
             <h3>Ferramentas</h3>
             <button id="toggleToolsPanelBtn" title="Expandir/Recolher Painel">−</button>
@@ -328,26 +339,8 @@
             </div>
         </div>
     </div>
-    <script src="questoes-injector.js"></script>
-    <script>
-        // Ao clicar no botão QUESTÕES, aciona o app QUESTÕES (já injetado pelo questoes-injector.js)
-        document.addEventListener('DOMContentLoaded', function() {
-            var btn = document.getElementById('questoesPanelBtn');
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    // Simula clique no botão do questoes-injector.js
-                    var fab = document.getElementById('questoes-fab');
-                    if (fab) fab.click();
-                });
-            }
-        });
-    </script>
-    <!-- Fim do painel QUESTÕES -->
 
-    <!-- Painel Flutuante de Ferramentas -->
-    <div id="floatingToolsPanel" style="display:none;"></div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -360,6 +353,8 @@
             })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
+                // O script dentro de header.html será executado aqui.
+                // initializeHeaderEvents conectará os elementos do header carregado com a página.
                 initializeHeaderEvents();
             })
             .catch(error => {
@@ -369,143 +364,149 @@
 
         // --- Configuração Firebase ---
         const firebaseConfig = {
-            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // Mantenha sua chave segura
             authDomain: "nvp-concursos.firebaseapp.com",
             projectId: "nvp-concursos",
-            storageBucket: "nvp-concursos.firebasestorage.app",
+            storageBucket: "nvp-concursos.appspot.com", // ou nvp-concursos.firebasestorage.app
             messagingSenderId: "397960760271",
             appId: "1:397960760271:web:1550ff01910ae927d860ba"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        // Para expor a instância auth para o script do header.html (se ele precisar para login/cadastro)
+        // window.pageAuthInstance = auth;
 
         // --- Variáveis Globais ---
         let userId = null;
-        let sidebarToggleBtn = null;
+        let sidebarToggleBtn = null; // Será pego de dentro do header.html carregado
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-        const floatingToolsPanel = document.getElementById('floatingToolsPanel');
         const courseMenuContainer = document.getElementById('courseMenu');
         const lessonContent = document.getElementById('lessonContent');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const pomodoroTimerDisplay = document.getElementById('pomodoroTimer');
-        const pomodoroStatus = document.getElementById('pomodoroStatus');
-        const pomodoroTimeSelect = document.getElementById('pomodoroTime');
         const bodyElement = document.body;
         let loadedCoursesData = [];
+        
+        // Variáveis para o Painel Flutuante de Ferramentas (se o HTML estiver estático acima)
+        const floatingToolsPanel = document.getElementById('floatingToolsPanel');
+        const toolsPanelHeader = document.getElementById('toolsPanelHeader');
+        const toggleToolsPanelBtn = document.getElementById('toggleToolsPanelBtn');
+        
+        const showPomodoroToolBtn = document.getElementById('showPomodoroToolBtn');
+        const showMusicToolBtn = document.getElementById('showMusicToolBtn');
+        const pomodoroPanel = document.getElementById('pomodoroPanel');
+        const musicPanel = document.getElementById('musicPanel');
 
-        // --- Inicializar Eventos do Header ---
+
+        // --- Inicializar Eventos do Header (e Mega Menu) ---
         function initializeHeaderEvents() {
-            sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); 
             const colorPickerBtn = document.getElementById('color-picker-btn');
-            const logoutBtn = document.getElementById('logout-btn');
-            const topNav = document.getElementById('topNav');
-            const megaMenuContainer = document.getElementById('megaMenuContainer');
+            const logoutBtn = document.getElementById('logout-btn'); 
+            const loginBtnHeader = document.getElementById('login-btn'); // Botão de Login no header
+            const topNav = document.getElementById('topNav'); 
             const themeToggleBtn = document.getElementById('theme-toggle');
+            const megaMenuContainer = document.getElementById('megaMenuContainer'); // Agora vem do header.html
 
             if (sidebarToggleBtn) {
                 sidebarToggleBtn.addEventListener('click', toggleSidebar);
-            } else {
-                console.warn('Botão sidebarToggleBtn não encontrado no header.html');
             }
-
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
                     const newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
                     applyTheme(newTheme);
                 });
-            } else {
-                console.warn('Botão theme-toggle não encontrado no header.html');
             }
-
             if (colorPickerBtn) {
                 colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
-            } else {
-                console.warn('Botão color-picker-btn não encontrado no header.html');
             }
-
-            if (logoutBtn) {
+            if (logoutBtn) { // Logout para usuário logado
                 logoutBtn.addEventListener('click', () => {
-                    auth.signOut()
-                        .then(() => {
-                            console.log('Logout bem-sucedido');
-                            window.location.href = 'index.html';
-                        })
-                        .catch(error => {
-                            console.error('Erro ao fazer logout:', error);
-                            alert('Erro ao sair: ' + error.message);
-                        });
+                    auth.signOut().then(() => {
+                        console.log('Logout bem-sucedido');
+                        window.location.href = 'index.html'; // Ou página de login
+                    }).catch(error => console.error('Erro ao fazer logout:', error));
                 });
-            } else {
-                console.warn('Botão logout-btn não encontrado no header.html');
             }
+            // A lógica de login/signup é tratada pelo script interno do header.html
+            // Mas podemos querer atualizar a UI aqui após login/logout bem-sucedido (ex: mostrar/esconder logoutBtn)
 
-            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
+            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button[data-target]') || [];
             megaMenuButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     event.stopPropagation();
                     const targetId = button.getAttribute('data-target');
-                    const targetPanel = document.getElementById(targetId);
+                    const targetPanel = megaMenuContainer?.querySelector('#' + targetId); 
                     if (!targetPanel) return;
-                    
-                    // Verifique se o painel clicado já está ativo
                     const isCurrentlyActive = targetPanel.classList.contains('active');
-                    
-                    // Feche todos os menus, incluindo botões ativos
-                    closeAllMegaMenus();
-                    
-                    // Se o painel não estava ativo, abra-o
-                    // Se já estava ativo, ele já foi fechado pela função closeAllMegaMenus()
+                    closeAllMegaMenus(); 
                     if (!isCurrentlyActive) {
                         targetPanel.classList.add('active');
                         button.classList.add('active');
                     }
                 });
             });
-
+            
             document.addEventListener('click', (event) => {
-                const clickedInsideMenu = megaMenuContainer?.contains(event.target);
-                const clickedInsideNav = topNav?.contains(event.target);
-                if (!clickedInsideMenu && !clickedInsideNav) closeAllMegaMenus();
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (!headerPlaceholder?.contains(event.target) && !event.target.closest('.nav-button')) {
+                    closeAllMegaMenus();
+                }
             });
-
-            updateLayout();
+            updateLayout(); 
+            updateLoginLogoutButtonsUI(); // Atualiza botões de login/logout
         }
 
         function closeAllMegaMenus() {
             const megaMenuContainer = document.getElementById('megaMenuContainer');
-            const allMegaPanels = megaMenuContainer?.querySelectorAll('.mega-menu-panel') || [];
+            const allMegaPanels = megaMenuContainer?.querySelectorAll('.mega-menu-panel.active') || [];
+            allMegaPanels.forEach(panel => panel.classList.remove('active'));
             const topNav = document.getElementById('topNav');
-            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
-            allMegaPanels.forEach(panel => {
-                panel.classList.remove('active');
-            });
-            megaMenuButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
+            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button.active') || [];
+            megaMenuButtons.forEach(btn => btn.classList.remove('active'));
         }
 
-        // --- Autenticação ---
+        // --- Autenticação e UI de Login/Logout ---
         auth.onAuthStateChanged(user => {
-            if (!user) {
-                console.log("Usuário não logado, redirecionando para index.html.");
-                window.location.href = 'index.html';
-            } else {
+            if (user) {
                 userId = user.uid;
-                console.log("Usuário autenticado:", userId);
                 loadCourses();
                 applySavedPreferences();
+            } else {
+                userId = null;
+                // Se não for a página de login/index, redirecionar
+                // if (window.location.pathname.includes('saladeestudos.html')) {
+                //    window.location.href = 'index.html';
+                // }
+                clearCourseMenu(); // Limpa o menu de cursos se o usuário deslogar
+                applySavedPreferences(); // Aplica tema mesmo deslogado
             }
+            updateLoginLogoutButtonsUI(); // Atualiza UI sempre que o estado de auth mudar
         });
+
+        function updateLoginLogoutButtonsUI() {
+            const logoutBtnHeader = document.getElementById('logout-btn'); // No header.html
+            const loginBtnHeader = document.getElementById('login-btn');   // No header.html
+
+            if (auth.currentUser) {
+                if (loginBtnHeader) loginBtnHeader.style.display = 'none';
+                if (logoutBtnHeader) logoutBtnHeader.style.display = 'flex'; // ou 'block'
+            } else {
+                if (loginBtnHeader) loginBtnHeader.style.display = 'flex'; // ou 'block'
+                if (logoutBtnHeader) logoutBtnHeader.style.display = 'none';
+            }
+        }
+        
+        function clearCourseMenu() {
+            if(courseMenuContainer) courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
+            if(lessonContent) lessonContent.innerHTML = '<p>Bem-vindo! Selecione uma aula no menu ou faça login.</p>';
+            loadedCoursesData = [];
+        }
+
 
         function applySavedPreferences() {
             const savedMainBgColor = localStorage.getItem('userMainBgColor');
-            if (savedMainBgColor && mainContent) {
-                mainContent.style.backgroundColor = savedMainBgColor;
-                console.log("Cor de fundo aplicada:", savedMainBgColor);
-            }
-
+            if (savedMainBgColor && mainContent) mainContent.style.backgroundColor = savedMainBgColor;
             const savedTheme = localStorage.getItem('theme');
             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const themeToApply = savedTheme || (prefersDarkScheme ? 'dark' : 'light');
@@ -513,15 +514,12 @@
         }
 
         function applyTheme(theme) {
-            console.log("Aplicando tema:", theme);
             bodyElement.classList.toggle('dark-mode', theme === 'dark');
-            const sunIcon = document.querySelector('.theme-icon-light');
-            const moonIcon = document.querySelector('.theme-icon-dark');
+            const sunIcon = document.querySelector('.theme-icon-light'); // No header
+            const moonIcon = document.querySelector('.theme-icon-dark'); // No header
             if (sunIcon && moonIcon) {
                 sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
                 moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
-            } else {
-                console.warn('Ícones de tema (.theme-icon-light ou .theme-icon-dark) não encontrados no header.html');
             }
             localStorage.setItem('theme', theme);
         }
@@ -535,11 +533,160 @@
                 const color = colorInput.value;
                 mainContent.style.backgroundColor = color;
                 localStorage.setItem('userMainBgColor', color);
-                console.log("Cor de fundo alterada para:", color);
             });
             colorInput.click();
         }
 
+        function rgbToHex(rgb) { /* ... (função rgbToHex) ... */ }
+
+        // --- Carregar Cursos ---
+        async function loadCourses() { /* ... (função loadCourses como antes) ... */ }
+        function renderCourseMenu(courses) { /* ... (função renderCourseMenu como antes) ... */ }
+        function addMenuEventListeners() { /* ... (função addMenuEventListeners como antes) ... */ }
+        async function loadLessonContent(courseId, moduleId, subtopicId) { /* ... (função loadLessonContent como antes) ... */ }
+        
+        // --- Sidebar Toggle ---
+        function toggleSidebar() { /* ... (função toggleSidebar como antes) ... */ }
+        function updateLayout() { /* ... (função updateLayout como antes) ... */ }
+        window.addEventListener('resize', updateLayout);
+
+        // --- Floating Tools Panel Logic (para o painel da página, não do header) ---
+        if (toolsPanelHeader && floatingToolsPanel && toggleToolsPanelBtn) {
+            toolsPanelHeader.addEventListener('click', toggleFloatingToolsPanelDisplay);
+            toggleToolsPanelBtn.addEventListener('click', (e) => { // Para o botão específico no header do painel
+                 e.stopPropagation(); // Evita que o clique no botão também dispare o do header do painel
+                 toggleFloatingToolsPanelDisplay();
+            });
+        }
+        
+        function toggleFloatingToolsPanelDisplay() { // Renomeada para evitar conflito
+            if (!floatingToolsPanel || !toggleToolsPanelBtn) return;
+            floatingToolsPanel.classList.toggle('collapsed');
+            toggleToolsPanelBtn.textContent = floatingToolsPanel.classList.contains('collapsed') ? '➕' : '➖';
+        }
+
+        if (showPomodoroToolBtn) showPomodoroToolBtn.addEventListener('click', () => toggleToolDisplay('pomodoroPanel'));
+        if (showMusicToolBtn) showMusicToolBtn.addEventListener('click', () => toggleToolDisplay('musicPanel'));
+
+        function toggleToolDisplay(panelIdToShow) { // Renomeada
+            if (!floatingToolsPanel) return;
+            const toolPanels = floatingToolsPanel.querySelectorAll('.tool-panel');
+            toolPanels.forEach(panel => {
+                if (panel.id === panelIdToShow) {
+                    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+                } else {
+                    panel.style.display = 'none'; // Esconde os outros painéis
+                }
+            });
+             // Se o painel de ferramentas estiver recolhido, expanda-o ao mostrar uma ferramenta
+            if (floatingToolsPanel.classList.contains('collapsed')) {
+                toggleFloatingToolsPanelDisplay();
+            }
+        }
+
+        // --- Música (Painel Flutuante) ---
+        const audioPlayerPanel = document.getElementById('audioPlayerPanel');
+        const playMusicPanelBtn = document.getElementById('playMusicPanelBtn');
+        const pauseMusicPanelBtn = document.getElementById('pauseMusicPanelBtn');
+        let isMusicPlayingPanel = false;
+
+        if(playMusicPanelBtn) playMusicPanelBtn.addEventListener('click', playMusicPanel);
+        if(pauseMusicPanelBtn) pauseMusicPanelBtn.addEventListener('click', pauseMusicPanel);
+
+        function playMusicPanel() {
+            if (audioPlayerPanel && !isMusicPlayingPanel) {
+                audioPlayerPanel.play().catch(e => console.error("Erro ao tocar música no painel:", e));
+                isMusicPlayingPanel = true;
+            }
+        }
+        function pauseMusicPanel() {
+            if (audioPlayerPanel && isMusicPlayingPanel) {
+                audioPlayerPanel.pause();
+                isMusicPlayingPanel = false;
+            }
+        }
+
+        // --- Pomodoro (Painel Flutuante) ---
+        const pomodoroTimeSelectPanel = document.getElementById('pomodoroTimePanel');
+        const startPomodoroPanelBtn = document.getElementById('startPomodoroPanelBtn');
+        const stopPomodoroPanelBtn = document.getElementById('stopPomodoroPanelBtn');
+        const pomodoroTimerDisplayPanel = document.getElementById('pomodoroTimerPanel');
+        const pomodoroStatusDisplayPanel = document.getElementById('pomodoroStatusPanel');
+        let pomodoroIntervalPanel = null;
+        let timeRemainingPanel = parseInt(pomodoroTimeSelectPanel?.value || '25') * 60;
+        let isBreakPanel = false;
+        let initialFocusTimePanel = parseInt(pomodoroTimeSelectPanel?.value || '25') * 60;
+
+        if(startPomodoroPanelBtn) startPomodoroPanelBtn.addEventListener('click', startPomodoroPanel);
+        if(stopPomodoroPanelBtn) stopPomodoroPanelBtn.addEventListener('click', stopPomodoroPanel);
+        if(pomodoroTimeSelectPanel) {
+            pomodoroTimeSelectPanel.addEventListener('change', () => {
+                if (!pomodoroIntervalPanel) { // Só atualiza se não estiver rodando
+                    timeRemainingPanel = parseInt(pomodoroTimeSelectPanel.value) * 60;
+                    initialFocusTimePanel = timeRemainingPanel;
+                    isBreakPanel = pomodoroTimeSelectPanel.value !== "25"; // Exemplo de lógica de pausa
+                    if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
+                    if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = isBreakPanel ? "Pausa" : "Foco";
+                }
+            });
+        }
+
+
+        function startPomodoroPanel() {
+            if (pomodoroIntervalPanel) return;
+            if (!pomodoroTimeSelectPanel || !pomodoroTimerDisplayPanel || !pomodoroStatusDisplayPanel) return;
+
+            timeRemainingPanel = parseInt(pomodoroTimeSelectPanel.value) * 60;
+            initialFocusTimePanel = timeRemainingPanel;
+            isBreakPanel = pomodoroTimeSelectPanel.value !== "25"; 
+            pomodoroStatusDisplayPanel.textContent = isBreakPanel ? 'Pausa' : 'Foco';
+            pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
+            pomodoroIntervalPanel = setInterval(updatePomodoroTimerPanel, 1000);
+        }
+        function updatePomodoroTimerPanel() {
+            if (timeRemainingPanel <= 0) {
+                clearInterval(pomodoroIntervalPanel);
+                pomodoroIntervalPanel = null;
+                if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = 'Concluído!';
+                setTimeout(() => {
+                    timeRemainingPanel = initialFocusTimePanel;
+                    if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
+                    if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = isBreakPanel ? 'Pausa' : 'Foco';
+                }, 3000);
+                return;
+            }
+            timeRemainingPanel--;
+            if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
+        }
+        function stopPomodoroPanel() {
+            clearInterval(pomodoroIntervalPanel);
+            pomodoroIntervalPanel = null;
+            if(pomodoroTimeSelectPanel) timeRemainingPanel = parseInt(pomodoroTimeSelectPanel.value) * 60;
+            if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
+            if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = 'Foco';
+        }
+        function formatTimePanel(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Inicialização ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLayout();
+            if (!auth.currentUser) {
+                applySavedPreferences();
+                updateLoginLogoutButtonsUI(); // Garante que botões de login/logout estejam corretos
+            }
+            // Inicializa o estado do painel de ferramentas se ele for visível
+            if (floatingToolsPanel && toggleToolsPanelBtn && !floatingToolsPanel.classList.contains('collapsed')) {
+                 toggleToolsPanelBtn.textContent = '➖';
+            } else if (toggleToolsPanelBtn) {
+                 toggleToolsPanelBtn.textContent = '➕';
+            }
+        });
+
+        // Para colar as funções que faltavam (rgbToHex, loadCourses, etc.):
         function rgbToHex(rgb) {
             if (!rgb || rgb === '') return '#ffffff';
             const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
@@ -550,51 +697,35 @@
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
         }
 
-        // --- Carregar Cursos para o Menu Lateral ---
         async function loadCourses() {
             if (!userId || !courseMenuContainer) {
-                console.error("userId ou courseMenuContainer não definidos:", { userId, courseMenuContainer });
+                console.error("Usuário não logado ou container de menu não encontrado para carregar cursos.");
+                if (courseMenuContainer) courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
                 return;
             }
             courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
             try {
-                console.log("Iniciando carregamento de cursos para o usuário:", userId);
                 const userDocRef = db.collection('users').doc(userId);
                 const userDoc = await userDocRef.get();
                 let coursesToDisplay = [];
 
                 if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
-                    console.log("Usuário tem cursos personalizados. Carregando...");
                     const selectedSubtopics = userDoc.data().selectedSubtopics;
-                    console.log("Subtemas selecionados:", selectedSubtopics);
-
                     for (const selection of selectedSubtopics) {
                         const { courseId, moduleId, subtopicId } = selection;
-                        console.log(`Processando seleção: courseId=${courseId}, moduleId=${moduleId}, subtopicId=${subtopicId}`);
                         const courseRef = db.collection('courses').doc(courseId);
                         const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) {
-                            console.warn(`Curso ${courseId} não encontrado.`);
-                            continue;
-                        }
-
+                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} não encontrado.`); continue; }
                         const courseData = courseDoc.data();
                         const moduleRef = courseRef.collection('modules').doc(moduleId);
                         const moduleDoc = await moduleRef.get();
-                        if (!moduleDoc.exists) {
-                            console.warn(`Módulo ${moduleId} não encontrado no curso ${courseId}.`);
-                            continue;
-                        }
-
+                        if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} não encontrado.`); continue; }
                         const moduleData = moduleDoc.data();
                         const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
                         const subtopicDoc = await subtopicRef.get();
-                        if (!subtopicDoc.exists) {
-                            console.warn(`Subtema ${subtopicId} não encontrado no módulo ${moduleId}.`);
-                            continue;
-                        }
-
+                        if (!subtopicDoc.exists) { console.warn(`Subtópico ${subtopicId} não encontrado.`); continue; }
                         const subtopicData = subtopicDoc.data();
+
                         let course = coursesToDisplay.find(c => c.id === courseId);
                         if (!course) {
                             course = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
@@ -606,144 +737,72 @@
                             course.modules.push(module);
                         }
                         module.subtopics.push({
-                            id: subtopicId,
-                            name: subtopicData.name || 'Aula s/ Nome',
-                            order: subtopicData.order || 0,
+                            id: subtopicId, name: subtopicData.name || 'Aula s/ Nome', order: subtopicData.order || 0,
                             content_url: subtopicData.content_url || ''
                         });
                     }
-                } else {
-                    console.log("Carregando todos os cursos (sem personalização).");
-                    const coursesRef = db.collection('courses').orderBy('order');
-                    const coursesSnapshot = await coursesRef.get();
-                    if (coursesSnapshot.empty) {
-                        console.log("Nenhum curso encontrado no Firestore.");
-                        courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
-                        return;
-                    }
-
+                } else { // Carrega todos os cursos
+                    const coursesSnapshot = await db.collection('courses').orderBy('order').get();
+                    if (coursesSnapshot.empty) { courseMenuContainer.innerHTML = '<p>Nenhum curso cadastrado.</p>'; return; }
                     for (const courseDoc of coursesSnapshot.docs) {
-                        const courseData = courseDoc.data();
-                        const courseId = courseDoc.id;
-                        console.log(`Carregando curso: ${courseId} - ${courseData.name}`);
-                        const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
-                        const modulesSnapshot = await modulesRef.get();
-                        const modules = [];
-
+                        const courseData = courseDoc.data(); const courseId = courseDoc.id; const modules = [];
+                        const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
                         for (const moduleDoc of modulesSnapshot.docs) {
-                            const moduleData = moduleDoc.data();
-                            const moduleId = moduleDoc.id;
-                            console.log(`Carregando módulo: ${moduleId} - ${moduleData.name}`);
-                            const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
-                            const subtopicsSnapshot = await subtopicsRef.get();
-                            const subtopics = [];
-
+                            const moduleData = moduleDoc.data(); const moduleId = moduleDoc.id; const subtopics = [];
+                            const subtopicsSnapshot = await moduleDoc.ref.collection('subtopics').orderBy('order').get();
                             subtopicsSnapshot.forEach(subtopicDoc => {
                                 const subtopicData = subtopicDoc.data();
-                                console.log(`Carregando subtema: ${subtopicDoc.id} - ${subtopicData.name}`);
-                                subtopics.push({
-                                    id: subtopicDoc.id,
-                                    name: subtopicData.name || 'Aula s/ Nome',
-                                    order: subtopicData.order || 0,
-                                    content_url: subtopicData.content_url || ''
-                                });
+                                subtopics.push({ id: subtopicDoc.id, name: subtopicData.name || 'Aula s/ Nome', order: subtopicData.order || 0, content_url: subtopicData.content_url || '' });
                             });
-
-                            modules.push({
-                                id: moduleId,
-                                name: moduleData.name || 'Módulo s/ Nome',
-                                order: moduleData.order || 0,
-                                subtopics: subtopics
-                            });
+                            modules.push({ id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics });
                         }
-
-                        coursesToDisplay.push({
-                            id: courseId,
-                            name: courseData.name || 'Curso s/ Nome',
-                            order: courseData.order || 0,
-                            modules: modules
-                        });
+                        coursesToDisplay.push({ id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules });
                     }
                 }
-
-                if (coursesToDisplay.length === 0) {
-                    console.log("Nenhum curso disponível para exibir.");
-                    courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
-                    return;
-                }
-
+                if (coursesToDisplay.length === 0) { courseMenuContainer.innerHTML = '<p>Nenhum curso para exibir.</p>'; return; }
                 loadedCoursesData = coursesToDisplay;
                 loadedCoursesData.sort((a, b) => a.order - b.order);
-                loadedCoursesData.forEach(course => {
-                    course.modules.sort((a, b) => a.order - b.order);
-                    course.modules.forEach(module => {
-                        module.subtopics.sort((a, b) => a.order - b.order);
-                    });
-                });
-
-                console.log("Cursos carregados com sucesso:", loadedCoursesData);
+                loadedCoursesData.forEach(c => { c.modules.sort((a,b) => a.order - b.order); c.modules.forEach(m => m.subtopics.sort((a,b) => a.order - b.order)); });
                 renderCourseMenu(loadedCoursesData);
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
-                courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos: ' + error.message + '</p>';
+                courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos: ${error.message}</p>`;
             }
         }
 
         function renderCourseMenu(courses) {
-            if (!courseMenuContainer) {
-                console.error("courseMenuContainer não encontrado.");
+            if (!courseMenuContainer || !courses || courses.length === 0) {
+                if (courseMenuContainer) courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
                 return;
             }
-            if (!courses || courses.length === 0) {
-                console.log("Nenhum curso para renderizar.");
-                courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
-                return;
-            }
-
-            let htmlContent = '';
-            courses.forEach(course => {
-                htmlContent += `
-                    <div class="course-item">
-                        <div class="course-header" data-course-id="${course.id}">
-                            <span>${course.name}</span>
-                            <span class="toggle-icon">▶</span>
-                        </div>
-                        <ul class="module-list" id="modules-${course.id}">
-                            ${course.modules.map(module => `
-                                <li class="module-item">
-                                    <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                        <span>${module.name}</span>
-                                        <span class="toggle-icon">▶</span>
-                                    </div>
-                                    <ul class="subtopic-list" id="subtopics-${module.id}">
-                                        ${module.subtopics.map(subtopic => `
-                                            <li class="subtopic-item">
-                                                <a href="#" class="subtopic-link" data-subtopic-id="${subtopic.id}" data-module-id="${module.id}" data-course-id="${course.id}">${subtopic.name}</a>
-                                            </li>
-                                        `).join('')}
-                                    </ul>
-                                </li>
-                            `).join('')}
-                        </ul>
+            let htmlContent = courses.map(course => `
+                <div class="course-item">
+                    <div class="course-header" data-course-id="${course.id}">
+                        <span>${course.name}</span><span class="toggle-icon">▶</span>
                     </div>
-                `;
-            });
-
+                    <ul class="module-list" id="modules-${course.id}">
+                        ${course.modules.map(module => `
+                            <li class="module-item">
+                                <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
+                                    <span>${module.name}</span><span class="toggle-icon">▶</span>
+                                </div>
+                                <ul class="subtopic-list" id="subtopics-${module.id}">
+                                    ${module.subtopics.map(subtopic => `
+                                        <li class="subtopic-item">
+                                            <a href="#" class="subtopic-link" data-subtopic-id="${subtopic.id}" data-module-id="${module.id}" data-course-id="${course.id}">${subtopic.name}</a>
+                                        </li>`).join('')}
+                                </ul>
+                            </li>`).join('')}
+                    </ul>
+                </div>`).join('');
             courseMenuContainer.innerHTML = htmlContent;
-            console.log("Menu de cursos renderizado com sucesso.");
             addMenuEventListeners();
-
-            // --- Seleção automática do primeiro subtema após renderização ---
-            if (courses.length > 0 && courses[0].modules.length > 0 && courses[0].modules[0].subtopics.length > 0) {
-                const firstCourse = courses[0];
-                const firstModule = firstCourse.modules[0];
-                const firstSubtopic = firstModule.subtopics[0];
-                const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
-                if (firstSubtopicLink) {
-                    // Remove qualquer .active anterior
-                    document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
-                    firstSubtopicLink.classList.add('active');
-                    loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
+            // Auto-seleciona o primeiro item
+            if (courses[0]?.modules[0]?.subtopics[0]) {
+                const firstLink = document.querySelector(`.subtopic-link[data-subtopic-id="${courses[0].modules[0].subtopics[0].id}"]`);
+                if (firstLink) {
+                    firstLink.classList.add('active');
+                    loadLessonContent(courses[0].id, courses[0].modules[0].id, courses[0].modules[0].subtopics[0].id);
                 }
             } else {
                 lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
@@ -751,199 +810,49 @@
         }
 
         function addMenuEventListeners() {
-            const courseHeaders = document.querySelectorAll('.course-header');
-            const moduleHeaders = document.querySelectorAll('.module-header');
-            const subtopicLinks = document.querySelectorAll('.subtopic-link');
-
-            courseHeaders.forEach(header => {
+            document.querySelectorAll('.course-header').forEach(header => {
                 header.addEventListener('click', () => {
-                    const courseId = header.dataset.courseId;
-                    const moduleList = document.getElementById(`modules-${courseId}`);
-                    const toggleIcon = header.querySelector('.toggle-icon');
-                    moduleList.classList.toggle('visible');
-                    toggleIcon.classList.toggle('expanded');
-                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
+                    header.nextElementSibling.classList.toggle('visible');
+                    header.querySelector('.toggle-icon').classList.toggle('expanded');
+                    header.querySelector('.toggle-icon').textContent = header.querySelector('.toggle-icon').classList.contains('expanded') ? '▼' : '▶';
                 });
             });
-
-            moduleHeaders.forEach(header => {
+            document.querySelectorAll('.module-header').forEach(header => {
                 header.addEventListener('click', () => {
-                    const moduleId = header.dataset.moduleId;
-                    const subtopicList = document.getElementById(`subtopics-${moduleId}`);
-                    const toggleIcon = header.querySelector('.toggle-icon');
-                    subtopicList.classList.toggle('visible');
-                    toggleIcon.classList.toggle('expanded');
-                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
+                    header.nextElementSibling.classList.toggle('visible');
+                    header.querySelector('.toggle-icon').classList.toggle('expanded');
+                    header.querySelector('.toggle-icon').textContent = header.querySelector('.toggle-icon').classList.contains('expanded') ? '▼' : '▶';
                 });
             });
-
-            subtopicLinks.forEach(link => {
+            document.querySelectorAll('.subtopic-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const subtopicId = link.dataset.subtopicId;
-                    const moduleId = link.dataset.moduleId;
-                    const courseId = link.dataset.courseId;
-
-                    document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
+                    document.querySelectorAll('.subtopic-link.active').forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
-
-                    console.log(`Carregando aula: courseId=${courseId}, moduleId=${moduleId}, subtopicId=${subtopicId}`);
-                    loadLessonContent(courseId, moduleId, subtopicId);
+                    loadLessonContent(link.dataset.courseId, link.dataset.moduleId, link.dataset.subtopicId);
                 });
             });
         }
 
         async function loadLessonContent(courseId, moduleId, subtopicId) {
-            if (!lessonContent) {
-                console.error("lessonContent não encontrado.");
-                return;
-            }
+            if (!lessonContent) { console.error("Elemento #lessonContent não encontrado."); return; }
             lessonContent.innerHTML = '<p>Carregando aula...</p>';
             try {
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 const subtopic = module?.subtopics.find(s => s.id === subtopicId);
-
-                console.log("Dados do subtema:", { courseId, moduleId, subtopicId, subtopic });
-
-                if (!course || !module || !subtopic) {
-                    console.error("Aula não encontrada:", { courseId, moduleId, subtopicId });
-                    lessonContent.innerHTML = '<p>Erro: Aula não encontrada.</p>';
+                if (!subtopic || !subtopic.content_url) {
+                    lessonContent.innerHTML = `<p>Conteúdo da aula não encontrado ou URL inválida.</p>`;
                     return;
                 }
-
-                if (subtopic.content_url) {
-                    console.log("Carregando conteúdo de:", subtopic.content_url);
-                    const response = await fetch(subtopic.content_url);
-                    if (!response.ok) throw new Error(`Erro ao carregar o conteúdo: ${response.status}`);
-                    const htmlContent = await response.text();
-                    lessonContent.innerHTML = htmlContent;
-                    console.log("Conteúdo carregado com sucesso.");
-                } else {
-                    console.warn("Subtema sem content_url:", subtopic);
-                    lessonContent.innerHTML = '<p>Conteúdo não disponível para esta aula.</p>';
-                }
+                const response = await fetch(subtopic.content_url);
+                if (!response.ok) throw new Error(`Erro ${response.status} ao carregar conteúdo da aula.`);
+                lessonContent.innerHTML = await response.text();
             } catch (error) {
                 console.error('Erro ao carregar conteúdo da aula:', error);
-                lessonContent.innerHTML = '<p>Erro ao carregar a aula: ' + error.message + '</p>';
+                lessonContent.innerHTML = `<p>Erro ao carregar a aula: ${error.message}</p>`;
             }
         }
-
-        // --- Sidebar Toggle ---
-        function toggleSidebar() {
-            if (window.innerWidth <= 768) {
-                // Para dispositivos móveis, alternar a visibilidade com a classe 'visible'
-                const isVisible = sidebar.classList.toggle('visible');
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
-            } else {
-                // Para desktop, usar a classe 'hidden'
-                const isHidden = sidebar.classList.toggle('hidden');
-                mainContent.classList.toggle('sidebar-hidden', isHidden);
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
-            }
-            closeAllMegaMenus();
-        }
-
-        function updateLayout() {
-            if (window.innerWidth <= 768) {
-                // Em dispositivos móveis, sidebar começa oculta
-                sidebar.classList.remove('hidden');
-                sidebar.classList.remove('visible');
-                mainContent.classList.add('sidebar-hidden');
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
-            } else {
-                // Em desktop, sidebar começa visível
-                sidebar.classList.remove('visible');
-                sidebar.classList.remove('hidden');
-                mainContent.classList.remove('sidebar-hidden');
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
-            }
-        }
-        
-        window.addEventListener('resize', updateLayout);
-
-        // --- Floating Tools Panel ---
-        function toggleFloatingToolsPanel() {
-            floatingToolsPanel.classList.toggle('collapsed');
-            document.getElementById('toggleToolsPanelBtn').textContent = floatingToolsPanel.classList.contains('collapsed') ? '+' : '−';
-        }
-
-        function toggleTool(panelIdToShow) {
-            const toolPanels = floatingToolsPanel?.querySelectorAll('.tool-panel') || [];
-            toolPanels.forEach(panel => {
-                panel.style.display = panel.id === panelIdToShow && panel.style.display !== 'block' ? 'block' : 'none';
-            });
-        }
-
-        // --- Música ---
-        let isMusicPlaying = false;
-        function playMusic() {
-            if (!isMusicPlaying && audioPlayer) {
-                audioPlayer.play();
-                isMusicPlaying = true;
-                console.log("Música iniciada.");
-            }
-        }
-        function pauseMusic() {
-            if (isMusicPlaying && audioPlayer) {
-                audioPlayer.pause();
-                isMusicPlaying = false;
-                console.log("Música pausada.");
-            }
-        }
-
-        // --- Pomodoro ---
-        let pomodoroInterval = null;
-        let timeRemaining = 0;
-        let isBreak = false;
-        let initialFocusTime = 25 * 60;
-        function startPomodoro() {
-            if (pomodoroInterval) return;
-            const selectedTime = parseInt(pomodoroTimeSelect.value) * 60;
-            timeRemaining = selectedTime;
-            initialFocusTime = selectedTime;
-            isBreak = pomodoroTimeSelect.value !== '25';
-            pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
-            updatePomodoroTimer();
-            pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
-            console.log("Pomodoro iniciado:", selectedTime / 60, "minutos");
-        }
-        function updatePomodoroTimer() {
-            if (timeRemaining <= 0) {
-                clearInterval(pomodoroInterval);
-                pomodoroInterval = null;
-                pomodoroStatus.textContent = 'Concluído!';
-                setTimeout(() => {
-                    timeRemaining = initialFocusTime;
-                    pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-                    pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
-                }, 2000);
-                console.log("Pomodoro concluído.");
-                return;
-            }
-            timeRemaining--;
-            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-        }
-        function stopPomodoro() {
-            clearInterval(pomodoroInterval);
-            pomodoroInterval = null;
-            timeRemaining = parseInt(pomodoroTimeSelect.value) * 60;
-            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-            pomodoroStatus.textContent = 'Foco';
-            console.log("Pomodoro parado.");
-        }
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // --- Inicialização ---
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("Página carregada. Inicializando...");
-            updateLayout();
-            if (!auth.currentUser) applySavedPreferences();
-        });
     </script>
 </body>
 </html>
