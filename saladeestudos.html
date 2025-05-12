@@ -15,14 +15,13 @@
             --accent-1-darker: #b3910b;
             --accent-2: #CA6F1E;
             --dark-bg: #154360;
-            --subnav-bg: #ddd; /* Usado pela sidebar ou outros elementos da página */
+            --subnav-bg: #ddd;
             --text-dark: #333;
             --text-light: #f8f9fa;
             --text-muted: #6c757d;
             --border-color: #ccc;
-            --light-grey-bg: #f1f1f1; /* Fundo geral do body ou de painéis */
+            --light-grey-bg: #f1f1f1;
             
-            /* Variáveis que serão usadas por header.html para consistência */
             --header-bg: #ffffff;
             --header-border: #e7e7e7;
             --top-nav-link-color: #333;
@@ -35,10 +34,9 @@
             --mega-menu-link-hover-color: #0056b3;
             --mega-menu-heading-color: #495057;
             
-            /* Variáveis da página principal */
             --main-content-bg: #ffffff;
             --code-bg: #f1f1f1;
-            --button-text-dark: #333; /* Para botões com fundo claro, como os do painel de ferramentas */
+            --button-text-dark: #333;
             --error-color: #D32F2F;
             --sidebar-bg: #f1f1f1;
             --sidebar-border: #d4d4d4;
@@ -46,10 +44,7 @@
             --sidebar-link-hover-bg: #ddd;
             --sidebar-link-active-bg: #4CAF50;
             --sidebar-link-active-color: #fff;
-            --floating-panel-bg: #fdfdfd;
-            --floating-panel-border: #ccc;
-            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            --floating-panel-width: 350px;
+            /* Variáveis do painel flutuante removidas pois o painel foi removido */
         }
 
         /* --- Dark Mode Variables --- */
@@ -59,15 +54,14 @@
             --accent-1: #e4c05c;
             --accent-1-darker: #cfae51;
             --accent-2: #d98234;
-            --dark-bg: #0d1117; /* Usado pelo header e outros elementos */
+            --dark-bg: #0d1117;
             --subnav-bg: #22272e;
             --text-dark: #e6edf3;
             --text-light: #f0f6fc;
             --text-muted: #8b949e;
             --border-color: #444c56;
-            --light-grey-bg: #0d1117; /* Fundo geral do body no dark mode */
+            --light-grey-bg: #0d1117;
 
-            /* Variáveis dark mode para header.html */
             --header-bg: #161b22;
             --header-border: #30363d;
             --top-nav-link-color: var(--text-light);
@@ -80,10 +74,9 @@
             --mega-menu-link-hover-color: #dee2e6;
             --mega-menu-heading-color: #ced4da;
             
-            /* Variáveis dark mode da página principal */
             --main-content-bg: #0d1117;
             --code-bg: #22272e;
-            --button-text-dark: #161b22; /* Para botões com fundo claro (se houver no dark mode) */
+            --button-text-dark: #161b22;
             --error-color: #FF5252;
             --sidebar-bg: #161b22;
             --sidebar-border: #30363d;
@@ -91,9 +84,6 @@
             --sidebar-link-hover-bg: #22272e;
             --sidebar-link-active-bg: #007bff;
             --sidebar-link-active-color: #fff;
-            --floating-panel-bg: #22272e;
-            --floating-panel-border: #30363d;
-            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         /* --- Reset e Base --- */
@@ -107,7 +97,7 @@
             min-height: 100vh;
             background-color: var(--light-grey-bg);
             color: var(--text-dark);
-            padding-top: var(--header-height); /* Espaço para o header fixo */
+            padding-top: var(--header-height);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -181,56 +171,7 @@
         .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
         #lessonContent { min-height: 300px; }
 
-        /* --- Floating Tools Panel (se existir) --- */
-        #floatingToolsPanel {
-            position: fixed; bottom: 20px; right: 20px; width: var(--floating-panel-width);
-            max-height: 80vh; background-color: var(--floating-panel-bg);
-            border: 1px solid var(--floating-panel-border); border-radius: 8px;
-            box-shadow: var(--floating-panel-shadow); z-index: 103;
-            overflow: hidden; display: flex; flex-direction: column;
-            transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-            transform: translateY(0); opacity: 1;
-        }
-        #floatingToolsPanel.collapsed { transform: translateY(calc(100% - 50px)); height: 50px; opacity: 0.9; }
-        .tools-panel-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px 15px; background-color: var(--light-grey-bg); /* Pode usar --subnav-bg ou similar */
-            border-bottom: 1px solid var(--floating-panel-border); cursor: pointer; 
-        }
-        .tools-panel-header h3 { margin: 0; font-size: 1.1em; color: var(--main-color); }
-        #toggleToolsPanelBtn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-muted); padding: 0 5px; }
-        .tools-panel-content { padding: 15px; overflow-y: auto; flex-grow: 1; }
-        .tool-buttons { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .tool-buttons button {
-            flex-grow: 1; background-color: var(--accent-1); color: var(--button-text-dark);
-            border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;
-            font-weight: bold; transition: background-color 0.3s; font-size: 0.9em;
-        }
-        .tool-buttons button:hover { background-color: var(--accent-1-darker); }
-
-        /* --- Tool Panels (dentro do Floating Panel) --- */
-        .tool-panel {
-            display: none; border-top: 1px dashed var(--border-color);
-            margin-top: 15px; padding-top: 15px;
-        }
-        .tool-panel h4 { font-size: 1.1em; color: var(--main-color); margin-bottom: 10px; margin-top: 0; }
-        .tool-panel p { font-size: 0.95em; margin-bottom: 10px; color: var(--text-dark); }
-        .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
-            padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;
-            margin-bottom: 10px; background-color: var(--main-content-bg); /* Para consistência com o tema */
-            color: var(--text-dark); width: calc(100% - 20px); max-width: 200px;
-        }
-        .tool-panel button {
-            background-color: var(--accent-2); color: white; border: none;
-            padding: 8px 16px; cursor: pointer; border-radius: 5px; font-weight: bold;
-            transition: background-color 0.3s; margin-bottom: 10px;
-        }
-        .tool-panel button:hover { background-color: #a05a17; /* Cor mais escura de --accent-2 */ }
-        body.dark-mode .tool-panel button:hover { background-color: #f8961e; /* Cor mais clara para dark mode */ }
-        .timer-display { font-size: 1.8em; margin: 15px 0; color: var(--main-color); font-weight: bold; text-align: center; }
-        #pomodoroStatus { font-size: 0.9em; color: var(--text-muted); text-align: center; }
-        #musicPanel p { color: var(--text-dark); }
-        #musicPanel audio { display: none; } /* Se o player for customizado */
+        /* --- Estilos do Painel Flutuante de Ferramentas e seus sub-painéis FORAM REMOVIDOS --- */
 
         /* --- Estilos do Conteúdo Carregado (aula) --- */
         .module-content { padding: 1rem; color: var(--text-dark); }
@@ -243,27 +184,26 @@
         .content-list-disc { list-style-type: disc; }
         .content-list-circle { list-style-type: circle; }
         .content-note { background-color: var(--light-highlight-bg); padding: 0.8rem; border-radius: 4px; margin-bottom: 1rem; }
-        body.dark-mode .content-note { background-color: var(--dark-bg); /* Usar uma cor de destaque para dark mode */ }
+        body.dark-mode .content-note { background-color: var(--dark-bg); }
         .highlight-yellow { color: var(--accent-1); }
         .highlight-red { color: var(--error-color); }
         .highlight-blue { color: var(--main-color); }
         .italic { font-style: italic; }
 
-        /* --- Responsividade (geral da página, header.html cuida da responsividade do header) --- */
+        /* --- Responsividade (geral da página) --- */
         @media screen and (max-width: 992px) {
             :root { --sidebar-width: 200px; }
-            #floatingToolsPanel { width: 300px; }
+            /* Estilos de responsividade para #floatingToolsPanel removidos */
         }
         @media screen and (max-width: 768px) {
             :root { --sidebar-width: 240px; }
             .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); }
-            .sidebar.visible { transform: translateX(0); } /* Controlado por JS */
+            .sidebar.visible { transform: translateX(0); }
             main { margin-left: 0; }
-            #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
+            /* Estilos de responsividade para #floatingToolsPanel removidos */
         }
         @media screen and (max-width: 480px) {
-            #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
-            .tool-buttons button { font-size: 0.85em; padding: 6px 8px; }
+            /* Estilos de responsividade para #floatingToolsPanel e .tool-buttons removidos */
         }
     </style>
 </head>
@@ -277,7 +217,6 @@
                 <p>Carregando cursos...</p>
             </div>
         </nav>
-
         <main id="mainContent">
             <div class="container">
                 <div class="study-room-header">
@@ -309,43 +248,11 @@
             }
         });
     </script>
-    <div id="floatingToolsPanel" class="collapsed" style="display:block;"> <div class="tools-panel-header" id="toolsPanelHeader">
-            <h3>Ferramentas</h3>
-            <button id="toggleToolsPanelBtn" title="Expandir/Recolher Painel">−</button>
-        </div>
-        <div class="tools-panel-content">
-            <div class="tool-buttons">
-                <button id="showPomodoroToolBtn">Pomodoro</button>
-                <button id="showMusicToolBtn">Música</button>
-                </div>
-            <div id="pomodoroPanel" class="tool-panel">
-                <h4>Timer Pomodoro (Painel)</h4>
-                <select id="pomodoroTimePanel">
-                    <option value="25">25 min (Foco)</option>
-                    <option value="5">5 min (Pausa)</option>
-                    <option value="15">15 min (Pausa Longa)</option>
-                </select>
-                <button id="startPomodoroPanelBtn">Iniciar</button>
-                <button id="stopPomodoroPanelBtn">Parar</button>
-                <div id="pomodoroTimerPanel" class="timer-display">25:00</div>
-                <p id="pomodoroStatusPanel" >Foco</p>
-            </div>
-            <div id="musicPanel" class="tool-panel">
-                <h4>Música de Fundo (Painel)</h4>
-                <p>Relaxe enquanto estuda.</p>
-                <button id="playMusicPanelBtn">Tocar</button>
-                <button id="pauseMusicPanelBtn">Pausar</button>
-                <audio id="audioPlayerPanel" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" loop></audio>
-            </div>
-        </div>
-    </div>
-
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // --- Carrega o Cabeçalho Dinamicamente ---
         fetch('header.html')
             .then(response => {
                 if (!response.ok) throw new Error(`Erro ao carregar header.html: ${response.status}`);
@@ -353,8 +260,6 @@
             })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
-                // O script dentro de header.html será executado aqui.
-                // initializeHeaderEvents conectará os elementos do header carregado com a página.
                 initializeHeaderEvents();
             })
             .catch(error => {
@@ -362,24 +267,20 @@
                 document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
             });
 
-        // --- Configuração Firebase ---
         const firebaseConfig = {
-            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // Mantenha sua chave segura
+            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
             authDomain: "nvp-concursos.firebaseapp.com",
             projectId: "nvp-concursos",
-            storageBucket: "nvp-concursos.appspot.com", // ou nvp-concursos.firebasestorage.app
+            storageBucket: "nvp-concursos.appspot.com",
             messagingSenderId: "397960760271",
             appId: "1:397960760271:web:1550ff01910ae927d860ba"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        // Para expor a instância auth para o script do header.html (se ele precisar para login/cadastro)
-        // window.pageAuthInstance = auth;
 
-        // --- Variáveis Globais ---
         let userId = null;
-        let sidebarToggleBtn = null; // Será pego de dentro do header.html carregado
+        let sidebarToggleBtn = null;
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
         const courseMenuContainer = document.getElementById('courseMenu');
@@ -387,49 +288,32 @@
         const bodyElement = document.body;
         let loadedCoursesData = [];
         
-        // Variáveis para o Painel Flutuante de Ferramentas (se o HTML estiver estático acima)
-        const floatingToolsPanel = document.getElementById('floatingToolsPanel');
-        const toolsPanelHeader = document.getElementById('toolsPanelHeader');
-        const toggleToolsPanelBtn = document.getElementById('toggleToolsPanelBtn');
-        
-        const showPomodoroToolBtn = document.getElementById('showPomodoroToolBtn');
-        const showMusicToolBtn = document.getElementById('showMusicToolBtn');
-        const pomodoroPanel = document.getElementById('pomodoroPanel');
-        const musicPanel = document.getElementById('musicPanel');
+        // Variáveis e funções do Painel Flutuante de Ferramentas FORAM REMOVIDAS
 
-
-        // --- Inicializar Eventos do Header (e Mega Menu) ---
         function initializeHeaderEvents() {
             sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); 
             const colorPickerBtn = document.getElementById('color-picker-btn');
             const logoutBtn = document.getElementById('logout-btn'); 
-            const loginBtnHeader = document.getElementById('login-btn'); // Botão de Login no header
             const topNav = document.getElementById('topNav'); 
             const themeToggleBtn = document.getElementById('theme-toggle');
-            const megaMenuContainer = document.getElementById('megaMenuContainer'); // Agora vem do header.html
+            const megaMenuContainer = document.getElementById('megaMenuContainer');
 
-            if (sidebarToggleBtn) {
-                sidebarToggleBtn.addEventListener('click', toggleSidebar);
-            }
+            if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', toggleSidebar);
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
                     const newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
                     applyTheme(newTheme);
                 });
             }
-            if (colorPickerBtn) {
-                colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
-            }
-            if (logoutBtn) { // Logout para usuário logado
+            if (colorPickerBtn) colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
+            if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     auth.signOut().then(() => {
                         console.log('Logout bem-sucedido');
-                        window.location.href = 'index.html'; // Ou página de login
+                        window.location.href = 'index.html';
                     }).catch(error => console.error('Erro ao fazer logout:', error));
                 });
             }
-            // A lógica de login/signup é tratada pelo script interno do header.html
-            // Mas podemos querer atualizar a UI aqui após login/logout bem-sucedido (ex: mostrar/esconder logoutBtn)
 
             const megaMenuButtons = topNav?.querySelectorAll('button.nav-button[data-target]') || [];
             megaMenuButtons.forEach(button => {
@@ -454,7 +338,7 @@
                 }
             });
             updateLayout(); 
-            updateLoginLogoutButtonsUI(); // Atualiza botões de login/logout
+            updateLoginLogoutButtonsUI();
         }
 
         function closeAllMegaMenus() {
@@ -466,7 +350,6 @@
             megaMenuButtons.forEach(btn => btn.classList.remove('active'));
         }
 
-        // --- Autenticação e UI de Login/Logout ---
         auth.onAuthStateChanged(user => {
             if (user) {
                 userId = user.uid;
@@ -474,25 +357,20 @@
                 applySavedPreferences();
             } else {
                 userId = null;
-                // Se não for a página de login/index, redirecionar
-                // if (window.location.pathname.includes('saladeestudos.html')) {
-                //    window.location.href = 'index.html';
-                // }
-                clearCourseMenu(); // Limpa o menu de cursos se o usuário deslogar
-                applySavedPreferences(); // Aplica tema mesmo deslogado
+                clearCourseMenu();
+                applySavedPreferences();
             }
-            updateLoginLogoutButtonsUI(); // Atualiza UI sempre que o estado de auth mudar
+            updateLoginLogoutButtonsUI();
         });
 
         function updateLoginLogoutButtonsUI() {
-            const logoutBtnHeader = document.getElementById('logout-btn'); // No header.html
-            const loginBtnHeader = document.getElementById('login-btn');   // No header.html
-
+            const logoutBtnHeader = document.getElementById('logout-btn');
+            const loginBtnHeader = document.getElementById('login-btn');
             if (auth.currentUser) {
                 if (loginBtnHeader) loginBtnHeader.style.display = 'none';
-                if (logoutBtnHeader) logoutBtnHeader.style.display = 'flex'; // ou 'block'
+                if (logoutBtnHeader) logoutBtnHeader.style.display = 'flex';
             } else {
-                if (loginBtnHeader) loginBtnHeader.style.display = 'flex'; // ou 'block'
+                if (loginBtnHeader) loginBtnHeader.style.display = 'flex';
                 if (logoutBtnHeader) logoutBtnHeader.style.display = 'none';
             }
         }
@@ -502,7 +380,6 @@
             if(lessonContent) lessonContent.innerHTML = '<p>Bem-vindo! Selecione uma aula no menu ou faça login.</p>';
             loadedCoursesData = [];
         }
-
 
         function applySavedPreferences() {
             const savedMainBgColor = localStorage.getItem('userMainBgColor');
@@ -515,8 +392,8 @@
 
         function applyTheme(theme) {
             bodyElement.classList.toggle('dark-mode', theme === 'dark');
-            const sunIcon = document.querySelector('.theme-icon-light'); // No header
-            const moonIcon = document.querySelector('.theme-icon-dark'); // No header
+            const sunIcon = document.querySelector('.theme-icon-light');
+            const moonIcon = document.querySelector('.theme-icon-dark');
             if (sunIcon && moonIcon) {
                 sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
                 moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
@@ -537,156 +414,6 @@
             colorInput.click();
         }
 
-        function rgbToHex(rgb) { /* ... (função rgbToHex) ... */ }
-
-        // --- Carregar Cursos ---
-        async function loadCourses() { /* ... (função loadCourses como antes) ... */ }
-        function renderCourseMenu(courses) { /* ... (função renderCourseMenu como antes) ... */ }
-        function addMenuEventListeners() { /* ... (função addMenuEventListeners como antes) ... */ }
-        async function loadLessonContent(courseId, moduleId, subtopicId) { /* ... (função loadLessonContent como antes) ... */ }
-        
-        // --- Sidebar Toggle ---
-        function toggleSidebar() { /* ... (função toggleSidebar como antes) ... */ }
-        function updateLayout() { /* ... (função updateLayout como antes) ... */ }
-        window.addEventListener('resize', updateLayout);
-
-        // --- Floating Tools Panel Logic (para o painel da página, não do header) ---
-        if (toolsPanelHeader && floatingToolsPanel && toggleToolsPanelBtn) {
-            toolsPanelHeader.addEventListener('click', toggleFloatingToolsPanelDisplay);
-            toggleToolsPanelBtn.addEventListener('click', (e) => { // Para o botão específico no header do painel
-                 e.stopPropagation(); // Evita que o clique no botão também dispare o do header do painel
-                 toggleFloatingToolsPanelDisplay();
-            });
-        }
-        
-        function toggleFloatingToolsPanelDisplay() { // Renomeada para evitar conflito
-            if (!floatingToolsPanel || !toggleToolsPanelBtn) return;
-            floatingToolsPanel.classList.toggle('collapsed');
-            toggleToolsPanelBtn.textContent = floatingToolsPanel.classList.contains('collapsed') ? '➕' : '➖';
-        }
-
-        if (showPomodoroToolBtn) showPomodoroToolBtn.addEventListener('click', () => toggleToolDisplay('pomodoroPanel'));
-        if (showMusicToolBtn) showMusicToolBtn.addEventListener('click', () => toggleToolDisplay('musicPanel'));
-
-        function toggleToolDisplay(panelIdToShow) { // Renomeada
-            if (!floatingToolsPanel) return;
-            const toolPanels = floatingToolsPanel.querySelectorAll('.tool-panel');
-            toolPanels.forEach(panel => {
-                if (panel.id === panelIdToShow) {
-                    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-                } else {
-                    panel.style.display = 'none'; // Esconde os outros painéis
-                }
-            });
-             // Se o painel de ferramentas estiver recolhido, expanda-o ao mostrar uma ferramenta
-            if (floatingToolsPanel.classList.contains('collapsed')) {
-                toggleFloatingToolsPanelDisplay();
-            }
-        }
-
-        // --- Música (Painel Flutuante) ---
-        const audioPlayerPanel = document.getElementById('audioPlayerPanel');
-        const playMusicPanelBtn = document.getElementById('playMusicPanelBtn');
-        const pauseMusicPanelBtn = document.getElementById('pauseMusicPanelBtn');
-        let isMusicPlayingPanel = false;
-
-        if(playMusicPanelBtn) playMusicPanelBtn.addEventListener('click', playMusicPanel);
-        if(pauseMusicPanelBtn) pauseMusicPanelBtn.addEventListener('click', pauseMusicPanel);
-
-        function playMusicPanel() {
-            if (audioPlayerPanel && !isMusicPlayingPanel) {
-                audioPlayerPanel.play().catch(e => console.error("Erro ao tocar música no painel:", e));
-                isMusicPlayingPanel = true;
-            }
-        }
-        function pauseMusicPanel() {
-            if (audioPlayerPanel && isMusicPlayingPanel) {
-                audioPlayerPanel.pause();
-                isMusicPlayingPanel = false;
-            }
-        }
-
-        // --- Pomodoro (Painel Flutuante) ---
-        const pomodoroTimeSelectPanel = document.getElementById('pomodoroTimePanel');
-        const startPomodoroPanelBtn = document.getElementById('startPomodoroPanelBtn');
-        const stopPomodoroPanelBtn = document.getElementById('stopPomodoroPanelBtn');
-        const pomodoroTimerDisplayPanel = document.getElementById('pomodoroTimerPanel');
-        const pomodoroStatusDisplayPanel = document.getElementById('pomodoroStatusPanel');
-        let pomodoroIntervalPanel = null;
-        let timeRemainingPanel = parseInt(pomodoroTimeSelectPanel?.value || '25') * 60;
-        let isBreakPanel = false;
-        let initialFocusTimePanel = parseInt(pomodoroTimeSelectPanel?.value || '25') * 60;
-
-        if(startPomodoroPanelBtn) startPomodoroPanelBtn.addEventListener('click', startPomodoroPanel);
-        if(stopPomodoroPanelBtn) stopPomodoroPanelBtn.addEventListener('click', stopPomodoroPanel);
-        if(pomodoroTimeSelectPanel) {
-            pomodoroTimeSelectPanel.addEventListener('change', () => {
-                if (!pomodoroIntervalPanel) { // Só atualiza se não estiver rodando
-                    timeRemainingPanel = parseInt(pomodoroTimeSelectPanel.value) * 60;
-                    initialFocusTimePanel = timeRemainingPanel;
-                    isBreakPanel = pomodoroTimeSelectPanel.value !== "25"; // Exemplo de lógica de pausa
-                    if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
-                    if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = isBreakPanel ? "Pausa" : "Foco";
-                }
-            });
-        }
-
-
-        function startPomodoroPanel() {
-            if (pomodoroIntervalPanel) return;
-            if (!pomodoroTimeSelectPanel || !pomodoroTimerDisplayPanel || !pomodoroStatusDisplayPanel) return;
-
-            timeRemainingPanel = parseInt(pomodoroTimeSelectPanel.value) * 60;
-            initialFocusTimePanel = timeRemainingPanel;
-            isBreakPanel = pomodoroTimeSelectPanel.value !== "25"; 
-            pomodoroStatusDisplayPanel.textContent = isBreakPanel ? 'Pausa' : 'Foco';
-            pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
-            pomodoroIntervalPanel = setInterval(updatePomodoroTimerPanel, 1000);
-        }
-        function updatePomodoroTimerPanel() {
-            if (timeRemainingPanel <= 0) {
-                clearInterval(pomodoroIntervalPanel);
-                pomodoroIntervalPanel = null;
-                if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = 'Concluído!';
-                setTimeout(() => {
-                    timeRemainingPanel = initialFocusTimePanel;
-                    if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
-                    if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = isBreakPanel ? 'Pausa' : 'Foco';
-                }, 3000);
-                return;
-            }
-            timeRemainingPanel--;
-            if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
-        }
-        function stopPomodoroPanel() {
-            clearInterval(pomodoroIntervalPanel);
-            pomodoroIntervalPanel = null;
-            if(pomodoroTimeSelectPanel) timeRemainingPanel = parseInt(pomodoroTimeSelectPanel.value) * 60;
-            if(pomodoroTimerDisplayPanel) pomodoroTimerDisplayPanel.textContent = formatTimePanel(timeRemainingPanel);
-            if(pomodoroStatusDisplayPanel) pomodoroStatusDisplayPanel.textContent = 'Foco';
-        }
-        function formatTimePanel(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // --- Inicialização ---
-        document.addEventListener('DOMContentLoaded', () => {
-            updateLayout();
-            if (!auth.currentUser) {
-                applySavedPreferences();
-                updateLoginLogoutButtonsUI(); // Garante que botões de login/logout estejam corretos
-            }
-            // Inicializa o estado do painel de ferramentas se ele for visível
-            if (floatingToolsPanel && toggleToolsPanelBtn && !floatingToolsPanel.classList.contains('collapsed')) {
-                 toggleToolsPanelBtn.textContent = '➖';
-            } else if (toggleToolsPanelBtn) {
-                 toggleToolsPanelBtn.textContent = '➕';
-            }
-        });
-
-        // Para colar as funções que faltavam (rgbToHex, loadCourses, etc.):
         function rgbToHex(rgb) {
             if (!rgb || rgb === '') return '#ffffff';
             const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
@@ -699,7 +426,6 @@
 
         async function loadCourses() {
             if (!userId || !courseMenuContainer) {
-                console.error("Usuário não logado ou container de menu não encontrado para carregar cursos.");
                 if (courseMenuContainer) courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
                 return;
             }
@@ -708,24 +434,22 @@
                 const userDocRef = db.collection('users').doc(userId);
                 const userDoc = await userDocRef.get();
                 let coursesToDisplay = [];
-
                 if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
                     const selectedSubtopics = userDoc.data().selectedSubtopics;
                     for (const selection of selectedSubtopics) {
                         const { courseId, moduleId, subtopicId } = selection;
                         const courseRef = db.collection('courses').doc(courseId);
                         const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} não encontrado.`); continue; }
+                        if (!courseDoc.exists) continue; 
                         const courseData = courseDoc.data();
                         const moduleRef = courseRef.collection('modules').doc(moduleId);
                         const moduleDoc = await moduleRef.get();
-                        if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} não encontrado.`); continue; }
+                        if (!moduleDoc.exists) continue; 
                         const moduleData = moduleDoc.data();
                         const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
                         const subtopicDoc = await subtopicRef.get();
-                        if (!subtopicDoc.exists) { console.warn(`Subtópico ${subtopicId} não encontrado.`); continue; }
+                        if (!subtopicDoc.exists) continue; 
                         const subtopicData = subtopicDoc.data();
-
                         let course = coursesToDisplay.find(c => c.id === courseId);
                         if (!course) {
                             course = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
@@ -741,7 +465,7 @@
                             content_url: subtopicData.content_url || ''
                         });
                     }
-                } else { // Carrega todos os cursos
+                } else { 
                     const coursesSnapshot = await db.collection('courses').orderBy('order').get();
                     if (coursesSnapshot.empty) { courseMenuContainer.innerHTML = '<p>Nenhum curso cadastrado.</p>'; return; }
                     for (const courseDoc of coursesSnapshot.docs) {
@@ -766,7 +490,7 @@
                 renderCourseMenu(loadedCoursesData);
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
-                courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos: ${error.message}</p>`;
+                courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos.</p>`;
             }
         }
 
@@ -797,7 +521,6 @@
                 </div>`).join('');
             courseMenuContainer.innerHTML = htmlContent;
             addMenuEventListeners();
-            // Auto-seleciona o primeiro item
             if (courses[0]?.modules[0]?.subtopics[0]) {
                 const firstLink = document.querySelector(`.subtopic-link[data-subtopic-id="${courses[0].modules[0].subtopics[0].id}"]`);
                 if (firstLink) {
@@ -805,7 +528,7 @@
                     loadLessonContent(courses[0].id, courses[0].modules[0].id, courses[0].modules[0].subtopics[0].id);
                 }
             } else {
-                lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
+                if(lessonContent) lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
             }
         }
 
@@ -813,15 +536,17 @@
             document.querySelectorAll('.course-header').forEach(header => {
                 header.addEventListener('click', () => {
                     header.nextElementSibling.classList.toggle('visible');
-                    header.querySelector('.toggle-icon').classList.toggle('expanded');
-                    header.querySelector('.toggle-icon').textContent = header.querySelector('.toggle-icon').classList.contains('expanded') ? '▼' : '▶';
+                    const icon = header.querySelector('.toggle-icon');
+                    icon.classList.toggle('expanded');
+                    icon.textContent = icon.classList.contains('expanded') ? '▼' : '▶';
                 });
             });
             document.querySelectorAll('.module-header').forEach(header => {
                 header.addEventListener('click', () => {
                     header.nextElementSibling.classList.toggle('visible');
-                    header.querySelector('.toggle-icon').classList.toggle('expanded');
-                    header.querySelector('.toggle-icon').textContent = header.querySelector('.toggle-icon').classList.contains('expanded') ? '▼' : '▶';
+                    const icon = header.querySelector('.toggle-icon');
+                    icon.classList.toggle('expanded');
+                    icon.textContent = icon.classList.contains('expanded') ? '▼' : '▶';
                 });
             });
             document.querySelectorAll('.subtopic-link').forEach(link => {
@@ -835,24 +560,62 @@
         }
 
         async function loadLessonContent(courseId, moduleId, subtopicId) {
-            if (!lessonContent) { console.error("Elemento #lessonContent não encontrado."); return; }
+            if (!lessonContent) return;
             lessonContent.innerHTML = '<p>Carregando aula...</p>';
             try {
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 const subtopic = module?.subtopics.find(s => s.id === subtopicId);
                 if (!subtopic || !subtopic.content_url) {
-                    lessonContent.innerHTML = `<p>Conteúdo da aula não encontrado ou URL inválida.</p>`;
+                    lessonContent.innerHTML = `<p>Conteúdo da aula não encontrado.</p>`;
                     return;
                 }
                 const response = await fetch(subtopic.content_url);
-                if (!response.ok) throw new Error(`Erro ${response.status} ao carregar conteúdo da aula.`);
+                if (!response.ok) throw new Error(`Erro ${response.status} ao carregar conteúdo.`);
                 lessonContent.innerHTML = await response.text();
             } catch (error) {
                 console.error('Erro ao carregar conteúdo da aula:', error);
-                lessonContent.innerHTML = `<p>Erro ao carregar a aula: ${error.message}</p>`;
+                lessonContent.innerHTML = `<p>Erro ao carregar a aula.</p>`;
             }
         }
+        
+        function toggleSidebar() {
+            if (!sidebar || !mainContent || !sidebarToggleBtn) return;
+            if (window.innerWidth <= 768) {
+                const isVisible = sidebar.classList.toggle('visible');
+                sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
+            } else {
+                const isHidden = sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('sidebar-hidden', isHidden);
+            }
+            closeAllMegaMenus();
+        }
+        function updateLayout() {
+            if (!sidebar || !mainContent) return;
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('hidden', 'visible');
+                mainContent.classList.add('sidebar-hidden');
+                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
+            } else {
+                sidebar.classList.remove('visible');
+                sidebar.classList.remove('hidden'); // Ou defina o estado padrão desejado para desktop
+                mainContent.classList.remove('sidebar-hidden'); // Correspondente ao estado padrão
+                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
+            }
+        }
+        window.addEventListener('resize', updateLayout);
+
+        // --- Funções do Painel Flutuante de Ferramentas FORAM REMOVIDAS ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM completamente carregado e parseado (saladeestudos.html).");
+            updateLayout();
+            if (!auth.currentUser) {
+                applySavedPreferences();
+                updateLoginLogoutButtonsUI(); 
+            }
+            // Chamada para inicializar painel de ferramentas removida
+        });
     </script>
 </body>
 </html>
