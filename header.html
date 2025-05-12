@@ -1,11 +1,10 @@
-<!-- header.html -->
 <header class="w3s-header" id="mainHeader">
     <button id="sidebarToggleBtn" class="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu">☰</button>
     <div class="w3s-logo-area">
         <a href="index.html" title="Página Inicial" class="logo-link">
             <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="20" cy="20" r="18" fill="#007bff"/>
-                <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
+                <circle cx="20" cy="20" r="18" fill="var(--main-color, #007bff)"/>
+                <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy=".1em">P</text>
             </svg>
             <span class="logo-text">PRO Concursos</span>
         </a>
@@ -29,35 +28,33 @@
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
         <div class="w3s-header-actions">
-            <!-- Botão Pomodoro -->
-            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
-                <span class="icon">🍅</span>
-            </button>
-            <!-- Dropdown Pomodoro -->
-            <div id="pomodoro-header-dropdown" style="display:none; position:absolute; top:50px; right:160px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
-                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Timer Pomodoro</h4>
-                <select id="pomodoroTimeHeader" style="width:100%; margin-bottom:10px;">
+            <button id="pomodoro-header-btn" class="header-tool-btn" title="Pomodoro"><span class="icon">🍅</span></button>
+            <div id="pomodoro-header-dropdown" class="header-dropdown">
+                <h4>Timer Pomodoro</h4>
+                <select id="pomodoroTimeHeader">
                     <option value="25">25 minutos (Foco)</option>
                     <option value="5">5 minutos (Pausa)</option>
                     <option value="15">15 minutos (Pausa Longa)</option>
                 </select>
-                <button onclick="startPomodoroHeader()" style="margin-right:8px;">Iniciar</button>
-                <button onclick="stopPomodoroHeader()">Parar</button>
-                <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#4CAF50; font-weight:bold; text-align:center;">25:00</div>
-                <p id="pomodoroStatusHeader" style="font-size:0.95em; color:#888; text-align:center; margin:0;">Foco</p>
+                <div class="dropdown-buttons">
+                    <button id="startPomodoroHeaderBtn">Iniciar</button>
+                    <button id="stopPomodoroHeaderBtn">Parar</button>
+                </div>
+                <div id="pomodoroTimerHeader" class="timer-display">25:00</div>
+                <p id="pomodoroStatusHeader" class="status-display">Foco</p>
             </div>
-            <!-- Botão Música -->
-            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
-                <span class="icon">🎵</span>
-            </button>
-            <!-- Dropdown Música -->
-            <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
-                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Música de Fundo</h4>
-                <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
-                <button onclick="playMusicHeader()" style="margin-right:8px;">Tocar</button>
-                <button onclick="pauseMusicHeader()">Pausar</button>
-                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+            <button id="music-header-btn" class="header-tool-btn" title="Música"><span class="icon">🎵</span></button>
+            <div id="music-header-dropdown" class="header-dropdown">
+                <h4>Música de Fundo</h4>
+                <p>Escolha uma música para relaxar:</p>
+                <div class="dropdown-buttons">
+                    <button id="playMusicHeaderBtn">Tocar</button>
+                    <button id="pauseMusicHeaderBtn">Pausar</button>
+                </div>
+                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
             </div>
+
             <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
                 <span class="icon theme-icon-light">☀️</span>
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>
@@ -65,19 +62,22 @@
             <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
             <a href="#" title="Assinaturas"><span class="icon">➕</span> <span class="link-text">Assinaturas</span></a>
             <a href="#" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">Contato</span></a>
+            
+            <button id="logout-btn" title="Logout" style="display: none;"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+
             <div class="login-container">
                 <button id="login-btn" title="Login"><span class="icon">👤</span> <span class="link-text">Login</span></button>
-                <div id="login-dropdown" class="login-dropdown">
+                <div id="login-dropdown" class="login-dropdown-panel">
                     <form id="login-form">
                         <label for="login-email">Email:</label>
                         <input type="email" id="login-email" name="email" required>
                         <label for="login-password">Senha:</label>
                         <input type="password" id="login-password" name="password" required>
                         <button type="submit">Entrar</button>
-                        <p>Não tem conta? <a href="cadastro.html" id="show-signup">Cadastre-se</a></p>
+                        <p>Não tem conta? <a href="#" id="show-signup">Cadastre-se</a></p>
                     </form>
                 </div>
-                <div id="signup-dropdown" class="login-dropdown" style="display: none;">
+                <div id="signup-dropdown" class="login-dropdown-panel" style="display: none;">
                     <form id="signup-form">
                         <label for="signup-email">Email:</label>
                         <input type="email" id="signup-email" name="email" required>
@@ -94,8 +94,73 @@
     </div>
 </header>
 
+<div id="megaMenuContainer">
+    <div class="mega-menu-panel" id="cursos-menu">
+        <div class="mega-menu-column">
+            <h4>Direito</h4>
+            <a href="#">Direito Constitucional</a>
+            <a href="#">Direito Administrativo</a>
+            <a href="#">Direito Penal</a>
+            <a href="#">Direito Civil</a>
+        </div>
+        <div class="mega-menu-column">
+            <h4>Matemática</h4>
+            <a href="#">Matemática Básica</a>
+            <a href="#">Raciocínio Lógico</a>
+            <a href="#">Estatística</a>
+            <a href="#">Matemática Financeira</a>
+        </div>
+        <div class="mega-menu-column">
+            <h4>Português</h4>
+            <a href="#">Gramática</a>
+            <a href="#">Interpretação de Texto</a>
+            <a href="#">Redação Oficial</a>
+            <a href="#">Literatura</a>
+        </div>
+        <div class="mega-menu-column">
+            <h4>Informática</h4>
+            <a href="#">Informática Básica</a>
+            <a href="#">Sistemas Operacionais</a>
+            <a href="#">Redes de Computadores</a>
+            <a href="#">Segurança da Informação</a>
+        </div>
+    </div>
+    <div class="mega-menu-panel" id="questoes-menu">
+        <div class="mega-menu-column">
+            <h4>Por Disciplina</h4>
+            <a href="#">Direito Constitucional</a>
+            <a href="#">Matemática Básica</a>
+            <a href="#">Português</a>
+            <a href="#">Informática</a>
+        </div>
+        <div class="mega-menu-column">
+            <h4>Por Concurso</h4>
+            <a href="#">Polícia Federal</a>
+            <a href="#">INSS</a>
+            <a href="#">Receita Federal</a>
+            <a href="#">Tribunais</a>
+        </div>
+    </div>
+    <div class="mega-menu-panel" id="flashcards-menu">
+        <div class="mega-menu-column">
+            <h4>Por Disciplina</h4>
+            <a href="#">Direito Constitucional</a>
+            <a href="#">Matemática Básica</a>
+            <a href="#">Português</a>
+            <a href="#">Informática</a>
+        </div>
+        <div class="mega-menu-column">
+            <h4>Por Concurso</h4>
+            <a href="#">Polícia Federal</a>
+            <a href="#">INSS</a>
+            <a href="#">Receita Federal</a>
+            <a href="#">Tribunais</a>
+        </div>
+    </div>
+</div>
+
 <style>
-    /* Estilos do header para corrigir alinhamentos */
+    /* Estilos Globais do Header (usa variáveis da página principal) */
     .w3s-header {
         background-color: var(--header-bg, #ffffff);
         color: var(--text-dark, #333);
@@ -104,401 +169,378 @@
         padding: 0 15px;
         height: var(--header-height, 55px);
         width: 100%;
-        position: fixed;
+        position: fixed; /* Mantém o header fixo */
         top: 0;
         left: 0;
-        z-index: 105;
+        z-index: 105; /* Garante que fique acima de outros elementos */
         border-bottom: 1px solid var(--header-border, #e7e7e7);
-        gap: 10px;
+        gap: 15px;
     }
     
-    /* Botão do menu sidebar */
     .w3s-sidebar-toggle {
-        background-color: transparent;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        padding: 0 15px;
-        color: var(--text-dark, #333);
-        line-height: var(--header-height, 55px);
+        background-color: transparent; border: none; font-size: 24px; cursor: pointer;
+        padding: 0 10px; color: var(--text-dark, #333); line-height: var(--header-height, 55px);
         transition: color 0.3s;
     }
-    .w3s-sidebar-toggle:hover {
-        color: var(--main-color, #1A5276);
-    }
+    .w3s-sidebar-toggle:hover { color: var(--main-color, #1A5276); }
     
-    /* Logo */
-    .w3s-logo-area {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-        padding-left: 10px;
-        height: 100%;
-    }
-    .logo-link {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: var(--text-dark, #333);
-    }
-    .w3s-logo-placeholder {
-        width: 35px;
-        height: 35px;
-        margin-right: 8px;
-    }
-    .logo-text {
-        font-weight: bold;
-        font-size: 18px;
-    }
-    
-    /* Menu de navegação */
-    .w3s-nav-menu {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        margin-left: 15px;
-    }
-    .nav-item {
-        height: 100%;
-    }
+    .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
+    .logo-link { display: flex; align-items: center; text-decoration: none; color: var(--text-dark, #333); }
+    .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
+    .logo-text { font-weight: bold; font-size: 18px; color: var(--text-dark); }
+    body.dark-mode .logo-text { color: var(--text-light); }
+
+    .w3s-nav-menu { display: flex; align-items: center; height: 100%; }
+    .nav-item { height: 100%; }
     .nav-button {
-        display: flex;
-        align-items: center;
-        padding: 0 15px;
-        height: 100%;
-        color: var(--top-nav-link-color, #333);
-        font-size: 15px;
-        background-color: transparent;
-        border: none;
-        border-right: 1px solid var(--header-border, #e7e7e7);
-        cursor: pointer;
+        display: flex; align-items: center; padding: 0 15px; height: 100%;
+        color: var(--top-nav-link-color, #333); font-size: 15px; background-color: transparent;
+        border: none; border-right: 1px solid var(--header-border, #e7e7e7); cursor: pointer;
         transition: background-color 0.2s;
     }
-    .nav-item:first-child .nav-button {
-        border-left: 1px solid var(--header-border, #e7e7e7);
-    }
-    .nav-button:hover {
-        background-color: var(--top-nav-link-hover-bg, #f1f1f1);
-    }
-    .nav-button.active {
-        background-color: var(--top-nav-link-active-bg, #ddd);
-    }
+    .nav-item:first-child .nav-button { border-left: 1px solid var(--header-border, #e7e7e7); }
+    .nav-button:hover { background-color: var(--top-nav-link-hover-bg, #f1f1f1); }
+    .nav-button.active { background-color: var(--top-nav-link-active-bg, #ddd); }
     
-    /* Área de busca */
-    .w3s-search-area {
-        display: flex;
-        align-items: center;
-        max-width: 220px;
-    }
+    .w3s-search-area { display: flex; align-items: center; max-width: 200px; }
     .w3s-search-area input[type="text"] {
-        padding: 8px 12px;
-        border: 1px solid var(--border-color, #ccc);
-        border-radius: 25px 0 0 25px;
-        font-size: 14px;
-        width: 100%;
-        border-right: none;
-        height: 36px;
-        background-color: var(--main-content-bg, #ffffff);
-        color: var(--text-dark, #333);
+        padding: 7px 10px; border: 1px solid var(--border-color, #ccc); border-radius: 20px 0 0 20px;
+        font-size: 14px; width: 100%; border-right: none; height: 34px;
+        background-color: var(--main-content-bg, #ffffff); color: var(--text-dark, #333);
     }
-    .w3s-search-area input[type="text"]:focus {
-        outline: none;
-        border-color: var(--main-color, #1A5276);
+    body.dark-mode .w3s-search-area input[type="text"] {
+        background-color: var(--dark-bg, #0d1117); color: var(--text-light, #e6edf3); border-color: var(--header-border);
     }
+    .w3s-search-area input[type="text"]:focus { outline: none; border-color: var(--main-color, #1A5276); }
     .w3s-search-area button {
-        padding: 0 12px;
-        height: 36px;
-        background-color: var(--light-grey-bg, #f1f1f1);
-        border: 1px solid var(--border-color, #ccc);
-        border-left: none;
-        cursor: pointer;
-        border-radius: 0 25px 25px 0;
-        transition: background-color 0.2s;
-        font-size: 16px;
-        color: var(--text-muted, #6c757d);
+        padding: 0 10px; height: 34px; background-color: var(--light-grey-bg, #f1f1f1);
+        border: 1px solid var(--border-color, #ccc); border-left: none; cursor: pointer;
+        border-radius: 0 20px 20px 0; font-size: 15px; color: var(--text-muted, #6c757d);
     }
-    
-    /* Ações de cabeçalho */
-    .w3s-header-right-group {
-        display: flex;
-        align-items: center;
-        margin-left: auto;
-        gap: 5px;
-        padding-right: 10px;
+    body.dark-mode .w3s-search-area button {
+        background-color: var(--subnav-bg, #22272e); border-color: var(--header-border); color: var(--text-muted);
     }
-    .w3s-header-actions {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        flex-shrink: 0;
+
+    .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 8px; }
+    .w3s-header-actions { display: flex; align-items: center; gap: 8px; }
+    .w3s-header-actions a, .w3s-header-actions button, .header-tool-btn {
+        color: var(--text-dark, #333); text-decoration: none; font-size: 14px;
+        display: flex; align-items: center; gap: 5px; padding: 6px 8px;
+        border-radius: 4px; background: none; border: none; cursor: pointer;
+        white-space: nowrap; transition: background-color 0.2s, color 0.2s;
     }
-    .w3s-header-actions a, 
-    .w3s-header-actions button {
-        color: var(--text-dark, #333);
-        text-decoration: none;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        padding: 6px 10px;
-        border-radius: 4px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        white-space: nowrap;
+    body.dark-mode .w3s-header-actions a, body.dark-mode .w3s-header-actions button, body.dark-mode .header-tool-btn {
+        color: var(--text-light);
     }
-    .w3s-header-actions a .icon, 
-    .w3s-header-actions button .icon {
-        font-size: 1.1em;
-    }
-    .w3s-header-actions a:hover, 
-    .w3s-header-actions button:hover {
+    .w3s-header-actions a .icon, .w3s-header-actions button .icon, .header-tool-btn .icon { font-size: 1.2em; }
+    .w3s-header-actions a:hover, .w3s-header-actions button:hover, .header-tool-btn:hover {
         color: var(--main-color, #1A5276);
-        background-color: rgba(0, 0, 0, 0.03);
+        background-color: var(--top-nav-link-hover-bg, rgba(0,0,0,0.03));
     }
+    body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover, body.dark-mode .header-tool-btn:hover {
+        background-color: var(--top-nav-link-hover-bg);
+    }
+
+    .header-dropdown {
+        display: none; position: absolute; top: calc(var(--header-height, 55px) - 5px);
+        right: 10px; background-color: var(--main-content-bg); color: var(--text-dark);
+        border: 1px solid var(--border-color); border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15); padding: 18px 22px;
+        z-index: 200; min-width: 240px;
+    }
+    body.dark-mode .header-dropdown {
+        background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
+    }
+    .header-dropdown h4 { margin: 0 0 12px 0; color: var(--main-color); font-size: 1.1em; }
+    .header-dropdown select, .header-dropdown p { width: 100%; margin-bottom: 12px; font-size: 0.95em; }
+    .header-dropdown select {
+        padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;
+        background-color: var(--main-content-bg); color: var(--text-dark);
+    }
+    body.dark-mode .header-dropdown select {
+        background-color: var(--subnav-bg); color: var(--text-light); border-color: var(--header-border);
+    }
+    .header-dropdown .dropdown-buttons { display: flex; gap: 8px; margin-bottom: 10px; }
+    .header-dropdown .dropdown-buttons button {
+        flex-grow: 1; padding: 8px 10px; border-radius: 4px; border: none;
+        cursor: pointer; font-weight: 500; background-color: var(--main-color); color: white;
+    }
+    .header-dropdown .dropdown-buttons button:hover { opacity: 0.9; }
+    .header-dropdown .timer-display { font-size: 1.6em; margin: 12px 0; color: var(--main-color); font-weight: bold; text-align: center; }
+    .header-dropdown .status-display { font-size: 0.9em; color: var(--text-muted); text-align: center; margin:0; }
+
+    .login-container { position: relative; }
+    .login-dropdown-panel {
+        display: none; position: absolute; top: calc(100% + 5px); right: 0;
+        background-color: var(--main-content-bg, #ffffff); border: 1px solid var(--border-color, #ccc);
+        border-radius: 4px; padding: 20px; z-index: 110; width: 280px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    body.dark-mode .login-dropdown-panel {
+        background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
+    }
+    .login-dropdown-panel label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
+    .login-dropdown-panel input[type="email"], .login-dropdown-panel input[type="password"] {
+        width: 100%; padding: 9px 12px; margin-bottom: 15px;
+        border: 1px solid var(--border-color, #ccc); border-radius: 4px; box-sizing: border-box;
+        background-color: var(--main-content-bg); color: var(--text-dark);
+    }
+    body.dark-mode .login-dropdown-panel input[type="email"], body.dark-mode .login-dropdown-panel input[type="password"] {
+        background-color: var(--subnav-bg); color: var(--text-light); border-color: var(--header-border);
+    }
+    .login-dropdown-panel button[type="submit"] {
+        width: 100%; background-color: var(--main-color, #1A5276); color: white;
+        border: none; padding: 10px; border-radius: 4px; cursor: pointer;
+        font-weight: bold; margin-bottom: 12px; font-size: 15px;
+    }
+    .login-dropdown-panel p { font-size: 13px; text-align: center; margin: 12px 0 0; color: var(--text-muted); }
+    .login-dropdown-panel p a { color: var(--main-color); text-decoration: none; }
+    .login-dropdown-panel p a:hover { text-decoration: underline; }
     
-    /* Login dropdown */
-    .login-container {
-        position: relative;
-    }
-    .login-dropdown {
-        display: none;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background-color: var(--main-content-bg, #ffffff);
-        border: 1px solid var(--border-color, #ccc);
-        border-radius: 4px;
-        padding: 15px;
-        z-index: 110;
-        width: 250px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .login-dropdown label {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 14px;
-    }
-    .login-dropdown input {
+    /* --- Mega Menu Panel (agora no header.html) --- */
+    .mega-menu-panel {
+        display: none; /* Controlado por JS com classe .active na página principal */
+        position: fixed;
+        top: var(--header-height); /* Abaixo do header */
+        left: 0;
         width: 100%;
-        padding: 8px;
-        margin-bottom: 12px;
-        border: 1px solid var(--border-color, #ccc);
-        border-radius: 4px;
+        max-height: calc(100vh - var(--header-height));
+        overflow-y: auto;
+        background-color: var(--mega-menu-bg);
+        border-top: 1px solid var(--mega-menu-border);
+        box-shadow: var(--mega-menu-shadow);
+        z-index: 104; /* Abaixo do header (105), mas acima de outros conteúdos */
+        padding: 25px 30px;
+        box-sizing: border-box;
     }
-    .login-dropdown button[type="submit"] {
-        width: 100%;
-        background-color: var(--main-color, #1A5276);
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        margin-bottom: 10px;
+    /* .active é adicionada/removida pelo JS da página principal (initializeHeaderEvents) */
+    .mega-menu-panel.active {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
     }
-    .login-dropdown p {
-        font-size: 13px;
-        text-align: center;
-        margin: 10px 0 0;
+    .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
+    .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
+    .mega-menu-column h4 { 
+        font-size: 1.1em; color: var(--mega-menu-heading-color); 
+        margin: 0 0 15px; padding-bottom: 8px; 
+        border-bottom: 1px solid var(--mega-menu-border); 
     }
-    
+    .mega-menu-column a { 
+        display: block; color: var(--mega-menu-link-color); 
+        text-decoration: none; padding: 6px 0; font-size: 0.95em; 
+        transition: color 0.2s; 
+    }
+    .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
+
     /* Responsivo */
     @media (max-width: 992px) {
-        .w3s-header-actions .link-text {
-            display: none;
-        }
+        .w3s-header-actions .link-text, .logo-text { display: none; }
+        .w3s-search-area { display: none; }
+        .w3s-header-right-group { gap: 5px; }
+        .w3s-header-actions { gap: 5px; }
+        .mega-menu-column { min-width: 180px; } /* Mega menu responsivo */
     }
     @media (max-width: 768px) {
-        .w3s-nav-menu {
-            display: none;
-        }
+        .w3s-nav-menu { display: none; }
+        .w3s-header { padding: 0 10px; gap: 10px;}
+        .w3s-sidebar-toggle { padding: 0 10px;}
+        .mega-menu-panel { padding: 15px; } /* Mega menu responsivo */
+        .mega-menu-column { min-width: calc(50% - 20px); border-right: none !important; }
+    }
+    @media (max-width: 480px) {
+        .w3s-header-actions a[title="Assinaturas"],
+        .w3s-header-actions a[title="Contato"],
+        .w3s-header-actions button[title="Mudar Cor de Fundo"] { display: none; }
+        .header-dropdown { min-width: calc(100vw - 40px); right: 5px; top: calc(var(--header-height, 55px) - 2px); }
+        .mega-menu-column { min-width: 100%; padding: 0; } /* Mega menu responsivo */
     }
 </style>
 
 <script>
-    // Script para gerenciar os dropdowns de login/cadastro
-    document.addEventListener('DOMContentLoaded', function() {
-        const loginBtn = document.getElementById('login-btn');
-        const loginDropdown = document.getElementById('login-dropdown');
-        const signupDropdown = document.getElementById('signup-dropdown');
-        const showSignupLink = document.getElementById('show-signup');
-        const showLoginLink = document.getElementById('show-login');
-        
-        if (loginBtn && loginDropdown) {
-            // Toggle dropdown ao clicar no botão de login
-            loginBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const isVisible = loginDropdown.style.display === 'block';
-                
-                // Esconde todos os dropdowns
-                if (loginDropdown) loginDropdown.style.display = 'none';
-                if (signupDropdown) signupDropdown.style.display = 'none';
-                
-                // Mostra o dropdown de login se não estiver visível
-                if (!isVisible) {
-                    loginDropdown.style.display = 'block';
-                }
-            });
-        } else {
-            console.warn("Botão de Login (#login-btn) ou Dropdown (#login-dropdown) não encontrado no HTML.");
-        }
-        
-        // Alternar entre login e cadastro
-        if (showSignupLink) {
-            showSignupLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (loginDropdown) loginDropdown.style.display = 'none';
-                if (signupDropdown) signupDropdown.style.display = 'block';
-            });
-        }
-        
-        if (showLoginLink) {
-            showLoginLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (signupDropdown) signupDropdown.style.display = 'none';
-                if (loginDropdown) loginDropdown.style.display = 'block';
-            });
-        }
-        
-        // Fecha dropdowns ao clicar fora deles
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.login-container')) {
-                if (loginDropdown) loginDropdown.style.display = 'none';
-                if (signupDropdown) signupDropdown.style.display = 'none';
-            }
-        });
-        
-        // Processa os formulários
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                
-                // Aqui você pode adicionar a lógica para autenticação com Firebase
-                console.log('Login com:', email, password);
-            });
-        }
-        
-        if (signupForm) {
-            signupForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('signup-email').value;
-                const password = document.getElementById('signup-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-                
-                if (password !== confirmPassword) {
-                    alert('As senhas não coincidem!');
-                    return;
-                }
-                
-                // Aqui você pode adicionar a lógica para registro com Firebase
-                console.log('Cadastro com:', email, password);
-            });
+// Script interno do header.html (DOMContentLoaded já é garantido ao ser injetado e scripts executados)
+// Cache DOM elements
+const loginBtn = document.getElementById('login-btn');
+const loginDropdownPanel = document.getElementById('login-dropdown');
+const signupDropdownPanel = document.getElementById('signup-dropdown');
+const showSignupLink = document.getElementById('show-signup');
+const showLoginLink = document.getElementById('show-login');
+const loginForm = document.getElementById('login-form');
+const signupForm = document.getElementById('signup-form');
+
+const pomodoroBtn = document.getElementById('pomodoro-header-btn');
+const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
+const startPomodoroHeaderBtn = document.getElementById('startPomodoroHeaderBtn');
+const stopPomodoroHeaderBtn = document.getElementById('stopPomodoroHeaderBtn');
+const pomodoroTimeSelect = document.getElementById('pomodoroTimeHeader');
+const pomodoroTimerDisplay = document.getElementById('pomodoroTimerHeader');
+const pomodoroStatusDisplay = document.getElementById('pomodoroStatusHeader');
+
+const musicBtn = document.getElementById('music-header-btn');
+const musicDropdown = document.getElementById('music-header-dropdown');
+const playMusicHeaderBtn = document.getElementById('playMusicHeaderBtn');
+const pauseMusicHeaderBtn = document.getElementById('pauseMusicHeaderBtn');
+const audioPlayer = document.getElementById('audioPlayerHeader');
+
+let pomodoroIntervalHeader = null;
+let timeRemainingHeader = parseInt(pomodoroTimeSelect?.value || '25') * 60;
+let isBreakHeader = false;
+let initialFocusTimeHeader = parseInt(pomodoroTimeSelect?.value || '25') * 60;
+let isMusicPlayingHeader = false;
+
+// --- Login/Signup Dropdown Logic ---
+if (loginBtn && loginDropdownPanel && signupDropdownPanel) {
+    loginBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isVisible = loginDropdownPanel.style.display === 'block';
+        closeAllHeaderDropdowns();
+        if (!isVisible) {
+            loginDropdownPanel.style.display = 'block';
         }
     });
 
-    // Dropdown Pomodoro
-    const pomodoroBtn = document.getElementById('pomodoro-header-btn');
-    const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
-    let pomodoroIntervalHeader = null;
-    let timeRemainingHeader = 25 * 60;
-    let isBreakHeader = false;
-    let initialFocusTimeHeader = 25 * 60;
-
-    function formatTimeHeader(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (showSignupLink) {
+        showSignupLink.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            closeAllHeaderDropdowns();
+            signupDropdownPanel.style.display = 'block';
+        });
     }
 
-    function startPomodoroHeader() {
-        if (pomodoroIntervalHeader) return;
-        const select = document.getElementById('pomodoroTimeHeader');
-        const timer = document.getElementById('pomodoroTimerHeader');
-        const status = document.getElementById('pomodoroStatusHeader');
-        const selectedTime = parseInt(select.value) * 60;
-        timeRemainingHeader = selectedTime;
-        initialFocusTimeHeader = selectedTime;
-        isBreakHeader = select.value !== '25';
-        status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
-        timer.textContent = formatTimeHeader(timeRemainingHeader);
-        pomodoroIntervalHeader = setInterval(updatePomodoroTimerHeader, 1000);
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            closeAllHeaderDropdowns();
+            loginDropdownPanel.style.display = 'block';
+        });
     }
+}
 
-    function updatePomodoroTimerHeader() {
-        const timer = document.getElementById('pomodoroTimerHeader');
-        const status = document.getElementById('pomodoroStatusHeader');
-        if (timeRemainingHeader <= 0) {
-            clearInterval(pomodoroIntervalHeader);
-            pomodoroIntervalHeader = null;
-            status.textContent = 'Concluído!';
-            setTimeout(() => {
-                timeRemainingHeader = initialFocusTimeHeader;
-                timer.textContent = formatTimeHeader(timeRemainingHeader);
-                status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
-            }, 2000);
-            return;
+// --- Pomodoro Logic ---
+if (pomodoroBtn && pomodoroDropdown && startPomodoroHeaderBtn && stopPomodoroHeaderBtn && pomodoroTimeSelect && pomodoroTimerDisplay && pomodoroStatusDisplay) {
+    pomodoroBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isVisible = pomodoroDropdown.style.display === 'block';
+        closeAllHeaderDropdowns();
+        if (!isVisible) pomodoroDropdown.style.display = 'block';
+    });
+    startPomodoroHeaderBtn.addEventListener('click', startPomodoroHeader);
+    stopPomodoroHeaderBtn.addEventListener('click', stopPomodoroHeader);
+    pomodoroTimeSelect.addEventListener('change', () => {
+        if (!pomodoroIntervalHeader) {
+            timeRemainingHeader = parseInt(pomodoroTimeSelect.value) * 60;
+            initialFocusTimeHeader = timeRemainingHeader;
+            isBreakHeader = pomodoroTimeSelect.value !== '25';
+            pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
+            pomodoroStatusDisplay.textContent = isBreakHeader ? 'Pausa' : 'Foco';
         }
-        timeRemainingHeader--;
-        timer.textContent = formatTimeHeader(timeRemainingHeader);
-    }
+    });
+}
 
-    function stopPomodoroHeader() {
+function formatTimeHeader(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function startPomodoroHeader() {
+    if (pomodoroIntervalHeader) return;
+    timeRemainingHeader = parseInt(pomodoroTimeSelect.value) * 60;
+    initialFocusTimeHeader = timeRemainingHeader;
+    isBreakHeader = pomodoroTimeSelect.value !== '25';
+    pomodoroStatusDisplay.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+    pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
+    pomodoroIntervalHeader = setInterval(updatePomodoroTimerHeader, 1000);
+}
+
+function updatePomodoroTimerHeader() {
+    if (timeRemainingHeader <= 0) {
         clearInterval(pomodoroIntervalHeader);
         pomodoroIntervalHeader = null;
-        const select = document.getElementById('pomodoroTimeHeader');
-        const timer = document.getElementById('pomodoroTimerHeader');
-        const status = document.getElementById('pomodoroStatusHeader');
-        timeRemainingHeader = parseInt(select.value) * 60;
-        timer.textContent = formatTimeHeader(timeRemainingHeader);
-        status.textContent = 'Foco';
+        pomodoroStatusDisplay.textContent = 'Concluído!';
+        setTimeout(() => {
+            timeRemainingHeader = initialFocusTimeHeader;
+            pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
+            pomodoroStatusDisplay.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+        }, 3000);
+        return;
     }
+    timeRemainingHeader--;
+    pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
+}
 
-    // Dropdown Música
-    const musicBtn = document.getElementById('music-header-btn');
-    const musicDropdown = document.getElementById('music-header-dropdown');
-    const audioPlayerHeader = document.getElementById('audioPlayerHeader');
-    let isMusicPlayingHeader = false;
+function stopPomodoroHeader() {
+    clearInterval(pomodoroIntervalHeader);
+    pomodoroIntervalHeader = null;
+    timeRemainingHeader = parseInt(pomodoroTimeSelect.value) * 60;
+    pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
+    pomodoroStatusDisplay.textContent = 'Foco';
+}
 
-    function playMusicHeader() {
-        if (!isMusicPlayingHeader && audioPlayerHeader) {
-            audioPlayerHeader.play();
-            isMusicPlayingHeader = true;
-        }
-    }
-    function pauseMusicHeader() {
-        if (isMusicPlayingHeader && audioPlayerHeader) {
-            audioPlayerHeader.pause();
-            isMusicPlayingHeader = false;
-        }
-    }
-
-    // Mostrar/ocultar dropdowns
-    if (pomodoroBtn && pomodoroDropdown) {
-        pomodoroBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            pomodoroDropdown.style.display = pomodoroDropdown.style.display === 'block' ? 'none' : 'block';
-            musicDropdown.style.display = 'none';
-        });
-    }
-    if (musicBtn && musicDropdown) {
-        musicBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            musicDropdown.style.display = musicDropdown.style.display === 'block' ? 'none' : 'block';
-            pomodoroDropdown.style.display = 'none';
-        });
-    }
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('#pomodoro-header-dropdown') && !e.target.closest('#pomodoro-header-btn')) {
-            pomodoroDropdown.style.display = 'none';
-        }
-        if (!e.target.closest('#music-header-dropdown') && !e.target.closest('#music-header-btn')) {
-            musicDropdown.style.display = 'none';
-        }
+// --- Music Logic ---
+if (musicBtn && musicDropdown && playMusicHeaderBtn && pauseMusicHeaderBtn && audioPlayer) {
+    musicBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isVisible = musicDropdown.style.display === 'block';
+        closeAllHeaderDropdowns();
+        if (!isVisible) musicDropdown.style.display = 'block';
     });
+    playMusicHeaderBtn.addEventListener('click', playMusicHeader);
+    pauseMusicHeaderBtn.addEventListener('click', pauseMusicHeader);
+}
+
+function playMusicHeader() {
+    if (!isMusicPlayingHeader && audioPlayer) {
+        audioPlayer.play().catch(error => console.error("Erro ao tocar música:", error));
+        isMusicPlayingHeader = true;
+    }
+}
+function pauseMusicHeader() {
+    if (isMusicPlayingHeader && audioPlayer) {
+        audioPlayer.pause();
+        isMusicPlayingHeader = false;
+    }
+}
+
+// --- Form Submissions (Placeholder - Firebase logic should use 'auth' from parent page) ---
+if (loginForm) {
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        // Ex: if (window.parentPageAuth) window.parentPageAuth.signInWithEmailAndPassword(email, password)...
+        console.log('Tentativa de Login com:', email, '(Lógica Firebase a ser integrada com a página principal)');
+        if (loginDropdownPanel) loginDropdownPanel.style.display = 'none';
+    });
+}
+
+if (signupForm) {
+    signupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        if (password !== confirmPassword) { alert('As senhas não coincidem!'); return; }
+        console.log('Tentativa de Cadastro com:', email, '(Lógica Firebase a ser integrada com a página principal)');
+        if (signupDropdownPanel) signupDropdownPanel.style.display = 'none';
+    });
+}
+
+function closeAllHeaderDropdowns() {
+    if (loginDropdownPanel) loginDropdownPanel.style.display = 'none';
+    if (signupDropdownPanel) signupDropdownPanel.style.display = 'none';
+    if (pomodoroDropdown) pomodoroDropdown.style.display = 'none';
+    if (musicDropdown) musicDropdown.style.display = 'none';
+}
+
+// Global click listener for header dropdowns
+document.addEventListener('click', function(e) {
+    // Check if the click is outside any of the known dropdowns or their toggle buttons
+    const isInsideLogin = loginBtn?.contains(e.target) || loginDropdownPanel?.contains(e.target) || signupDropdownPanel?.contains(e.target);
+    const isInsidePomodoro = pomodoroBtn?.contains(e.target) || pomodoroDropdown?.contains(e.target);
+    const isInsideMusic = musicBtn?.contains(e.target) || musicDropdown?.contains(e.target);
+
+    if (!isInsideLogin && !isInsidePomodoro && !isInsideMusic) {
+        closeAllHeaderDropdowns();
+    }
+});
 </script>
