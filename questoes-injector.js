@@ -110,11 +110,25 @@
     window.addEventListener('message', function(event) {
         // O app React pode pedir o subtopicId
         if (event.data === 'getSubtopicId') {
-            // Tenta obter subtopicId do DOM (ajuste conforme sua lógica)
-            let subtopicId = null;
+			let questionsKeyForApp = null; // Mudança de nome da variável para clareza
             const active = document.querySelector('.subtopic-link.active');
-            if (active) subtopicId = active.getAttribute('data-subtopic-id');
-            iframe.contentWindow.postMessage({ subtopicId }, '*');
-        }
-    });
+			if (active) {
+				questionsKeyForApp = active.getAttribute('data-questions-key'); // <<< OBTENHA O NOVO ATRIBUTO
+				if (questionsKeyForApp && questionsKeyForApp.trim() !== '') {
+					// Envia a chave correta para o iframe
+					iframe.contentWindow.postMessage({ subtopicId: questionsKeyForApp }, '*');
+					console.log('Enviando questionsKey para app-questoes:', questionsKeyForApp);
+				} else {
+					console.warn("data-questions-key está vazio ou ausente no link ativo. Questões podem não carregar.", active);
+					// Informa o app que a chave está faltando ou é inválida
+					iframe.contentWindow.postMessage({ subtopicId: null, error: "questionsKey missing or empty" }, '*');
+				}
+			} else {
+				console.log('Nenhum subtopic-link ativo encontrado. Enviando null para app-questoes.');
+				// Informa o app que não há subtema ativo
+				iframe.contentWindow.postMessage({ subtopicId: null, error: "No active subtopic" }, '*');
+			}
+		}
+	});
+
 })(); 

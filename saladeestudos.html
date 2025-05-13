@@ -824,6 +824,7 @@
                                     name: subtopicData.name || 'Aula s/ Nome',
                                     order: subtopicData.order || 0,
                                     content_url: subtopicData.content_url || ''
+									    questionsKey: subtopicData.chave_questoes_subtopico || null // <<< ADICIONE ESTA LINHA
                                 });
                             }
                             if(moduleEntry.subtopics.length > 0) {
@@ -909,7 +910,8 @@
                                                    data-subtopic-id="${subtopic.id}" 
                                                    data-module-id="${module.id}" 
                                                    data-course-id="${course.id}">
-                                                   ${subtopic.name || 'Aula Sem Nome'}
+												   data-questions-key="${subtopic.questionsKey || ''}"> {/* <<< ATRIBUTO ADICIONADO/MODIFICADO */}
+                                                    ${subtopic.name || 'Aula Sem Nome'}
                                                 </a>
                                             </li>
                                         `).join('')}
