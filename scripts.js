@@ -216,3 +216,58 @@ document.addEventListener('DOMContentLoaded', () => {
         yearSpan.textContent = new Date().getFullYear();
     }
 });
+
+// Lógica do Pomodoro movida do header.js para scripts.js
+let pomodoroInterval = null;
+let timeRemaining = 25 * 60;
+let isBreak = false;
+let initialFocusTime = 25 * 60;
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function startPomodoro() {
+    if (pomodoroInterval) return;
+    const select = document.getElementById('pomodoroTime');
+    const timer = document.getElementById('pomodoroTimer');
+    const status = document.getElementById('pomodoroStatus');
+    const selectedTime = parseInt(select.value) * 60;
+    timeRemaining = selectedTime;
+    initialFocusTime = selectedTime;
+    isBreak = select.value !== '25';
+    status.textContent = isBreak ? 'Pausa' : 'Foco';
+    timer.textContent = formatTime(timeRemaining);
+    pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+}
+
+function updatePomodoroTimer() {
+    const timer = document.getElementById('pomodoroTimer');
+    const status = document.getElementById('pomodoroStatus');
+    if (timeRemaining <= 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        status.textContent = 'Concluído!';
+        setTimeout(() => {
+            timeRemaining = initialFocusTime;
+            timer.textContent = formatTime(timeRemaining);
+            status.textContent = isBreak ? 'Pausa' : 'Foco';
+        }, 2000);
+        return;
+    }
+    timeRemaining--;
+    timer.textContent = formatTime(timeRemaining);
+}
+
+function stopPomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroInterval = null;
+    const select = document.getElementById('pomodoroTime');
+    const timer = document.getElementById('pomodoroTimer');
+    const status = document.getElementById('pomodoroStatus');
+    timeRemaining = parseInt(select.value) * 60;
+    timer.textContent = formatTime(timeRemaining);
+    status.textContent = 'Foco';
+}

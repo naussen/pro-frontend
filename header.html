@@ -3,8 +3,8 @@
     <div class="w3s-logo-area">
         <a href="index.html" title="Página Inicial" class="logo-link">
             <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="20" cy="20" r="18" fill="var(--main-color, #007bff)"/>
-                <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy=".1em">P</text>
+                <circle cx="20" cy="20" r="18" fill="#007bff"/>
+                <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
             </svg>
             <span class="logo-text">PRO Concursos</span>
         </a>
@@ -28,33 +28,16 @@
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
         <div class="w3s-header-actions">
-            <button id="pomodoro-header-btn" class="header-tool-btn" title="Pomodoro"><span class="icon">🍅</span></button>
-            <div id="pomodoro-header-dropdown" class="header-dropdown">
-                <h4>Timer Pomodoro</h4>
-                <select id="pomodoroTimeHeader">
-                    <option value="25">25 minutos (Foco)</option>
-                    <option value="5">5 minutos (Pausa)</option>
-                    <option value="15">15 minutos (Pausa Longa)</option>
-                </select>
-                <div class="dropdown-buttons">
-                    <button id="startPomodoroHeaderBtn">Iniciar</button>
-                    <button id="stopPomodoroHeaderBtn">Parar</button>
-                </div>
-                <div id="pomodoroTimerHeader" class="timer-display">25:00</div>
-                <p id="pomodoroStatusHeader" class="status-display">Foco</p>
+            <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🎵</span>
+            </button>
+            <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Música de Fundo</h4>
+                <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
+                <button onclick="playMusicHeader()" style="margin-right:8px;">Tocar</button>
+                <button onclick="pauseMusicHeader()">Pausar</button>
+                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
             </div>
-
-            <button id="music-header-btn" class="header-tool-btn" title="Música"><span class="icon">🎵</span></button>
-            <div id="music-header-dropdown" class="header-dropdown">
-                <h4>Música de Fundo</h4>
-                <p>Escolha uma música para relaxar:</p>
-                <div class="dropdown-buttons">
-                    <button id="playMusicHeaderBtn">Tocar</button>
-                    <button id="pauseMusicHeaderBtn">Pausar</button>
-                </div>
-                <audio id="audioPlayerHeader" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
-            </div>
-
             <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
                 <span class="icon theme-icon-light">☀️</span>
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>
@@ -62,22 +45,19 @@
             <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
             <a href="#" title="Assinaturas"><span class="icon">➕</span> <span class="link-text">Assinaturas</span></a>
             <a href="#" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">Contato</span></a>
-            
-            <button id="logout-btn" title="Logout" style="display: none;"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
-
             <div class="login-container">
                 <button id="login-btn" title="Login"><span class="icon">👤</span> <span class="link-text">Login</span></button>
-                <div id="login-dropdown" class="login-dropdown-panel">
+                <div id="login-dropdown" class="login-dropdown">
                     <form id="login-form">
                         <label for="login-email">Email:</label>
                         <input type="email" id="login-email" name="email" required>
                         <label for="login-password">Senha:</label>
                         <input type="password" id="login-password" name="password" required>
                         <button type="submit">Entrar</button>
-                        <p>Não tem conta? <a href="#" id="show-signup">Cadastre-se</a></p>
+                        <p>Não tem conta? <a href="cadastro.html" id="show-signup">Cadastre-se</a></p>
                     </form>
                 </div>
-                <div id="signup-dropdown" class="login-dropdown-panel" style="display: none;">
+                <div id="signup-dropdown" class="login-dropdown" style="display: none;">
                     <form id="signup-form">
                         <label for="signup-email">Email:</label>
                         <input type="email" id="signup-email" name="email" required>
@@ -94,286 +74,230 @@
     </div>
 </header>
 
-<div id="megaMenuContainer">
-    <div class="mega-menu-panel" id="cursos-menu">
-        <div class="mega-menu-column"><h4>Direito</h4><a href="#">Direito Constitucional</a><a href="#">Direito Administrativo</a><a href="#">Direito Penal</a><a href="#">Direito Civil</a></div>
-        <div class="mega-menu-column"><h4>Matemática</h4><a href="#">Matemática Básica</a><a href="#">Raciocínio Lógico</a><a href="#">Estatística</a><a href="#">Matemática Financeira</a></div>
-        <div class="mega-menu-column"><h4>Português</h4><a href="#">Gramática</a><a href="#">Interpretação de Texto</a><a href="#">Redação Oficial</a><a href="#">Literatura</a></div>
-        <div class="mega-menu-column"><h4>Informática</h4><a href="#">Informática Básica</a><a href="#">Sistemas Operacionais</a><a href="#">Redes de Computadores</a><a href="#">Segurança da Informação</a></div>
-    </div>
-    <div class="mega-menu-panel" id="questoes-menu">
-        <div class="mega-menu-column"><h4>Por Disciplina</h4><a href="#">Direito Constitucional</a><a href="#">Matemática Básica</a><a href="#">Português</a><a href="#">Informática</a></div>
-        <div class="mega-menu-column"><h4>Por Concurso</h4><a href="#">Polícia Federal</a><a href="#">INSS</a><a href="#">Receita Federal</a><a href="#">Tribunais</a></div>
-    </div>
-    <div class="mega-menu-panel" id="flashcards-menu">
-        <div class="mega-menu-column"><h4>Por Disciplina</h4><a href="#">Direito Constitucional</a><a href="#">Matemática Básica</a><a href="#">Português</a><a href="#">Informática</a></div>
-        <div class="mega-menu-column"><h4>Por Concurso</h4><a href="#">Polícia Federal</a><a href="#">INSS</a><a href="#">Receita Federal</a><a href="#">Tribunais</a></div>
-    </div>
-</div>
-
 <style>
-    :root { /* Para referência, caso o header seja usado isoladamente. Essas vars virão da página principal. */
-        --header-height: 55px;
-        --main-color: #1A5276;
-        --header-bg: #ffffff;
-        --text-dark: #333;
-        --text-light: #f8f9fa;
-        --header-border: #e7e7e7;
-        --top-nav-link-color: #333;
-        --top-nav-link-hover-bg: #f1f1f1;
-        --top-nav-link-active-bg: #ddd;
-        --main-content-bg: #ffffff;
-        --border-color: #ccc;
-        --light-grey-bg: #f1f1f1;
-        --text-muted: #6c757d;
-        --subnav-bg: #22272e; /* Usado no dark mode para alguns inputs/selects */
-        --dark-bg: #0d1117;  /* Usado no dark mode */
-
-        --mega-menu-bg: #f8f9fa;
-        --mega-menu-border: #dee2e6;
-        --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        --mega-menu-link-color: #212529;
-        --mega-menu-link-hover-color: #0056b3;
-        --mega-menu-heading-color: #495057;
-    }
-    body.dark-mode { /* Para referência, caso o header seja usado isoladamente */
-        --main-color: #6cb6ff;
-        --header-bg: #161b22;
-        --text-dark: #e6edf3;
-        --text-light: #f0f6fc;
-        --header-border: #30363d;
-        --top-nav-link-color: var(--text-light);
-        --top-nav-link-hover-bg: #2d333b;
-        --top-nav-link-active-bg: #0d1117;
-        --main-content-bg: #0d1117;
-        --border-color: #444c56;
-        --light-grey-bg: #0d1117;
-        --text-muted: #8b949e;
-
-        --mega-menu-bg: #212529;
-        --mega-menu-border: #343a40;
-        --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.4);
-        --mega-menu-link-color: #adb5bd;
-        --mega-menu-link-hover-color: #dee2e6;
-        --mega-menu-heading-color: #ced4da;
-    }
-
+    /* Estilos do header para corrigir alinhamentos */
     .w3s-header {
-        background-color: var(--header-bg);
-        color: var(--text-dark);
+        background-color: var(--header-bg, #ffffff);
+        color: var(--text-dark, #333);
         display: flex;
         align-items: center;
-        padding: 0 10px; /* Reduzido um pouco o padding geral */
-        height: var(--header-height);
+        padding: 0 15px;
+        height: var(--header-height, 55px);
         width: 100%;
         position: fixed;
         top: 0;
         left: 0;
         z-index: 105;
-        border-bottom: 1px solid var(--header-border);
-        gap: 10px; /* Espaço entre os filhos diretos */
-        box-sizing: border-box;
+        border-bottom: 1px solid var(--header-border, #e7e7e7);
+        gap: 10px;
     }
     
+    /* Botão do menu sidebar */
     .w3s-sidebar-toggle {
-        background-color: transparent; border: none; font-size: 24px; cursor: pointer;
-        padding: 0 10px; color: var(--text-dark); line-height: var(--header-height);
+        background-color: transparent;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0 15px;
+        color: var(--text-dark, #333);
+        line-height: var(--header-height, 55px);
         transition: color 0.3s;
-        flex-shrink: 0; /* Não encolhe */
     }
-    .w3s-sidebar-toggle:hover { color: var(--main-color); }
+    .w3s-sidebar-toggle:hover {
+        color: var(--main-color, #1A5276);
+    }
     
-    .w3s-logo-area { 
-        display: flex; align-items: center; 
-        flex-shrink: 0; /* Logo não deve encolher */
-    }
-    .w3s-logo-area .logo-link {
-        display: flex; align-items: center; text-decoration: none;
-        color: inherit; /* Herda cor do .w3s-header */
-    }
-    .w3s-logo-placeholder { /* Para o SVG */
-        width: 35px; height: 35px; 
-        margin-right: 8px; 
-        flex-shrink: 0; /* SVG não encolhe */
-        display: flex; /* Para centralizar conteúdo interno se necessário */
+    /* Logo */
+    .w3s-logo-area {
+        display: flex;
         align-items: center;
-        justify-content: center;
+        flex-shrink: 0;
+        padding-left: 10px;
+        height: 100%;
     }
-    .logo-text { 
-        font-weight: bold; font-size: 18px; 
-        color: var(--text-dark); 
-        white-space: nowrap; /* Evita quebra de texto */
+    .logo-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-dark, #333);
     }
-    body.dark-mode .logo-text { color: var(--text-light); }
-
-    .w3s-nav-menu { /* Container dos botões Cursos, Questões, Flashcards */
-        display: flex; align-items: center; height: 100%;
-        flex-shrink: 1; /* Permite que este menu encolha se necessário */
-        min-width: 0; /* Importante para flex-shrink funcionar corretamente com conteúdo interno */
-        overflow: hidden; /* Evita que botões internos largos quebrem o layout */
+    .w3s-logo-placeholder {
+        width: 35px;
+        height: 35px;
+        margin-right: 8px;
     }
-    .nav-item { height: 100%; display: flex; } /* Garante que o botão ocupe a altura */
-    .nav-button {
-        display: flex; align-items: center; padding: 0 12px; /* Padding ajustado */
-        height: 100%; color: var(--top-nav-link-color); font-size: 14px; /* Tamanho de fonte ajustado */
-        background-color: transparent; border: none; 
-        border-right: 1px solid var(--header-border); cursor: pointer;
-        transition: background-color 0.2s; white-space: nowrap;
+    .logo-text {
+        font-weight: bold;
+        font-size: 18px;
     }
-    .nav-item:first-child .nav-button { border-left: 1px solid var(--header-border); }
-    .nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
-    .nav-button.active { background-color: var(--top-nav-link-active-bg); }
     
-    .w3s-header-right-group { 
-        display: flex; align-items: center; 
-        margin-left: auto; /* Empurra para a direita */
-        gap: 10px; /* Espaço entre busca e .w3s-header-actions */
-        flex-shrink: 0; /* Este grupo não deve encolher */
+    /* Menu de navegação */
+    .w3s-nav-menu {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        margin-left: 15px;
     }
-    .w3s-search-area { 
-        display: flex; align-items: center; 
-        max-width: 180px; /* Ajustado */
-        flex-shrink: 1; /* Permite que a busca encolha */
+    .nav-item {
+        height: 100%;
+    }
+    .nav-button {
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        height: 100%;
+        color: var(--top-nav-link-color, #333);
+        font-size: 15px;
+        background-color: transparent;
+        border: none;
+        border-right: 1px solid var(--header-border, #e7e7e7);
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .nav-item:first-child .nav-button {
+        border-left: 1px solid var(--header-border, #e7e7e7);
+    }
+    .nav-button:hover {
+        background-color: var(--top-nav-link-hover-bg, #f1f1f1);
+    }
+    .nav-button.active {
+        background-color: var(--top-nav-link-active-bg, #ddd);
+    }
+    
+    /* Área de busca */
+    .w3s-search-area {
+        display: flex;
+        align-items: center;
+        max-width: 220px;
     }
     .w3s-search-area input[type="text"] {
-        padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 20px 0 0 20px;
-        font-size: 13px; width: 100%; border-right: none; height: 32px;
-        background-color: var(--main-content-bg); color: var(--text-dark);
+        padding: 8px 12px;
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 25px 0 0 25px;
+        font-size: 14px;
+        width: 100%;
+        border-right: none;
+        height: 36px;
+        background-color: var(--main-content-bg, #ffffff);
+        color: var(--text-dark, #333);
     }
-    body.dark-mode .w3s-search-area input[type="text"] {
-        background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
+    .w3s-search-area input[type="text"]:focus {
+        outline: none;
+        border-color: var(--main-color, #1A5276);
     }
-    .w3s-search-area input[type="text"]:focus { outline: none; border-color: var(--main-color); }
     .w3s-search-area button {
-        padding: 0 10px; height: 32px; background-color: var(--light-grey-bg);
-        border: 1px solid var(--border-color); border-left: none; cursor: pointer;
-        border-radius: 0 20px 20px 0; font-size: 14px; color: var(--text-muted);
+        padding: 0 12px;
+        height: 36px;
+        background-color: var(--light-grey-bg, #f1f1f1);
+        border: 1px solid var(--border-color, #ccc);
+        border-left: none;
+        cursor: pointer;
+        border-radius: 0 25px 25px 0;
+        transition: background-color 0.2s;
+        font-size: 16px;
+        color: var(--text-muted, #6c757d);
     }
-    body.dark-mode .w3s-search-area button {
-        background-color: var(--subnav-bg); border-color: var(--header-border); color: var(--text-muted);
-    }
-
-    .w3s-header-actions { 
-        display: flex; align-items: center; 
-        gap: 5px; /* Reduzido */
-        flex-shrink: 0; 
-    }
-    .w3s-header-actions a, .w3s-header-actions button, .header-tool-btn {
-        color: var(--text-dark); text-decoration: none; font-size: 13px; /* Reduzido */
-        display: flex; align-items: center; gap: 4px; padding: 5px 7px; /* Reduzido */
-        border-radius: 4px; background: none; border: none; cursor: pointer;
-        white-space: nowrap; transition: background-color 0.2s, color 0.2s;
-    }
-    body.dark-mode .w3s-header-actions a, body.dark-mode .w3s-header-actions button, body.dark-mode .header-tool-btn {
-        color: var(--text-light);
-    }
-    .w3s-header-actions a .icon, .w3s-header-actions button .icon, .header-tool-btn .icon { font-size: 1.1em; } /* Ajustado */
-    .w3s-header-actions a:hover, .w3s-header-actions button:hover, .header-tool-btn:hover {
-        color: var(--main-color); background-color: var(--top-nav-link-hover-bg);
-    }
-    body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover, body.dark-mode .header-tool-btn:hover {
-        background-color: var(--top-nav-link-hover-bg);
-    }
-
-    .header-dropdown {
-        display: none; position: absolute; top: calc(var(--header-height) - 5px);
-        right: 10px; background-color: var(--main-content-bg); color: var(--text-dark);
-        border: 1px solid var(--border-color); border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.15); padding: 15px; /* Ajustado */
-        z-index: 200; min-width: 220px; /* Ajustado */
-    }
-    body.dark-mode .header-dropdown {
-        background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
-    }
-    .header-dropdown h4 { margin: 0 0 10px 0; color: var(--main-color); font-size: 1em; }
-    .header-dropdown select, .header-dropdown p { width: 100%; margin-bottom: 10px; font-size: 0.9em; }
-    .header-dropdown select {
-        padding: 7px; border: 1px solid var(--border-color); border-radius: 4px;
-        background-color: var(--main-content-bg); color: var(--text-dark);
-    }
-    body.dark-mode .header-dropdown select {
-        background-color: var(--subnav-bg); color: var(--text-light); border-color: var(--header-border);
-    }
-    .header-dropdown .dropdown-buttons { display: flex; gap: 8px; margin-bottom: 8px; }
-    .header-dropdown .dropdown-buttons button {
-        flex-grow: 1; padding: 7px 9px; border-radius: 4px; border: none;
-        cursor: pointer; font-weight: 500; background-color: var(--main-color); color: white;
-    }
-    .header-dropdown .dropdown-buttons button:hover { opacity: 0.9; }
-    .header-dropdown .timer-display { font-size: 1.4em; margin: 10px 0; color: var(--main-color); font-weight: bold; text-align: center; }
-    .header-dropdown .status-display { font-size: 0.85em; color: var(--text-muted); text-align: center; margin:0; }
-
-    .login-container { position: relative; }
-    .login-dropdown-panel {
-        display: none; position: absolute; top: calc(100% + 5px); right: 0;
-        background-color: var(--main-content-bg); border: 1px solid var(--border-color);
-        border-radius: 4px; padding: 15px; z-index: 110; width: 260px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    body.dark-mode .login-dropdown-panel {
-        background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
-    }
-    .login-dropdown-panel label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 500; }
-    .login-dropdown-panel input[type="email"], .login-dropdown-panel input[type="password"] {
-        width: 100%; padding: 8px 10px; margin-bottom: 12px;
-        border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box;
-        background-color: var(--main-content-bg); color: var(--text-dark);
-    }
-    body.dark-mode .login-dropdown-panel input[type="email"], body.dark-mode .login-dropdown-panel input[type="password"] {
-        background-color: var(--subnav-bg); color: var(--text-light); border-color: var(--header-border);
-    }
-    .login-dropdown-panel button[type="submit"] {
-        width: 100%; background-color: var(--main-color); color: white;
-        border: none; padding: 9px; border-radius: 4px; cursor: pointer;
-        font-weight: bold; margin-bottom: 10px; font-size: 14px;
-    }
-    .login-dropdown-panel p { font-size: 12px; text-align: center; margin: 10px 0 0; color: var(--text-muted); }
-    .login-dropdown-panel p a { color: var(--main-color); text-decoration: none; }
-    .login-dropdown-panel p a:hover { text-decoration: underline; }
     
-    .mega-menu-panel {
-        display: none; position: fixed; top: var(--header-height); left: 0; width: 100%;
-        max-height: calc(100vh - var(--header-height)); overflow-y: auto;
-        background-color: var(--mega-menu-bg); border-top: 1px solid var(--mega-menu-border);
-        box-shadow: var(--mega-menu-shadow); z-index: 104; padding: 20px 25px; box-sizing: border-box;
+    /* Ações de cabeçalho */
+    .w3s-header-right-group {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        gap: 5px;
+        padding-right: 10px;
     }
-    .mega-menu-panel.active { display: flex; flex-wrap: wrap; gap: 15px; }
-    .mega-menu-column { flex: 1; min-width: 180px; padding: 0 10px; }
-    .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
-    .mega-menu-column h4 { 
-        font-size: 1.05em; color: var(--mega-menu-heading-color); margin: 0 0 12px; 
-        padding-bottom: 7px; border-bottom: 1px solid var(--mega-menu-border); 
+    .w3s-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
     }
-    .mega-menu-column a { 
-        display: block; color: var(--mega-menu-link-color); text-decoration: none; 
-        padding: 5px 0; font-size: 0.9em; transition: color 0.2s; 
+    .w3s-header-actions a, 
+    .w3s-header-actions button {
+        color: var(--text-dark, #333);
+        text-decoration: none;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 10px;
+        border-radius: 4px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
     }
-    .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
-
+    .w3s-header-actions a .icon, 
+    .w3s-header-actions button .icon {
+        font-size: 1.1em;
+    }
+    .w3s-header-actions a:hover, 
+    .w3s-header-actions button:hover {
+        color: var(--main-color, #1A5276);
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Login dropdown */
+    .login-container {
+        position: relative;
+    }
+    .login-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: var(--main-content-bg, #ffffff);
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 4px;
+        padding: 15px;
+        z-index: 110;
+        width: 250px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .login-dropdown label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    .login-dropdown input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 4px;
+    }
+    .login-dropdown button[type="submit"] {
+        width: 100%;
+        background-color: var(--main-color, #1A5276);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .login-dropdown p {
+        font-size: 13px;
+        text-align: center;
+        margin: 10px 0 0;
+    }
+    
+    /* Responsivo */
     @media (max-width: 992px) {
-        .w3s-header-actions .link-text, .logo-text { display: none; }
-        .w3s-search-area { display: none; }
-        .w3s-header-right-group { gap: 5px; }
-        .w3s-header-actions { gap: 5px; }
-        .mega-menu-column { min-width: 160px; }
+        .w3s-header-actions .link-text {
+            display: none;
+        }
     }
     @media (max-width: 768px) {
-        .w3s-nav-menu { display: none; }
-        .w3s-header { padding: 0 8px; gap: 8px;}
-        .w3s-sidebar-toggle { padding: 0 8px;}
-        .mega-menu-panel { padding: 15px; }
-        .mega-menu-column { min-width: calc(50% - 15px); border-right: none !important; }
-    }
-    @media (max-width: 480px) {
-        .w3s-header-actions a[title="Assinaturas"],
-        .w3s-header-actions a[title="Contato"],
-        .w3s-header-actions button[title="Mudar Cor de Fundo"] { display: none; }
-        .header-dropdown { min-width: calc(100vw - 30px); right: 5px; top: calc(var(--header-height) - 2px); }
-        .mega-menu-column { min-width: 100%; padding: 0; }
+        .w3s-nav-menu {
+            display: none;
+        }
     }
 </style>
 
 <script>
+<<<<<<< HEAD
     document.addEventListener('DOMContentLoaded', function() {
         console.log("Header script: DOMContentLoaded disparado. Iniciando configuração...");
     
@@ -577,3 +501,112 @@
         console.log("Header script: Configuração do header concluída.");
     });
     </script>
+=======
+    // Script para gerenciar os dropdowns de login/cadastro
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginBtn = document.getElementById('login-btn');
+        const loginDropdown = document.getElementById('login-dropdown');
+        const signupDropdown = document.getElementById('signup-dropdown');
+        const showSignupLink = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
+        
+        if (loginBtn && loginDropdown) {
+            loginBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const isVisible = loginDropdown.style.display === 'block';
+                if (loginDropdown) loginDropdown.style.display = 'none';
+                if (signupDropdown) signupDropdown.style.display = 'none';
+                if (!isVisible) {
+                    loginDropdown.style.display = 'block';
+                }
+            });
+        } else {
+            console.warn("Botão de Login (#login-btn) ou Dropdown (#login-dropdown) não encontrado no HTML.");
+        }
+        
+        if (showSignupLink) {
+            showSignupLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (loginDropdown) loginDropdown.style.display = 'none';
+                if (signupDropdown) signupDropdown.style.display = 'block';
+            });
+        }
+        
+        if (showLoginLink) {
+            showLoginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (signupDropdown) signupDropdown.style.display = 'none';
+                if (loginDropdown) loginDropdown.style.display = 'block';
+            });
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.login-container')) {
+                if (loginDropdown) loginDropdown.style.display = 'none';
+                if (signupDropdown) signupDropdown.style.display = 'none';
+            }
+        });
+        
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                console.log('Login com:', email, password);
+                // Lógica de autenticação Firebase aqui
+            });
+        }
+        
+        if (signupForm) {
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                if (password !== confirmPassword) {
+                    alert('As senhas não coincidem!');
+                    return;
+                }
+                console.log('Cadastro com:', email, password);
+                // Lógica de registro Firebase aqui
+            });
+        }
+    });
+
+    // Dropdown Música (Funções globais como no original)
+    const audioPlayerHeader = document.getElementById('audioPlayerHeader'); // Definido aqui para acesso global
+    let isMusicPlayingHeader = false;
+
+    function playMusicHeader() {
+        if (!isMusicPlayingHeader && audioPlayerHeader) {
+            audioPlayerHeader.play();
+            isMusicPlayingHeader = true;
+        }
+    }
+    function pauseMusicHeader() {
+        if (isMusicPlayingHeader && audioPlayerHeader) {
+            audioPlayerHeader.pause();
+            isMusicPlayingHeader = false;
+        }
+    }
+
+    // Mostrar/ocultar dropdowns Música (Listeners globais como no original)
+    const musicBtn = document.getElementById('music-header-btn');
+    const musicDropdown = document.getElementById('music-header-dropdown');
+    
+    if (musicBtn && musicDropdown) {
+        musicBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            musicDropdown.style.display = musicDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+    }
+    document.addEventListener('click', function(e) { // Fechar ao clicar fora
+        if (musicDropdown && !e.target.closest('#music-header-dropdown') && !e.target.closest('#music-header-btn')) {
+            musicDropdown.style.display = 'none';
+        }
+    });
+</script>
+>>>>>>> c116dff86e61712df0992afff8c90e0abb875ff1
