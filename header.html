@@ -27,172 +27,6 @@
             <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
-        
-        // Dentro do <script> no final do seu header.html, DENTRO de document.addEventListener('DOMContentLoaded', function() { ... });
-
-// Dentro do <script> no final do seu header.html, DENTRO de document.addEventListener('DOMContentLoaded', function() { ... });
-
-// Pomodoro do Header - Início
-const pomodoroBtnHeader = document.getElementById('pomodoro-header-btn');
-const pomodoroDropdownHeader = document.getElementById('pomodoro-header-dropdown');
-const startPomodoroBtnHeader = document.getElementById('startPomodoroHeaderBtn');
-const stopPomodoroBtnHeader = document.getElementById('stopPomodoroHeaderBtn');
-const pomodoroTimeSelectHeader = document.getElementById('pomodoroTimeHeader');
-const pomodoroTimerDisplayHeader = document.getElementById('pomodoroTimerHeader');
-const pomodoroStatusDisplayHeader = document.getElementById('pomodoroStatusHeader');
-
-let pomodoroIntervalInstanceHeader = null;
-let timeRemainingValueHeader;
-let isBreakStateHeader = false;
-let initialFocusDurationHeader;
-
-// Inicializa o display com o valor do select, se os elementos existirem
-if (pomodoroTimeSelectHeader && pomodoroTimerDisplayHeader) {
-    try {
-        timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
-        initialFocusDurationHeader = timeRemainingValueHeader;
-        pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-        if (pomodoroStatusDisplayHeader) pomodoroStatusDisplayHeader.textContent = "Foco";
-    } catch (e) {
-        console.error("Pomodoro (Header): Erro na inicialização dos valores de tempo.", e);
-        // Define valores padrão em caso de erro para evitar que o resto quebre
-        timeRemainingValueHeader = 25 * 60;
-        initialFocusDurationHeader = 25 * 60;
-        if(pomodoroTimerDisplayHeader) pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-
-    }
-} else {
-    console.warn("Pomodoro (Header): Elementos de display/select não encontrados na inicialização. O Pomodoro do header pode não funcionar.");
-}
-
-if (pomodoroBtnHeader && pomodoroDropdownHeader) {
-    pomodoroBtnHeader.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const isVisible = pomodoroDropdownHeader.style.display === 'block';
-        // Assumindo que você tem uma função closeAllHeaderDropdowns() no escopo do header.html
-        if (typeof closeAllHeaderDropdowns === 'function') {
-            closeAllHeaderDropdowns(); 
-        } else {
-            console.warn("Função closeAllHeaderDropdowns não definida no escopo do header.html");
-            // Fallback simples para outros dropdowns conhecidos
-            const musicDropdown = document.getElementById('music-header-dropdown');
-            if (musicDropdown) musicDropdown.style.display = 'none';
-            const loginDropdown = document.getElementById('login-dropdown');
-            if (loginDropdown) loginDropdown.style.display = 'none';
-            const signupDropdown = document.getElementById('signup-dropdown');
-            if (signupDropdown) signupDropdown.style.display = 'none';
-        }
-        if (!isVisible) pomodoroDropdownHeader.style.display = 'block';
-    });
-}
-
-if (startPomodoroBtnHeader) {
-    startPomodoroBtnHeader.addEventListener('click', () => {
-        console.log("Pomodoro (Header): Botão Iniciar clicado.");
-        handleStartPomodoroHeader();
-    });
-}
-if (stopPomodoroBtnHeader) {
-    stopPomodoroBtnHeader.addEventListener('click', () => {
-        console.log("Pomodoro (Header): Botão Parar clicado.");
-        handleStopPomodoroHeader();
-    });
-}
-
-if (pomodoroTimeSelectHeader) {
-    pomodoroTimeSelectHeader.addEventListener('change', () => {
-        if (!pomodoroIntervalInstanceHeader) { // Só atualiza se estiver parado
-            console.log("Pomodoro (Header): Tempo alterado no select.");
-            if (!pomodoroTimeSelectHeader || !pomodoroTimerDisplayHeader || !pomodoroStatusDisplayHeader) {
-                 console.warn("Pomodoro (Header): Elementos não encontrados ao tentar atualizar pelo select.");
-                 return;
-            }
-            timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
-            initialFocusDurationHeader = timeRemainingValueHeader;
-            isBreakStateHeader = pomodoroTimeSelectHeader.value !== '25'; // Atualiza estado de pausa
-            pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-            pomodoroStatusDisplayHeader.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
-        }
-    });
-}
-
-function formatTimeHeaderInternal(seconds) { // Renomeada para evitar conflito global se este script vazar
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-function handleStartPomodoroHeader() {
-    if (pomodoroIntervalInstanceHeader) {
-        console.log("Pomodoro (Header): Timer já está rodando.");
-        return;
-    }
-    // Re-verificar elementos no momento do clique
-    const currentSelect = document.getElementById('pomodoroTimeHeader');
-    const currentDisplay = document.getElementById('pomodoroTimerHeader');
-    const currentStatus = document.getElementById('pomodoroStatusHeader');
-
-    if (!currentSelect || !currentDisplay || !currentStatus) {
-        console.error("Pomodoro (Header): Elementos cruciais não encontrados para iniciar.");
-        return;
-    }
-    console.log("Pomodoro (Header): Iniciando timer...");
-    timeRemainingValueHeader = parseInt(currentSelect.value) * 60;
-    initialFocusDurationHeader = timeRemainingValueHeader;
-    isBreakStateHeader = currentSelect.value !== '25';
-    currentStatus.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
-    currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-    pomodoroIntervalInstanceHeader = setInterval(handleUpdatePomodoroTimerHeader, 1000);
-}
-
-function handleUpdatePomodoroTimerHeader() {
-    // Re-verificar elementos no momento da atualização
-    const currentDisplay = document.getElementById('pomodoroTimerHeader');
-    const currentStatus = document.getElementById('pomodoroStatusHeader');
-
-    if (!currentDisplay || !currentStatus) {
-        console.error("Pomodoro (Header): Elementos de display não encontrados durante atualização. Parando timer.");
-        clearInterval(pomodoroIntervalInstanceHeader);
-        pomodoroIntervalInstanceHeader = null;
-        return;
-    }
-
-    if (timeRemainingValueHeader <= 0) {
-        console.log("Pomodoro (Header): Ciclo concluído.");
-        clearInterval(pomodoroIntervalInstanceHeader);
-        pomodoroIntervalInstanceHeader = null;
-        currentStatus.textContent = 'Concluído!';
-        // Notificação sonora aqui (opcional)
-        // Ex: const audio = new Audio('caminho/para/som.mp3'); audio.play();
-        setTimeout(() => {
-            timeRemainingValueHeader = initialFocusDurationHeader; 
-            currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-            currentStatus.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
-            console.log("Pomodoro (Header): Timer resetado para próximo ciclo.");
-        }, 3000);
-        return;
-    }
-    timeRemainingValueHeader--;
-    currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-}
-
-function handleStopPomodoroHeader() {
-    console.log("Pomodoro (Header): Parando timer.");
-    clearInterval(pomodoroIntervalInstanceHeader);
-    pomodoroIntervalInstanceHeader = null;
-
-    const currentSelect = document.getElementById('pomodoroTimeHeader');
-    const currentDisplay = document.getElementById('pomodoroTimerHeader');
-    const currentStatus = document.getElementById('pomodoroStatusHeader');
-
-    if (currentSelect && currentDisplay) {
-        timeRemainingValueHeader = parseInt(currentSelect.value) * 60;
-        currentDisplay.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-    }
-    if (currentStatus) currentStatus.textContent = 'Foco';
-}
-// Pomodoro do Header - Fim            
-
         <div class="w3s-header-actions">
             <button id="pomodoro-header-btn" class="header-tool-btn" title="Pomodoro"><span class="icon">🍅</span></button>
             <div id="pomodoro-header-dropdown" class="header-dropdown">
@@ -262,451 +96,485 @@ function handleStopPomodoroHeader() {
 
 <div id="megaMenuContainer">
     <div class="mega-menu-panel" id="cursos-menu">
-        <div class="mega-menu-column">
-            <h4>Direito</h4>
-            <a href="#">Direito Constitucional</a>
-            <a href="#">Direito Administrativo</a>
-            <a href="#">Direito Penal</a>
-            <a href="#">Direito Civil</a>
-        </div>
-        <div class="mega-menu-column">
-            <h4>Matemática</h4>
-            <a href="#">Matemática Básica</a>
-            <a href="#">Raciocínio Lógico</a>
-            <a href="#">Estatística</a>
-            <a href="#">Matemática Financeira</a>
-        </div>
-        <div class="mega-menu-column">
-            <h4>Português</h4>
-            <a href="#">Gramática</a>
-            <a href="#">Interpretação de Texto</a>
-            <a href="#">Redação Oficial</a>
-            <a href="#">Literatura</a>
-        </div>
-        <div class="mega-menu-column">
-            <h4>Informática</h4>
-            <a href="#">Informática Básica</a>
-            <a href="#">Sistemas Operacionais</a>
-            <a href="#">Redes de Computadores</a>
-            <a href="#">Segurança da Informação</a>
-        </div>
+        <div class="mega-menu-column"><h4>Direito</h4><a href="#">Direito Constitucional</a><a href="#">Direito Administrativo</a><a href="#">Direito Penal</a><a href="#">Direito Civil</a></div>
+        <div class="mega-menu-column"><h4>Matemática</h4><a href="#">Matemática Básica</a><a href="#">Raciocínio Lógico</a><a href="#">Estatística</a><a href="#">Matemática Financeira</a></div>
+        <div class="mega-menu-column"><h4>Português</h4><a href="#">Gramática</a><a href="#">Interpretação de Texto</a><a href="#">Redação Oficial</a><a href="#">Literatura</a></div>
+        <div class="mega-menu-column"><h4>Informática</h4><a href="#">Informática Básica</a><a href="#">Sistemas Operacionais</a><a href="#">Redes de Computadores</a><a href="#">Segurança da Informação</a></div>
     </div>
     <div class="mega-menu-panel" id="questoes-menu">
-        <div class="mega-menu-column">
-            <h4>Por Disciplina</h4>
-            <a href="#">Direito Constitucional</a>
-            <a href="#">Matemática Básica</a>
-            <a href="#">Português</a>
-            <a href="#">Informática</a>
-        </div>
-        <div class="mega-menu-column">
-            <h4>Por Concurso</h4>
-            <a href="#">Polícia Federal</a>
-            <a href="#">INSS</a>
-            <a href="#">Receita Federal</a>
-            <a href="#">Tribunais</a>
-        </div>
+        <div class="mega-menu-column"><h4>Por Disciplina</h4><a href="#">Direito Constitucional</a><a href="#">Matemática Básica</a><a href="#">Português</a><a href="#">Informática</a></div>
+        <div class="mega-menu-column"><h4>Por Concurso</h4><a href="#">Polícia Federal</a><a href="#">INSS</a><a href="#">Receita Federal</a><a href="#">Tribunais</a></div>
     </div>
     <div class="mega-menu-panel" id="flashcards-menu">
-        <div class="mega-menu-column">
-            <h4>Por Disciplina</h4>
-            <a href="#">Direito Constitucional</a>
-            <a href="#">Matemática Básica</a>
-            <a href="#">Português</a>
-            <a href="#">Informática</a>
-        </div>
-        <div class="mega-menu-column">
-            <h4>Por Concurso</h4>
-            <a href="#">Polícia Federal</a>
-            <a href="#">INSS</a>
-            <a href="#">Receita Federal</a>
-            <a href="#">Tribunais</a>
-        </div>
+        <div class="mega-menu-column"><h4>Por Disciplina</h4><a href="#">Direito Constitucional</a><a href="#">Matemática Básica</a><a href="#">Português</a><a href="#">Informática</a></div>
+        <div class="mega-menu-column"><h4>Por Concurso</h4><a href="#">Polícia Federal</a><a href="#">INSS</a><a href="#">Receita Federal</a><a href="#">Tribunais</a></div>
     </div>
 </div>
 
 <style>
-    /* Estilos Globais do Header (usa variáveis da página principal) */
+    :root { /* Para referência, caso o header seja usado isoladamente. Essas vars virão da página principal. */
+        --header-height: 55px;
+        --main-color: #1A5276;
+        --header-bg: #ffffff;
+        --text-dark: #333;
+        --text-light: #f8f9fa;
+        --header-border: #e7e7e7;
+        --top-nav-link-color: #333;
+        --top-nav-link-hover-bg: #f1f1f1;
+        --top-nav-link-active-bg: #ddd;
+        --main-content-bg: #ffffff;
+        --border-color: #ccc;
+        --light-grey-bg: #f1f1f1;
+        --text-muted: #6c757d;
+        --subnav-bg: #22272e; /* Usado no dark mode para alguns inputs/selects */
+        --dark-bg: #0d1117;  /* Usado no dark mode */
+
+        --mega-menu-bg: #f8f9fa;
+        --mega-menu-border: #dee2e6;
+        --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        --mega-menu-link-color: #212529;
+        --mega-menu-link-hover-color: #0056b3;
+        --mega-menu-heading-color: #495057;
+    }
+    body.dark-mode { /* Para referência, caso o header seja usado isoladamente */
+        --main-color: #6cb6ff;
+        --header-bg: #161b22;
+        --text-dark: #e6edf3;
+        --text-light: #f0f6fc;
+        --header-border: #30363d;
+        --top-nav-link-color: var(--text-light);
+        --top-nav-link-hover-bg: #2d333b;
+        --top-nav-link-active-bg: #0d1117;
+        --main-content-bg: #0d1117;
+        --border-color: #444c56;
+        --light-grey-bg: #0d1117;
+        --text-muted: #8b949e;
+
+        --mega-menu-bg: #212529;
+        --mega-menu-border: #343a40;
+        --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        --mega-menu-link-color: #adb5bd;
+        --mega-menu-link-hover-color: #dee2e6;
+        --mega-menu-heading-color: #ced4da;
+    }
+
     .w3s-header {
-        background-color: var(--header-bg, #ffffff);
-        color: var(--text-dark, #333);
+        background-color: var(--header-bg);
+        color: var(--text-dark);
         display: flex;
         align-items: center;
-        padding: 0 15px;
-        height: var(--header-height, 55px);
+        padding: 0 10px; /* Reduzido um pouco o padding geral */
+        height: var(--header-height);
         width: 100%;
-        position: fixed; /* Mantém o header fixo */
+        position: fixed;
         top: 0;
         left: 0;
-        z-index: 105; /* Garante que fique acima de outros elementos */
-        border-bottom: 1px solid var(--header-border, #e7e7e7);
-        gap: 15px;
+        z-index: 105;
+        border-bottom: 1px solid var(--header-border);
+        gap: 10px; /* Espaço entre os filhos diretos */
+        box-sizing: border-box;
     }
     
     .w3s-sidebar-toggle {
         background-color: transparent; border: none; font-size: 24px; cursor: pointer;
-        padding: 0 10px; color: var(--text-dark, #333); line-height: var(--header-height, 55px);
+        padding: 0 10px; color: var(--text-dark); line-height: var(--header-height);
         transition: color 0.3s;
+        flex-shrink: 0; /* Não encolhe */
     }
-    .w3s-sidebar-toggle:hover { color: var(--main-color, #1A5276); }
+    .w3s-sidebar-toggle:hover { color: var(--main-color); }
     
-    .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
-    .logo-link { display: flex; align-items: center; text-decoration: none; color: var(--text-dark, #333); }
-    .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
-    .logo-text { font-weight: bold; font-size: 18px; color: var(--text-dark); }
+    .w3s-logo-area { 
+        display: flex; align-items: center; 
+        flex-shrink: 0; /* Logo não deve encolher */
+    }
+    .w3s-logo-area .logo-link {
+        display: flex; align-items: center; text-decoration: none;
+        color: inherit; /* Herda cor do .w3s-header */
+    }
+    .w3s-logo-placeholder { /* Para o SVG */
+        width: 35px; height: 35px; 
+        margin-right: 8px; 
+        flex-shrink: 0; /* SVG não encolhe */
+        display: flex; /* Para centralizar conteúdo interno se necessário */
+        align-items: center;
+        justify-content: center;
+    }
+    .logo-text { 
+        font-weight: bold; font-size: 18px; 
+        color: var(--text-dark); 
+        white-space: nowrap; /* Evita quebra de texto */
+    }
     body.dark-mode .logo-text { color: var(--text-light); }
 
-    .w3s-nav-menu { display: flex; align-items: center; height: 100%; }
-    .nav-item { height: 100%; }
-    .nav-button {
-        display: flex; align-items: center; padding: 0 15px; height: 100%;
-        color: var(--top-nav-link-color, #333); font-size: 15px; background-color: transparent;
-        border: none; border-right: 1px solid var(--header-border, #e7e7e7); cursor: pointer;
-        transition: background-color 0.2s;
+    .w3s-nav-menu { /* Container dos botões Cursos, Questões, Flashcards */
+        display: flex; align-items: center; height: 100%;
+        flex-shrink: 1; /* Permite que este menu encolha se necessário */
+        min-width: 0; /* Importante para flex-shrink funcionar corretamente com conteúdo interno */
+        overflow: hidden; /* Evita que botões internos largos quebrem o layout */
     }
-    .nav-item:first-child .nav-button { border-left: 1px solid var(--header-border, #e7e7e7); }
-    .nav-button:hover { background-color: var(--top-nav-link-hover-bg, #f1f1f1); }
-    .nav-button.active { background-color: var(--top-nav-link-active-bg, #ddd); }
+    .nav-item { height: 100%; display: flex; } /* Garante que o botão ocupe a altura */
+    .nav-button {
+        display: flex; align-items: center; padding: 0 12px; /* Padding ajustado */
+        height: 100%; color: var(--top-nav-link-color); font-size: 14px; /* Tamanho de fonte ajustado */
+        background-color: transparent; border: none; 
+        border-right: 1px solid var(--header-border); cursor: pointer;
+        transition: background-color 0.2s; white-space: nowrap;
+    }
+    .nav-item:first-child .nav-button { border-left: 1px solid var(--header-border); }
+    .nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
+    .nav-button.active { background-color: var(--top-nav-link-active-bg); }
     
-    .w3s-search-area { display: flex; align-items: center; max-width: 200px; }
+    .w3s-header-right-group { 
+        display: flex; align-items: center; 
+        margin-left: auto; /* Empurra para a direita */
+        gap: 10px; /* Espaço entre busca e .w3s-header-actions */
+        flex-shrink: 0; /* Este grupo não deve encolher */
+    }
+    .w3s-search-area { 
+        display: flex; align-items: center; 
+        max-width: 180px; /* Ajustado */
+        flex-shrink: 1; /* Permite que a busca encolha */
+    }
     .w3s-search-area input[type="text"] {
-        padding: 7px 10px; border: 1px solid var(--border-color, #ccc); border-radius: 20px 0 0 20px;
-        font-size: 14px; width: 100%; border-right: none; height: 34px;
-        background-color: var(--main-content-bg, #ffffff); color: var(--text-dark, #333);
+        padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 20px 0 0 20px;
+        font-size: 13px; width: 100%; border-right: none; height: 32px;
+        background-color: var(--main-content-bg); color: var(--text-dark);
     }
     body.dark-mode .w3s-search-area input[type="text"] {
-        background-color: var(--dark-bg, #0d1117); color: var(--text-light, #e6edf3); border-color: var(--header-border);
+        background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
     }
-    .w3s-search-area input[type="text"]:focus { outline: none; border-color: var(--main-color, #1A5276); }
+    .w3s-search-area input[type="text"]:focus { outline: none; border-color: var(--main-color); }
     .w3s-search-area button {
-        padding: 0 10px; height: 34px; background-color: var(--light-grey-bg, #f1f1f1);
-        border: 1px solid var(--border-color, #ccc); border-left: none; cursor: pointer;
-        border-radius: 0 20px 20px 0; font-size: 15px; color: var(--text-muted, #6c757d);
+        padding: 0 10px; height: 32px; background-color: var(--light-grey-bg);
+        border: 1px solid var(--border-color); border-left: none; cursor: pointer;
+        border-radius: 0 20px 20px 0; font-size: 14px; color: var(--text-muted);
     }
     body.dark-mode .w3s-search-area button {
-        background-color: var(--subnav-bg, #22272e); border-color: var(--header-border); color: var(--text-muted);
+        background-color: var(--subnav-bg); border-color: var(--header-border); color: var(--text-muted);
     }
 
-    .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 8px; }
-    .w3s-header-actions { display: flex; align-items: center; gap: 8px; }
+    .w3s-header-actions { 
+        display: flex; align-items: center; 
+        gap: 5px; /* Reduzido */
+        flex-shrink: 0; 
+    }
     .w3s-header-actions a, .w3s-header-actions button, .header-tool-btn {
-        color: var(--text-dark, #333); text-decoration: none; font-size: 14px;
-        display: flex; align-items: center; gap: 5px; padding: 6px 8px;
+        color: var(--text-dark); text-decoration: none; font-size: 13px; /* Reduzido */
+        display: flex; align-items: center; gap: 4px; padding: 5px 7px; /* Reduzido */
         border-radius: 4px; background: none; border: none; cursor: pointer;
         white-space: nowrap; transition: background-color 0.2s, color 0.2s;
     }
     body.dark-mode .w3s-header-actions a, body.dark-mode .w3s-header-actions button, body.dark-mode .header-tool-btn {
         color: var(--text-light);
     }
-    .w3s-header-actions a .icon, .w3s-header-actions button .icon, .header-tool-btn .icon { font-size: 1.2em; }
+    .w3s-header-actions a .icon, .w3s-header-actions button .icon, .header-tool-btn .icon { font-size: 1.1em; } /* Ajustado */
     .w3s-header-actions a:hover, .w3s-header-actions button:hover, .header-tool-btn:hover {
-        color: var(--main-color, #1A5276);
-        background-color: var(--top-nav-link-hover-bg, rgba(0,0,0,0.03));
+        color: var(--main-color); background-color: var(--top-nav-link-hover-bg);
     }
     body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover, body.dark-mode .header-tool-btn:hover {
         background-color: var(--top-nav-link-hover-bg);
     }
 
     .header-dropdown {
-        display: none; position: absolute; top: calc(var(--header-height, 55px) - 5px);
+        display: none; position: absolute; top: calc(var(--header-height) - 5px);
         right: 10px; background-color: var(--main-content-bg); color: var(--text-dark);
         border: 1px solid var(--border-color); border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.15); padding: 18px 22px;
-        z-index: 200; min-width: 240px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15); padding: 15px; /* Ajustado */
+        z-index: 200; min-width: 220px; /* Ajustado */
     }
     body.dark-mode .header-dropdown {
         background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
     }
-    .header-dropdown h4 { margin: 0 0 12px 0; color: var(--main-color); font-size: 1.1em; }
-    .header-dropdown select, .header-dropdown p { width: 100%; margin-bottom: 12px; font-size: 0.95em; }
+    .header-dropdown h4 { margin: 0 0 10px 0; color: var(--main-color); font-size: 1em; }
+    .header-dropdown select, .header-dropdown p { width: 100%; margin-bottom: 10px; font-size: 0.9em; }
     .header-dropdown select {
-        padding: 8px; border: 1px solid var(--border-color); border-radius: 4px;
+        padding: 7px; border: 1px solid var(--border-color); border-radius: 4px;
         background-color: var(--main-content-bg); color: var(--text-dark);
     }
     body.dark-mode .header-dropdown select {
         background-color: var(--subnav-bg); color: var(--text-light); border-color: var(--header-border);
     }
-    .header-dropdown .dropdown-buttons { display: flex; gap: 8px; margin-bottom: 10px; }
+    .header-dropdown .dropdown-buttons { display: flex; gap: 8px; margin-bottom: 8px; }
     .header-dropdown .dropdown-buttons button {
-        flex-grow: 1; padding: 8px 10px; border-radius: 4px; border: none;
+        flex-grow: 1; padding: 7px 9px; border-radius: 4px; border: none;
         cursor: pointer; font-weight: 500; background-color: var(--main-color); color: white;
     }
     .header-dropdown .dropdown-buttons button:hover { opacity: 0.9; }
-    .header-dropdown .timer-display { font-size: 1.6em; margin: 12px 0; color: var(--main-color); font-weight: bold; text-align: center; }
-    .header-dropdown .status-display { font-size: 0.9em; color: var(--text-muted); text-align: center; margin:0; }
+    .header-dropdown .timer-display { font-size: 1.4em; margin: 10px 0; color: var(--main-color); font-weight: bold; text-align: center; }
+    .header-dropdown .status-display { font-size: 0.85em; color: var(--text-muted); text-align: center; margin:0; }
 
     .login-container { position: relative; }
     .login-dropdown-panel {
         display: none; position: absolute; top: calc(100% + 5px); right: 0;
-        background-color: var(--main-content-bg, #ffffff); border: 1px solid var(--border-color, #ccc);
-        border-radius: 4px; padding: 20px; z-index: 110; width: 280px;
+        background-color: var(--main-content-bg); border: 1px solid var(--border-color);
+        border-radius: 4px; padding: 15px; z-index: 110; width: 260px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     body.dark-mode .login-dropdown-panel {
         background-color: var(--dark-bg); color: var(--text-light); border-color: var(--header-border);
     }
-    .login-dropdown-panel label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
+    .login-dropdown-panel label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 500; }
     .login-dropdown-panel input[type="email"], .login-dropdown-panel input[type="password"] {
-        width: 100%; padding: 9px 12px; margin-bottom: 15px;
-        border: 1px solid var(--border-color, #ccc); border-radius: 4px; box-sizing: border-box;
+        width: 100%; padding: 8px 10px; margin-bottom: 12px;
+        border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box;
         background-color: var(--main-content-bg); color: var(--text-dark);
     }
     body.dark-mode .login-dropdown-panel input[type="email"], body.dark-mode .login-dropdown-panel input[type="password"] {
         background-color: var(--subnav-bg); color: var(--text-light); border-color: var(--header-border);
     }
     .login-dropdown-panel button[type="submit"] {
-        width: 100%; background-color: var(--main-color, #1A5276); color: white;
-        border: none; padding: 10px; border-radius: 4px; cursor: pointer;
-        font-weight: bold; margin-bottom: 12px; font-size: 15px;
+        width: 100%; background-color: var(--main-color); color: white;
+        border: none; padding: 9px; border-radius: 4px; cursor: pointer;
+        font-weight: bold; margin-bottom: 10px; font-size: 14px;
     }
-    .login-dropdown-panel p { font-size: 13px; text-align: center; margin: 12px 0 0; color: var(--text-muted); }
+    .login-dropdown-panel p { font-size: 12px; text-align: center; margin: 10px 0 0; color: var(--text-muted); }
     .login-dropdown-panel p a { color: var(--main-color); text-decoration: none; }
     .login-dropdown-panel p a:hover { text-decoration: underline; }
     
-    /* --- Mega Menu Panel (agora no header.html) --- */
     .mega-menu-panel {
-        display: none; /* Controlado por JS com classe .active na página principal */
-        position: fixed;
-        top: var(--header-height); /* Abaixo do header */
-        left: 0;
-        width: 100%;
-        max-height: calc(100vh - var(--header-height));
-        overflow-y: auto;
-        background-color: var(--mega-menu-bg);
-        border-top: 1px solid var(--mega-menu-border);
-        box-shadow: var(--mega-menu-shadow);
-        z-index: 104; /* Abaixo do header (105), mas acima de outros conteúdos */
-        padding: 25px 30px;
-        box-sizing: border-box;
+        display: none; position: fixed; top: var(--header-height); left: 0; width: 100%;
+        max-height: calc(100vh - var(--header-height)); overflow-y: auto;
+        background-color: var(--mega-menu-bg); border-top: 1px solid var(--mega-menu-border);
+        box-shadow: var(--mega-menu-shadow); z-index: 104; padding: 20px 25px; box-sizing: border-box;
     }
-    /* .active é adicionada/removida pelo JS da página principal (initializeHeaderEvents) */
-    .mega-menu-panel.active {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-    .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
+    .mega-menu-panel.active { display: flex; flex-wrap: wrap; gap: 15px; }
+    .mega-menu-column { flex: 1; min-width: 180px; padding: 0 10px; }
     .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
     .mega-menu-column h4 { 
-        font-size: 1.1em; color: var(--mega-menu-heading-color); 
-        margin: 0 0 15px; padding-bottom: 8px; 
-        border-bottom: 1px solid var(--mega-menu-border); 
+        font-size: 1.05em; color: var(--mega-menu-heading-color); margin: 0 0 12px; 
+        padding-bottom: 7px; border-bottom: 1px solid var(--mega-menu-border); 
     }
     .mega-menu-column a { 
-        display: block; color: var(--mega-menu-link-color); 
-        text-decoration: none; padding: 6px 0; font-size: 0.95em; 
-        transition: color 0.2s; 
+        display: block; color: var(--mega-menu-link-color); text-decoration: none; 
+        padding: 5px 0; font-size: 0.9em; transition: color 0.2s; 
     }
     .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
 
-    /* Responsivo */
     @media (max-width: 992px) {
         .w3s-header-actions .link-text, .logo-text { display: none; }
         .w3s-search-area { display: none; }
         .w3s-header-right-group { gap: 5px; }
         .w3s-header-actions { gap: 5px; }
-        .mega-menu-column { min-width: 180px; } /* Mega menu responsivo */
+        .mega-menu-column { min-width: 160px; }
     }
     @media (max-width: 768px) {
         .w3s-nav-menu { display: none; }
-        .w3s-header { padding: 0 10px; gap: 10px;}
-        .w3s-sidebar-toggle { padding: 0 10px;}
-        .mega-menu-panel { padding: 15px; } /* Mega menu responsivo */
-        .mega-menu-column { min-width: calc(50% - 20px); border-right: none !important; }
+        .w3s-header { padding: 0 8px; gap: 8px;}
+        .w3s-sidebar-toggle { padding: 0 8px;}
+        .mega-menu-panel { padding: 15px; }
+        .mega-menu-column { min-width: calc(50% - 15px); border-right: none !important; }
     }
     @media (max-width: 480px) {
         .w3s-header-actions a[title="Assinaturas"],
         .w3s-header-actions a[title="Contato"],
         .w3s-header-actions button[title="Mudar Cor de Fundo"] { display: none; }
-        .header-dropdown { min-width: calc(100vw - 40px); right: 5px; top: calc(var(--header-height, 55px) - 2px); }
-        .mega-menu-column { min-width: 100%; padding: 0; } /* Mega menu responsivo */
+        .header-dropdown { min-width: calc(100vw - 30px); right: 5px; top: calc(var(--header-height) - 2px); }
+        .mega-menu-column { min-width: 100%; padding: 0; }
     }
 </style>
 
 <script>
-// Script interno do header.html (DOMContentLoaded já é garantido ao ser injetado e scripts executados)
-// Cache DOM elements
-const loginBtn = document.getElementById('login-btn');
-const loginDropdownPanel = document.getElementById('login-dropdown');
-const signupDropdownPanel = document.getElementById('signup-dropdown');
-const showSignupLink = document.getElementById('show-signup');
-const showLoginLink = document.getElementById('show-login');
-const loginForm = document.getElementById('login-form');
-const signupForm = document.getElementById('signup-form');
+document.addEventListener('DOMContentLoaded', function() {
+    const loginBtn = document.getElementById('login-btn');
+    const loginDropdownPanel = document.getElementById('login-dropdown');
+    const signupDropdownPanel = document.getElementById('signup-dropdown');
+    const showSignupLink = document.getElementById('show-signup');
+    const showLoginLink = document.getElementById('show-login');
+    // const loginForm = document.getElementById('login-form'); // Definido abaixo
+    // const signupForm = document.getElementById('signup-form'); // Definido abaixo
 
-const pomodoroBtn = document.getElementById('pomodoro-header-btn');
-const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
-const startPomodoroHeaderBtn = document.getElementById('startPomodoroHeaderBtn');
-const stopPomodoroHeaderBtn = document.getElementById('stopPomodoroHeaderBtn');
-const pomodoroTimeSelect = document.getElementById('pomodoroTimeHeader');
-const pomodoroTimerDisplay = document.getElementById('pomodoroTimerHeader');
-const pomodoroStatusDisplay = document.getElementById('pomodoroStatusHeader');
+    const pomodoroBtnHeader = document.getElementById('pomodoro-header-btn');
+    const pomodoroDropdownHeader = document.getElementById('pomodoro-header-dropdown');
+    const startPomodoroBtnHeader = document.getElementById('startPomodoroHeaderBtn');
+    const stopPomodoroBtnHeader = document.getElementById('stopPomodoroHeaderBtn');
+    const pomodoroTimeSelectHeader = document.getElementById('pomodoroTimeHeader');
+    const pomodoroTimerDisplayHeader = document.getElementById('pomodoroTimerHeader');
+    const pomodoroStatusDisplayHeader = document.getElementById('pomodoroStatusHeader');
 
-const musicBtn = document.getElementById('music-header-btn');
-const musicDropdown = document.getElementById('music-header-dropdown');
-const playMusicHeaderBtn = document.getElementById('playMusicHeaderBtn');
-const pauseMusicHeaderBtn = document.getElementById('pauseMusicHeaderBtn');
-const audioPlayer = document.getElementById('audioPlayerHeader');
+    const musicBtnHeader = document.getElementById('music-header-btn');
+    const musicDropdownHeader = document.getElementById('music-header-dropdown');
+    const playMusicHeaderBtn = document.getElementById('playMusicHeaderBtn');
+    const pauseMusicHeaderBtn = document.getElementById('pauseMusicHeaderBtn');
+    const audioPlayerHeader = document.getElementById('audioPlayerHeader');
 
-let pomodoroIntervalHeader = null;
-let timeRemainingHeader = parseInt(pomodoroTimeSelect?.value || '25') * 60;
-let isBreakHeader = false;
-let initialFocusTimeHeader = parseInt(pomodoroTimeSelect?.value || '25') * 60;
-let isMusicPlayingHeader = false;
+    let pomodoroIntervalInstanceHeader = null;
+    let timeRemainingValueHeader;
+    let isBreakStateHeader = false;
+    let initialFocusDurationHeader;
+    let isMusicPlayingHeader = false;
 
-// --- Login/Signup Dropdown Logic ---
-if (loginBtn && loginDropdownPanel && signupDropdownPanel) {
-    loginBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const isVisible = loginDropdownPanel.style.display === 'block';
-        closeAllHeaderDropdowns();
-        if (!isVisible) {
-            loginDropdownPanel.style.display = 'block';
-        }
-    });
-
-    if (showSignupLink) {
-        showSignupLink.addEventListener('click', function(e) {
-            e.preventDefault(); e.stopPropagation();
-            closeAllHeaderDropdowns();
-            signupDropdownPanel.style.display = 'block';
-        });
-    }
-
-    if (showLoginLink) {
-        showLoginLink.addEventListener('click', function(e) {
-            e.preventDefault(); e.stopPropagation();
-            closeAllHeaderDropdowns();
-            loginDropdownPanel.style.display = 'block';
-        });
-    }
-}
-
-// --- Pomodoro Logic ---
-if (pomodoroBtn && pomodoroDropdown && startPomodoroHeaderBtn && stopPomodoroHeaderBtn && pomodoroTimeSelect && pomodoroTimerDisplay && pomodoroStatusDisplay) {
-    pomodoroBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const isVisible = pomodoroDropdown.style.display === 'block';
-        closeAllHeaderDropdowns();
-        if (!isVisible) pomodoroDropdown.style.display = 'block';
-    });
-    startPomodoroHeaderBtn.addEventListener('click', startPomodoroHeader);
-    stopPomodoroHeaderBtn.addEventListener('click', stopPomodoroHeader);
-    pomodoroTimeSelect.addEventListener('change', () => {
-        if (!pomodoroIntervalHeader) {
-            timeRemainingHeader = parseInt(pomodoroTimeSelect.value) * 60;
-            initialFocusTimeHeader = timeRemainingHeader;
-            isBreakHeader = pomodoroTimeSelect.value !== '25';
-            pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
-            pomodoroStatusDisplay.textContent = isBreakHeader ? 'Pausa' : 'Foco';
-        }
-    });
-}
-
-function formatTimeHeader(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-function startPomodoroHeader() {
-    if (pomodoroIntervalHeader) return;
-    timeRemainingHeader = parseInt(pomodoroTimeSelect.value) * 60;
-    initialFocusTimeHeader = timeRemainingHeader;
-    isBreakHeader = pomodoroTimeSelect.value !== '25';
-    pomodoroStatusDisplay.textContent = isBreakHeader ? 'Pausa' : 'Foco';
-    pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
-    pomodoroIntervalHeader = setInterval(updatePomodoroTimerHeader, 1000);
-}
-
-function updatePomodoroTimerHeader() {
-    if (timeRemainingHeader <= 0) {
-        clearInterval(pomodoroIntervalHeader);
-        pomodoroIntervalHeader = null;
-        pomodoroStatusDisplay.textContent = 'Concluído!';
-        setTimeout(() => {
-            timeRemainingHeader = initialFocusTimeHeader;
-            pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
-            pomodoroStatusDisplay.textContent = isBreakHeader ? 'Pausa' : 'Foco';
-        }, 3000);
-        return;
-    }
-    timeRemainingHeader--;
-    pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
-}
-
-function stopPomodoroHeader() {
-    clearInterval(pomodoroIntervalHeader);
-    pomodoroIntervalHeader = null;
-    timeRemainingHeader = parseInt(pomodoroTimeSelect.value) * 60;
-    pomodoroTimerDisplay.textContent = formatTimeHeader(timeRemainingHeader);
-    pomodoroStatusDisplay.textContent = 'Foco';
-}
-
-// --- Music Logic ---
-if (musicBtn && musicDropdown && playMusicHeaderBtn && pauseMusicHeaderBtn && audioPlayer) {
-    musicBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const isVisible = musicDropdown.style.display === 'block';
-        closeAllHeaderDropdowns();
-        if (!isVisible) musicDropdown.style.display = 'block';
-    });
-    playMusicHeaderBtn.addEventListener('click', playMusicHeader);
-    pauseMusicHeaderBtn.addEventListener('click', pauseMusicHeader);
-}
-
-function playMusicHeader() {
-    if (!isMusicPlayingHeader && audioPlayer) {
-        audioPlayer.play().catch(error => console.error("Erro ao tocar música:", error));
-        isMusicPlayingHeader = true;
-    }
-}
-function pauseMusicHeader() {
-    if (isMusicPlayingHeader && audioPlayer) {
-        audioPlayer.pause();
-        isMusicPlayingHeader = false;
-    }
-}
-
-// --- Form Submissions (Placeholder - Firebase logic should use 'auth' from parent page) ---
-if (loginForm) {
-    loginForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        // Ex: if (window.parentPageAuth) window.parentPageAuth.signInWithEmailAndPassword(email, password)...
-        console.log('Tentativa de Login com:', email, '(Lógica Firebase a ser integrada com a página principal)');
+    // --- Utility para fechar dropdowns do header ---
+    function closeAllHeaderDropdowns() {
         if (loginDropdownPanel) loginDropdownPanel.style.display = 'none';
-    });
-}
-
-if (signupForm) {
-    signupForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-        if (password !== confirmPassword) { alert('As senhas não coincidem!'); return; }
-        console.log('Tentativa de Cadastro com:', email, '(Lógica Firebase a ser integrada com a página principal)');
         if (signupDropdownPanel) signupDropdownPanel.style.display = 'none';
-    });
-}
-
-function closeAllHeaderDropdowns() {
-    if (loginDropdownPanel) loginDropdownPanel.style.display = 'none';
-    if (signupDropdownPanel) signupDropdownPanel.style.display = 'none';
-    if (pomodoroDropdown) pomodoroDropdown.style.display = 'none';
-    if (musicDropdown) musicDropdown.style.display = 'none';
-}
-
-// Global click listener for header dropdowns
-document.addEventListener('click', function(e) {
-    // Check if the click is outside any of the known dropdowns or their toggle buttons
-    const isInsideLogin = loginBtn?.contains(e.target) || loginDropdownPanel?.contains(e.target) || signupDropdownPanel?.contains(e.target);
-    const isInsidePomodoro = pomodoroBtn?.contains(e.target) || pomodoroDropdown?.contains(e.target);
-    const isInsideMusic = musicBtn?.contains(e.target) || musicDropdown?.contains(e.target);
-
-    if (!isInsideLogin && !isInsidePomodoro && !isInsideMusic) {
-        closeAllHeaderDropdowns();
+        if (pomodoroDropdownHeader) pomodoroDropdownHeader.style.display = 'none';
+        if (musicDropdownHeader) musicDropdownHeader.style.display = 'none';
     }
+    
+    // --- Login/Signup Dropdown Logic ---
+    if (loginBtn && loginDropdownPanel && signupDropdownPanel) {
+        loginBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isVisible = loginDropdownPanel.style.display === 'block';
+            closeAllHeaderDropdowns();
+            if (!isVisible) loginDropdownPanel.style.display = 'block';
+        });
+        if (showSignupLink) {
+            showSignupLink.addEventListener('click', function(e) {
+                e.preventDefault(); e.stopPropagation();
+                closeAllHeaderDropdowns();
+                signupDropdownPanel.style.display = 'block';
+            });
+        }
+        if (showLoginLink) {
+            showLoginLink.addEventListener('click', function(e) {
+                e.preventDefault(); e.stopPropagation();
+                closeAllHeaderDropdowns();
+                loginDropdownPanel.style.display = 'block';
+            });
+        }
+    }
+
+    // --- Pomodoro do Header ---
+    if (pomodoroTimeSelectHeader && pomodoroTimerDisplayHeader) {
+        try {
+            timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
+            initialFocusDurationHeader = timeRemainingValueHeader;
+            pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+            if (pomodoroStatusDisplayHeader) pomodoroStatusDisplayHeader.textContent = "Foco";
+        } catch (e) {
+            console.error("Pomodoro (Header): Erro na inicialização dos valores de tempo.", e);
+            timeRemainingValueHeader = 25 * 60; initialFocusDurationHeader = 25 * 60;
+            if(pomodoroTimerDisplayHeader) pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+        }
+    } else {
+        console.warn("Pomodoro (Header): Elementos de display/select não encontrados na inicialização.");
+    }
+
+    if (pomodoroBtnHeader && pomodoroDropdownHeader) {
+        pomodoroBtnHeader.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isVisible = pomodoroDropdownHeader.style.display === 'block';
+            closeAllHeaderDropdowns();
+            if (!isVisible) pomodoroDropdownHeader.style.display = 'block';
+        });
+    }
+    if (startPomodoroBtnHeader) startPomodoroBtnHeader.addEventListener('click', handleStartPomodoroHeader);
+    if (stopPomodoroBtnHeader) stopPomodoroBtnHeader.addEventListener('click', handleStopPomodoroHeader);
+    if (pomodoroTimeSelectHeader) {
+        pomodoroTimeSelectHeader.addEventListener('change', () => {
+            if (!pomodoroIntervalInstanceHeader) {
+                if (!pomodoroTimeSelectHeader || !pomodoroTimerDisplayHeader || !pomodoroStatusDisplayHeader) return;
+                timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
+                initialFocusDurationHeader = timeRemainingValueHeader;
+                isBreakStateHeader = pomodoroTimeSelectHeader.value !== '25';
+                pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+                pomodoroStatusDisplayHeader.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
+            }
+        });
+    }
+
+    function formatTimeHeaderInternal(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    function handleStartPomodoroHeader() {
+        if (pomodoroIntervalInstanceHeader) return;
+        const sel = document.getElementById('pomodoroTimeHeader'), disp = document.getElementById('pomodoroTimerHeader'), stat = document.getElementById('pomodoroStatusHeader');
+        if (!sel || !disp || !stat) { console.error("Pomodoro (Header): Elementos não encontrados para iniciar."); return; }
+        timeRemainingValueHeader = parseInt(sel.value) * 60; initialFocusDurationHeader = timeRemainingValueHeader;
+        isBreakStateHeader = sel.value !== '25';
+        stat.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
+        disp.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+        pomodoroIntervalInstanceHeader = setInterval(handleUpdatePomodoroTimerHeader, 1000);
+    }
+    function handleUpdatePomodoroTimerHeader() {
+        const disp = document.getElementById('pomodoroTimerHeader'), stat = document.getElementById('pomodoroStatusHeader');
+        if (!disp || !stat) { clearInterval(pomodoroIntervalInstanceHeader); pomodoroIntervalInstanceHeader = null; return; }
+        if (timeRemainingValueHeader <= 0) {
+            clearInterval(pomodoroIntervalInstanceHeader); pomodoroIntervalInstanceHeader = null;
+            stat.textContent = 'Concluído!';
+            setTimeout(() => {
+                timeRemainingValueHeader = initialFocusDurationHeader;
+                disp.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+                stat.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
+            }, 3000); return;
+        }
+        timeRemainingValueHeader--;
+        disp.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
+    }
+    function handleStopPomodoroHeader() {
+        clearInterval(pomodoroIntervalInstanceHeader); pomodoroIntervalInstanceHeader = null;
+        const sel = document.getElementById('pomodoroTimeHeader'), disp = document.getElementById('pomodoroTimerHeader'), stat = document.getElementById('pomodoroStatusHeader');
+        if (sel && disp) { timeRemainingValueHeader = parseInt(sel.value) * 60; disp.textContent = formatTimeHeaderInternal(timeRemainingValueHeader); }
+        if (stat) stat.textContent = 'Foco';
+    }
+
+    // --- Music Logic (Header) ---
+    if (musicBtnHeader && musicDropdownHeader) {
+        musicBtnHeader.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isVisible = musicDropdownHeader.style.display === 'block';
+            closeAllHeaderDropdowns();
+            if (!isVisible) musicDropdownHeader.style.display = 'block';
+        });
+    }
+    if (playMusicHeaderBtn) playMusicHeaderBtn.addEventListener('click', playMusicHeaderInternal);
+    if (pauseMusicHeaderBtn) pauseMusicHeaderBtn.addEventListener('click', pauseMusicHeaderInternal);
+
+    function playMusicHeaderInternal() {
+        if (!isMusicPlayingHeader && audioPlayerHeader) {
+            audioPlayerHeader.play().catch(e => console.error("Música (Header): Erro ao tocar", e));
+            isMusicPlayingHeader = true;
+        }
+    }
+    function pauseMusicHeaderInternal() {
+        if (isMusicPlayingHeader && audioPlayerHeader) {
+            audioPlayerHeader.pause();
+            isMusicPlayingHeader = false;
+        }
+    }
+
+    // --- Form Submissions (Placeholder) ---
+    const loginFormElem = document.getElementById('login-form'); // Renomeado para evitar conflito com var loginForm
+    if (loginFormElem) {
+        loginFormElem.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // const email = document.getElementById('login-email').value;
+            console.log('Tentativa de Login (header)');
+            if (loginDropdownPanel) loginDropdownPanel.style.display = 'none';
+        });
+    }
+    const signupFormElem = document.getElementById('signup-form'); // Renomeado
+    if (signupFormElem) {
+        signupFormElem.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // const password = document.getElementById('signup-password').value;
+            // const confirmPassword = document.getElementById('confirm-password').value;
+            // if (password !== confirmPassword) { alert('As senhas não coincidem!'); return; }
+            console.log('Tentativa de Cadastro (header)');
+            if (signupDropdownPanel) signupDropdownPanel.style.display = 'none';
+        });
+    }
+    
+    // Global click listener para fechar dropdowns do header
+    document.addEventListener('click', function(e) {
+        let clickedInsideADropdownOrButton = false;
+        const dropdownsAndButtons = [
+            loginBtn, loginDropdownPanel, signupDropdownPanel,
+            pomodoroBtnHeader, pomodoroDropdownHeader,
+            musicBtnHeader, musicDropdownHeader
+        ];
+        for (const el of dropdownsAndButtons) {
+            if (el && el.contains(e.target)) {
+                clickedInsideADropdownOrButton = true;
+                break;
+            }
+        }
+        if (!clickedInsideADropdownOrButton) {
+            closeAllHeaderDropdowns();
+        }
+    });
 });
 </script>
