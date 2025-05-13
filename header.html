@@ -464,11 +464,13 @@
     const musicBtn = document.getElementById('music-header-btn');
     const musicDropdown = document.getElementById('music-header-dropdown');
     
+    // Corrigir o evento de clique do botão Pomodoro
     if (pomodoroBtn && pomodoroDropdown) {
         pomodoroBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            pomodoroDropdown.style.display = pomodoroDropdown.style.display === 'block' ? 'none' : 'block';
-            if (musicDropdown) musicDropdown.style.display = 'none'; // Fecha o outro
+            const isVisible = pomodoroDropdown.style.display === 'block';
+            pomodoroDropdown.style.display = isVisible ? 'none' : 'block';
+            if (musicDropdown) musicDropdown.style.display = 'none'; // Fecha o dropdown de música
         });
     }
     if (musicBtn && musicDropdown) {
