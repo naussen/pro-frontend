@@ -390,8 +390,6 @@
         }
         .tool-panel button:hover { background-color: #a05a17; }
         body.dark-mode .tool-panel button:hover { background-color: #f8961e; }
-        .timer-display { font-size: 1.8em; margin: 15px 0; color: var(--main-color); font-weight: bold; text-align: center; }
-        #pomodoroStatus { font-size: 0.9em; color: var(--text-muted); text-align: center; }
         #musicPanel p { color: var(--text-dark); }
         #musicPanel audio { display: none; }
 
@@ -536,29 +534,6 @@
         </main>
     </div>
 
-    <!-- Painel Flutuante de QUESTÕES -->
-    <div id="questoesFloatingPanel" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
-        <button id="questoesPanelBtn" style="display: flex; align-items: center; gap: 8px; background: #4CAF50; color: #fff; border: none; border-radius: 30px; padding: 16px 28px; font-weight: bold; font-size: 1.1em; box-shadow: 0 2px 10px rgba(0,0,0,0.15); cursor: pointer; transition: background 0.2s;">
-            <span style="font-size: 1.5em;">❓</span>
-            <span>QUESTÕES</span>
-        </button>
-    </div>
-    <script src="questoes-injector.js"></script>
-    <script>
-        // Ao clicar no botão QUESTÕES, aciona o app QUESTÕES (já injetado pelo questoes-injector.js)
-        document.addEventListener('DOMContentLoaded', function() {
-            var btn = document.getElementById('questoesPanelBtn');
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    // Simula clique no botão do questoes-injector.js
-                    var fab = document.getElementById('questoes-fab');
-                    if (fab) fab.click();
-                });
-            }
-        });
-    </script>
-    <!-- Fim do painel QUESTÕES -->
-
     <!-- Painel Flutuante de Ferramentas -->
     <div id="floatingToolsPanel" style="display:none;"></div>
 
@@ -604,9 +579,6 @@
         const courseMenuContainer = document.getElementById('courseMenu');
         const lessonContent = document.getElementById('lessonContent');
         const audioPlayer = document.getElementById('audioPlayer');
-        const pomodoroTimerDisplay = document.getElementById('pomodoroTimer');
-        const pomodoroStatus = document.getElementById('pomodoroStatus');
-        const pomodoroTimeSelect = document.getElementById('pomodoroTime');
         const bodyElement = document.body;
         let loadedCoursesData = [];
 
@@ -1103,52 +1075,6 @@
                 isMusicPlaying = false;
                 console.log("Música pausada.");
             }
-        }
-
-        // --- Pomodoro ---
-        let pomodoroInterval = null;
-        let timeRemaining = 0;
-        let isBreak = false;
-        let initialFocusTime = 25 * 60;
-        function startPomodoro() {
-            if (pomodoroInterval) return;
-            const selectedTime = parseInt(pomodoroTimeSelect.value) * 60;
-            timeRemaining = selectedTime;
-            initialFocusTime = selectedTime;
-            isBreak = pomodoroTimeSelect.value !== '25';
-            pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
-            updatePomodoroTimer();
-            pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
-            console.log("Pomodoro iniciado:", selectedTime / 60, "minutos");
-        }
-        function updatePomodoroTimer() {
-            if (timeRemaining <= 0) {
-                clearInterval(pomodoroInterval);
-                pomodoroInterval = null;
-                pomodoroStatus.textContent = 'Concluído!';
-                setTimeout(() => {
-                    timeRemaining = initialFocusTime;
-                    pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-                    pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
-                }, 2000);
-                console.log("Pomodoro concluído.");
-                return;
-            }
-            timeRemaining--;
-            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-        }
-        function stopPomodoro() {
-            clearInterval(pomodoroInterval);
-            pomodoroInterval = null;
-            timeRemaining = parseInt(pomodoroTimeSelect.value) * 60;
-            pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
-            pomodoroStatus.textContent = 'Foco';
-            console.log("Pomodoro parado.");
-        }
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
         // --- Inicialização ---
