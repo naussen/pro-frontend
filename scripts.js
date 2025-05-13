@@ -19,6 +19,7 @@ try {
     alert("Falha grave ao inicializar o sistema. Verifique o console.");
 }
 
+document.addEventListener('DOMContentLoaded', () => {
     // Tema Claro/Escuro (comum a todas as páginas)
     const themeToggleBtn = document.getElementById('theme-toggle');
     const bodyElement = document.body;
