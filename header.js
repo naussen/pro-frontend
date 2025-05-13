@@ -191,6 +191,79 @@ document.addEventListener('click', (e) => {
             userId = null;
         }
     });
+
+    // Adicionando funcionalidade para o botão Pomodoro
+    let pomodoroInterval = null;
+    let timeRemaining = 25 * 60;
+    let isBreak = false;
+    let initialFocusTime = 25 * 60;
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function startPomodoro() {
+        if (pomodoroInterval) return;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        const selectedTime = parseInt(select.value) * 60;
+        timeRemaining = selectedTime;
+        initialFocusTime = selectedTime;
+        isBreak = select.value !== '25';
+        status.textContent = isBreak ? 'Pausa' : 'Foco';
+        timer.textContent = formatTime(timeRemaining);
+        pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+    }
+
+    function updatePomodoroTimer() {
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        if (timeRemaining <= 0) {
+            clearInterval(pomodoroInterval);
+            pomodoroInterval = null;
+            status.textContent = 'Concluído!';
+            setTimeout(() => {
+                timeRemaining = initialFocusTime;
+                timer.textContent = formatTime(timeRemaining);
+                status.textContent = isBreak ? 'Pausa' : 'Foco';
+            }, 2000);
+            return;
+        }
+        timeRemaining--;
+        timer.textContent = formatTime(timeRemaining);
+    }
+
+    function stopPomodoro() {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        timeRemaining = parseInt(select.value) * 60;
+        timer.textContent = formatTime(timeRemaining);
+        status.textContent = 'Foco';
+    }
+
+    // Configurando o evento de clique para expandir/recolher o dropdown do Pomodoro
+    const pomodoroBtn = document.getElementById('pomodoro-header-btn');
+    const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
+
+    if (pomodoroBtn && pomodoroDropdown) {
+        pomodoroBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const isVisible = pomodoroDropdown.style.display === 'block';
+            pomodoroDropdown.style.display = isVisible ? 'none' : 'block';
+        });
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('#pomodoro-header-dropdown') && !e.target.closest('#pomodoro-header-btn')) {
+            pomodoroDropdown.style.display = 'none';
+        }
+    });
 }
 
 // Se este script for incluído numa página, renderHeader() precisaria ser chamada,
