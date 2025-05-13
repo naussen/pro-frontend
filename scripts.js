@@ -216,3 +216,50 @@ document.addEventListener('DOMContentLoaded', () => {
         yearSpan.textContent = new Date().getFullYear();
     }
 });
+
+// Lógica do Pomodoro
+let pomodoroInterval = null;
+let timeRemaining = 0;
+let isBreak = false;
+let initialFocusTime = 25 * 60;
+
+function startPomodoro() {
+    if (pomodoroInterval) return;
+    const selectedTime = parseInt(document.getElementById('pomodoroTime').value) * 60;
+    timeRemaining = selectedTime;
+    initialFocusTime = selectedTime;
+    isBreak = selectedTime !== 25 * 60;
+    document.getElementById('pomodoroStatus').textContent = isBreak ? 'Pausa' : 'Foco';
+    updatePomodoroTimer();
+    pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+}
+
+function updatePomodoroTimer() {
+    if (timeRemaining <= 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        document.getElementById('pomodoroStatus').textContent = 'Concluído!';
+        setTimeout(() => {
+            timeRemaining = initialFocusTime;
+            document.getElementById('pomodoroTimer').textContent = formatTime(timeRemaining);
+            document.getElementById('pomodoroStatus').textContent = isBreak ? 'Pausa' : 'Foco';
+        }, 2000);
+        return;
+    }
+    timeRemaining--;
+    document.getElementById('pomodoroTimer').textContent = formatTime(timeRemaining);
+}
+
+function stopPomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroInterval = null;
+    timeRemaining = parseInt(document.getElementById('pomodoroTime').value) * 60;
+    document.getElementById('pomodoroTimer').textContent = formatTime(timeRemaining);
+    document.getElementById('pomodoroStatus').textContent = 'Foco';
+}
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
