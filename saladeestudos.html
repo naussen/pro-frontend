@@ -260,7 +260,10 @@
             })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
-                initializeHeaderEvents();
+                // Carregar o JS do header dinamicamente
+                var script = document.createElement('script');
+                script.src = 'header.js';
+                document.body.appendChild(script);
             })
             .catch(error => {
                 console.error('Erro ao carregar o header:', error);
