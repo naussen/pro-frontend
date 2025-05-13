@@ -37,7 +37,7 @@
             --sidebar-border: #d4d4d4;
             --sidebar-link-color: #000;
             --sidebar-link-hover-bg: #ddd;
-            --sidebar-link-active-bg: #4CAF50;
+            --sidebar-link-active-bg: #4CAF50; /* Cor verde para links ativos na sidebar */
             --sidebar-link-active-color: #fff;
             --floating-panel-bg: #fdfdfd;
             --floating-panel-border: #ccc;
@@ -53,6 +53,9 @@
             --mega-menu-link-color: #212529;
             --mega-menu-link-hover-color: #0056b3;
             --mega-menu-heading-color: #495057;
+            --modern-green-button-bg: #28a745; /* Verde para o botão moderno */
+            --modern-green-button-hover-bg: #218838;
+            --modern-green-button-active-bg: #1e7e34;
         }
 
         /* --- Dark Mode Variables --- */
@@ -73,7 +76,7 @@
             --header-border: #30363d;
             --main-content-bg: #0d1117;
             --code-bg: #22272e;
-            --button-text-dark: #161b22;
+            --button-text-dark: #161b22; /* Ajuste para texto do botão em modo escuro se necessário */
             --footer-text-muted: #8b949e;
             --footer-link-color: #8b949e;
             --footer-link-hover: var(--accent-1);
@@ -85,7 +88,7 @@
             --sidebar-border: #30363d;
             --sidebar-link-color: var(--text-light);
             --sidebar-link-hover-bg: #22272e;
-            --sidebar-link-active-bg: #007bff;
+            --sidebar-link-active-bg: var(--modern-green-button-bg); /* Usar o mesmo verde */
             --sidebar-link-active-color: #fff;
             --floating-panel-bg: #22272e;
             --floating-panel-border: #30363d;
@@ -100,6 +103,9 @@
             --mega-menu-link-color: #adb5bd;
             --mega-menu-link-hover-color: #dee2e6;
             --mega-menu-heading-color: #ced4da;
+            --modern-green-button-bg: #28a745;
+            --modern-green-button-hover-bg: #218838;
+            --modern-green-button-active-bg: #1e7e34;
         }
 
         /* --- Reset e Base --- */
@@ -251,15 +257,7 @@
             align-items: center;
             gap: 10px;
         }
-        .w3s-sidebar-toggle {
-            background-color: transparent;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-dark);
-            padding: 0;
-            line-height: 1;
-        }
+        /* .w3s-sidebar-toggle já definido no Header */
         .sidebar-nav { list-style: none; padding: 0; margin: 0; }
         .course-item { margin-bottom: 10px; }
         .course-header {
@@ -319,79 +317,50 @@
         .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
         #lessonContent { min-height: 300px; }
 
-        /* --- Floating Tools Panel --- */
+        /* --- Floating Tools Panel (se houver) --- */
         #floatingToolsPanel {
+            /* Estilos existentes... */
+        }
+        
+        /* --- NOVO: Estilos para o Botão de Questões Fixo Moderno --- */
+        .proconcursos-questoes-container { /* Contêiner do botão */
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: var(--floating-panel-width);
-            max-height: 80vh;
-            background-color: var(--floating-panel-bg);
-            border: 1px solid var(--floating-panel-border);
-            border-radius: 8px;
-            box-shadow: var(--floating-panel-shadow);
-            z-index: 103;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-            transform: translateY(0);
-            opacity: 1;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1010; /* Acima da maioria dos elementos, mas abaixo de modais de alta prioridade se houver */
         }
-        #floatingToolsPanel.collapsed { transform: translateY(calc(100% - 50px)); height: 50px; opacity: 0.9; }
-        .tools-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--light-grey-bg); border-bottom: 1px solid var(--floating-panel-border); cursor: pointer; }
-        .tools-panel-header h3 { margin: 0; font-size: 1.1em; color: var(--main-color); }
-        #toggleToolsPanelBtn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-muted); padding: 0 5px; }
-        .tools-panel-content { padding: 15px; overflow-y: auto; flex-grow: 1; }
-        .tool-buttons { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .tool-buttons button {
-            flex-grow: 1;
-            background-color: var(--accent-1);
-            color: var(--button-text-dark);
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            font-size: 0.9em;
-        }
-        .tool-buttons button:hover { background-color: var(--accent-1-darker); }
 
-        /* --- Tool Panels --- */
-        .tool-panel {
-            display: none;
-            border-top: 1px dashed var(--border-color);
-            margin-top: 15px;
-            padding-top: 15px;
-        }
-        .tool-panel h4 { font-size: 1.1em; color: var(--main-color); margin-bottom: 10px; margin-top: 0; }
-        .tool-panel p { font-size: 0.95em; margin-bottom: 10px; color: var(--text-dark); }
-        .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            margin-bottom: 10px;
-            background-color: var(--main-content-bg);
-            color: var(--text-dark);
-            width: calc(100% - 20px);
-            max-width: 200px;
-        }
-        .tool-panel button {
-            background-color: var(--accent-2);
+        .proconcursos-questoes-btn { /* Estilo do botão */
+            background-color: var(--modern-green-button-bg);
             color: white;
+            padding: 15px 30px; 
             border: none;
-            padding: 8px 16px;
+            border-radius: 50px; /* Bordas bem arredondadas */
+            font-size: 1.1em; 
+            font-weight: 600; 
             cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex; /* Para alinhar ícone e texto se adicionar ícone no futuro */
+            align-items: center;
+            gap: 8px; /* Espaço entre ícone e texto se adicionar ícone */
         }
-        .tool-panel button:hover { background-color: #a05a17; }
-        body.dark-mode .tool-panel button:hover { background-color: #f8961e; }
-        #musicPanel p { color: var(--text-dark); }
-        #musicPanel audio { display: none; }
+
+        .proconcursos-questoes-btn:hover {
+            background-color: var(--modern-green-button-hover-bg);
+            transform: translateY(-3px); /* Efeito de elevação */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .proconcursos-questoes-btn:active {
+            background-color: var(--modern-green-button-active-bg);
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        /* --- FIM: Estilos para o Botão de Questões --- */
+
 
         /* --- Estilos do Conteúdo Carregado --- */
         .module-content { padding: 1rem; color: var(--text-dark); }
@@ -427,24 +396,40 @@
             }
             .sidebar.visible { transform: translateX(0); }
             main { margin-left: 0; }
-            .w3s-sidebar-toggle { display: block; }
+            /* .w3s-sidebar-toggle { display: block; }  Já está no header, não precisa redefinir aqui */
             #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
             .mega-menu-panel { padding: 15px; }
             .mega-menu-column { min-width: calc(50% - 20px); }
             .mega-menu-column:not(:last-child) { border-right: none; }
+            
+            .proconcursos-questoes-container {
+                right: 20px;
+                bottom: 20px;
+            }
+            .proconcursos-questoes-btn {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
         }
         @media screen and (max-width: 480px) {
             #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
-            .tool-buttons button { font-size: 0.85em; padding: 6px 8px; }
+            /* .tool-buttons button { font-size: 0.85em; padding: 6px 8px; } */ /* Se houver .tool-buttons */
             .mega-menu-column { min-width: 100%; padding: 0; }
+
+            .proconcursos-questoes-container {
+                right: 15px;
+                bottom: 15px;
+            }
+            .proconcursos-questoes-btn {
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Carrega o cabeçalho dinamicamente -->
     <div id="header-placeholder"></div>
 
-    <!-- Mega Menu -->
     <div id="megaMenuContainer">
         <div class="mega-menu-panel" id="cursos-menu">
             <div class="mega-menu-column">
@@ -510,7 +495,6 @@
         </div>
     </div>
 
-    <!-- Conteúdo Principal -->
     <div class="content-wrapper">
         <nav class="sidebar" id="sidebar">
             <h2>
@@ -534,35 +518,54 @@
         </main>
     </div>
 
-    <!-- Painel Flutuante de Ferramentas -->
-    <div id="floatingToolsPanel" style="display:none;"></div>
+    <div id="floatingToolsPanel" style="display:none;">
+        </div>
 
-    <!-- Painel Flutuante de QUESTÕES -->
-    <div id="questoesFloatingPanel" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
-        <button id="questoesPanelBtn" style="display: flex; align-items: center; gap: 8px; background: #4CAF50; color: #fff; border: none; border-radius: 30px; padding: 16px 28px; font-weight: bold; font-size: 1.1em; box-shadow: 0 2px 10px rgba(0,0,0,0.15); cursor: pointer; transition: background 0.2s;">
-            <span style="font-size: 1.5em;">❓</span>
-            <span>QUESTÕES</span>
+    <div id="proConcursosQuestoesContainer" class="proconcursos-questoes-container">
+        <button id="proConcursosQuestoesBtn" class="proconcursos-questoes-btn">
+            QUESTÕES
         </button>
     </div>
+    
     <script src="questoes-injector.js"></script>
+    
     <script>
-        // Ao clicar no botão QUESTÕES, aciona o app QUESTÕES (já injetado pelo questoes-injector.js)
+        // Script para o NOVO botão de QUESTÕES acionar o sistema injetado
         document.addEventListener('DOMContentLoaded', function() {
-            var btn = document.getElementById('questoesPanelBtn');
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    // Simula clique no botão do questoes-injector.js
-                    var fab = document.getElementById('questoes-fab');
-                    if (fab) fab.click();
+            const customQuestoesBtn = document.getElementById('proConcursosQuestoesBtn');
+            
+            if (customQuestoesBtn) {
+                customQuestoesBtn.addEventListener('click', function() {
+                    // O questoes-injector.js deve criar um botão com id 'questoes-fab'
+                    // ou alguma outra função global para mostrar/esconder o painel de questões.
+                    const injectorFabButton = document.getElementById('questoes-fab'); 
+                    
+                    if (injectorFabButton) {
+                        injectorFabButton.click(); // Simula o clique no botão original do injector
+                        console.log('Botão de questões personalizado ("proConcursosQuestoesBtn") acionou o botão injetado ("#questoes-fab").');
+                    } else {
+                        console.error('Botão injetado "#questoes-fab" não encontrado. Verifique se o "questoes-injector.js" está funcionando e criando este elemento, ou se o ID está correto.');
+                        // Como fallback, você poderia tentar controlar o painel diretamente se souber o ID dele:
+                        // const appQuestoesPanel = document.getElementById('questoes-app-container'); // Exemplo de ID do painel
+                        // if (appQuestoesPanel) {
+                        //     const isHidden = appQuestoesPanel.style.display === 'none' || appQuestoesPanel.style.display === '';
+                        //     appQuestoesPanel.style.display = isHidden ? 'flex' : 'none'; // 'flex' é comum para centralizar
+                        //     console.log(isHidden ? 'Painel de questões aberto diretamente.' : 'Painel de questões fechado diretamente.');
+                        // } else {
+                        //     alert('Sistema de questões não pôde ser iniciado.');
+                        // }
+                    }
                 });
+            } else {
+                console.error('Botão "#proConcursosQuestoesBtn" não encontrado no DOM.');
             }
         });
     </script>
-    <!-- Fim do painel QUESTÕES -->
-    <!-- Firebase SDK -->
+    
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
     <script>
         // --- Carrega o Cabeçalho Dinamicamente ---
         fetch('header.html')
@@ -572,7 +575,7 @@
             })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
-                initializeHeaderEvents();
+                initializeHeaderEvents(); // Inicializa eventos APÓS o header ser carregado
             })
             .catch(error => {
                 console.error('Erro ao carregar o header:', error);
@@ -581,32 +584,35 @@
 
         // --- Configuração Firebase ---
         const firebaseConfig = {
-            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // Substitua pela sua chave real
             authDomain: "nvp-concursos.firebaseapp.com",
             projectId: "nvp-concursos",
             storageBucket: "nvp-concursos.firebasestorage.app",
             messagingSenderId: "397960760271",
             appId: "1:397960760271:web:1550ff01910ae927d860ba"
         };
-        firebase.initializeApp(firebaseConfig);
+        // Inicializa o Firebase APENAS se ainda não foi inicializado
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         // --- Variáveis Globais ---
         let userId = null;
-        let sidebarToggleBtn = null;
+        let sidebarToggleBtn = null; // Será definido em initializeHeaderEvents
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-        const floatingToolsPanel = document.getElementById('floatingToolsPanel');
+        // const floatingToolsPanel = document.getElementById('floatingToolsPanel'); // Se você usar este painel
         const courseMenuContainer = document.getElementById('courseMenu');
-        const lessonContent = document.getElementById('lessonContent');
-        const audioPlayer = document.getElementById('audioPlayer');
+        const lessonContentDiv = document.getElementById('lessonContent'); // Renomeado para evitar conflito
+        // const audioPlayer = document.getElementById('audioPlayer'); // Se você usar
         const bodyElement = document.body;
         let loadedCoursesData = [];
 
-        // --- Inicializar Eventos do Header ---
+        // --- Inicializar Eventos do Header (e outros elementos dependentes do header) ---
         function initializeHeaderEvents() {
-            sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); // Agora o header está carregado
             const colorPickerBtn = document.getElementById('color-picker-btn');
             const logoutBtn = document.getElementById('logout-btn');
             const topNav = document.getElementById('topNav');
@@ -616,22 +622,22 @@
             if (sidebarToggleBtn) {
                 sidebarToggleBtn.addEventListener('click', toggleSidebar);
             } else {
-                console.warn('Botão sidebarToggleBtn não encontrado no header.html');
+                console.warn('Botão sidebarToggleBtn não encontrado no header.html carregado.');
             }
 
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
                     const newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
-                    applyTheme(newTheme);
+                    applyTheme(newTheme); // Salva no localStorage dentro desta função
                 });
             } else {
-                console.warn('Botão theme-toggle não encontrado no header.html');
+                console.warn('Botão theme-toggle não encontrado no header.html carregado.');
             }
 
             if (colorPickerBtn) {
                 colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
             } else {
-                console.warn('Botão color-picker-btn não encontrado no header.html');
+                console.warn('Botão color-picker-btn não encontrado no header.html carregado.');
             }
 
             if (logoutBtn) {
@@ -639,7 +645,7 @@
                     auth.signOut()
                         .then(() => {
                             console.log('Logout bem-sucedido');
-                            window.location.href = 'index.html';
+                            window.location.href = 'index.html'; // Ou sua página de login
                         })
                         .catch(error => {
                             console.error('Erro ao fazer logout:', error);
@@ -647,7 +653,7 @@
                         });
                 });
             } else {
-                console.warn('Botão logout-btn não encontrado no header.html');
+                console.warn('Botão logout-btn não encontrado no header.html carregado.');
             }
 
             const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
@@ -658,28 +664,26 @@
                     const targetPanel = document.getElementById(targetId);
                     if (!targetPanel) return;
                     
-                    // Verifique se o painel clicado já está ativo
                     const isCurrentlyActive = targetPanel.classList.contains('active');
+                    closeAllMegaMenus(); // Fecha todos os outros
                     
-                    // Feche todos os menus, incluindo botões ativos
-                    closeAllMegaMenus();
-                    
-                    // Se o painel não estava ativo, abra-o
-                    // Se já estava ativo, ele já foi fechado pela função closeAllMegaMenus()
-                    if (!isCurrentlyActive) {
+                    if (!isCurrentlyActive) { // Abre o clicado se não estava ativo
                         targetPanel.classList.add('active');
                         button.classList.add('active');
                     }
                 });
             });
 
-            document.addEventListener('click', (event) => {
+            document.addEventListener('click', (event) => { // Fecha mega menus ao clicar fora
                 const clickedInsideMenu = megaMenuContainer?.contains(event.target);
                 const clickedInsideNav = topNav?.contains(event.target);
-                if (!clickedInsideMenu && !clickedInsideNav) closeAllMegaMenus();
+                if (!clickedInsideMenu && !clickedInsideNav) {
+                    closeAllMegaMenus();
+                }
             });
-
-            updateLayout();
+            
+            // Chama updateLayout após header e seus botões estarem prontos
+            updateLayout(); 
         }
 
         function closeAllMegaMenus() {
@@ -687,12 +691,9 @@
             const allMegaPanels = megaMenuContainer?.querySelectorAll('.mega-menu-panel') || [];
             const topNav = document.getElementById('topNav');
             const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
-            allMegaPanels.forEach(panel => {
-                panel.classList.remove('active');
-            });
-            megaMenuButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
+            
+            allMegaPanels.forEach(panel => panel.classList.remove('active'));
+            megaMenuButtons.forEach(btn => btn.classList.remove('active'));
         }
 
         // --- Autenticação ---
@@ -703,19 +704,21 @@
             } else {
                 userId = user.uid;
                 console.log("Usuário autenticado:", userId);
-                loadCourses();
-                applySavedPreferences();
+                loadCourses(); // Carrega cursos
+                applySavedPreferences(); // Aplica tema e cor de fundo salvos
             }
         });
 
         function applySavedPreferences() {
-            const savedMainBgColor = localStorage.getItem('userMainBgColor');
+            // Aplica cor de fundo salva
+            const savedMainBgColor = localStorage.getItem('userMainBgColor-' + userId); // Chave por usuário
             if (savedMainBgColor && mainContent) {
                 mainContent.style.backgroundColor = savedMainBgColor;
-                console.log("Cor de fundo aplicada:", savedMainBgColor);
+                console.log("Cor de fundo pessoal aplicada:", savedMainBgColor);
             }
 
-            const savedTheme = localStorage.getItem('theme');
+            // Aplica tema salvo
+            const savedTheme = localStorage.getItem('theme'); // Tema é global ou por usuário? Assumindo global.
             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const themeToApply = savedTheme || (prefersDarkScheme ? 'dark' : 'light');
             applyTheme(themeToApply);
@@ -724,13 +727,17 @@
         function applyTheme(theme) {
             console.log("Aplicando tema:", theme);
             bodyElement.classList.toggle('dark-mode', theme === 'dark');
-            const sunIcon = document.querySelector('.theme-icon-light');
-            const moonIcon = document.querySelector('.theme-icon-dark');
+            
+            // Tenta encontrar os ícones de tema APÓS o header ser carregado
+            const sunIcon = document.querySelector('#header-placeholder .theme-icon-light');
+            const moonIcon = document.querySelector('#header-placeholder .theme-icon-dark');
+
             if (sunIcon && moonIcon) {
                 sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
                 moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
             } else {
-                console.warn('Ícones de tema (.theme-icon-light ou .theme-icon-dark) não encontrados no header.html');
+                // Este log pode aparecer antes do header carregar, o que é normal.
+                // console.warn('Ícones de tema (.theme-icon-light ou .theme-icon-dark) não encontrados AINDA.');
             }
             localStorage.setItem('theme', theme);
         }
@@ -738,21 +745,25 @@
         function changeMainBackgroundColor() {
             const colorInput = document.createElement('input');
             colorInput.type = 'color';
+            // Pega a cor atual do mainContent ou um fallback
             const currentMainBg = mainContent.style.backgroundColor || getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
-            colorInput.value = currentMainBg.startsWith('#') ? currentMainBg : rgbToHex(currentMainBg);
+            colorInput.value = currentMainBg.startsWith('#') ? currentMainBg : rgbToHex(currentMainBg); // Converte se for rgb()
+            
             colorInput.addEventListener('input', () => {
                 const color = colorInput.value;
                 mainContent.style.backgroundColor = color;
-                localStorage.setItem('userMainBgColor', color);
-                console.log("Cor de fundo alterada para:", color);
+                if (userId) { // Salva apenas se o usuário estiver logado
+                    localStorage.setItem('userMainBgColor-' + userId, color); // Chave por usuário
+                    console.log("Cor de fundo pessoal salva para usuário", userId, ":", color);
+                }
             });
-            colorInput.click();
+            colorInput.click(); // Abre o seletor de cores
         }
 
-        function rgbToHex(rgb) {
-            if (!rgb || rgb === '') return '#ffffff';
+        function rgbToHex(rgb) { // Função auxiliar para converter rgb para hex
+            if (!rgb || typeof rgb !== 'string' || rgb.startsWith('#')) return rgb; // Já é hex ou inválido
             const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!rgbMatch) return rgb;
+            if (!rgbMatch) return rgb; // Não é formato rgb() esperado
             const r = parseInt(rgbMatch[1]);
             const g = parseInt(rgbMatch[2]);
             const b = parseInt(rgbMatch[3]);
@@ -763,9 +774,10 @@
         async function loadCourses() {
             if (!userId || !courseMenuContainer) {
                 console.error("userId ou courseMenuContainer não definidos:", { userId, courseMenuContainer });
+                if(courseMenuContainer) courseMenuContainer.innerHTML = '<p>Erro: Usuário não identificado.</p>';
                 return;
             }
-            courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
+            courseMenuContainer.innerHTML = '<p>Carregando seus cursos...</p>';
             try {
                 console.log("Iniciando carregamento de cursos para o usuário:", userId);
                 const userDocRef = db.collection('users').doc(userId);
@@ -774,174 +786,131 @@
 
                 if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
                     console.log("Usuário tem cursos personalizados. Carregando...");
-                    const selectedSubtopics = userDoc.data().selectedSubtopics;
-                    console.log("Subtemas selecionados:", selectedSubtopics);
+                    const selectedSubtopicsInfo = userDoc.data().selectedSubtopics; // Array de {courseId, moduleId, subtopicId}
+                    
+                    // Agrupa subtemas por curso e módulo para reconstruir a estrutura
+                    const structuredSelections = {};
+                    for (const selection of selectedSubtopicsInfo) {
+                        if (!structuredSelections[selection.courseId]) {
+                            structuredSelections[selection.courseId] = {};
+                        }
+                        if (!structuredSelections[selection.courseId][selection.moduleId]) {
+                            structuredSelections[selection.courseId][selection.moduleId] = [];
+                        }
+                        structuredSelections[selection.courseId][selection.moduleId].push(selection.subtopicId);
+                    }
 
-                    for (const selection of selectedSubtopics) {
-                        const { courseId, moduleId, subtopicId } = selection;
-                        console.log(`Processando seleção: courseId=${courseId}, moduleId=${moduleId}, subtopicId=${subtopicId}`);
+                    for (const courseId in structuredSelections) {
                         const courseRef = db.collection('courses').doc(courseId);
                         const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) {
-                            console.warn(`Curso ${courseId} não encontrado.`);
-                            continue;
-                        }
-
+                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} (personalizado) não encontrado.`); continue; }
                         const courseData = courseDoc.data();
-                        const moduleRef = courseRef.collection('modules').doc(moduleId);
-                        const moduleDoc = await moduleRef.get();
-                        if (!moduleDoc.exists) {
-                            console.warn(`Módulo ${moduleId} não encontrado no curso ${courseId}.`);
-                            continue;
-                        }
+                        const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
 
-                        const moduleData = moduleDoc.data();
-                        const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
-                        const subtopicDoc = await subtopicRef.get();
-                        if (!subtopicDoc.exists) {
-                            console.warn(`Subtema ${subtopicId} não encontrado no módulo ${moduleId}.`);
-                            continue;
-                        }
-
-                        const subtopicData = subtopicDoc.data();
-                        let course = coursesToDisplay.find(c => c.id === courseId);
-                        if (!course) {
-                            course = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
-                            coursesToDisplay.push(course);
-                        }
-                        let module = course.modules.find(m => m.id === moduleId);
-                        if (!module) {
-                            module = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
-                            course.modules.push(module);
-                        }
-                        module.subtopics.push({
-                            id: subtopicId,
-                            name: subtopicData.name || 'Aula s/ Nome',
-                            order: subtopicData.order || 0,
-                            content_url: subtopicData.content_url || ''
-                        });
-                    }
-                } else {
-                    console.log("Carregando todos os cursos (sem personalização).");
-                    const coursesRef = db.collection('courses').orderBy('order');
-                    const coursesSnapshot = await coursesRef.get();
-                    if (coursesSnapshot.empty) {
-                        console.log("Nenhum curso encontrado no Firestore.");
-                        courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
-                        return;
-                    }
-
-                    for (const courseDoc of coursesSnapshot.docs) {
-                        const courseData = courseDoc.data();
-                        const courseId = courseDoc.id;
-                        console.log(`Carregando curso: ${courseId} - ${courseData.name}`);
-                        const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
-                        const modulesSnapshot = await modulesRef.get();
-                        const modules = [];
-
-                        for (const moduleDoc of modulesSnapshot.docs) {
+                        for (const moduleId in structuredSelections[courseId]) {
+                            const moduleRef = courseRef.collection('modules').doc(moduleId);
+                            const moduleDoc = await moduleRef.get();
+                            if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} (personalizado) não encontrado.`); continue; }
                             const moduleData = moduleDoc.data();
-                            const moduleId = moduleDoc.id;
-                            console.log(`Carregando módulo: ${moduleId} - ${moduleData.name}`);
-                            const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
-                            const subtopicsSnapshot = await subtopicsRef.get();
-                            const subtopics = [];
+                            const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
 
-                            subtopicsSnapshot.forEach(subtopicDoc => {
+                            for (const subtopicId of structuredSelections[courseId][moduleId]) {
+                                const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
+                                const subtopicDoc = await subtopicRef.get();
+                                if (!subtopicDoc.exists) { console.warn(`Subtema ${subtopicId} (personalizado) não encontrado.`); continue; }
                                 const subtopicData = subtopicDoc.data();
-                                console.log(`Carregando subtema: ${subtopicDoc.id} - ${subtopicData.name}`);
-                                subtopics.push({
-                                    id: subtopicDoc.id,
+                                moduleEntry.subtopics.push({
+                                    id: subtopicId,
                                     name: subtopicData.name || 'Aula s/ Nome',
                                     order: subtopicData.order || 0,
                                     content_url: subtopicData.content_url || ''
                                 });
-                            });
-
-                            modules.push({
-                                id: moduleId,
-                                name: moduleData.name || 'Módulo s/ Nome',
-                                order: moduleData.order || 0,
-                                subtopics: subtopics
-                            });
+                            }
+                            if(moduleEntry.subtopics.length > 0) {
+                                moduleEntry.subtopics.sort((a, b) => a.order - b.order);
+                                courseEntry.modules.push(moduleEntry);
+                            }
                         }
+                        if(courseEntry.modules.length > 0) {
+                           courseEntry.modules.sort((a, b) => a.order - b.order);
+                           coursesToDisplay.push(courseEntry);
+                        }
+                    }
+                    coursesToDisplay.sort((a,b) => a.order - b.order);
 
-                        coursesToDisplay.push({
-                            id: courseId,
-                            name: courseData.name || 'Curso s/ Nome',
-                            order: courseData.order || 0,
-                            modules: modules
-                        });
+                } else { // Carrega todos os cursos se não houver personalização ou se a personalização estiver vazia
+                    console.log("Carregando todos os cursos (sem personalização ou personalização vazia).");
+                    const coursesSnapshot = await db.collection('courses').orderBy('order').get();
+                    if (coursesSnapshot.empty) {
+                        courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>'; return;
+                    }
+                    for (const courseDoc of coursesSnapshot.docs) {
+                        const courseData = courseDoc.data();
+                        const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
+                        const modules = [];
+                        for (const moduleDoc of modulesSnapshot.docs) {
+                            const moduleData = moduleDoc.data();
+                            const subtopicsSnapshot = await moduleDoc.ref.collection('subtopics').orderBy('order').get();
+                            const subtopics = subtopicsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                            if (subtopics.length > 0) modules.push({ id: moduleDoc.id, ...moduleData, subtopics });
+                        }
+                        if (modules.length > 0) coursesToDisplay.push({ id: courseDoc.id, ...courseData, modules });
                     }
                 }
 
                 if (coursesToDisplay.length === 0) {
-                    console.log("Nenhum curso disponível para exibir.");
-                    courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
-                    return;
+                    courseMenuContainer.innerHTML = '<p>Nenhum curso disponível para você no momento.</p>'; return;
                 }
 
-                loadedCoursesData = coursesToDisplay;
-                loadedCoursesData.sort((a, b) => a.order - b.order);
-                loadedCoursesData.forEach(course => {
-                    course.modules.sort((a, b) => a.order - b.order);
-                    course.modules.forEach(module => {
-                        module.subtopics.sort((a, b) => a.order - b.order);
-                    });
-                });
+                loadedCoursesData = coursesToDisplay; // Armazena os dados carregados
+                renderCourseMenu(loadedCoursesData); // Renderiza o menu
 
-                console.log("Cursos carregados com sucesso:", loadedCoursesData);
-                renderCourseMenu(loadedCoursesData);
-
-                // Carrega automaticamente o primeiro subtema disponível
-                if (loadedCoursesData.length > 0 && loadedCoursesData[0].modules.length > 0 && loadedCoursesData[0].modules[0].subtopics.length > 0) {
+                // Tenta carregar a primeira aula do primeiro módulo do primeiro curso
+                if (loadedCoursesData[0]?.modules[0]?.subtopics[0]) {
                     const firstCourse = loadedCoursesData[0];
                     const firstModule = firstCourse.modules[0];
                     const firstSubtopic = firstModule.subtopics[0];
-                    console.log("Carregando automaticamente o primeiro subtema:", firstSubtopic);
+                    console.log("Carregando automaticamente o primeiro subtema:", firstSubtopic.id);
                     loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
+                    // Marca o link como ativo
                     const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
                     if (firstSubtopicLink) firstSubtopicLink.classList.add('active');
                 } else {
-                    console.log("Nenhum subtema disponível para carregar automaticamente.");
-                    lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
+                    lessonContentDiv.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
                 }
+
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
-                courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos: ' + error.message + '</p>';
+                courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos. Tente recarregar a página. Detalhes: ${error.message}</p>`;
             }
         }
-
-        function renderCourseMenu(courses) {
-            if (!courseMenuContainer) {
-                console.error("courseMenuContainer não encontrado.");
-                return;
-            }
-            if (!courses || courses.length === 0) {
-                console.log("Nenhum curso para renderizar.");
-                courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
-                return;
-            }
-
+        
+        function renderCourseMenu(courses) { // courses já deve estar ordenado
+            if (!courseMenuContainer) return;
             let htmlContent = '';
             courses.forEach(course => {
                 htmlContent += `
                     <div class="course-item">
                         <div class="course-header" data-course-id="${course.id}">
-                            <span>${course.name}</span>
+                            <span>${course.name || 'Curso Sem Nome'}</span>
                             <span class="toggle-icon">▶</span>
                         </div>
                         <ul class="module-list" id="modules-${course.id}">
-                            ${course.modules.map(module => `
+                            ${(course.modules || []).map(module => `
                                 <li class="module-item">
                                     <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                        <span>${module.name}</span>
+                                        <span>${module.name || 'Módulo Sem Nome'}</span>
                                         <span class="toggle-icon">▶</span>
                                     </div>
                                     <ul class="subtopic-list" id="subtopics-${module.id}">
-                                        ${module.subtopics.map(subtopic => `
+                                        ${(module.subtopics || []).map(subtopic => `
                                             <li class="subtopic-item">
-                                                <a href="#" class="subtopic-link" data-subtopic-id="${subtopic.id}" data-module-id="${module.id}" data-course-id="${course.id}">${subtopic.name}</a>
+                                                <a href="#" class="subtopic-link" 
+                                                   data-subtopic-id="${subtopic.id}" 
+                                                   data-module-id="${module.id}" 
+                                                   data-course-id="${course.id}">
+                                                   ${subtopic.name || 'Aula Sem Nome'}
+                                                </a>
                                             </li>
                                         `).join('')}
                                     </ul>
@@ -951,21 +920,14 @@
                     </div>
                 `;
             });
-
-            courseMenuContainer.innerHTML = htmlContent;
-            console.log("Menu de cursos renderizado com sucesso.");
+            courseMenuContainer.innerHTML = htmlContent || '<p>Nenhum curso para exibir.</p>';
             addMenuEventListeners();
         }
 
         function addMenuEventListeners() {
-            const courseHeaders = document.querySelectorAll('.course-header');
-            const moduleHeaders = document.querySelectorAll('.module-header');
-            const subtopicLinks = document.querySelectorAll('.subtopic-link');
-
-            courseHeaders.forEach(header => {
+            document.querySelectorAll('.course-header').forEach(header => {
                 header.addEventListener('click', () => {
-                    const courseId = header.dataset.courseId;
-                    const moduleList = document.getElementById(`modules-${courseId}`);
+                    const moduleList = header.nextElementSibling; // O UL de módulos
                     const toggleIcon = header.querySelector('.toggle-icon');
                     moduleList.classList.toggle('visible');
                     toggleIcon.classList.toggle('expanded');
@@ -973,10 +935,9 @@
                 });
             });
 
-            moduleHeaders.forEach(header => {
+            document.querySelectorAll('.module-header').forEach(header => {
                 header.addEventListener('click', () => {
-                    const moduleId = header.dataset.moduleId;
-                    const subtopicList = document.getElementById(`subtopics-${moduleId}`);
+                    const subtopicList = header.nextElementSibling; // O UL de subtemas
                     const toggleIcon = header.querySelector('.toggle-icon');
                     subtopicList.classList.toggle('visible');
                     toggleIcon.classList.toggle('expanded');
@@ -984,126 +945,107 @@
                 });
             });
 
-            subtopicLinks.forEach(link => {
+            document.querySelectorAll('.subtopic-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const subtopicId = link.dataset.subtopicId;
-                    const moduleId = link.dataset.moduleId;
-                    const courseId = link.dataset.courseId;
-
-                    document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
+                    const { subtopicId, moduleId, courseId } = link.dataset;
+                    document.querySelectorAll('.subtopic-link.active').forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
-
-                    console.log(`Carregando aula: courseId=${courseId}, moduleId=${moduleId}, subtopicId=${subtopicId}`);
+                    console.log(`Carregando aula: Curso=${courseId}, Módulo=${moduleId}, Subtema=${subtopicId}`);
                     loadLessonContent(courseId, moduleId, subtopicId);
                 });
             });
         }
 
         async function loadLessonContent(courseId, moduleId, subtopicId) {
-            if (!lessonContent) {
-                console.error("lessonContent não encontrado.");
-                return;
-            }
-            lessonContent.innerHTML = '<p>Carregando aula...</p>';
+            if (!lessonContentDiv) return;
+            lessonContentDiv.innerHTML = '<p>Carregando aula...</p>';
             try {
+                // Encontra o subtema nos dados já carregados para obter a content_url
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 const subtopic = module?.subtopics.find(s => s.id === subtopicId);
 
-                console.log("Dados do subtema:", { courseId, moduleId, subtopicId, subtopic });
-
-                if (!course || !module || !subtopic) {
-                    console.error("Aula não encontrada:", { courseId, moduleId, subtopicId });
-                    lessonContent.innerHTML = '<p>Erro: Aula não encontrada.</p>';
+                if (!subtopic || !subtopic.content_url) {
+                    lessonContentDiv.innerHTML = `<p>Conteúdo não disponível para esta aula (ID: ${subtopicId}).</p>`;
+                    console.warn("URL do conteúdo não encontrada para o subtema:", subtopicId, subtopic);
                     return;
                 }
+                
+                console.log("Carregando conteúdo de:", subtopic.content_url);
+                const response = await fetch(subtopic.content_url);
+                if (!response.ok) throw new Error(`Falha ao carregar conteúdo: ${response.status} ${response.statusText}`);
+                const htmlContent = await response.text();
+                lessonContentDiv.innerHTML = htmlContent;
+                console.log("Conteúdo da aula carregado com sucesso.");
 
-                if (subtopic.content_url) {
-                    console.log("Carregando conteúdo de:", subtopic.content_url);
-                    const response = await fetch(subtopic.content_url);
-                    if (!response.ok) throw new Error(`Erro ao carregar o conteúdo: ${response.status}`);
-                    const htmlContent = await response.text();
-                    lessonContent.innerHTML = htmlContent;
-                    console.log("Conteúdo carregado com sucesso.");
-                } else {
-                    console.warn("Subtema sem content_url:", subtopic);
-                    lessonContent.innerHTML = '<p>Conteúdo não disponível para esta aula.</p>';
+                // Comunica o subtopicId para o iframe de questões, se estiver aberto
+                const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
+                if (questoesIframe && questoesIframe.contentWindow) {
+                    // Verifica se o painel de questões está visível (lógica depende de como o injector o controla)
+                    const appContainer = document.getElementById('questoes-app-container'); // ID definido em questoes-injector.js
+                    if (appContainer && (appContainer.style.display === 'flex' || appContainer.style.display === 'block')) {
+                         questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId }, 'https://app-questoes.netlify.app');
+                         console.log('SubtopicId', subtopicId, 'enviado para o painel de questões após carregar aula.');
+                    }
                 }
+
             } catch (error) {
                 console.error('Erro ao carregar conteúdo da aula:', error);
-                lessonContent.innerHTML = '<p>Erro ao carregar a aula: ' + error.message + '</p>';
+                lessonContentDiv.innerHTML = `<p>Erro ao carregar a aula. Tente novamente. Detalhes: ${error.message}</p>`;
             }
         }
 
         // --- Sidebar Toggle ---
         function toggleSidebar() {
-            if (window.innerWidth <= 768) {
-                // Para dispositivos móveis, alternar a visibilidade com a classe 'visible'
-                const isVisible = sidebar.classList.toggle('visible');
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
-            } else {
-                // Para desktop, usar a classe 'hidden'
-                const isHidden = sidebar.classList.toggle('hidden');
-                mainContent.classList.toggle('sidebar-hidden', isHidden);
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
+            if (!sidebar || !mainContent || !sidebarToggleBtn) {
+                console.warn("Elementos da sidebar ou botão de toggle não encontrados.");
+                return;
             }
-            closeAllMegaMenus();
+            if (window.innerWidth <= 768) { // Comportamento mobile
+                const isVisible = sidebar.classList.toggle('visible'); // 'visible' controla a exibição
+                sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰'; 
+            } else { // Comportamento desktop
+                const isHidden = sidebar.classList.toggle('hidden'); // 'hidden' controla a margem do mainContent
+                mainContent.classList.toggle('sidebar-hidden', isHidden);
+                // sidebarToggleBtn.innerHTML = '☰'; // Ícone geralmente não muda no desktop ao esconder
+            }
+            closeAllMegaMenus(); // Fecha mega menus ao interagir com a sidebar
         }
 
-        function updateLayout() {
-            if (window.innerWidth <= 768) {
-                // Em dispositivos móveis, sidebar começa oculta
-                sidebar.classList.remove('hidden');
-                sidebar.classList.remove('visible');
-                mainContent.classList.add('sidebar-hidden');
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
-            } else {
-                // Em desktop, sidebar começa visível
-                sidebar.classList.remove('visible');
-                sidebar.classList.remove('hidden');
-                mainContent.classList.remove('sidebar-hidden');
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
+        function updateLayout() { // Ajusta o layout inicial e em redimensionamento
+            if (!sidebar || !mainContent || !sidebarToggleBtn) {
+                // console.warn("Tentando atualizar layout, mas elementos da sidebar não estão prontos.");
+                return; // Não faz nada se os elementos não estiverem prontos
+            }
+            if (window.innerWidth <= 768) { // Mobile
+                sidebar.classList.remove('hidden'); // Remove classe de desktop
+                if (!sidebar.classList.contains('visible')) { // Se não estiver explicitamente visível
+                    mainContent.classList.add('sidebar-hidden'); // Garante que o conteúdo principal ocupe tudo
+                    sidebarToggleBtn.innerHTML = '☰';
+                } else {
+                     mainContent.classList.remove('sidebar-hidden'); // Se visível, conteúdo principal não ocupa tudo
+                     sidebarToggleBtn.innerHTML = '✖';
+                }
+            } else { // Desktop
+                sidebar.classList.remove('visible'); // Remove classe de mobile
+                if (sidebar.classList.contains('hidden')) {
+                    mainContent.classList.add('sidebar-hidden');
+                } else {
+                    mainContent.classList.remove('sidebar-hidden');
+                }
+                sidebarToggleBtn.innerHTML = '☰'; 
             }
         }
         
         window.addEventListener('resize', updateLayout);
 
-        // --- Floating Tools Panel ---
-        function toggleFloatingToolsPanel() {
-            floatingToolsPanel.classList.toggle('collapsed');
-            document.getElementById('toggleToolsPanelBtn').textContent = floatingToolsPanel.classList.contains('collapsed') ? '+' : '−';
-        }
-
-        function toggleTool(panelIdToShow) {
-            const toolPanels = floatingToolsPanel?.querySelectorAll('.tool-panel') || [];
-            toolPanels.forEach(panel => {
-                panel.style.display = panel.id === panelIdToShow && panel.style.display !== 'block' ? 'block' : 'none';
-            });
-        }
-
-        // --- Música ---
-        let isMusicPlaying = false;
-        function playMusic() {
-            if (!isMusicPlaying && audioPlayer) {
-                audioPlayer.play();
-                isMusicPlaying = true;
-                console.log("Música iniciada.");
-            }
-        }
-        function pauseMusic() {
-            if (isMusicPlaying && audioPlayer) {
-                audioPlayer.pause();
-                isMusicPlaying = false;
-                console.log("Música pausada.");
-            }
-        }
-
-        // --- Inicialização ---
+        // --- Inicialização após DOM carregado ---
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("Página carregada. Inicializando...");
-            updateLayout();
-            if (!auth.currentUser) applySavedPreferences();
+            console.log("Página HTML carregada (DOMContentLoaded). Aguardando header e autenticação...");
+            // A inicialização de eventos do header e `updateLayout` agora ocorrem dentro de `initializeHeaderEvents`,
+            // que é chamada após o fetch do header.html.
+            // A chamada `applySavedPreferences` é feita após a autenticação.
         });
     </script>
 </body>
