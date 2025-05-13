@@ -21,9 +21,29 @@
             --text-muted: #6c757d;
             --border-color: #ccc;
             --light-grey-bg: #f1f1f1;
-            
             --header-bg: #ffffff;
             --header-border: #e7e7e7;
+            --main-content-bg: #ffffff;
+            --code-bg: #f1f1f1;
+            --button-text-dark: #333;
+            --footer-text-muted: #ccc;
+            --footer-link-color: #ccc;
+            --footer-link-hover: var(--accent-1);
+            --footer-separator: #555;
+            --footer-h4: #f1f1f1;
+            --dark-blue-hover: #113a54;
+            --error-color: #D32F2F;
+            --sidebar-bg: #f1f1f1;
+            --sidebar-border: #d4d4d4;
+            --sidebar-link-color: #000;
+            --sidebar-link-hover-bg: #ddd;
+            --sidebar-link-active-bg: #4CAF50;
+            --sidebar-link-active-color: #fff;
+            --floating-panel-bg: #fdfdfd;
+            --floating-panel-border: #ccc;
+            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            --floating-panel-width: 350px;
+            --top-nav-bg: #ffffff;
             --top-nav-link-color: #333;
             --top-nav-link-hover-bg: #f1f1f1;
             --top-nav-link-active-bg: #ddd;
@@ -33,18 +53,6 @@
             --mega-menu-link-color: #212529;
             --mega-menu-link-hover-color: #0056b3;
             --mega-menu-heading-color: #495057;
-            
-            --main-content-bg: #ffffff;
-            --code-bg: #f1f1f1;
-            --button-text-dark: #333;
-            --error-color: #D32F2F;
-            --sidebar-bg: #f1f1f1;
-            --sidebar-border: #d4d4d4;
-            --sidebar-link-color: #000;
-            --sidebar-link-hover-bg: #ddd;
-            --sidebar-link-active-bg: #4CAF50;
-            --sidebar-link-active-color: #fff;
-            /* Variáveis do painel flutuante removidas pois o painel foi removido */
         }
 
         /* --- Dark Mode Variables --- */
@@ -61,9 +69,28 @@
             --text-muted: #8b949e;
             --border-color: #444c56;
             --light-grey-bg: #0d1117;
-
             --header-bg: #161b22;
             --header-border: #30363d;
+            --main-content-bg: #0d1117;
+            --code-bg: #22272e;
+            --button-text-dark: #161b22;
+            --footer-text-muted: #8b949e;
+            --footer-link-color: #8b949e;
+            --footer-link-hover: var(--accent-1);
+            --footer-separator: #30363d;
+            --footer-h4: var(--text-light);
+            --dark-blue-hover: #1a6fba;
+            --error-color: #FF5252;
+            --sidebar-bg: #161b22;
+            --sidebar-border: #30363d;
+            --sidebar-link-color: var(--text-light);
+            --sidebar-link-hover-bg: #22272e;
+            --sidebar-link-active-bg: #007bff;
+            --sidebar-link-active-color: #fff;
+            --floating-panel-bg: #22272e;
+            --floating-panel-border: #30363d;
+            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            --top-nav-bg: #161b22;
             --top-nav-link-color: var(--text-light);
             --top-nav-link-hover-bg: #2d333b;
             --top-nav-link-active-bg: #0d1117;
@@ -73,17 +100,6 @@
             --mega-menu-link-color: #adb5bd;
             --mega-menu-link-hover-color: #dee2e6;
             --mega-menu-heading-color: #ced4da;
-            
-            --main-content-bg: #0d1117;
-            --code-bg: #22272e;
-            --button-text-dark: #161b22;
-            --error-color: #FF5252;
-            --sidebar-bg: #161b22;
-            --sidebar-border: #30363d;
-            --sidebar-link-color: var(--text-light);
-            --sidebar-link-hover-bg: #22272e;
-            --sidebar-link-active-bg: #007bff;
-            --sidebar-link-active-color: #fff;
         }
 
         /* --- Reset e Base --- */
@@ -101,6 +117,110 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        /* --- Header --- */
+        .w3s-header {
+            background-color: var(--header-bg);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 10px 0 0;
+            height: var(--header-height);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 105;
+            border-bottom: 1px solid var(--header-border);
+            gap: 5px;
+        }
+        .w3s-sidebar-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 15px;
+            color: var(--text-dark);
+            line-height: var(--header-height);
+            margin-right: 5px;
+        }
+        .w3s-sidebar-toggle:hover { background-color: var(--light-grey-bg); }
+        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
+        .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
+        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; }
+        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
+
+        /* --- Top Navigation (Esquerda com Dropdowns) --- */
+        .w3s-top-nav { display: flex; align-items: center; height: 100%; margin-left: 10px; position: relative; }
+        .w3s-top-nav button.nav-button {
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 100%;
+            color: var(--top-nav-link-color);
+            font-size: 15px;
+            background-color: transparent;
+            border: none;
+            border-right: 1px solid var(--header-border);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .w3s-top-nav button.nav-button:first-child { border-left: 1px solid var(--header-border); }
+        .w3s-top-nav button.nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
+        .w3s-top-nav button.nav-button.active { background-color: var(--top-nav-link-active-bg); }
+
+        /* --- Mega Menu Panel --- */
+        .mega-menu-panel {
+            display: none;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: 100%;
+            max-height: calc(100vh - var(--header-height));
+            overflow-y: auto;
+            background-color: var(--mega-menu-bg);
+            border-top: 1px solid var(--mega-menu-border);
+            box-shadow: var(--mega-menu-shadow);
+            z-index: 104;
+            padding: 25px 30px;
+        }
+        .mega-menu-panel.active {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
+        .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
+        .mega-menu-column h4 { font-size: 1.1em; color: var(--mega-menu-heading-color); margin: 0 0 15px; padding-bottom: 8px; border-bottom: 1px solid var(--mega-menu-border); }
+        .mega-menu-column a { display: block; color: var(--mega-menu-link-color); text-decoration: none; padding: 6px 0; font-size: 0.95em; transition: color 0.2s; }
+        .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
+
+        /* --- Header Actions (Direita) --- */
+        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px; }
+        .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+        .w3s-header-actions a, .w3s-header-actions button {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; color: #666; }
+        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); }
+        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); }
+        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
+        .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
+        .w3s-header-actions a[title="Guia do Método"] .icon { color: #3fb950; }
+        .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
+        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; }
+        #theme-toggle .icon { font-size: 1.3em; }
+
         /* --- Content Wrapper --- */
         .content-wrapper { display: flex; flex-grow: 1; }
 
@@ -115,21 +235,42 @@
             bottom: 0;
             overflow-y: auto;
             transition: transform 0.3s ease, width 0.3s ease;
-            z-index: 102; 
+            z-index: 102;
             transform: translateX(0);
         }
         .sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-width))); }
-        .sidebar h2 {
-            font-size: 1.3em; color: var(--text-dark); margin: 0;
-            padding: 15px 20px; font-weight: 600;
+        .sidebar h2 { 
+            font-size: 1.3em; 
+            color: var(--text-dark); 
+            margin: 0; 
+            padding: 15px 20px; 
+            font-weight: 600; 
             border-bottom: 1px solid var(--sidebar-border);
-            display: flex; justify-content: flex-start; align-items: center; gap: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+        }
+        /* Esta duplicata de .w3s-sidebar-toggle estava no original, mantendo-a para fidelidade */
+        .w3s-sidebar-toggle { 
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-dark);
+            padding: 0; 
+            line-height: 1; 
         }
         .sidebar-nav { list-style: none; padding: 0; margin: 0; }
         .course-item { margin-bottom: 10px; }
         .course-header {
-            display: flex; align-items: center; padding: 10px 20px; cursor: pointer;
-            color: var(--sidebar-link-color); font-size: 0.95em; font-weight: bold;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: var(--sidebar-link-color);
+            font-size: 0.95em;
+            font-weight: bold;
         }
         .course-header:hover { background-color: var(--sidebar-link-hover-bg); }
         .course-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
@@ -138,8 +279,12 @@
         .module-list.visible { display: block; }
         .module-item { margin-bottom: 5px; }
         .module-header {
-            display: flex; align-items: center; padding: 8px 30px; cursor: pointer;
-            color: var(--sidebar-link-color); font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            padding: 8px 30px;
+            cursor: pointer;
+            color: var(--sidebar-link-color);
+            font-size: 0.95em;
         }
         .module-header:hover { background-color: var(--sidebar-link-hover-bg); }
         .module-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
@@ -147,8 +292,12 @@
         .subtopic-list { list-style: none; padding: 0; margin: 0; display: none; }
         .subtopic-list.visible { display: block; }
         .subtopic-item a {
-            display: block; padding: 8px 40px; color: var(--sidebar-link-color);
-            text-decoration: none; font-size: 0.9em; transition: background-color 0.2s;
+            display: block;
+            padding: 8px 40px;
+            color: var(--sidebar-link-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
         }
         .subtopic-item a:hover { background-color: var(--sidebar-link-hover-bg); }
         .subtopic-item a.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); }
@@ -171,9 +320,83 @@
         .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
         #lessonContent { min-height: 300px; }
 
-        /* --- Estilos do Painel Flutuante de Ferramentas e seus sub-painéis FORAM REMOVIDOS --- */
+        /* --- Floating Tools Panel --- */
+        #floatingToolsPanel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: var(--floating-panel-width);
+            max-height: 80vh;
+            background-color: var(--floating-panel-bg);
+            border: 1px solid var(--floating-panel-border);
+            border-radius: 8px;
+            box-shadow: var(--floating-panel-shadow);
+            z-index: 103;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+            transform: translateY(0);
+            opacity: 1;
+        }
+        #floatingToolsPanel.collapsed { transform: translateY(calc(100% - 50px)); height: 50px; opacity: 0.9; }
+        .tools-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: var(--light-grey-bg); border-bottom: 1px solid var(--floating-panel-border); cursor: pointer; }
+        .tools-panel-header h3 { margin: 0; font-size: 1.1em; color: var(--main-color); }
+        #toggleToolsPanelBtn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-muted); padding: 0 5px; }
+        .tools-panel-content { padding: 15px; overflow-y: auto; flex-grow: 1; }
+        .tool-buttons { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .tool-buttons button {
+            flex-grow: 1;
+            background-color: var(--accent-1);
+            color: var(--button-text-dark);
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 0.9em;
+        }
+        .tool-buttons button:hover { background-color: var(--accent-1-darker); }
 
-        /* --- Estilos do Conteúdo Carregado (aula) --- */
+        /* --- Tool Panels --- */
+        .tool-panel {
+            display: none;
+            border-top: 1px dashed var(--border-color);
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+        .tool-panel h4 { font-size: 1.1em; color: var(--main-color); margin-bottom: 10px; margin-top: 0; }
+        .tool-panel p { font-size: 0.95em; margin-bottom: 10px; color: var(--text-dark); }
+        .tool-panel select, .tool-panel input[type="text"], .tool-panel input[type="number"] {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: var(--main-content-bg);
+            color: var(--text-dark);
+            width: calc(100% - 20px);
+            max-width: 200px;
+        }
+        .tool-panel button {
+            background-color: var(--accent-2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+        }
+        .tool-panel button:hover { background-color: #a05a17; }
+        body.dark-mode .tool-panel button:hover { background-color: #f8961e; }
+        .timer-display { font-size: 1.8em; margin: 15px 0; color: var(--main-color); font-weight: bold; text-align: center; }
+        #pomodoroStatus { font-size: 0.9em; color: var(--text-muted); text-align: center; }
+        #musicPanel p { color: var(--text-dark); }
+        #musicPanel audio { display: none; }
+
+        /* --- Estilos do Conteúdo Carregado --- */
         .module-content { padding: 1rem; color: var(--text-dark); }
         body.dark-mode .module-content { color: var(--text-light); }
         .module-title { color: var(--main-color); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; font-size: 1.5em; }
@@ -190,33 +413,114 @@
         .highlight-blue { color: var(--main-color); }
         .italic { font-style: italic; }
 
-        /* --- Responsividade (geral da página) --- */
+        /* --- Responsividade --- */
         @media screen and (max-width: 992px) {
             :root { --sidebar-width: 200px; }
-            /* Estilos de responsividade para #floatingToolsPanel removidos */
+            .w3s-top-nav button.nav-button { font-size: 14px; padding: 0 8px; }
+            .w3s-header-actions .link-text { display: none; }
+            .w3s-header-actions a, .w3s-header-actions button { padding: 6px 8px; }
+            #floatingToolsPanel { width: 300px; }
+            .mega-menu-column { min-width: 180px; }
         }
         @media screen and (max-width: 768px) {
             :root { --sidebar-width: 240px; }
-            .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); }
+            .sidebar { 
+                transform: translateX(calc(-1 * var(--sidebar-width))); 
+                width: var(--sidebar-width);
+            }
             .sidebar.visible { transform: translateX(0); }
             main { margin-left: 0; }
-            /* Estilos de responsividade para #floatingToolsPanel removidos */
+            .w3s-sidebar-toggle { display: block; } /* Esta regra pode precisar de ajuste se o toggle for só no header */
+            #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
+            .mega-menu-panel { padding: 15px; }
+            .mega-menu-column { min-width: calc(50% - 20px); }
+            .mega-menu-column:not(:last-child) { border-right: none; }
         }
         @media screen and (max-width: 480px) {
-            /* Estilos de responsividade para #floatingToolsPanel e .tool-buttons removidos */
+            #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
+            .tool-buttons button { font-size: 0.85em; padding: 6px 8px; }
+            .mega-menu-column { min-width: 100%; padding: 0; }
         }
     </style>
 </head>
 <body>
     <div id="header-placeholder"></div>
 
+    <div id="megaMenuContainer">
+        <div class="mega-menu-panel" id="cursos-menu">
+            <div class="mega-menu-column">
+                <h4>Direito</h4>
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Direito Administrativo</a>
+                <a href="#">Direito Penal</a>
+                <a href="#">Direito Civil</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Matemática</h4>
+                <a href="#">Matemática Básica</a>
+                <a href="#">Raciocínio Lógico</a>
+                <a href="#">Estatística</a>
+                <a href="#">Matemática Financeira</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Português</h4>
+                <a href="#">Gramática</a>
+                <a href="#">Interpretação de Texto</a>
+                <a href="#">Redação Oficial</a>
+                <a href="#">Literatura</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Informática</h4>
+                <a href="#">Informática Básica</a>
+                <a href="#">Sistemas Operacionais</a>
+                <a href="#">Redes de Computadores</a>
+                <a href="#">Segurança da Informação</a>
+            </div>
+        </div>
+        <div class="mega-menu-panel" id="questoes-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Matemática Básica</a>
+                <a href="#">Português</a>
+                <a href="#">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="#">Polícia Federal</a>
+                <a href="#">INSS</a>
+                <a href="#">Receita Federal</a>
+                <a href="#">Tribunais</a>
+            </div>
+        </div>
+        <div class="mega-menu-panel" id="flashcards-menu">
+            <div class="mega-menu-column">
+                <h4>Por Disciplina</h4>
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Matemática Básica</a>
+                <a href="#">Português</a>
+                <a href="#">Informática</a>
+            </div>
+            <div class="mega-menu-column">
+                <h4>Por Concurso</h4>
+                <a href="#">Polícia Federal</a>
+                <a href="#">INSS</a>
+                <a href="#">Receita Federal</a>
+                <a href="#">Tribunais</a>
+            </div>
+        </div>
+    </div>
+
     <div class="content-wrapper">
         <nav class="sidebar" id="sidebar">
-            <h2>Meus Cursos</h2>
+            <h2>
+                Meus Cursos
+            </h2>
             <div class="sidebar-nav" id="courseMenu">
                 <p>Carregando cursos...</p>
             </div>
         </nav>
+
         <main id="mainContent">
             <div class="container">
                 <div class="study-room-header">
@@ -238,21 +542,25 @@
     </div>
     <script src="questoes-injector.js"></script>
     <script>
+        // Ao clicar no botão QUESTÕES, aciona o app QUESTÕES (já injetado pelo questoes-injector.js)
         document.addEventListener('DOMContentLoaded', function() {
             var btn = document.getElementById('questoesPanelBtn');
             if (btn) {
                 btn.addEventListener('click', function() {
+                    // Simula clique no botão do questoes-injector.js
                     var fab = document.getElementById('questoes-fab');
                     if (fab) fab.click();
                 });
             }
         });
     </script>
+    <div id="floatingToolsPanel" style="display:none;"></div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
+        // --- Carrega o Cabeçalho Dinamicamente ---
         fetch('header.html')
             .then(response => {
                 if (!response.ok) throw new Error(`Erro ao carregar header.html: ${response.status}`);
@@ -260,21 +568,19 @@
             })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
-                // Carregar o JS do header dinamicamente
-                var script = document.createElement('script');
-                script.src = 'header.js';
-                document.body.appendChild(script);
+                initializeHeaderEvents();
             })
             .catch(error => {
                 console.error('Erro ao carregar o header:', error);
                 document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
             });
 
+        // --- Configuração Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
             authDomain: "nvp-concursos.firebaseapp.com",
             projectId: "nvp-concursos",
-            storageBucket: "nvp-concursos.appspot.com",
+            storageBucket: "nvp-concursos.firebasestorage.app", // Ou .appspot.com, verificar no seu console Firebase
             messagingSenderId: "397960760271",
             appId: "1:397960760271:web:1550ff01910ae927d860ba"
         };
@@ -282,40 +588,69 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // --- Variáveis Globais ---
         let userId = null;
         let sidebarToggleBtn = null;
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
+        const floatingToolsPanel = document.getElementById('floatingToolsPanel'); // Referência ao container do painel
         const courseMenuContainer = document.getElementById('courseMenu');
         const lessonContent = document.getElementById('lessonContent');
+        
+        // Estas variáveis eram para o painel de ferramentas; como o HTML dele não está definido, elas seriam null
+        // Se você for adicionar o HTML do painel de ferramentas depois, elas podem ser úteis.
+        const audioPlayer = document.getElementById('audioPlayer'); // Elemento <audio> do painel de ferramentas
+        const pomodoroTimerDisplay = document.getElementById('pomodoroTimer'); // Display de tempo do pomodoro do painel
+        const pomodoroStatus = document.getElementById('pomodoroStatus'); // Status do pomodoro do painel
+        const pomodoroTimeSelect = document.getElementById('pomodoroTime'); // Select de tempo do pomodoro do painel
+        
         const bodyElement = document.body;
         let loadedCoursesData = [];
-        
-        // Variáveis e funções do Painel Flutuante de Ferramentas FORAM REMOVIDAS
 
+        // --- Inicializar Eventos do Header ---
         function initializeHeaderEvents() {
-            sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); 
-            const colorPickerBtn = document.getElementById('color-picker-btn');
-            const logoutBtn = document.getElementById('logout-btn'); 
-            const topNav = document.getElementById('topNav'); 
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            const megaMenuContainer = document.getElementById('megaMenuContainer');
+            sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); // DEVE estar em header.html
+            const colorPickerBtn = document.getElementById('color-picker-btn'); // DEVE estar em header.html
+            const logoutBtn = document.getElementById('logout-btn'); // DEVE estar em header.html
+            const topNav = document.getElementById('topNav'); // DEVE estar em header.html
+            const megaMenuContainer = document.getElementById('megaMenuContainer'); // Está na página principal
+            const themeToggleBtn = document.getElementById('theme-toggle'); // DEVE estar em header.html
 
-            if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', toggleSidebar);
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.addEventListener('click', toggleSidebar);
+            } else {
+                console.warn('Botão sidebarToggleBtn não encontrado no header.html');
+            }
+
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
                     const newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
                     applyTheme(newTheme);
                 });
+            } else {
+                console.warn('Botão theme-toggle não encontrado no header.html');
             }
-            if (colorPickerBtn) colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
-            if (logoutBtn) {
+
+            if (colorPickerBtn) {
+                colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
+            } else {
+                console.warn('Botão color-picker-btn não encontrado no header.html');
+            }
+
+            if (logoutBtn) { // Se o botão de logout for adicionado ao header.html
                 logoutBtn.addEventListener('click', () => {
-                    auth.signOut().then(() => {
-                        console.log('Logout bem-sucedido');
-                        window.location.href = 'index.html';
-                    }).catch(error => console.error('Erro ao fazer logout:', error));
+                    auth.signOut()
+                        .then(() => {
+                            console.log('Logout bem-sucedido');
+                            window.location.href = 'index.html'; // Ou sua página de login
+                        })
+                        .catch(error => {
+                            console.error('Erro ao fazer logout:', error);
+                            alert('Erro ao sair: ' + error.message);
+                        });
                 });
+            } else {
+                 console.warn('Botão logout-btn não encontrado no header.html');
             }
 
             const megaMenuButtons = topNav?.querySelectorAll('button.nav-button[data-target]') || [];
@@ -323,70 +658,76 @@
                 button.addEventListener('click', (event) => {
                     event.stopPropagation();
                     const targetId = button.getAttribute('data-target');
-                    const targetPanel = megaMenuContainer?.querySelector('#' + targetId); 
+                    const targetPanel = megaMenuContainer?.querySelector('#' + targetId); // Procura dentro do container
                     if (!targetPanel) return;
+                    
                     const isCurrentlyActive = targetPanel.classList.contains('active');
-                    closeAllMegaMenus(); 
+                    closeAllMegaMenus(); // Fecha todos os outros e desativa botões
                     if (!isCurrentlyActive) {
                         targetPanel.classList.add('active');
-                        button.classList.add('active');
+                        button.classList.add('active'); // Ativa o botão também
                     }
                 });
             });
-            
+
             document.addEventListener('click', (event) => {
-                const headerPlaceholder = document.getElementById('header-placeholder');
-                if (!headerPlaceholder?.contains(event.target) && !event.target.closest('.nav-button')) {
-                    closeAllMegaMenus();
-                }
+                const clickedInsideMenu = megaMenuContainer?.contains(event.target);
+                const clickedInsideNav = topNav?.contains(event.target);
+                if (!clickedInsideMenu && !clickedInsideNav) closeAllMegaMenus();
             });
-            updateLayout(); 
-            updateLoginLogoutButtonsUI();
+
+            updateLayout(); // Ajusta o layout inicial da sidebar
         }
 
         function closeAllMegaMenus() {
             const megaMenuContainer = document.getElementById('megaMenuContainer');
-            const allMegaPanels = megaMenuContainer?.querySelectorAll('.mega-menu-panel.active') || [];
+            const allMegaPanels = megaMenuContainer?.querySelectorAll('.mega-menu-panel') || [];
             allMegaPanels.forEach(panel => panel.classList.remove('active'));
+
             const topNav = document.getElementById('topNav');
-            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button.active') || [];
+            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
             megaMenuButtons.forEach(btn => btn.classList.remove('active'));
         }
 
+        // --- Autenticação ---
         auth.onAuthStateChanged(user => {
-            if (user) {
-                userId = user.uid;
-                loadCourses();
-                applySavedPreferences();
+            if (!user) {
+                console.log("Usuário não logado, redirecionando para index.html.");
+                // Descomente a linha abaixo se esta página for protegida
+                // window.location.href = 'index.html'; 
             } else {
-                userId = null;
-                clearCourseMenu();
-                applySavedPreferences();
+                userId = user.uid;
+                console.log("Usuário autenticado:", userId);
+                loadCourses(); 
             }
-            updateLoginLogoutButtonsUI();
+            // Aplicar preferências e atualizar UI de login/logout independentemente do redirecionamento
+            applySavedPreferences(); 
+            updateLoginLogoutButtonsUIOriginal(); // Função para atualizar botões de login/logout no header
         });
 
-        function updateLoginLogoutButtonsUI() {
-            const logoutBtnHeader = document.getElementById('logout-btn');
-            const loginBtnHeader = document.getElementById('login-btn');
+        function updateLoginLogoutButtonsUIOriginal() {
+            // Esta função precisa ser adaptada se os botões de login/logout estiverem no header.html
+            // Por enquanto, vamos apenas logar, pois os botões não estão definidos nesta página.
+            const logoutBtnHeader = document.getElementById('logout-btn'); // Tenta pegar do header carregado
+            const loginBtnHeader = document.getElementById('login-btn'); // Tenta pegar do header carregado (se existir)
+
             if (auth.currentUser) {
+                console.log("Usuário está logado. UI de logout deve ser mostrada no header.");
                 if (loginBtnHeader) loginBtnHeader.style.display = 'none';
-                if (logoutBtnHeader) logoutBtnHeader.style.display = 'flex';
+                if (logoutBtnHeader) logoutBtnHeader.style.display = 'flex'; // ou 'inline-flex' ou 'block'
             } else {
+                console.log("Usuário não está logado. UI de login deve ser mostrada no header.");
                 if (loginBtnHeader) loginBtnHeader.style.display = 'flex';
                 if (logoutBtnHeader) logoutBtnHeader.style.display = 'none';
             }
         }
-        
-        function clearCourseMenu() {
-            if(courseMenuContainer) courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
-            if(lessonContent) lessonContent.innerHTML = '<p>Bem-vindo! Selecione uma aula no menu ou faça login.</p>';
-            loadedCoursesData = [];
-        }
+
 
         function applySavedPreferences() {
             const savedMainBgColor = localStorage.getItem('userMainBgColor');
-            if (savedMainBgColor && mainContent) mainContent.style.backgroundColor = savedMainBgColor;
+            if (savedMainBgColor && mainContent) {
+                mainContent.style.backgroundColor = savedMainBgColor;
+            }
             const savedTheme = localStorage.getItem('theme');
             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const themeToApply = savedTheme || (prefersDarkScheme ? 'dark' : 'light');
@@ -395,11 +736,13 @@
 
         function applyTheme(theme) {
             bodyElement.classList.toggle('dark-mode', theme === 'dark');
-            const sunIcon = document.querySelector('.theme-icon-light');
-            const moonIcon = document.querySelector('.theme-icon-dark');
+            const sunIcon = document.querySelector('.theme-icon-light'); // No header
+            const moonIcon = document.querySelector('.theme-icon-dark'); // No header
             if (sunIcon && moonIcon) {
                 sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
                 moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+            } else {
+                 console.warn('Ícones de tema (.theme-icon-light / .theme-icon-dark) não encontrados no header.html carregado.');
             }
             localStorage.setItem('theme', theme);
         }
@@ -420,16 +763,99 @@
         function rgbToHex(rgb) {
             if (!rgb || rgb === '') return '#ffffff';
             const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!rgbMatch) return rgb;
+            if (!rgbMatch) return rgb; 
             const r = parseInt(rgbMatch[1]);
             const g = parseInt(rgbMatch[2]);
             const b = parseInt(rgbMatch[3]);
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
         }
 
+        // --- Carregar Cursos para o Menu Lateral ---
+        async function loadCourses() {
+            // ... (código original de loadCourses) ...
+        }
+        function renderCourseMenu(courses) {
+            // ... (código original de renderCourseMenu) ...
+        }
+        function addMenuEventListeners() {
+            // ... (código original de addMenuEventListeners) ...
+        }
+        async function loadLessonContent(courseId, moduleId, subtopicId) {
+            // ... (código original de loadLessonContent) ...
+        }
+
+        // --- Sidebar Toggle ---
+        function toggleSidebar() {
+            if (window.innerWidth <= 768) {
+                const isVisible = sidebar.classList.toggle('visible');
+                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
+            } else {
+                const isHidden = sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('sidebar-hidden', isHidden);
+                // No desktop, o ícone pode ser sempre '☰' ou mudar também, se desejado.
+                // if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰'; 
+            }
+            closeAllMegaMenus(); 
+        }
+
+        function updateLayout() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('hidden'); 
+                sidebar.classList.remove('visible'); 
+                mainContent.classList.add('sidebar-hidden'); 
+                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
+            } else {
+                sidebar.classList.remove('visible'); 
+                sidebar.classList.remove('hidden'); // Sidebar visível por padrão no desktop
+                mainContent.classList.remove('sidebar-hidden');
+                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰'; 
+            }
+        }
+        window.addEventListener('resize', updateLayout);
+
+        // --- Floating Tools Panel ---
+        // A lógica do painel de ferramentas (toggleFloatingToolsPanel, toggleTool, Música, Pomodoro do painel)
+        // foi mantida como no original, mas o HTML para ele precisa ser carregado ou definido.
+        // Se o HTML do painel de ferramentas não for carregado no #floatingToolsPanel, estas funções
+        // não encontrarão seus elementos e não funcionarão.
+        function toggleFloatingToolsPanel() { /* ... (código original) ... */ }
+        function toggleTool(panelIdToShow) { /* ... (código original) ... */ }
+        // --- Música (do painel de ferramentas) ---
+        let isMusicPlaying = false;
+        function playMusic() { /* ... (código original) ... */ }
+        function pauseMusic() { /* ... (código original) ... */ }
+        // --- Pomodoro (do painel de ferramentas) ---
+        let pomodoroInterval = null;
+        let timeRemaining = 0;
+        let isBreak = false;
+        let initialFocusTime = 25 * 60;
+        function startPomodoro() { /* ... (código original) ... */ }
+        function updatePomodoroTimer() { /* ... (código original) ... */ }
+        function stopPomodoro() { /* ... (código original) ... */ }
+        function formatTime(seconds) { /* ... (código original) ... */ }
+
+
+        // --- Inicialização ---
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Página carregada. Inicializando...");
+            updateLayout();
+            // A função applySavedPreferences é chamada dentro do onAuthStateChanged
+            // para garantir que seja aplicada após o estado de autenticação ser conhecido.
+            // Se precisar aplicar tema imediatamente mesmo sem usuário, chame aqui também:
+             if (!auth.currentUser) {
+                applySavedPreferences();
+                updateLoginLogoutButtonsUIOriginal();
+            }
+            // Se o floatingToolsPanel for carregado dinamicamente, seus event listeners
+            // precisam ser adicionados APÓS o carregamento do seu HTML.
+            // Ex: Se você tiver um botão para mostrar o painel de ferramentas, ele pode estar aqui.
+        });
+
+        // Colando as funções que foram omitidas por "código original" para completude:
         async function loadCourses() {
             if (!userId || !courseMenuContainer) {
-                if (courseMenuContainer) courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
+                console.error("userId ou courseMenuContainer não definidos:", { userId, courseMenuContainer });
+                if(courseMenuContainer) courseMenuContainer.innerHTML = "<p>Faça login para ver seus cursos.</p>";
                 return;
             }
             courseMenuContainer.innerHTML = '<p>Carregando cursos...</p>';
@@ -437,22 +863,24 @@
                 const userDocRef = db.collection('users').doc(userId);
                 const userDoc = await userDocRef.get();
                 let coursesToDisplay = [];
+
                 if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
                     const selectedSubtopics = userDoc.data().selectedSubtopics;
                     for (const selection of selectedSubtopics) {
                         const { courseId, moduleId, subtopicId } = selection;
                         const courseRef = db.collection('courses').doc(courseId);
                         const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) continue; 
+                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} não encontrado.`); continue; }
                         const courseData = courseDoc.data();
                         const moduleRef = courseRef.collection('modules').doc(moduleId);
                         const moduleDoc = await moduleRef.get();
-                        if (!moduleDoc.exists) continue; 
+                        if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} não encontrado.`); continue; }
                         const moduleData = moduleDoc.data();
                         const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
                         const subtopicDoc = await subtopicRef.get();
-                        if (!subtopicDoc.exists) continue; 
+                        if (!subtopicDoc.exists) { console.warn(`Subtópico ${subtopicId} não encontrado.`); continue; }
                         const subtopicData = subtopicDoc.data();
+
                         let course = coursesToDisplay.find(c => c.id === courseId);
                         if (!course) {
                             course = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
@@ -468,157 +896,180 @@
                             content_url: subtopicData.content_url || ''
                         });
                     }
-                } else { 
-                    const coursesSnapshot = await db.collection('courses').orderBy('order').get();
-                    if (coursesSnapshot.empty) { courseMenuContainer.innerHTML = '<p>Nenhum curso cadastrado.</p>'; return; }
+                } else {
+                    const coursesRef = db.collection('courses').orderBy('order');
+                    const coursesSnapshot = await coursesRef.get();
+                    if (coursesSnapshot.empty) { courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>'; return; }
                     for (const courseDoc of coursesSnapshot.docs) {
                         const courseData = courseDoc.data(); const courseId = courseDoc.id; const modules = [];
-                        const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
+                        const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
+                        const modulesSnapshot = await modulesRef.get();
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data(); const moduleId = moduleDoc.id; const subtopics = [];
-                            const subtopicsSnapshot = await moduleDoc.ref.collection('subtopics').orderBy('order').get();
+                            const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
+                            const subtopicsSnapshot = await subtopicsRef.get();
                             subtopicsSnapshot.forEach(subtopicDoc => {
                                 const subtopicData = subtopicDoc.data();
                                 subtopics.push({ id: subtopicDoc.id, name: subtopicData.name || 'Aula s/ Nome', order: subtopicData.order || 0, content_url: subtopicData.content_url || '' });
                             });
-                            modules.push({ id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics });
+                            modules.push({ id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: subtopics });
                         }
-                        coursesToDisplay.push({ id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules });
+                        coursesToDisplay.push({ id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: modules });
                     }
                 }
-                if (coursesToDisplay.length === 0) { courseMenuContainer.innerHTML = '<p>Nenhum curso para exibir.</p>'; return; }
+                if (coursesToDisplay.length === 0) { courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>'; return; }
                 loadedCoursesData = coursesToDisplay;
                 loadedCoursesData.sort((a, b) => a.order - b.order);
-                loadedCoursesData.forEach(c => { c.modules.sort((a,b) => a.order - b.order); c.modules.forEach(m => m.subtopics.sort((a,b) => a.order - b.order)); });
+                loadedCoursesData.forEach(course => { course.modules.sort((a, b) => a.order - b.order); course.modules.forEach(module => { module.subtopics.sort((a, b) => a.order - b.order); }); });
                 renderCourseMenu(loadedCoursesData);
             } catch (error) {
                 console.error('Erro ao carregar cursos:', error);
-                courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos.</p>`;
+                courseMenuContainer.innerHTML = '<p>Erro ao carregar cursos: ' + error.message + '</p>';
             }
         }
-
         function renderCourseMenu(courses) {
-            if (!courseMenuContainer || !courses || courses.length === 0) {
-                if (courseMenuContainer) courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>';
-                return;
-            }
-            let htmlContent = courses.map(course => `
-                <div class="course-item">
-                    <div class="course-header" data-course-id="${course.id}">
-                        <span>${course.name}</span><span class="toggle-icon">▶</span>
-                    </div>
-                    <ul class="module-list" id="modules-${course.id}">
-                        ${course.modules.map(module => `
-                            <li class="module-item">
-                                <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                    <span>${module.name}</span><span class="toggle-icon">▶</span>
-                                </div>
-                                <ul class="subtopic-list" id="subtopics-${module.id}">
-                                    ${module.subtopics.map(subtopic => `
-                                        <li class="subtopic-item">
-                                            <a href="#" class="subtopic-link" data-subtopic-id="${subtopic.id}" data-module-id="${module.id}" data-course-id="${course.id}">${subtopic.name}</a>
-                                        </li>`).join('')}
-                                </ul>
-                            </li>`).join('')}
-                    </ul>
-                </div>`).join('');
+            if (!courseMenuContainer || !courses || courses.length === 0) { if (courseMenuContainer) courseMenuContainer.innerHTML = '<p>Nenhum curso disponível.</p>'; return; }
+            let htmlContent = '';
+            courses.forEach(course => {
+                htmlContent += `
+                    <div class="course-item">
+                        <div class="course-header" data-course-id="${course.id}">
+                            <span>${course.name}</span> <span class="toggle-icon">▶</span>
+                        </div>
+                        <ul class="module-list" id="modules-${course.id}">
+                            ${course.modules.map(module => `
+                                <li class="module-item">
+                                    <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
+                                        <span>${module.name}</span> <span class="toggle-icon">▶</span>
+                                    </div>
+                                    <ul class="subtopic-list" id="subtopics-${module.id}">
+                                        ${module.subtopics.map(subtopic => `
+                                            <li class="subtopic-item">
+                                                <a href="#" class="subtopic-link" data-subtopic-id="${subtopic.id}" data-module-id="${module.id}" data-course-id="${course.id}">${subtopic.name}</a>
+                                            </li>`).join('')}
+                                    </ul>
+                                </li>`).join('')}
+                        </ul>
+                    </div>`;
+            });
             courseMenuContainer.innerHTML = htmlContent;
             addMenuEventListeners();
-            if (courses[0]?.modules[0]?.subtopics[0]) {
-                const firstLink = document.querySelector(`.subtopic-link[data-subtopic-id="${courses[0].modules[0].subtopics[0].id}"]`);
-                if (firstLink) {
-                    firstLink.classList.add('active');
-                    loadLessonContent(courses[0].id, courses[0].modules[0].id, courses[0].modules[0].subtopics[0].id);
+            if (courses.length > 0 && courses[0].modules.length > 0 && courses[0].modules[0].subtopics.length > 0) {
+                const firstCourse = courses[0]; const firstModule = firstCourse.modules[0]; const firstSubtopic = firstModule.subtopics[0];
+                const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
+                if (firstSubtopicLink) {
+                    document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
+                    firstSubtopicLink.classList.add('active');
+                    loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
                 }
             } else {
                 if(lessonContent) lessonContent.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
             }
         }
-
         function addMenuEventListeners() {
-            document.querySelectorAll('.course-header').forEach(header => {
+            const courseHeaders = document.querySelectorAll('.course-header');
+            const moduleHeaders = document.querySelectorAll('.module-header');
+            const subtopicLinks = document.querySelectorAll('.subtopic-link');
+            courseHeaders.forEach(header => {
                 header.addEventListener('click', () => {
-                    header.nextElementSibling.classList.toggle('visible');
-                    const icon = header.querySelector('.toggle-icon');
-                    icon.classList.toggle('expanded');
-                    icon.textContent = icon.classList.contains('expanded') ? '▼' : '▶';
+                    const moduleList = header.nextElementSibling; // .module-list
+                    const toggleIcon = header.querySelector('.toggle-icon');
+                    moduleList.classList.toggle('visible');
+                    toggleIcon.classList.toggle('expanded');
+                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
                 });
             });
-            document.querySelectorAll('.module-header').forEach(header => {
+            moduleHeaders.forEach(header => {
                 header.addEventListener('click', () => {
-                    header.nextElementSibling.classList.toggle('visible');
-                    const icon = header.querySelector('.toggle-icon');
-                    icon.classList.toggle('expanded');
-                    icon.textContent = icon.classList.contains('expanded') ? '▼' : '▶';
+                    const subtopicList = header.nextElementSibling; // .subtopic-list
+                    const toggleIcon = header.querySelector('.toggle-icon');
+                    subtopicList.classList.toggle('visible');
+                    toggleIcon.classList.toggle('expanded');
+                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
                 });
             });
-            document.querySelectorAll('.subtopic-link').forEach(link => {
+            subtopicLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    document.querySelectorAll('.subtopic-link.active').forEach(l => l.classList.remove('active'));
+                    document.querySelectorAll('.subtopic-link').forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
                     loadLessonContent(link.dataset.courseId, link.dataset.moduleId, link.dataset.subtopicId);
                 });
             });
         }
-
         async function loadLessonContent(courseId, moduleId, subtopicId) {
-            if (!lessonContent) return;
+            if (!lessonContent) { console.error("lessonContent não encontrado."); return; }
             lessonContent.innerHTML = '<p>Carregando aula...</p>';
             try {
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 const subtopic = module?.subtopics.find(s => s.id === subtopicId);
-                if (!subtopic || !subtopic.content_url) {
-                    lessonContent.innerHTML = `<p>Conteúdo da aula não encontrado.</p>`;
-                    return;
+                if (!course || !module || !subtopic) { lessonContent.innerHTML = '<p>Erro: Aula não encontrada.</p>'; return; }
+                if (subtopic.content_url) {
+                    const response = await fetch(subtopic.content_url);
+                    if (!response.ok) throw new Error(`Erro ao carregar o conteúdo: ${response.status}`);
+                    const htmlContent = await response.text();
+                    lessonContent.innerHTML = htmlContent;
+                } else {
+                    lessonContent.innerHTML = '<p>Conteúdo não disponível para esta aula.</p>';
                 }
-                const response = await fetch(subtopic.content_url);
-                if (!response.ok) throw new Error(`Erro ${response.status} ao carregar conteúdo.`);
-                lessonContent.innerHTML = await response.text();
             } catch (error) {
                 console.error('Erro ao carregar conteúdo da aula:', error);
-                lessonContent.innerHTML = `<p>Erro ao carregar a aula.</p>`;
+                lessonContent.innerHTML = '<p>Erro ao carregar a aula: ' + error.message + '</p>';
             }
         }
-        
-        function toggleSidebar() {
-            if (!sidebar || !mainContent || !sidebarToggleBtn) return;
-            if (window.innerWidth <= 768) {
-                const isVisible = sidebar.classList.toggle('visible');
-                sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰';
-            } else {
-                const isHidden = sidebar.classList.toggle('hidden');
-                mainContent.classList.toggle('sidebar-hidden', isHidden);
-            }
-            closeAllMegaMenus();
+        // Funções do painel de ferramentas originais
+        function toggleFloatingToolsPanel() {
+            if(floatingToolsPanel) floatingToolsPanel.classList.toggle('collapsed');
+            const btn = document.getElementById('toggleToolsPanelBtn');
+            if(btn && floatingToolsPanel) btn.textContent = floatingToolsPanel.classList.contains('collapsed') ? '+' : '−';
         }
-        function updateLayout() {
-            if (!sidebar || !mainContent) return;
-            if (window.innerWidth <= 768) {
-                sidebar.classList.remove('hidden', 'visible');
-                mainContent.classList.add('sidebar-hidden');
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
-            } else {
-                sidebar.classList.remove('visible');
-                sidebar.classList.remove('hidden'); // Ou defina o estado padrão desejado para desktop
-                mainContent.classList.remove('sidebar-hidden'); // Correspondente ao estado padrão
-                if (sidebarToggleBtn) sidebarToggleBtn.innerHTML = '☰';
-            }
+        function toggleTool(panelIdToShow) {
+            const toolPanels = floatingToolsPanel?.querySelectorAll('.tool-panel') || [];
+            toolPanels.forEach(panel => {
+                panel.style.display = panel.id === panelIdToShow && panel.style.display !== 'block' ? 'block' : 'none';
+            });
         }
-        window.addEventListener('resize', updateLayout);
-
-        // --- Funções do Painel Flutuante de Ferramentas FORAM REMOVIDAS ---
-
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM completamente carregado e parseado (saladeestudos.html).");
-            updateLayout();
-            if (!auth.currentUser) {
-                applySavedPreferences();
-                updateLoginLogoutButtonsUI(); 
+        function playMusic() {
+            if (!isMusicPlaying && audioPlayer) { audioPlayer.play(); isMusicPlaying = true; }
+        }
+        function pauseMusic() {
+            if (isMusicPlaying && audioPlayer) { audioPlayer.pause(); isMusicPlaying = false; }
+        }
+        function startPomodoro() {
+            if (pomodoroInterval) return;
+            const selectedTime = parseInt(pomodoroTimeSelect.value) * 60;
+            timeRemaining = selectedTime; initialFocusTime = selectedTime;
+            isBreak = pomodoroTimeSelect.value !== '25';
+            if(pomodoroStatus) pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
+            updatePomodoroTimer();
+            pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+        }
+        function updatePomodoroTimer() {
+            if (timeRemaining <= 0) {
+                clearInterval(pomodoroInterval); pomodoroInterval = null;
+                if(pomodoroStatus) pomodoroStatus.textContent = 'Concluído!';
+                setTimeout(() => {
+                    timeRemaining = initialFocusTime;
+                    if(pomodoroTimerDisplay) pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+                    if(pomodoroStatus) pomodoroStatus.textContent = isBreak ? 'Pausa' : 'Foco';
+                }, 2000);
+                return;
             }
-            // Chamada para inicializar painel de ferramentas removida
-        });
+            timeRemaining--;
+            if(pomodoroTimerDisplay) pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+        }
+        function stopPomodoro() {
+            clearInterval(pomodoroInterval); pomodoroInterval = null;
+            if(pomodoroTimeSelect) timeRemaining = parseInt(pomodoroTimeSelect.value) * 60;
+            if(pomodoroTimerDisplay) pomodoroTimerDisplay.textContent = formatTime(timeRemaining);
+            if(pomodoroStatus) pomodoroStatus.textContent = 'Foco';
+        }
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
     </script>
 </body>
 </html>
