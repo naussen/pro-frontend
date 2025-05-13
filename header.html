@@ -1,3 +1,4 @@
+<!-- header.html -->
 <header class="w3s-header" id="mainHeader">
     <button id="sidebarToggleBtn" class="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu">☰</button>
     <div class="w3s-logo-area">
@@ -28,9 +29,28 @@
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
         <div class="w3s-header-actions">
+            <!-- Botão Pomodoro -->
+            <button id="pomodoro-header-btn" title="Pomodoro" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
+                <span class="icon">🍅</span>
+            </button>
+            <!-- Dropdown Pomodoro -->
+            <div id="pomodoro-header-dropdown" style="display:none; position:absolute; top:50px; right:160px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
+                <h4 style="margin:0 0 10px 0; color:#4CAF50;">Timer Pomodoro</h4>
+                <select id="pomodoroTimeHeader" style="width:100%; margin-bottom:10px;">
+                    <option value="25">25 minutos (Foco)</option>
+                    <option value="5">5 minutos (Pausa)</option>
+                    <option value="15">15 minutos (Pausa Longa)</option>
+                </select>
+                <button onclick="startPomodoroHeader()" style="margin-right:8px;">Iniciar</button>
+                <button onclick="stopPomodoroHeader()">Parar</button>
+                <div id="pomodoroTimerHeader" style="font-size:1.5em; margin:10px 0; color:#4CAF50; font-weight:bold; text-align:center;">25:00</div>
+                <p id="pomodoroStatusHeader" style="font-size:0.95em; color:#888; text-align:center; margin:0;">Foco</p>
+            </div>
+            <!-- Botão Música -->
             <button id="music-header-btn" title="Música" style="font-size:1.3em; background:none; border:none; cursor:pointer;">
                 <span class="icon">🎵</span>
             </button>
+            <!-- Dropdown Música -->
             <div id="music-header-dropdown" style="display:none; position:absolute; top:50px; right:110px; background:#fff; color:#222; border:1px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.15); padding:18px 22px; z-index:200; min-width:220px;">
                 <h4 style="margin:0 0 10px 0; color:#4CAF50;">Música de Fundo</h4>
                 <p style="margin:0 0 10px 0;">Escolha uma música para relaxar enquanto estuda:</p>
@@ -297,211 +317,6 @@
 </style>
 
 <script>
-<<<<<<< HEAD
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("Header script: DOMContentLoaded disparado. Iniciando configuração...");
-    
-        // --- Elementos Comuns e Função para Fechar Dropdowns ---
-        const loginDropdownPanelForClose = document.getElementById('login-dropdown');
-        const signupDropdownPanelForClose = document.getElementById('signup-dropdown');
-        const pomodoroDropdownHeaderForClose = document.getElementById('pomodoro-header-dropdown');
-        const musicDropdownHeaderForClose = document.getElementById('music-header-dropdown');
-    
-        function closeAllHeaderDropdowns() {
-            // console.log("Header script: closeAllHeaderDropdowns() chamada."); // Log verboso, pode ser comentado depois
-            if (loginDropdownPanelForClose) loginDropdownPanelForClose.style.display = 'none';
-            if (signupDropdownPanelForClose) signupDropdownPanelForClose.style.display = 'none';
-            if (pomodoroDropdownHeaderForClose) pomodoroDropdownHeaderForClose.style.display = 'none';
-            if (musicDropdownHeaderForClose) musicDropdownHeaderForClose.style.display = 'none';
-        }
-    
-        // --- Login/Signup Dropdown Logic ---
-        const loginBtn = document.getElementById('login-btn');
-        const showSignupLink = document.getElementById('show-signup');
-        const showLoginLink = document.getElementById('show-login');
-    
-        console.log("Header script: Verificando elementos de Login/Signup...");
-        console.log("- loginBtn:", loginBtn ? 'Encontrado' : 'NÃO ENCONTRADO');
-        console.log("- loginDropdownPanelForClose:", loginDropdownPanelForClose ? 'Encontrado' : 'NÃO ENCONTRADO');
-        console.log("- signupDropdownPanelForClose:", signupDropdownPanelForClose ? 'Encontrado' : 'NÃO ENCONTRADO');
-    
-        if (loginBtn && loginDropdownPanelForClose && signupDropdownPanelForClose) {
-            loginBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                console.log("Header script: Botão Login/Cadastro (👤) clicado.");
-                const isVisible = loginDropdownPanelForClose.style.display === 'block' || signupDropdownPanelForClose.style.display === 'block';
-                closeAllHeaderDropdowns();
-                if (!isVisible) { // Se nenhum estiver visível, abre o de login por padrão
-                    loginDropdownPanelForClose.style.display = 'block';
-                }
-            });
-            if (showSignupLink) {
-                showSignupLink.addEventListener('click', function(e) {
-                    e.preventDefault(); e.stopPropagation();
-                    closeAllHeaderDropdowns();
-                    signupDropdownPanelForClose.style.display = 'block';
-                });
-            }
-            if (showLoginLink) {
-                showLoginLink.addEventListener('click', function(e) {
-                    e.preventDefault(); e.stopPropagation();
-                    closeAllHeaderDropdowns();
-                    loginDropdownPanelForClose.style.display = 'block';
-                });
-            }
-        } else {
-            console.warn("Header script: Falha ao inicializar completamente a funcionalidade de Login/Signup (elementos faltando).");
-        }
-    
-        // --- Pomodoro do Header ---
-        const pomodoroBtnHeader = document.getElementById('pomodoro-header-btn');
-        const startPomodoroBtnHeader = document.getElementById('startPomodoroHeaderBtn');
-        const stopPomodoroBtnHeader = document.getElementById('stopPomodoroHeaderBtn');
-        const pomodoroTimeSelectHeader = document.getElementById('pomodoroTimeHeader');
-        const pomodoroTimerDisplayHeader = document.getElementById('pomodoroTimerHeader');
-        const pomodoroStatusDisplayHeader = document.getElementById('pomodoroStatusHeader');
-    
-        let pomodoroIntervalInstanceHeader = null;
-        let timeRemainingValueHeader;
-        let isBreakStateHeader = false;
-        let initialFocusDurationHeader;
-    
-        console.log("Header script: Verificando elementos do Pomodoro...");
-        console.log("- pomodoroBtnHeader:", pomodoroBtnHeader ? 'Encontrado' : 'NÃO ENCONTRADO');
-        console.log("- pomodoroDropdownHeaderForClose:", pomodoroDropdownHeaderForClose ? 'Encontrado' : 'NÃO ENCONTRADO');
-        console.log("- startPomodoroBtnHeader:", startPomodoroBtnHeader ? 'Encontrado' : 'NÃO ENCONTRADO');
-    
-    
-        if (pomodoroTimeSelectHeader && pomodoroTimerDisplayHeader) {
-            try {
-                timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
-                initialFocusDurationHeader = timeRemainingValueHeader;
-                pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-                if (pomodoroStatusDisplayHeader) pomodoroStatusDisplayHeader.textContent = "Foco";
-            } catch (e) {
-                console.error("Pomodoro (Header): Erro na inicialização dos valores de tempo.", e);
-                timeRemainingValueHeader = 25 * 60; initialFocusDurationHeader = 25 * 60;
-                if(pomodoroTimerDisplayHeader) pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-            }
-        } else {
-            console.warn("Pomodoro (Header): Elementos de display/select não encontrados na inicialização. O Pomodoro do header pode não funcionar corretamente.");
-        }
-    
-        if (pomodoroBtnHeader && pomodoroDropdownHeaderForClose) {
-            pomodoroBtnHeader.addEventListener('click', function(e) {
-                e.stopPropagation();
-                console.log("Header script: Botão Pomodoro (🍅) CLICADO.");
-                const isVisible = pomodoroDropdownHeaderForClose.style.display === 'block';
-                closeAllHeaderDropdowns(); 
-                if (!isVisible) {
-                    pomodoroDropdownHeaderForClose.style.display = 'block';
-                    console.log("Header script: Dropdown Pomodoro ABERTO.");
-                } else {
-                    console.log("Header script: Dropdown Pomodoro FECHADO (pois já estava aberto).");
-                }
-            });
-            console.log("Header script: Listener para pomodoroBtnHeader ADICIONADO.");
-        } else {
-            console.warn("Header script: Botão principal Pomodoro (pomodoro-header-btn) ou seu dropdown NÃO ENCONTRADOS. Dropdown do Pomodoro não funcionará.");
-        }
-    
-        if (startPomodoroBtnHeader) startPomodoroBtnHeader.addEventListener('click', handleStartPomodoroHeader);
-        if (stopPomodoroBtnHeader) stopPomodoroBtnHeader.addEventListener('click', handleStopPomodoroHeader);
-        if (pomodoroTimeSelectHeader) {
-            pomodoroTimeSelectHeader.addEventListener('change', () => {
-                if (!pomodoroIntervalInstanceHeader) {
-                    if (!pomodoroTimeSelectHeader || !pomodoroTimerDisplayHeader || !pomodoroStatusDisplayHeader) return;
-                    timeRemainingValueHeader = parseInt(pomodoroTimeSelectHeader.value) * 60;
-                    initialFocusDurationHeader = timeRemainingValueHeader;
-                    isBreakStateHeader = pomodoroTimeSelectHeader.value !== '25';
-                    pomodoroTimerDisplayHeader.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-                    pomodoroStatusDisplayHeader.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
-                }
-            });
-        }
-    
-        function formatTimeHeaderInternal(seconds) { /* ... (como antes) ... */ }
-        function handleStartPomodoroHeader() { /* ... (como antes, mas garanta que os logs estão lá) ... */ 
-            if (pomodoroIntervalInstanceHeader) { console.log("Pomodoro (Header): Timer já está rodando."); return; }
-            const sel = document.getElementById('pomodoroTimeHeader'), disp = document.getElementById('pomodoroTimerHeader'), stat = document.getElementById('pomodoroStatusHeader');
-            if (!sel || !disp || !stat) { console.error("Pomodoro (Header): Elementos NÃO ENCONTRADOS para iniciar."); return; }
-            console.log("Pomodoro (Header): FUNÇÃO handleStartPomodoroHeader INICIADA.");
-            timeRemainingValueHeader = parseInt(sel.value) * 60; initialFocusDurationHeader = timeRemainingValueHeader;
-            isBreakStateHeader = sel.value !== '25';
-            stat.textContent = isBreakStateHeader ? 'Pausa' : 'Foco';
-            disp.textContent = formatTimeHeaderInternal(timeRemainingValueHeader);
-            pomodoroIntervalInstanceHeader = setInterval(handleUpdatePomodoroTimerHeader, 1000);
-        }
-        function handleUpdatePomodoroTimerHeader() { /* ... (como antes, com logs e verificações de elementos) ... */ }
-        function handleStopPomodoroHeader() { /* ... (como antes, com logs e verificações de elementos) ... */ }
-        // Cole as definições completas de formatTimeHeaderInternal, handleStartPomodoroHeader, handleUpdatePomodoroTimerHeader, handleStopPomodoroHeader da resposta anterior aqui.
-    
-        // --- Music Logic (Header) ---
-        const musicBtnHeader = document.getElementById('music-header-btn');
-        const playMusicHeaderBtn = document.getElementById('playMusicHeaderBtn');
-        const pauseMusicHeaderBtn = document.getElementById('pauseMusicHeaderBtn');
-        const audioPlayerHeader = document.getElementById('audioPlayerHeader');
-        let isMusicPlayingHeader = false;
-    
-        console.log("Header script: Verificando elementos de Música...");
-        console.log("- musicBtnHeader:", musicBtnHeader ? 'Encontrado' : 'NÃO ENCONTRADO');
-        console.log("- musicDropdownHeaderForClose:", musicDropdownHeaderForClose ? 'Encontrado' : 'NÃO ENCONTRADO');
-        console.log("- playMusicHeaderBtn:", playMusicHeaderBtn ? 'Encontrado' : 'NÃO ENCONTRADO');
-    
-        if (musicBtnHeader && musicDropdownHeaderForClose) {
-            musicBtnHeader.addEventListener('click', function(e) {
-                e.stopPropagation();
-                console.log("Header script: Botão Música (🎵) CLICADO.");
-                const isVisible = musicDropdownHeaderForClose.style.display === 'block';
-                closeAllHeaderDropdowns();
-                if (!isVisible) {
-                    musicDropdownHeaderForClose.style.display = 'block';
-                    console.log("Header script: Dropdown Música ABERTO.");
-                } else {
-                     console.log("Header script: Dropdown Música FECHADO (pois já estava aberto).");
-                }
-            });
-            console.log("Header script: Listener para musicBtnHeader ADICIONADO.");
-        } else {
-            console.warn("Header script: Botão principal Música (music-header-btn) ou seu dropdown NÃO ENCONTRADOS. Dropdown de Música não funcionará.");
-        }
-    
-        if (playMusicHeaderBtn) playMusicHeaderBtn.addEventListener('click', playMusicHeaderInternal);
-        if (pauseMusicHeaderBtn) pauseMusicHeaderBtn.addEventListener('click', pauseMusicHeaderInternal);
-    
-        function playMusicHeaderInternal() { /* ... (como antes) ... */ }
-        function pauseMusicHeaderInternal() { /* ... (como antes) ... */ }
-        // Cole as definições completas de playMusicHeaderInternal e pauseMusicHeaderInternal da resposta anterior aqui.
-    
-    
-        // --- Form Submissions (Placeholder) ---
-        const loginFormElem = document.getElementById('login-form');
-        if (loginFormElem) { /* ... (como antes) ... */ }
-        const signupFormElem = document.getElementById('signup-form');
-        if (signupFormElem) { /* ... (como antes) ... */ }
-        
-        // --- Global click listener para fechar dropdowns do header ---
-        document.addEventListener('click', function(e) {
-            let clickedInsideADropdownOrButton = false;
-            const activeDropdownsAndButtons = [ // Checa apenas os elementos que podem estar ativos/abertos
-                loginBtn, loginDropdownPanelForClose, signupDropdownPanelForClose,
-                pomodoroBtnHeader, pomodoroDropdownHeaderForClose,
-                musicBtnHeader, musicDropdownHeaderForClose
-            ];
-            for (const el of activeDropdownsAndButtons) {
-                if (el && el.contains(e.target)) { // el.contains(e.target) verifica se o clique foi dentro do elemento
-                    clickedInsideADropdownOrButton = true;
-                    break;
-                }
-            }
-            if (!clickedInsideADropdownOrButton) {
-                closeAllHeaderDropdowns();
-            }
-        });
-        console.log("Header script: Configuração do header concluída.");
-    });
-    </script>
-=======
     // Script para gerenciar os dropdowns de login/cadastro
     document.addEventListener('DOMContentLoaded', function() {
         const loginBtn = document.getElementById('login-btn');
@@ -511,11 +326,16 @@
         const showLoginLink = document.getElementById('show-login');
         
         if (loginBtn && loginDropdown) {
+            // Toggle dropdown ao clicar no botão de login
             loginBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const isVisible = loginDropdown.style.display === 'block';
+                
+                // Esconde todos os dropdowns
                 if (loginDropdown) loginDropdown.style.display = 'none';
                 if (signupDropdown) signupDropdown.style.display = 'none';
+                
+                // Mostra o dropdown de login se não estiver visível
                 if (!isVisible) {
                     loginDropdown.style.display = 'block';
                 }
@@ -524,6 +344,7 @@
             console.warn("Botão de Login (#login-btn) ou Dropdown (#login-dropdown) não encontrado no HTML.");
         }
         
+        // Alternar entre login e cadastro
         if (showSignupLink) {
             showSignupLink.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -540,6 +361,7 @@
             });
         }
         
+        // Fecha dropdowns ao clicar fora deles
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.login-container')) {
                 if (loginDropdown) loginDropdown.style.display = 'none';
@@ -547,6 +369,7 @@
             }
         });
         
+        // Processa os formulários
         const loginForm = document.getElementById('login-form');
         const signupForm = document.getElementById('signup-form');
         
@@ -555,8 +378,9 @@
                 e.preventDefault();
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
+                
+                // Aqui você pode adicionar a lógica para autenticação com Firebase
                 console.log('Login com:', email, password);
-                // Lógica de autenticação Firebase aqui
             });
         }
         
@@ -566,18 +390,79 @@
                 const email = document.getElementById('signup-email').value;
                 const password = document.getElementById('signup-password').value;
                 const confirmPassword = document.getElementById('confirm-password').value;
+                
                 if (password !== confirmPassword) {
                     alert('As senhas não coincidem!');
                     return;
                 }
+                
+                // Aqui você pode adicionar a lógica para registro com Firebase
                 console.log('Cadastro com:', email, password);
-                // Lógica de registro Firebase aqui
             });
         }
     });
 
-    // Dropdown Música (Funções globais como no original)
-    const audioPlayerHeader = document.getElementById('audioPlayerHeader'); // Definido aqui para acesso global
+    // Dropdown Pomodoro
+    const pomodoroBtn = document.getElementById('pomodoro-header-btn');
+    const pomodoroDropdown = document.getElementById('pomodoro-header-dropdown');
+    let pomodoroIntervalHeader = null;
+    let timeRemainingHeader = 25 * 60;
+    let isBreakHeader = false;
+    let initialFocusTimeHeader = 25 * 60;
+
+    function formatTimeHeader(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function startPomodoroHeader() {
+        if (pomodoroIntervalHeader) return;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        const selectedTime = parseInt(select.value) * 60;
+        timeRemainingHeader = selectedTime;
+        initialFocusTimeHeader = selectedTime;
+        isBreakHeader = select.value !== '25';
+        status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+        pomodoroIntervalHeader = setInterval(updatePomodoroTimerHeader, 1000);
+    }
+
+    function updatePomodoroTimerHeader() {
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        if (timeRemainingHeader <= 0) {
+            clearInterval(pomodoroIntervalHeader);
+            pomodoroIntervalHeader = null;
+            status.textContent = 'Concluído!';
+            setTimeout(() => {
+                timeRemainingHeader = initialFocusTimeHeader;
+                timer.textContent = formatTimeHeader(timeRemainingHeader);
+                status.textContent = isBreakHeader ? 'Pausa' : 'Foco';
+            }, 2000);
+            return;
+        }
+        timeRemainingHeader--;
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+    }
+
+    function stopPomodoroHeader() {
+        clearInterval(pomodoroIntervalHeader);
+        pomodoroIntervalHeader = null;
+        const select = document.getElementById('pomodoroTimeHeader');
+        const timer = document.getElementById('pomodoroTimerHeader');
+        const status = document.getElementById('pomodoroStatusHeader');
+        timeRemainingHeader = parseInt(select.value) * 60;
+        timer.textContent = formatTimeHeader(timeRemainingHeader);
+        status.textContent = 'Foco';
+    }
+
+    // Dropdown Música
+    const musicBtn = document.getElementById('music-header-btn');
+    const musicDropdown = document.getElementById('music-header-dropdown');
+    const audioPlayerHeader = document.getElementById('audioPlayerHeader');
     let isMusicPlayingHeader = false;
 
     function playMusicHeader() {
@@ -593,20 +478,27 @@
         }
     }
 
-    // Mostrar/ocultar dropdowns Música (Listeners globais como no original)
-    const musicBtn = document.getElementById('music-header-btn');
-    const musicDropdown = document.getElementById('music-header-dropdown');
-    
+    // Mostrar/ocultar dropdowns
+    if (pomodoroBtn && pomodoroDropdown) {
+        pomodoroBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            pomodoroDropdown.style.display = pomodoroDropdown.style.display === 'block' ? 'none' : 'block';
+            musicDropdown.style.display = 'none';
+        });
+    }
     if (musicBtn && musicDropdown) {
         musicBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             musicDropdown.style.display = musicDropdown.style.display === 'block' ? 'none' : 'block';
+            pomodoroDropdown.style.display = 'none';
         });
     }
-    document.addEventListener('click', function(e) { // Fechar ao clicar fora
-        if (musicDropdown && !e.target.closest('#music-header-dropdown') && !e.target.closest('#music-header-btn')) {
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#pomodoro-header-dropdown') && !e.target.closest('#pomodoro-header-btn')) {
+            pomodoroDropdown.style.display = 'none';
+        }
+        if (!e.target.closest('#music-header-dropdown') && !e.target.closest('#music-header-btn')) {
             musicDropdown.style.display = 'none';
         }
     });
 </script>
->>>>>>> c116dff86e61712df0992afff8c90e0abb875ff1

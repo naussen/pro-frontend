@@ -165,10 +165,10 @@ document.addEventListener('click', (e) => {
 
     // Configuração da Sala (Usando o backend)
     const apiUrl = "https://api.proconcursos.com.br/api/sala";
-    let userId = null; // Este userId é local para header.js
+    let userId = null;
 
     async function saveSalaConfig(config) {
-        if (!userId) return; // Precisa do userId do Firebase auth
+        if (!userId) return;
         try {
             const response = await fetch(`${apiUrl}/${userId}`, {
                 method: 'POST',
@@ -183,20 +183,10 @@ document.addEventListener('click', (e) => {
         }
     }
 
-    // Autenticação (header.js tem sua própria escuta de auth state)
+    // Autenticação
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            userId = user.uid; // Define o userId local para saveSalaConfig
-        } else {
-            userId = null;
+            userId = user.uid;
         }
     });
 }
-
-// Se este script for incluído numa página, renderHeader() precisaria ser chamada,
-// por exemplo:
-// if (document.readyState === 'loading') {
-//    document.addEventListener('DOMContentLoaded', renderHeader);
-// } else {
-//    renderHeader();
-// }
