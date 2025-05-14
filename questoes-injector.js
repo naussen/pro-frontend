@@ -90,13 +90,14 @@
             let questionsKeyForApp = null;
             const activeLink = document.querySelector('.subtopic-link.active');
             if (activeLink) {
-                questionsKeyForApp = activeLink.getAttribute('data-questions-key');
-                if (questionsKeyForApp && questionsKeyForApp.trim() !== '') {
-                    iframe.contentWindow.postMessage({ subtopicId: questionsKeyForApp, type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
-                    console.log('Enviando questionsKey para app-questoes:', questionsKeyForApp);
+                // O link ativo deve ter o subtopicId no atributo data-subtopic-id
+                const subtopicIdFromLink = activeLink.getAttribute('data-subtopic-id');
+                if (subtopicIdFromLink && subtopicIdFromLink.trim() !== '') {
+                    iframe.contentWindow.postMessage({ subtopicId: subtopicIdFromLink, type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+                    console.log('Enviando subtopicId para app-questoes:', subtopicIdFromLink);
                 } else {
-                    console.warn("data-questions-key está vazio ou ausente no link ativo.", activeLink);
-                    iframe.contentWindow.postMessage({ subtopicId: null, error: "questionsKey missing or empty", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+                    console.warn("data-subtopic-id está vazio ou ausente no link ativo.", activeLink);
+                    iframe.contentWindow.postMessage({ subtopicId: null, error: "subtopicId missing or empty on active link", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
                 }
             } else {
                 console.log('Nenhum subtopic-link ativo. Enviando null para app-questoes.');
