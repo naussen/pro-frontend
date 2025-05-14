@@ -532,28 +532,33 @@
     <script>
         // Script para o NOVO botão de QUESTÕES acionar o sistema injetado
         document.addEventListener('DOMContentLoaded', function() {
-		const customQuestoesBtn = document.getElementById('proConcursosQuestoesBtn');
-		if (customQuestoesBtn) {
-			customQuestoesBtn.addEventListener('click', function() {
-				if (typeof window.toggleQuestoesAppGlobal === 'function') {
-					window.toggleQuestoesAppGlobal();
-					console.log('Botão de questões personalizado acionou toggleQuestoesAppGlobal().');
-				} else {
-					console.error('Função toggleQuestoesAppGlobal() não encontrada. Verifique questoes-injector.js.');
-					// Fallback para tentar controlar o container diretamente, se necessário
-					const appQuestoesPanel = document.getElementById('questoes-app-container');
-					if (appQuestoesPanel) {
-						const isHidden = appQuestoesPanel.style.display === 'none' || appQuestoesPanel.style.display === '';
-						appQuestoesPanel.style.display = isHidden ? 'flex' : 'none';
-					} else {
-						alert('Sistema de questões não pôde ser iniciado.');
-					}
-				}
-			});
-		} else {
-			console.error('Botão "#proConcursosQuestoesBtn" não encontrado no DOM.');
-		}
-
+            const customQuestoesBtn = document.getElementById('proConcursosQuestoesBtn');
+            
+            if (customQuestoesBtn) {
+                customQuestoesBtn.addEventListener('click', function() {
+                    // O questoes-injector.js deve criar um botão com id 'questoes-fab'
+                    // ou alguma outra função global para mostrar/esconder o painel de questões.
+                    const injectorFabButton = document.getElementById('questoes-fab'); 
+                    
+                    if (injectorFabButton) {
+                        injectorFabButton.click(); // Simula o clique no botão original do injector
+                        console.log('Botão de questões personalizado ("proConcursosQuestoesBtn") acionou o botão injetado ("#questoes-fab").');
+                    } else {
+                        console.error('Botão injetado "#questoes-fab" não encontrado. Verifique se o "questoes-injector.js" está funcionando e criando este elemento, ou se o ID está correto.');
+                        // Como fallback, você poderia tentar controlar o painel diretamente se souber o ID dele:
+                        // const appQuestoesPanel = document.getElementById('questoes-app-container'); // Exemplo de ID do painel
+                        // if (appQuestoesPanel) {
+                        //     const isHidden = appQuestoesPanel.style.display === 'none' || appQuestoesPanel.style.display === '';
+                        //     appQuestoesPanel.style.display = isHidden ? 'flex' : 'none'; // 'flex' é comum para centralizar
+                        //     console.log(isHidden ? 'Painel de questões aberto diretamente.' : 'Painel de questões fechado diretamente.');
+                        // } else {
+                        //     alert('Sistema de questões não pôde ser iniciado.');
+                        // }
+                    }
+                });
+            } else {
+                console.error('Botão "#proConcursosQuestoesBtn" não encontrado no DOM.');
+            }
         });
     </script>
     
@@ -766,210 +771,119 @@
         }
 
         // --- Carregar Cursos para o Menu Lateral ---
-	async function loadCourses() {
-		if (!userId || !courseMenuContainer) {
-			console.error("loadCourses: userId ou courseMenuContainer não definidos.", { userId, courseMenuContainer });
-			if(courseMenuContainer) courseMenuContainer.innerHTML = '<p>Erro: Usuário não identificado ou elemento do menu não encontrado.</p>';
-			return;
-		}
-		courseMenuContainer.innerHTML = '<p>Carregando seus cursos...</p>';
-		try {
-			console.log("Iniciando carregamento de cursos para o usuário:", userId);
-			const userDocRef = db.collection('users').doc(userId);
-			const userDoc = await userDocRef.get();
-			let coursesToDisplay = [];
+        async function loadCourses() {
+            if (!userId || !courseMenuContainer) {
+                console.error("userId ou courseMenuContainer não definidos:", { userId, courseMenuContainer });
+                if(courseMenuContainer) courseMenuContainer.innerHTML = '<p>Erro: Usuário não identificado.</p>';
+                return;
+            }
+            courseMenuContainer.innerHTML = '<p>Carregando seus cursos...</p>';
+            try {
+                console.log("Iniciando carregamento de cursos para o usuário:", userId);
+                const userDocRef = db.collection('users').doc(userId);
+                const userDoc = await userDocRef.get();
+                let coursesToDisplay = [];
 
-			if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
-				console.log("Usuário tem cursos personalizados. Carregando...");
-				const selectedSubtopicsInfo = userDoc.data().selectedSubtopics; // Array de {courseId, moduleId, subtopicId}
-				
-				const structuredSelections = {};
-				for (const selection of selectedSubtopicsInfo) {
-					if (!selection.courseId || !selection.moduleId || !selection.subtopicId) {
-						console.warn("Seleção de subtópico inválida (faltando IDs):", selection);
-						continue;
-					}
-					if (!structuredSelections[selection.courseId]) {
-						structuredSelections[selection.courseId] = { name: '', order: 0, modules: {} };
-					}
-					if (!structuredSelections[selection.courseId].modules[selection.moduleId]) {
-						structuredSelections[selection.courseId].modules[selection.moduleId] = { name: '', order: 0, subtopics: [] };
-					}
-					structuredSelections[selection.courseId].modules[selection.moduleId].subtopics.push(selection.subtopicId);
-				}
+                if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
+                    console.log("Usuário tem cursos personalizados. Carregando...");
+                    const selectedSubtopicsInfo = userDoc.data().selectedSubtopics; // Array de {courseId, moduleId, subtopicId}
+                    
+                    // Agrupa subtemas por curso e módulo para reconstruir a estrutura
+                    const structuredSelections = {};
+                    for (const selection of selectedSubtopicsInfo) {
+                        if (!structuredSelections[selection.courseId]) {
+                            structuredSelections[selection.courseId] = {};
+                        }
+                        if (!structuredSelections[selection.courseId][selection.moduleId]) {
+                            structuredSelections[selection.courseId][selection.moduleId] = [];
+                        }
+                        structuredSelections[selection.courseId][selection.moduleId].push(selection.subtopicId);
+                    }
 
-				for (const courseId in structuredSelections) {
-					const courseRef = db.collection('courses').doc(courseId);
-					const courseDocSnapshot = await courseRef.get();
-					if (!courseDocSnapshot.exists) { console.warn(`Curso ${courseId} (personalizado) não encontrado.`); continue; }
-					const courseData = courseDocSnapshot.data();
-					structuredSelections[courseId].name = courseData.name || 'Curso s/ Nome';
-					structuredSelections[courseId].order = courseData.order || 0;
+                    for (const courseId in structuredSelections) {
+                        const courseRef = db.collection('courses').doc(courseId);
+                        const courseDoc = await courseRef.get();
+                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} (personalizado) não encontrado.`); continue; }
+                        const courseData = courseDoc.data();
+                        const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
 
-					const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
+                        for (const moduleId in structuredSelections[courseId]) {
+                            const moduleRef = courseRef.collection('modules').doc(moduleId);
+                            const moduleDoc = await moduleRef.get();
+                            if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} (personalizado) não encontrado.`); continue; }
+                            const moduleData = moduleDoc.data();
+                            const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
 
-					for (const moduleId in structuredSelections[courseId].modules) {
-						const moduleRef = courseRef.collection('modules').doc(moduleId);
-						const moduleDocSnapshot = await moduleRef.get();
-						if (!moduleDocSnapshot.exists) { console.warn(`Módulo ${moduleId} em Curso ${courseId} (personalizado) não encontrado.`); continue; }
-						const moduleData = moduleDocSnapshot.data();
-						structuredSelections[courseId].modules[moduleId].name = moduleData.name || 'Módulo s/ Nome';
-						structuredSelections[courseId].modules[moduleId].order = moduleData.order || 0;
-						
-						const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
+                            for (const subtopicId of structuredSelections[courseId][moduleId]) {
+                                const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
+                                const subtopicDoc = await subtopicRef.get();
+                                if (!subtopicDoc.exists) { console.warn(`Subtema ${subtopicId} (personalizado) não encontrado.`); continue; }
+                                const subtopicData = subtopicDoc.data();
+                                moduleEntry.subtopics.push({
+                                    id: subtopicId,
+                                    name: subtopicData.name || 'Aula s/ Nome',
+                                    order: subtopicData.order || 0,
+                                    content_url: subtopicData.content_url || ''
+                                });
+                            }
+                            if(moduleEntry.subtopics.length > 0) {
+                                moduleEntry.subtopics.sort((a, b) => a.order - b.order);
+                                courseEntry.modules.push(moduleEntry);
+                            }
+                        }
+                        if(courseEntry.modules.length > 0) {
+                           courseEntry.modules.sort((a, b) => a.order - b.order);
+                           coursesToDisplay.push(courseEntry);
+                        }
+                    }
+                    coursesToDisplay.sort((a,b) => a.order - b.order);
 
-						for (const subtopicId of structuredSelections[courseId].modules[moduleId].subtopics) {
-							const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
-							const subtopicDocSnapshot = await subtopicRef.get();
-							if (!subtopicDocSnapshot.exists) { console.warn(`Subtema ${subtopicId} em Módulo ${moduleId} (personalizado) não encontrado.`); continue; }
-							const subtopicData = subtopicDocSnapshot.data();
-							moduleEntry.subtopics.push({
-								id: subtopicId,
-								name: subtopicData.name || 'Aula s/ Nome',
-								order: subtopicData.order || 0,
-								content_url: subtopicData.content_url || '',
-								questionsKey: subtopicData.chave_questoes_subtopico || null // Certifique-se que este é o nome do campo no Firebase
-							});
-						}
-						if(moduleEntry.subtopics.length > 0) {
-							moduleEntry.subtopics.sort((a, b) => a.order - b.order);
-							courseEntry.modules.push(moduleEntry);
-						}
-					}
-					if(courseEntry.modules.length > 0) {
-						courseEntry.modules.sort((a, b) => a.order - b.order);
-						coursesToDisplay.push(courseEntry);
-					}
-				}
-				coursesToDisplay.sort((a,b) => a.order - b.order);
+                } else { // Carrega todos os cursos se não houver personalização ou se a personalização estiver vazia
+                    console.log("Carregando todos os cursos (sem personalização ou personalização vazia).");
+                    const coursesSnapshot = await db.collection('courses').orderBy('order').get();
+                    if (coursesSnapshot.empty) {
+                        courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>'; return;
+                    }
+                    for (const courseDoc of coursesSnapshot.docs) {
+                        const courseData = courseDoc.data();
+                        const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
+                        const modules = [];
+                        for (const moduleDoc of modulesSnapshot.docs) {
+                            const moduleData = moduleDoc.data();
+                            const subtopicsSnapshot = await moduleDoc.ref.collection('subtopics').orderBy('order').get();
+                            const subtopics = subtopicsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                            if (subtopics.length > 0) modules.push({ id: moduleDoc.id, ...moduleData, subtopics });
+                        }
+                        if (modules.length > 0) coursesToDisplay.push({ id: courseDoc.id, ...courseData, modules });
+                    }
+                }
 
-			} else {
-				console.log("Carregando todos os cursos (sem personalização ou personalização vazia).");
-				const coursesSnapshot = await db.collection('courses').orderBy('order').get();
-				if (coursesSnapshot.empty) {
-					courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>'; return;
-				}
-				for (const courseDoc of coursesSnapshot.docs) {
-					const courseData = courseDoc.data();
-					const courseId = courseDoc.id;
-					const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
-					
-					const modulesSnapshot = await db.collection('courses').doc(courseId).collection('modules').orderBy('order').get();
-					for (const moduleDoc of modulesSnapshot.docs) {
-						const moduleData = moduleDoc.data();
-						const moduleId = moduleDoc.id;
-						const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
+                if (coursesToDisplay.length === 0) {
+                    courseMenuContainer.innerHTML = '<p>Nenhum curso disponível para você no momento.</p>'; return;
+                }
 
-						const subtopicsSnapshot = await db.collection('courses').doc(courseId).collection('modules').doc(moduleId).collection('subtopics').orderBy('order').get();
-						for (const subtopicDoc of subtopicsSnapshot.docs) {
-							const subtopicData = subtopicDoc.data();
-							moduleEntry.subtopics.push({
-								id: subtopicDoc.id,
-								name: subtopicData.name || 'Aula s/ Nome',
-								order: subtopicData.order || 0,
-								content_url: subtopicData.content_url || '',
-								questionsKey: subtopicData.chave_questoes_subtopico || null // Certifique-se que este é o nome do campo no Firebase
-							});
-						}
-						if (moduleEntry.subtopics.length > 0) {
-							 moduleEntry.subtopics.sort((a,b) => a.order - b.order); // Ordena subtemas
-							 courseEntry.modules.push(moduleEntry);
-						}
-					}
-					if (courseEntry.modules.length > 0) {
-						courseEntry.modules.sort((a,b) => a.order - b.order); // Ordena módulos
-						coursesToDisplay.push(courseEntry);
-					}
-				}
-				 coursesToDisplay.sort((a,b) => a.order - b.order); // Ordena cursos
-			}
+                loadedCoursesData = coursesToDisplay; // Armazena os dados carregados
+                renderCourseMenu(loadedCoursesData); // Renderiza o menu
 
-			if (coursesToDisplay.length === 0) {
-				courseMenuContainer.innerHTML = '<p>Nenhum curso disponível para você no momento.</p>'; 
-				lessonContentDiv.innerHTML = '<p>Nenhum conteúdo para exibir.</p>'; // Atualiza também o conteúdo da aula
-				return;
-			}
+                // Tenta carregar a primeira aula do primeiro módulo do primeiro curso
+                if (loadedCoursesData[0]?.modules[0]?.subtopics[0]) {
+                    const firstCourse = loadedCoursesData[0];
+                    const firstModule = firstCourse.modules[0];
+                    const firstSubtopic = firstModule.subtopics[0];
+                    console.log("Carregando automaticamente o primeiro subtema:", firstSubtopic.id);
+                    loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
+                    // Marca o link como ativo
+                    const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
+                    if (firstSubtopicLink) firstSubtopicLink.classList.add('active');
+                } else {
+                    lessonContentDiv.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
+                }
 
-			loadedCoursesData = coursesToDisplay;
-			renderCourseMenu(loadedCoursesData);
-
-			if (loadedCoursesData[0]?.modules[0]?.subtopics[0]) {
-				const firstCourse = loadedCoursesData[0];
-				const firstModule = firstCourse.modules[0];
-				const firstSubtopic = firstModule.subtopics[0];
-				console.log("Carregando automaticamente o primeiro subtema:", firstSubtopic.id);
-				loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
-				
-				// A ativação do link deve ocorrer após a renderização do menu
-				// Este timeout é um workaround para garantir que o DOM esteja atualizado
-				setTimeout(() => {
-					const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
-					if (firstSubtopicLink) {
-						document.querySelectorAll('.subtopic-link.active').forEach(l => l.classList.remove('active'));
-						firstSubtopicLink.classList.add('active');
-					}
-				}, 0);
-
-			} else {
-				lessonContentDiv.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
-			}
-
-		} catch (error) {
-			console.error('Erro detalhado ao carregar cursos:', error);
-			courseMenuContainer.innerHTML = `<p>Erro crítico ao carregar cursos. Verifique o console (F12) para mais detalhes. Mensagem: ${error.message}</p>`;
-		}
-	}
-
-	// A função renderCourseMenu e addMenuEventListeners permanecem como na sua versão mais recente,
-	// desde que `subtopic.questionsKey` esteja sendo corretamente populado em `loadedCoursesData`.
-
-	// A função loadLessonContent também permanece, mas a comunicação com o iframe de questões
-	// agora deve usar o `event.data.type` para maior clareza. (Já ajustado no injector)
-	// No loadLessonContent, a parte de postMessage pode ser simplificada ou removida se o injector já estiver
-	// pegando o subtopic do link ativo quando o iframe pedir.
-	// No entanto, enviar proativamente pode ser útil se o iframe já estiver aberto.
-
-	async function loadLessonContent(courseId, moduleId, subtopicId) {
-		if (!lessonContentDiv) return;
-		lessonContentDiv.innerHTML = '<p>Carregando aula...</p>';
-		try {
-			const course = loadedCoursesData.find(c => c.id === courseId);
-			const module = course?.modules.find(m => m.id === moduleId);
-			const subtopic = module?.subtopics.find(s => s.id === subtopicId);
-
-			if (!subtopic || !subtopic.content_url) {
-				lessonContentDiv.innerHTML = `<p>Conteúdo não disponível para esta aula (ID: ${subtopicId}). Verifique a URL do conteúdo.</p>`;
-				console.warn("URL do conteúdo não encontrada para o subtema:", subtopicId, subtopic);
-				return;
-			}
-			
-			console.log("Carregando conteúdo de:", subtopic.content_url);
-			const response = await fetch(subtopic.content_url);
-			if (!response.ok) throw new Error(`Falha ao carregar conteúdo da URL: ${subtopic.content_url} - Status: ${response.status} ${response.statusText}`);
-			const htmlContent = await response.text();
-			lessonContentDiv.innerHTML = htmlContent;
-			console.log("Conteúdo da aula carregado com sucesso para:", subtopicId);
-
-			// Notifica o iframe de questões sobre a mudança de subtema, caso ele esteja escutando
-			const questoesIframe = document.getElementById('questoes-app-iframe');
-			const questionsKey = subtopic.questionsKey; // A chave correta para as questões
-			
-			if (questoesIframe && questoesIframe.contentWindow && questionsKey) {
-				questoesIframe.contentWindow.postMessage({ type: 'subtopicChanged', subtopicId: questionsKey }, 'https://app-questoes.netlify.app');
-				console.log('Evento subtopicChanged enviado para iframe com questionsKey:', questionsKey);
-			} else if (!questionsKey) {
-				console.warn('QuestionsKey não definida para o subtema:', subtopicId, '. O app de questões não será notificado.');
-				 if (questoesIframe && questoesIframe.contentWindow) {
-					questoesIframe.contentWindow.postMessage({ type: 'subtopicChanged', subtopicId: null, error: 'questionsKey not defined for current lesson' }, 'https://app-questoes.netlify.app');
-				 }
-			}
-
-		} catch (error) {
-			console.error('Erro ao carregar conteúdo da aula:', error);
-			lessonContentDiv.innerHTML = `<p>Erro ao carregar a aula. Tente novamente. Detalhes: ${error.message}</p>`;
-		}
-	}
-
+            } catch (error) {
+                console.error('Erro ao carregar cursos:', error);
+                courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos. Tente recarregar a página. Detalhes: ${error.message}</p>`;
+            }
+        }
         
         function renderCourseMenu(courses) { // courses já deve estar ordenado
             if (!courseMenuContainer) return;
@@ -995,8 +909,7 @@
                                                    data-subtopic-id="${subtopic.id}" 
                                                    data-module-id="${module.id}" 
                                                    data-course-id="${course.id}">
-												   data-questions-key="${subtopic.questionsKey || ''}"> {/* <<< ATRIBUTO ADICIONADO/MODIFICADO */}
-                                                    ${subtopic.name || 'Aula Sem Nome'}
+                                                   ${subtopic.name || 'Aula Sem Nome'}
                                                 </a>
                                             </li>
                                         `).join('')}
