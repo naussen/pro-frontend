@@ -1,35 +1,12 @@
-// Adiciona botão fixo QUESTÕES e container do app React de questões
+// questoe_injector.js
 (function() {
     // Evita múltiplas injeções
-    if (window.__QUESTOES_APP_INJECTED__) return;
-    window.__QUESTOES_APP_INJECTED__ = true;
+    if (window.__QUESTOES_APP_INJECTED_V2__) return; // Use uma nova flag para garantir que esta versão seja carregada
+    window.__QUESTOES_APP_INJECTED_V2__ = true;
 
-    // Cria botão fixo
-    const btn = document.createElement('button');
-    btn.id = 'questoes-fab';
-    btn.innerHTML = 'QUESTÕES';
-    Object.assign(btn.style, {
-        position: 'fixed',
-        bottom: '30px',
-        right: '30px',
-        zIndex: 9999,
-        background: '#D4AC0D',
-        color: '#222',
-        border: 'none',
-        borderRadius: '30px',
-        padding: '16px 28px',
-        fontWeight: 'bold',
-        fontSize: '1.1em',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
-        cursor: 'pointer',
-        transition: 'background 0.2s',
-    });
-    btn.onmouseenter = () => btn.style.background = '#b3910b';
-    btn.onmouseleave = () => btn.style.background = '#D4AC0D';
-
-    // Cria container do app React
+    // Cria container do app React (mantém esta parte)
     const container = document.createElement('div');
-    container.id = 'questoes-app-container';
+    container.id = 'questoes-app-container'; // O ID que o seu botão verde pode usar para controlar
     Object.assign(container.style, {
         display: 'none',
         position: 'fixed',
@@ -38,18 +15,17 @@
         width: '100vw',
         height: '100vh',
         background: 'rgba(0,0,0,0.18)',
-        zIndex: 9998,
+        zIndex: 9998, // Z-index um pouco menor que o botão original, se necessário
         justifyContent: 'center',
         alignItems: 'center',
     });
 
-    // Caixa central do app
     const appBox = document.createElement('div');
     Object.assign(appBox.style, {
         position: 'relative',
         width: 'min(95vw, 900px)',
         height: 'min(90vh, 700px)',
-        background: '#fff',
+        background: '#fff', // Cor de fundo da caixa do app
         borderRadius: '16px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
         overflow: 'hidden',
@@ -57,10 +33,9 @@
         flexDirection: 'column',
     });
 
-    // Botão fechar
-    const closeBtn = document.createElement('button');
-    closeBtn.innerHTML = '✖';
-    Object.assign(closeBtn.style, {
+    const closeBtnInternal = document.createElement('button');
+    closeBtnInternal.innerHTML = '✖';
+    Object.assign(closeBtnInternal.style, {
         position: 'absolute',
         top: '12px',
         right: '18px',
@@ -69,66 +44,65 @@
         fontSize: '1.6em',
         color: '#888',
         cursor: 'pointer',
-        zIndex: 2,
+        zIndex: 10001, // Acima do iframe
     });
-    closeBtn.onclick = toggleQuestoesApp;
-    appBox.appendChild(closeBtn);
+    appBox.appendChild(closeBtnInternal);
 
-    // Iframe do app React
     const iframe = document.createElement('iframe');
     iframe.id = 'questoes-app-iframe';
-    iframe.src = 'https://app-questoes.netlify.app';
+    iframe.src = 'https://app-questoes.netlify.app'; // URL do seu app de questões
     Object.assign(iframe.style, {
         width: '100%',
         height: '100%',
         border: 'none',
-        borderRadius: '16px',
-        background: 'transparent',
+        borderRadius: '16px', // Arredondamento interno se a appBox não tiver overflow:hidden
+        background: 'transparent', // Para a sombra da appBox aparecer
         flex: '1 1 auto',
     });
     appBox.appendChild(iframe);
     container.appendChild(appBox);
-
-    // Função para abrir/fechar
-    function toggleQuestoesApp() {
-        const isOpen = container.style.display === 'flex';
-        container.style.display = isOpen ? 'none' : 'flex';
-        btn.style.background = isOpen ? '#D4AC0D' : '#b3910b';
-    }
-    btn.onclick = toggleQuestoesApp;
-
-    // Adiciona ao body
-    document.body.appendChild(btn);
     document.body.appendChild(container);
 
-    // Fecha ao clicar fora da caixa
+    // Função para abrir/fechar o painel de questões
+    function toggleQuestoesAppVisibility() {
+        const isOpen = container.style.display === 'flex';
+        container.style.display = isOpen ? 'none' : 'flex';
+    }
+    closeBtnInternal.onclick = toggleQuestoesAppVisibility; // Botão de fechar interno
+
+    // Torna a função de toggle acessível globalmente
+    window.toggleQuestoesAppGlobal = toggleQuestoesAppVisibility;
+
+    // Fecha ao clicar fora da caixa do app (no overlay escuro)
     container.addEventListener('click', function(e) {
-        if (e.target === container) toggleQuestoesApp();
+        if (e.target === container) {
+            toggleQuestoesAppVisibility();
+        }
+    });
+    
+    // Listener para fornecer o subtopicId ao iframe (MANTÉM O AJUSTE ANTERIOR)
+    window.addEventListener('message', function(event) {
+        if (event.origin !== 'https://app-questoes.netlify.app') {
+             // Ignora mensagens de origens inesperadas por segurança
+            return;
+        }
+        if (event.data === 'getSubtopicId') {
+            let questionsKeyForApp = null;
+            const activeLink = document.querySelector('.subtopic-link.active');
+            if (activeLink) {
+                questionsKeyForApp = activeLink.getAttribute('data-questions-key');
+                if (questionsKeyForApp && questionsKeyForApp.trim() !== '') {
+                    iframe.contentWindow.postMessage({ subtopicId: questionsKeyForApp, type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+                    console.log('Enviando questionsKey para app-questoes:', questionsKeyForApp);
+                } else {
+                    console.warn("data-questions-key está vazio ou ausente no link ativo.", activeLink);
+                    iframe.contentWindow.postMessage({ subtopicId: null, error: "questionsKey missing or empty", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+                }
+            } else {
+                console.log('Nenhum subtopic-link ativo. Enviando null para app-questoes.');
+                iframe.contentWindow.postMessage({ subtopicId: null, error: "No active subtopic", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+            }
+        }
     });
 
-    // Passa subtopicId para o app React via postMessage
-    window.addEventListener('message', function(event) {
-        // O app React pode pedir o subtopicId
-        if (event.data === 'getSubtopicId') {
-			let questionsKeyForApp = null; // Mudança de nome da variável para clareza
-            const active = document.querySelector('.subtopic-link.active');
-			if (active) {
-				questionsKeyForApp = active.getAttribute('data-questions-key'); // <<< OBTENHA O NOVO ATRIBUTO
-				if (questionsKeyForApp && questionsKeyForApp.trim() !== '') {
-					// Envia a chave correta para o iframe
-					iframe.contentWindow.postMessage({ subtopicId: questionsKeyForApp }, '*');
-					console.log('Enviando questionsKey para app-questoes:', questionsKeyForApp);
-				} else {
-					console.warn("data-questions-key está vazio ou ausente no link ativo. Questões podem não carregar.", active);
-					// Informa o app que a chave está faltando ou é inválida
-					iframe.contentWindow.postMessage({ subtopicId: null, error: "questionsKey missing or empty" }, '*');
-				}
-			} else {
-				console.log('Nenhum subtopic-link ativo encontrado. Enviando null para app-questoes.');
-				// Informa o app que não há subtema ativo
-				iframe.contentWindow.postMessage({ subtopicId: null, error: "No active subtopic" }, '*');
-			}
-		}
-	});
-
-})(); 
+})();
