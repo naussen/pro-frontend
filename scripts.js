@@ -179,6 +179,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Lógica para o botão de Questões
+    const questoesBtn = document.querySelector('.proconcursos-questoes-btn');
+    if (questoesBtn) {
+        questoesBtn.addEventListener('click', () => {
+            if (window.toggleQuestoesAppGlobal) {
+                window.toggleQuestoesAppGlobal();
+            } else {
+                console.warn("Função toggleQuestoesAppGlobal não encontrada. O injetor de questões pode não ter sido carregado.");
+            }
+        });
+    } else {
+        console.warn("Botão de Questões (.proconcursos-questoes-btn) não encontrado.");
+    }
+
+    // Lógica para marcar o link de subtema ativo e preparar para o injetor
+    // NOTA: Certifique-se de que os links de subtema em saladeestudos.html
+    // tenham o atributo 'data-questions-key="SEU_SUBTOPIC_ID"'
+    const subtopicLinks = document.querySelectorAll('.subtopic-item a');
+    if (subtopicLinks.length > 0) {
+        subtopicLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Opcional: e.preventDefault(); // Descomente se não quiser que o link navegue para #
+                
+                // Remover classe 'active' de todos os links de subtema
+                document.querySelectorAll('.subtopic-item a').forEach(otherLink => {
+                    otherLink.classList.remove('active');
+                });
+                
+                // Adicionar classe 'active' ao link clicado
+                link.classList.add('active');
+
+                // O injetor (questoes-injector.js) lerá o data-questions-key deste link ativo
+                const subtopicKey = link.getAttribute('data-questions-key');
+                console.log('Subtopic link clicado:', link.textContent, 'Data-questions-key:', subtopicKey);
+                
+                // Se o injetor já estiver carregado e o subtopicKey existir,
+                // podemos enviar a mensagem imediatamente.
+                // No entanto, o injetor já tem um listener para 'getSubtopicId',
+                // então marcar o link como ativo já deve ser suficiente.
+                // Se precisar forçar o envio, descomente a linha abaixo:
+                // if (window.toggleQuestoesAppGlobal && subtopicKey) {
+                //     window.parent.postMessage({ subtopicId: subtopicKey, type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+                // }
+            });
+        });
+    } else {
+        console.warn("Nenhum link de subtema (.subtopic-item a) encontrado.");
+    }
+
     // Logout (para páginas internas)
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {

@@ -536,24 +536,13 @@
             
             if (customQuestoesBtn) {
                 customQuestoesBtn.addEventListener('click', function() {
-                    // O questoes-injector.js deve criar um botão com id 'questoes-fab'
-                    // ou alguma outra função global para mostrar/esconder o painel de questões.
-                    const injectorFabButton = document.getElementById('questoes-fab'); 
-                    
-                    if (injectorFabButton) {
-                        injectorFabButton.click(); // Simula o clique no botão original do injector
-                        console.log('Botão de questões personalizado ("proConcursosQuestoesBtn") acionou o botão injetado ("#questoes-fab").');
+                    // O questoes-injector.js expõe a função global window.toggleQuestoesAppGlobal
+                    if (window.toggleQuestoesAppGlobal) {
+                        window.toggleQuestoesAppGlobal(); // Chama a função para mostrar/esconder o painel
+                        console.log('Botão de questões personalizado ("proConcursosQuestoesBtn") acionou a função global toggleQuestoesAppGlobal.');
                     } else {
-                        console.error('Botão injetado "#questoes-fab" não encontrado. Verifique se o "questoes-injector.js" está funcionando e criando este elemento, ou se o ID está correto.');
-                        // Como fallback, você poderia tentar controlar o painel diretamente se souber o ID dele:
-                        // const appQuestoesPanel = document.getElementById('questoes-app-container'); // Exemplo de ID do painel
-                        // if (appQuestoesPanel) {
-                        //     const isHidden = appQuestoesPanel.style.display === 'none' || appQuestoesPanel.style.display === '';
-                        //     appQuestoesPanel.style.display = isHidden ? 'flex' : 'none'; // 'flex' é comum para centralizar
-                        //     console.log(isHidden ? 'Painel de questões aberto diretamente.' : 'Painel de questões fechado diretamente.');
-                        // } else {
-                        //     alert('Sistema de questões não pôde ser iniciado.');
-                        // }
+                        console.error('Função global toggleQuestoesAppGlobal não encontrada. Verifique se o "questoes-injector.js" foi carregado corretamente.');
+                        alert('Sistema de questões não pôde ser iniciado. Verifique o console para detalhes.');
                     }
                 });
             } else {
