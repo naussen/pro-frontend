@@ -971,12 +971,9 @@
                 // Comunica o subtopicId para o iframe de questões, se estiver aberto
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
                 if (questoesIframe && questoesIframe.contentWindow) {
-                    // Verifica se o painel de questões está visível (lógica depende de como o injector o controla)
-                    const appContainer = document.getElementById('questoes-app-container'); // ID definido em questoes-injector.js
-                    if (appContainer && (appContainer.style.display === 'flex' || appContainer.style.display === 'block')) {
-                         questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId }, 'https://app-questoes.netlify.app');
-                         console.log('SubtopicId', subtopicId, 'enviado para o painel de questões após carregar aula.');
-                    }
+                    // Envia o subtopicId para o iframe de questões, independentemente da visibilidade do painel
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId }, 'https://app-questoes.netlify.app');
+                    console.log('SubtopicId', subtopicId, 'enviado para o painel de questões após carregar aula.');
                 }
 
             } catch (error) {
