@@ -24,7 +24,7 @@
     Object.assign(appBox.style, {
         position: 'relative',
         width: 'min(117.6vw, 1404px)',
-        height: 'min(95vh, 910px)',
+        height: 'min(90.25vh, 864.5px)',
         background: '#fff', // Cor de fundo da caixa do app
         borderRadius: '16px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
