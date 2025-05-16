@@ -404,32 +404,8 @@ index.html
         </div>
      </section> </main>
 <footer class="footer">
-    <div class="footer-content">
-        <div class="footer-section">
-          <h4>Recursos Adicionais</h4>
-          <ul>
-              <li><a href="#">Questões Comentadas</a></li>
-              <li><a href="#">Mapas Mentais</a></li>
-              <li><a href="#">Legislação Compilada</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Próximos Módulos</h4>
-            <p><a href="#">Direito Administrativo</a></p>
-            <p><a href="#">Português para Concursos</a></p>
-        </div>
-         <div class="footer-section">
-          <h4>Links Úteis</h4>
-          <ul>
-              <li><a href="#">Termos de Uso</a></li>
-              <li><a href="#">Política de Privacidade</a></li>
-              <li><a href="#">Sobre Nós</a></li>
-              <li><a href="#">Mapa do Site</a></li>
-            </ul>
-        </div>
-    </div>
      <div class="footer-copyright">
-        <span>&copy; <?php echo date("Y"); ?> NVP Concursos. Todos os direitos reservados.</span>
+        <span>&copy; <?php echo date("Y"); ?> PRO Concursos. Todos os direitos reservados.</span>
     </div>
 </footer>
 <?php // wp_footer(); ?>
@@ -439,6 +415,168 @@ index.html
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
+        // --- Carrega o Cabeçalho Dinamicamente ---
+        fetch('headerindex.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                initializeHeaderEvents();
+            })
+            .catch(error => console.error('Erro ao carregar o header:', error));
+
+        // --- Configuração Firebase ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+            authDomain: "nvp-concursos.firebaseapp.com",
+            projectId: "nvp-concursos",
+            storageBucket: "nvp-concursos.firebasestorage.app",
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1550ff01910ae927d860ba"
+        };
+        let db;
+        let auth;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            auth = firebase.auth();
+            db = firebase.firestore();
+            console.log("Firebase inicializado com sucesso (Personalizar).");
+        } catch (e) {
+            console.error("Firebase initialization error:", e);
+            alert("Erro crítico ao inicializar a plataforma. A personalização pode não funcionar.");
+            const container = document.getElementById('course-list-container');
+            const confirmButton = document.getElementById('confirm-personalization-btn');
+            if (container) container.innerHTML = '<h2 style="color:var(--error-color)">Erro de Inicialização</h2><p>Não foi possível conectar ao Firebase. Verifique as credenciais e o console (F12).</p>';
+            if (confirmButton) confirmButton.disabled = true;
+        }
+
+        // --- Função para Inicializar Eventos do Header ---
+        function initializeHeaderEvents() {
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            const colorPickerBtn = document.getElementById('color-picker-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const topNav = document.getElementById('topNav');
+            const megaMenuContainer = document.getElementById('megaMenuContainer');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-light') : null;
+            const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.theme-icon-dark') : null;
+
+            // --- Sidebar Toggle (Não necessário nesta página, mas mantido para consistência) ---
+            if (sidebarToggleBtn) {
+                sidebarToggleBtn.addEventListener('click', toggleSidebar);
+            }
+
+            // --- Tema Claro/Escuro ---
+            if (themeToggleBtn) {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+                let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+                applyTheme(currentTheme);
+
+                themeToggleBtn.addEventListener('click', () => {
+                    let newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                });
+
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    if (!localStorage.getItem('theme')) {
+                        applyTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
+
+            // --- Mudar Cor de Fundo ---
+            if (colorPickerBtn) {
+                colorPickerBtn.addEventListener('click', () => {
+                    const colorInput = document.createElement('input');
+                    colorInput.type = 'color';
+                    const mainContent = document.querySelector('main');
+                    const currentMainBg = mainContent.style.backgroundColor;
+                    const defaultColor = getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
+                    colorInput.value = currentMainBg ? rgbToHex(currentMainBg) : defaultColor;
+
+                    colorInput.addEventListener('input', () => {
+                        const color = colorInput.value;
+                        mainContent.style.backgroundColor = color;
+                        localStorage.setItem('userMainBgColor', color);
+                    });
+                    colorInput.click();
+                });
+            }
+
+            // --- Logout ---
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    auth.signOut().then(() => {
+                        window.location.href = 'index.html';
+                    }).catch(error => {
+                        console.error('Erro logout:', error);
+                        alert('Erro ao sair: ' + error.message);
+                    });
+                });
+            }
+
+            // --- Mega Menu Logic ---
+            const megaMenuButtons = topNav ? topNav.querySelectorAll('button.nav-button') : [];
+            const allMegaPanels = megaMenuContainer ? megaMenuContainer.querySelectorAll('.mega-menu-panel') : [];
+            megaMenuButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const targetId = button.getAttribute('data-target');
+                    const targetPanel = document.getElementById(targetId);
+                    if (!targetPanel) return;
+                    const isAlreadyActive = targetPanel.classList.contains('active');
+                    closeAllMegaMenus(targetId);
+                    if (!isAlreadyActive) {
+                        targetPanel.classList.add('active');
+                        button.classList.add('active');
+                    }
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                const clickedInsideMenu = megaMenuContainer && megaMenuContainer.contains(event.target);
+                const clickedInsideNav = topNav && topNav.contains(event.target);
+                if (!clickedInsideMenu && !clickedInsideNav) {
+                    closeAllMegaMenus();
+                }
+            });
+
+            function closeAllMegaMenus(excludePanelId = null) {
+                allMegaPanels.forEach(panel => {
+                    if (panel.id !== excludePanelId) {
+                        panel.classList.remove('active');
+                    }
+                });
+                megaMenuButtons.forEach(btn => {
+                    if (btn.getAttribute('data-target') !== excludePanelId) {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        function applyTheme(theme) {
+            const sunIcon = document.querySelector('.theme-icon-light');
+            const moonIcon = document.querySelector('.theme-icon-dark');
+            document.body.classList.toggle('dark-mode', theme === 'dark');
+            if (sunIcon && moonIcon) {
+                sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+                moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function rgbToHex(rgb) {
+            if (!rgb || rgb === '') return '#ffffff';
+            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!rgbMatch) return rgb;
+            const r = parseInt(rgbMatch[1]);
+            const g = parseInt(rgbMatch[2]);
+            const b = parseInt(rgbMatch[3]);
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        }
     // --- Configuração e Inicialização Firebase ---
      const firebaseConfig = {
         apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // SUBSTITUA POR SEUS VALORES REAIS
