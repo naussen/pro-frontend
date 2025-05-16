@@ -63,6 +63,115 @@
     padding: 0 20px; height: var(--header-height); width: 100%;
     box-sizing: border-box; position: fixed; top: 0; left: 0;
     z-index: 103; border-bottom: 1px solid var(--header-border); gap: 15px;
+        /* Cabeçalho (Estilização mantida para compatibilidade) */
+        .w3s-header {
+            background-color: var(--header-bg);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 10px 0 0;
+            height: var(--header-height);
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 105;
+            border-bottom: 1px solid var(--header-border);
+            gap: 5px;
+        }
+        .w3s-sidebar-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 15px;
+            color: var(--text-dark);
+            line-height: var(--header-height);
+            margin-right: 5px;
+        }
+        .w3s-sidebar-toggle:hover { background-color: var(--light-grey-bg); }
+        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
+        .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
+        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; }
+        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
+
+        /* Top Navigation (Adicionado para consistência com index.html) */
+        .w3s-top-nav { display: flex; align-items: center; height: 100%; margin-left: 10px; position: relative; }
+        .w3s-top-nav button.nav-button {
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 100%;
+            text-decoration: none;
+            color: var(--top-nav-link-color);
+            font-size: 15px;
+            font-family: inherit;
+            background-color: transparent;
+            border: none;
+            border-right: 1px solid var(--header-border);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .w3s-top-nav button.nav-button:first-child { border-left: 1px solid var(--header-border); }
+        .w3s-top-nav button.nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
+        .w3s-top-nav button.nav-button.active { background-color: var(--top-nav-link-active-bg); }
+
+        /* Mega Menu Panel (Adicionado para consistência) */
+        .mega-menu-panel {
+            display: none;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: 100%;
+            max-height: calc(100vh - var(--header-height));
+            overflow-y: auto;
+            background-color: var(--mega-menu-bg);
+            border-top: 1px solid var(--mega-menu-border);
+            box-shadow: var(--mega-menu-shadow);
+            z-index: 104;
+            padding: 25px 30px;
+            box-sizing: border-box;
+        }
+        .mega-menu-panel.active {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
+        .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
+        .mega-menu-column h4 { font-size: 1.1em; color: var(--mega-menu-heading-color); margin-top: 0; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid var(--mega-menu-border); }
+        .mega-menu-column a { display: block; color: var(--mega-menu-link-color); text-decoration: none; padding: 6px 0; font-size: 0.95em; transition: color 0.2s; }
+        .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
+
+        /* Header Actions (Direita) */
+        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px; }
+        .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+        .w3s-header-actions a, .w3s-header-actions button {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s, background-color 0.2s;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; width: 1em; height: 1em; line-height: 1em; text-align: center; color: #666; }
+        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); }
+        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); }
+        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
+        .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
+        .w3s-header-actions a[title="Guia do Método"] .icon { color: #3fb950; }
+        .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
+        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; }
+        #theme-toggle .icon { font-size: 1.3em; }
   }
   .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
   .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
