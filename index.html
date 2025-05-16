@@ -1,757 +1,580 @@
+index.html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Pagamento de Assinatura - PRO Concursos</title>
-  <style>
-    :root {
-      --header-height: 55px;
-      --main-color: #1A5276;
-      --light-highlight-bg: #EAF2F8;
-      --accent-1: #D4AC0D;
-      --accent-1-darker: #b3910b;
-      --accent-2: #CA6F1E;
-      --dark-bg: #154360;
-      --subnav-bg: #282A35;
-      --text-dark: #333;
-      --text-light: #f8f9fa;
-      --text-muted: #6c757d;
-      --border-color: #ccc;
-      --light-grey-bg: #f1f1f1;
-      --header-bg: #ffffff;
-      --header-border: #e7e7e7;
-      --main-content-bg: #ffffff;
-      --code-bg: #f1f1f1;
-      --button-text-dark: #333;
-      --footer-text-muted: #ccc;
-      --footer-link-color: #ccc;
-      --footer-link-hover: var(--accent-1);
-      --footer-separator: #555;
-      --footer-h4: #f1f1f1;
-      --dark-blue-hover: #113a54;
-      --error-color: #D32F2F;
-      --success-color: #2ecc71;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRO Concursos</title>
+<?php // wp_head(); ?>
+<style>
+  :root {
+    --header-height: 55px;
+    /* Paleta Azul/Dourado */
+    --main-color: #1A5276;
+    --light-highlight-bg: #EAF2F8;
+    --accent-1: #D4AC0D;
+    --accent-1-darker: #b3910b; /* Mantive o nome antigo, mas o valor foi usado no hover do botão do dropdown novo */
+    --accent-2: #CA6F1E;
+    --dark-bg: #154360;
+    --subnav-bg: #282A35;
+    --text-dark: #333;
+    --text-light: #f8f9fa;
+    --text-muted: #6c757d;
+    --border-color: #ccc;
+    --light-grey-bg: #f1f1f1;
+    --header-bg: #ffffff;
+    --header-border: #e7e7e7;
+    --main-content-bg: #ffffff;
+    --code-bg: #f1f1f1;
+    --button-text-dark: #333;
+    --footer-text-muted: #ccc;
+    --footer-link-color: #ccc;
+    --footer-link-hover: var(--accent-1);
+    --footer-separator: #555;
+    --footer-h4: #f1f1f1;
+    /* Adicionado para compatibilidade com a regra de hover do botão do dropdown */
+    --dark-blue-hover: #113a54; /* Exemplo, ajuste se necessário */
+  }
 
-    body.dark-mode {
-      --main-color: #6cb6ff;
-      --light-highlight-bg: #2d333b;
-      --accent-1: #e4c05c;
-      --accent-1-darker: #cfae51;
-      --accent-2: #d98234;
-      --dark-bg: #0d1117;
-      --subnav-bg: #22272e;
-      --text-dark: #c9d1d9;
-      --text-light: #f0f6fc;
-      --text-muted: #8b949e;
-      --border-color: #444c56;
-      --light-grey-bg: #0d1117;
-      --header-bg: #161b22;
-      --header-border: #30363d;
-      --main-content-bg: #161b22;
-      --code-bg: #22272e;
-      --button-text-dark: #161b22;
-      --footer-text-muted: #8b949e;
-      --footer-link-color: #8b949e;
-      --footer-link-hover: var(--accent-1);
-      --footer-separator: #30363d;
-      --footer-h4: var(--text-light);
-      --dark-blue-hover: #1a6fba;
-      --error-color: #FF5252;
-      --success-color: #27ae60;
-    }
+  /* --- Estilos Base para Modo Escuro --- */
+  body.dark-mode {
+    --main-color: #6cb6ff; --light-highlight-bg: #2d333b; --accent-1: #e4c05c;
+    --accent-1-darker: #cfae51; --accent-2: #d98234; --dark-bg: #0d1117;
+    --subnav-bg: #22272e; --text-dark: #c9d1d9; --text-light: #f0f6fc;
+    --text-muted: #8b949e; --border-color: #444c56; --light-grey-bg: #0d1117;
+    --header-bg: #161b22; --header-border: #30363d; --main-content-bg: #161b22;
+    --code-bg: #22272e; --button-text-dark: #161b22; --footer-text-muted: #8b949e;
+    --footer-link-color: #8b949e; --footer-link-hover: var(--accent-1);
+    --footer-separator: #30363d; --footer-h4: var(--text-light);
+    --dark-blue-hover: #1a6fba; /* Exemplo modo escuro, ajuste se necessário */
+  }
 
-    html { height: 100%; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      background-color: var(--light-grey-bg);
-      color: var(--text-dark);
-      padding-top: var(--header-height);
-      box-sizing: border-box;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+  /* Estilos Gerais */
+  html { height: 100%; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0;
+    display: flex; flex-direction: column; min-height: 100vh;
+    background-color: var(--light-grey-bg); color: var(--text-dark);
+    padding-top: var(--header-height); box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 
-    .w3s-header {
-      background-color: var(--header-bg);
-      color: var(--text-dark);
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      height: var(--header-height);
-      width: 100%;
-      box-sizing: border-box;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 103;
-      border-bottom: 1px solid var(--header-border);
-      gap: 15px;
+  /* --- Cabeçalho (Homepage Version) --- */
+  .w3s-header {
+    background-color: var(--header-bg); color: var(--text-dark); display: flex; align-items: center;
+    padding: 0 20px; height: var(--header-height); width: 100%;
+    box-sizing: border-box; position: fixed; top: 0; left: 0;
+    z-index: 103; border-bottom: 1px solid var(--header-border); gap: 15px;
+  }
+  .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
+  .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
+  .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif;}
+  .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
+  .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 12px; }
+  .w3s-search-area { display: flex; align-items: center; max-width: 220px; }
+  .w3s-search-area input[type="text"] { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 25px 0 0 25px; font-size: 14px; width: 100%; border-right: none; height: 36px; box-sizing: border-box; background-color: var(--main-content-bg); color: var(--text-dark); }
+  .w3s-search-area input[type="text"]:focus { outline: none; border-color: var(--main-color); }
+  .w3s-search-area button { padding: 0 12px; height: 36px; box-sizing: border-box; background-color: var(--light-grey-bg); border: 1px solid var(--border-color); border-left: none; cursor: pointer; border-radius: 0 25px 25px 0; transition: background-color 0.2s; font-size: 16px; color: var(--text-muted); }
+  .w3s-search-area button:hover { background-color: #ddd; }
+  body.dark-mode .w3s-search-area button:hover { background-color: #2d333b; }
+  .w3s-header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; position: relative; }
+  .w3s-header-actions a, .w3s-header-actions button { color: var(--text-dark); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: color 0.2s, background-color 0.2s; padding: 5px 6px; border-radius: 4px; background: none; border: none; cursor: pointer; }
+  .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; display: inline-block; width: 1em; height: 1em; line-height: 1em; text-align: center; color: #666; }
+  body.dark-mode .w3s-header-actions a, body.dark-mode .w3s-header-actions button { color: var(--text-muted); }
+  body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); }
+  .w3s-header-actions a[title="Assinaturas"] .icon { color: #9763f6; }
+  body.dark-mode .w3s-header-actions a[title="Assinaturas"] .icon { color: #c8a1ff; }
+  .w3s-header-actions a[title="Contato"] .icon { color: var(--main-color); }
+  .w3s-header-actions a[title="Login"] .icon { color: #2a93fb; }
+  body.dark-mode .w3s-header-actions a[title="Login"] .icon { color: #79c0ff; }
+  .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0,0,0,0.03); }
+  body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover { background-color: rgba(255,255,255,0.05);}
+  .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
+  #theme-toggle .icon { font-size: 1.3em; }
+
+  /* Dropdown de Login/Cadastro */
+  .login-dropdown { display: none; position: absolute; top: calc(100% + 5px); right: 0; background-color: var(--header-bg); border: 1px solid var(--header-border); border-radius: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 15px; width: 280px; z-index: 110; }
+  .login-dropdown.active { display: block; }
+  .login-dropdown label { display: block; margin-bottom: 5px; font-size: 0.9em; color: var(--text-muted); font-weight: 500; }
+  .login-dropdown input[type="email"], .login-dropdown input[type="password"], .login-dropdown input[type="text"] { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; background-color: var(--main-content-bg); color: var(--text-dark); }
+  .login-dropdown input[type="email"]:focus, .login-dropdown input[type="password"]:focus, .login-dropdown input[type="text"]:focus { outline: none; border-color: var(--main-color); }
+  .login-dropdown button[type="submit"] { width: 100%; padding: 10px; background-color: var(--main-color); color: var(--text-light); border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.2s; }
+  body.dark-mode .login-dropdown button[type="submit"] { color: var(--button-text-dark); }
+  .login-dropdown button[type="submit"]:hover { background-color: var(--accent-1-darker); } /* Usando a variável existente para hover dourado escuro */
+  body.dark-mode .login-dropdown button[type="submit"]:hover { background-color: #8fceff; }
+  .login-dropdown p { margin-top: 10px; font-size: 0.9em; text-align: center; }
+  .login-dropdown p a { color: var(--main-color); text-decoration: none; font-weight: bold; }
+  .login-dropdown p a:hover { text-decoration: underline; }
+
+  /* --- Conteúdo da Homepage --- */
+  main.homepage-main { flex-grow: 1; background-color: var(--main-content-bg); width: 100%; box-sizing: border-box; }
+  .homepage-section { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+  .homepage-section h2 { text-align: center; font-size: 2.2em; color: var(--main-color); margin-top: 0; margin-bottom: 40px; /* Mais espaço */ }
+
+  /* Banner Assine Já */
+  .hero-banner { background-color: var(--main-color); color: var(--text-light); padding: 60px 20px; text-align: center; }
+  .hero-banner h1 { font-size: 2.8em; margin-top: 0; margin-bottom: 15px; font-weight: 600; }
+  .hero-banner p { font-size: 1.1em; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.9; }
+  .cta-button { display: inline-block; padding: 12px 30px; background-color: var(--accent-1); color: var(--button-text-dark); text-decoration: none; font-size: 1.1em; font-weight: bold; border-radius: 5px; transition: background-color 0.3s, transform 0.2s; }
+  .cta-button:hover { background-color: var(--accent-1-darker); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  body.dark-mode .cta-button { color: var(--button-text-dark);}
+
+  /* Carrossel Cursos (Simulado com Flex + Scroll) */
+    .carousel-container {
+        overflow-x: auto; /* Permite scroll horizontal */
+        padding-bottom: 20px; /* Espaço para barra de scroll não cobrir sombra */
+        margin-left: -20px; /* Compensa padding da section */
+        margin-right: -20px; /* Compensa padding da section */
+        padding-left: 20px; /* Padding inicial */
+        padding-right: 20px; /* Padding final */
     }
-    .w3s-logo-area {
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-    }
-    .w3s-logo-placeholder {
-      width: 35px;
-      height: 35px;
-      margin-right: 8px;
-    }
-    .w3s-logo-placeholder text {
-      font-size: 35px;
-      fill: var(--main-color);
-      font-weight: bold;
-      font-family: sans-serif;
-    }
-    .w3s-logo-placeholder circle {
-      fill: transparent;
-      stroke: var(--main-color);
-      stroke-width: 5;
-    }
-    .w3s-header-right-group {
-      display: flex;
-      align-items: center;
-      margin-left: auto;
-      gap: 12px;
-    }
-    .w3s-header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .w3s-header-actions a,
-    .w3s-header-actions button {
-      color: var(--text-dark);
-      text-decoration: none;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: color 0.2s, background-color 0.2s;
-      padding: 5px 6px;
-      border-radius: 4px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-    .w3s-header-actions a .icon,
-    .w3s-header-actions button .icon {
-      font-size: 1.1em;
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      line-height: 1em;
+    /* Estilo para barra de scroll (opcional) */
+    .carousel-container::-webkit-scrollbar { height: 8px; }
+    .carousel-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
+    body.dark-mode .carousel-container::-webkit-scrollbar-track { background: #2d333b; }
+    .carousel-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px;}
+    body.dark-mode .carousel-container::-webkit-scrollbar-thumb { background: #555; }
+    .carousel-container::-webkit-scrollbar-thumb:hover { background: #aaa; }
+    body.dark-mode .carousel-container::-webkit-scrollbar-thumb:hover { background: #777; }
+
+  .carousel-track {
+      display: inline-flex; /* Faz os itens ficarem em linha */
+      gap: 25px;
+  }
+  .course-card {
+      background-color: var(--header-bg); border: 1px solid var(--header-border);
+      border-radius: 8px; padding: 20px;
+      width: 300px; /* Largura fixa para cada card */
+      flex-shrink: 0; /* Impede que encolham */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08); display: flex; flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .course-card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+  .course-card .icon-placeholder { font-size: 3em; text-align: center; margin-bottom: 15px; color: var(--main-color); }
+  .course-card h3 { margin-top: 0; margin-bottom: 10px; color: var(--main-color); font-size: 1.3em; }
+  .course-card p { font-size: 0.95em; line-height: 1.6; color: var(--text-muted); flex-grow: 1; margin-bottom: 20px; }
+  body.dark-mode .course-card p { color: var(--text-muted); }
+  .course-card a.w3-btn { margin-top: auto; text-align: center; display: block; background-color: var(--accent-1); color: var(--button-text-dark); font-weight: bold; text-decoration: none; border-radius: 5px; padding: 10px 15px; }
+  .course-card a.w3-btn:hover { background-color: var(--accent-1-darker) !important; }
+
+  /*
+  */
+  .news-section { background-color: var(--light-highlight-bg); border-top: 1px solid var(--header-border); border-bottom: 1px solid var(--header-border); }
+  .news-list { list-style: none; padding: 0; margin: 0 0 30px 0; }
+  .news-item { border-bottom: 1px dashed var(--border-color); padding: 15px 0; }
+  .news-item:last-child { border-bottom: none; }
+  .news-item h4 { margin: 0 0 5px 0; }
+  .news-item h4 a { text-decoration: none; color: var(--main-color); font-size: 1.1em; font-weight: 600; }
+  .news-item h4 a:hover { text-decoration: underline; }
+  .news-item .news-meta { font-size: 0.85em; color: var(--text-muted); margin-bottom: 8px; display: block; }
+  .news-item p { margin: 0; font-size: 0.95em; color: var(--text-dark); }
+  .view-all-news { display: block; text-align: center; margin-top: 20px; }
+    /* Botão Ver todas notícias */
+  .view-all-news a.w3-btn { display: inline-block; background-color: var(--main-color); color: var(--text-light); padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; /* Adicionado para consistência */ }
+  body.dark-mode .view-all-news a.w3-btn { color: var(--button-text-dark); }
+  .view-all-news a.w3-btn:hover { background-color: var(--dark-bg) !important; color: var(--text-light) !important; }
+  body.dark-mode .view-all-news a.w3-btn:hover { background-color: #8fceff !important; color: var(--button-text-dark) !important;}
+
+  /* Destaque Logo */
+  .logo-highlight-section {
       text-align: center;
-      color: #666;
-    }
-    body.dark-mode .w3s-header-actions a,
-    body.dark-mode .w3s-header-actions button {
-      color: var(--text-muted);
-    }
-    body.dark-mode .w3s-header-actions a .icon,
-    body.dark-mode .w3s-header-actions button .icon {
-      color: var(--text-muted);
-    }
-    .w3s-header-actions a[title="Contato"] .icon {
-      color: var(--main-color);
-    }
-    .w3s-header-actions a[title="Logout"] .icon {
-      color: #f78166;
-    }
-    .w3s-header-actions a:hover,
-    .w3s-header-actions button:hover {
-      color: var(--main-color);
-      background-color: rgba(0,0,0,0.03);
-    }
-    body.dark-mode .w3s-header-actions a:hover,
-    body.dark-mode .w3s-header-actions button:hover {
-      background-color: rgba(255,255,255,0.05);
-    }
-    .w3s-header-actions a:hover .icon,
-    .w3s-header-actions button:hover .icon {
-      color: var(--main-color);
-    }
-    #theme-toggle .icon {
-      font-size: 1.3em;
-    }
-
-    main {
-      flex-grow: 1;
-      background-color: var(--main-content-bg);
-      width: 100%;
-      box-sizing: border-box;
-      padding: 30px 0;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .payment-section {
-      background-color: var(--header-bg);
-      padding: 30px 40px;
-      border-radius: 8px;
-      border: 1px solid var(--header-border);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-    .payment-section h2 {
-      font-size: 1.8em;
-      color: var(--main-color);
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
-    .payment-section .plan-details {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-      color: var(--text-dark);
-    }
-    .payment-section .plan-details .price {
-      font-weight: bold;
-      color: var(--accent-1-darker);
-      font-size: 1.5em;
-    }
-    .payment-options {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-    .payment-button {
-      display: inline-block;
-      padding: 12px 20px;
-      background-color: var(--main-color);
-      color: var(--text-light);
-      border: none;
-      border-radius: 5px;
-      font-size: 1.1em;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-      text-align: center;
-      text-decoration: none;
-    }
-    body.dark-mode .payment-button {
-      color: var(--button-text-dark);
-    }
-    .payment-button:hover {
-      background-color: var(--dark-blue-hover);
-      transform: translateY(-2px);
-    }
-    .payment-button.mercado-pago {
-      background-color: #009ee3;
-    }
-    .payment-button.mercado-pago:hover {
-      background-color: #0080c1;
-    }
-    .payment-button.paypal {
-      background-color: #ffc107;
-      color: #003087;
-    }
-    .payment-button.paypal:hover {
-      background-color: #e0a800;
-    }
-    .security-note {
-      margin-top: 20px;
-      font-size: 0.9em;
-      color: var(--text-muted);
-    }
-    .security-note i {
-      margin-right: 5px;
-      color: var(--success-color);
-    }
-    .error-message {
-      color: var(--error-color);
-      font-size: 1em;
-      margin-top: 20px;
-      display: none;
-    }
-    .cookie-warning {
-      color: var(--error-color);
-      font-size: 0.9em;
-      margin-top: 10px;
-      display: none;
-    }
-    .cookie-warning a {
-      color: var(--main-color);
-      text-decoration: none;
-    }
-    .cookie-warning a:hover {
-      text-decoration: underline;
-    }
-    .success-message {
-      color: var(--success-color);
-      font-size: 1.2em;
-      margin-top: 20px;
-      display: none;
-      font-weight: bold;
-    }
-    .success-message a {
-      color: var(--main-color);
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .success-message a:hover {
-      text-decoration: underline;
-    }
-
-    .footer {
-      background-color: var(--dark-bg);
-      color: var(--footer-text-muted);
       padding: 30px 20px;
-      text-align: left;
-      width: 100%;
-      box-sizing: border-box;
-      z-index: 101;
-      flex-shrink: 0;
-      margin-top: 40px;
-    }
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-around;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--footer-separator);
-      margin-bottom: 15px;
-    }
-    .footer-section {
-      min-width: 200px;
-      flex-grow: 1;
-    }
-    .footer h4 {
-      color: var(--footer-h4);
-      margin-top: 0;
-      margin-bottom: 15px;
-      border-bottom: 1px solid var(--footer-separator);
-      padding-bottom: 8px;
-      font-size: 1.1em;
-    }
-    .footer ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .footer ul li {
-      margin-bottom: 8px;
-    }
-    .footer ul li a,
-    .footer-section p a {
-      color: var(--footer-link-color);
-      text-decoration: none;
-      font-size: 0.9em;
-      transition: color 0.3s;
-    }
-    .footer ul li a:hover,
-    .footer-section p a:hover {
-      color: var(--footer-link-hover);
-    }
-    .footer-section p {
-      color: var(--footer-link-color);
-      font-size: 0.9em;
-      margin: 0 0 8px 0;
-      line-height: 1.5;
-    }
-    .footer-copyright {
-      text-align: center;
-      font-size: 0.85em;
-      color: #a8c0d1;
-      width: 100%;
-      padding-top: 15px;
-    }
-    body.dark-mode .footer-copyright {
-      color: var(--text-muted);
-    }
-    .footer-copyright a {
-      color: var(--footer-link-color);
-    }
-    .footer-copyright a:hover {
-      color: var(--footer-link-hover);
-    }
+      background-color: var(--light-grey-bg); /* Ou outra cor sutil */
+      border-top: 1px solid var(--header-border);
+        border-bottom: 1px solid var(--header-border);
+  }
+  .logo-highlight-section svg {
+      width: 100px; /* Tamanho maior */
+      height: 100px;
+  }
 
+  /* Como Funciona? */
+  .steps-grid { /* Usando flex para alinhar horizontalmente */
+      display: flex;
+      flex-wrap: wrap; /* Quebra em telas menores */
+      gap: 25px;
+      justify-content: center;
+  }
+  .step-card { /* Pode reutilizar .course-card ou ter estilo próprio */
+      background-color: var(--header-bg); border: 1px solid var(--header-border);
+      border-radius: 8px; padding: 20px;
+      width: calc(33.333% - 30px); min-width: 280px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08); display: flex; flex-direction: column;
+      text-align: center;
+  }
+  .step-card .icon-placeholder { font-size: 2.5em; margin-bottom: 10px; color: var(--main-color); font-weight: bold;}
+  .step-card h3 { margin-top: 0; margin-bottom: 10px; color: var(--main-color); font-size: 1.2em; }
+  .step-card p { font-size: 0.95em; line-height: 1.6; color: var(--text-muted); flex-grow: 1; }
+    body.dark-mode .step-card p { color: var(--text-muted); }
+
+  /* --- Rodapé --- */
+  .footer { background-color: var(--dark-bg); color: var(--footer-text-muted); padding: 30px 20px; text-align: left; width: 100%; box-sizing: border-box; z-index: 101; flex-shrink: 0; }
+  .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap; gap: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--footer-separator); margin-bottom: 15px; }
+  .footer-section { min-width: 200px; flex-grow: 1; }
+  .footer h4 { color: var(--footer-h4); margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid var(--footer-separator); padding-bottom: 8px; font-size: 1.1em; }
+  .footer ul { list-style: none; padding: 0; margin: 0; }
+  .footer ul li { margin-bottom: 8px; }
+  .footer ul li a, .footer-section p a { color: var(--footer-link-color); text-decoration: none; font-size: 0.9em; transition: color 0.3s; }
+  .footer ul li a:hover, .footer-section p a:hover { color: var(--footer-link-hover); }
+  .footer-section p { color: var(--footer-link-color); font-size: 0.9em; margin: 0 0 8px 0; line-height: 1.5; }
+  .footer-copyright { text-align: center; font-size: 0.85em; color: #a8c0d1; width: 100%; padding-top: 15px; }
+  body.dark-mode .footer-copyright { color: var(--text-muted); }
+  .footer-copyright a { color: var(--footer-link-color); }
+  .footer-copyright a:hover { color: var(--footer-link-hover); }
+
+  /* --- Responsividade Homepage --- */
+  @media screen and (max-width: 1100px) {
+      .w3s-header-actions a[title="Contato"] { display: none; }
+      .w3s-search-area { max-width: 200px; }
+      .w3s-header { gap: 15px; }
+  }
     @media screen and (max-width: 992px) {
-      .w3s-header-right-group {
-        gap: 10px;
-      }
-      .w3s-header-actions {
-        gap: 8px;
-      }
-      .w3s-header-actions a span.link-text {
-        display: none;
-      }
-      .w3s-header {
-        gap: 10px;
-        padding: 0 10px;
-      }
-      .container {
-        max-width: 95%;
-      }
+      /* .w3s-nav-main já escondido */
+      .w3s-search-area { max-width: 180px; }
+      .w3s-header-right-group { gap: 10px; }
+      .w3s-header-actions { gap: 8px; }
+      .w3s-header-actions a span.link-text { display: none; } /* Esconde texto dos links no header */
+      .w3s-header { gap: 10px; padding: 0 10px; }
+      .course-card, .step-card { width: calc(50% - 30px); } /* 2 colunas */
     }
     @media screen and (max-width: 768px) {
-      .w3s-header {
-        height: 50px;
-      }
-      body {
-        padding-top: 50px;
-      }
-      main {
-        padding: 20px 0;
-      }
-      .container {
-        padding: 0 15px;
-      }
-      .payment-section {
-        padding: 20px;
-      }
-      .payment-section h2 {
-        font-size: 1.6em;
-      }
-      .payment-options {
-        flex-direction: column;
-        gap: 15px;
-      }
-      .payment-button {
-        width: 100%;
-        max-width: 300px;
-        margin: 0 auto;
-      }
-      .footer-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-      .footer-section {
-        min-width: unset;
-        width: 80%;
-        margin-bottom: 15px;
-      }
+      .w3s-header { height: 50px; }
+      body { padding-top: 50px; } /* Ajusta padding para novo header */
+
+      .hero-banner h1 { font-size: 2em;}
+      .hero-banner p { font-size: 1em;}
+      .homepage-section h2 { font-size: 1.8em;}
+      .course-card, .step-card { width: calc(100% - 20px); min-width: unset; } /* 1 coluna, remove min-width */
+      .steps-grid { flex-direction: column; align-items: center;} /* Empilha Como Funciona */
+
+      .footer-content { flex-direction: column; align-items: center; text-align: center; }
+      .footer-section { min-width: unset; width: 80%; margin-bottom: 15px;}
     }
     @media screen and (max-width: 480px) {
-      .payment-section .plan-details {
-        font-size: 1em;
-      }
-      .payment-section .plan-details .price {
-        font-size: 1.3em;
-      }
+        .w3s-search-area { display: none; }
+        .w3s-header-right-group { margin-left: auto; }
+        .hero-banner { padding: 40px 15px;}
+        .hero-banner h1 { font-size: 1.6em;}
+        .login-dropdown { /* Ajusta dropdown em telas pequenas */
+            width: 90%;
+            right: 5%;
+            left: 5%;
+        }
     }
-  </style>
+
+</style>
 </head>
-<body>
+<body <?php // body_class(); ?>>
 
 <header class="w3s-header" id="mainHeader">
-  <div class="w3s-logo-area">
-    <a href="index.html" title="Página Inicial">
-      <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="48"/>
-        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
-      </svg>
-    </a>
-  </div>
-  <div class="w3s-header-right-group">
-    <div class="w3s-header-actions">
-      <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
-        <span class="icon theme-icon-light">☀️</span>
-        <span class="icon theme-icon-dark" style="display: none;">🌙</span>
-      </button>
-      <a href="#" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">Contato</span></a>
-      <button id="logout-btn" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></button>
+    <div class="w3s-logo-area">
+      <a href="#" title="Página Inicial">
+        <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48"/>
+            <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
+        </svg>
+      </a>
     </div>
-  </div>
+    <div class="w3s-header-right-group">
+        <div class="w3s-search-area">
+            <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
+            <button type="submit" aria-label="Buscar">🔍</button>
+        </div>
+        <div class="w3s-header-actions">
+            <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                <span class="icon theme-icon-light">☀️</span>
+                <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+            </button>
+            <a href="#" title="Assinaturas"><span class="icon">➕</span> <span class="link-text">Assinaturas</span></a>
+            <a href="#" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">Contato</span></a>
+            <div style="position: relative;">
+                <button id="login-btn" title="Login"><span class="icon">👤</span> <span class="link-text">Login</span></button>
+                <div id="login-dropdown" class="login-dropdown">
+                    <form id="login-form">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" name="email" required>
+                        <label for="login-password">Senha:</label>
+                        <input type="password" id="login-password" name="password" required>
+                        <button type="submit">Entrar</button>
+                        <p>Não tem conta? <a href="https://nvp-concursos.firebaseapp.com/cadastro.html" id="show-signup">Cadastre-se</a></p>
+                    </form>
+                </div>
+                <div id="signup-dropdown" class="login-dropdown" style="display: none;">
+                     <form id="signup-form">
+                         <label for="signup-email">Email:</label>
+                         <input type="email" id="signup-email" name="email" required>
+                         <label for="signup-password">Senha:</label>
+                         <input type="password" id="signup-password" name="password" required>
+                         <label for="confirm-password">Confirmar Senha:</label>
+                         <input type="password" id="confirm-password" name="confirmPassword" required>
+                         <button type="submit">Cadastrar</button>
+                         <p>Já tem conta? <a href="#" id="show-login">Faça Login</a></p>
+                     </form>
+                </div>
+            </div>
+        </div>
+        </div>
 </header>
+<main class="homepage-main">
 
-<main>
-  <div class="container">
-    <section class="payment-section">
-      <h2>Finalizar Assinatura</h2>
-      <div class="plan-details">
-        Plano Mensal: <span class="price">R$ 29,90/mês</span><br>
-        <small>Cancele quando quiser</small>
-      </div>
-      <div class="payment-options">
-        <!-- Botão Mercado Pago -->
-        <a href="#" id="mercado-pago-btn" class="payment-button mercado-pago">Pagar com Mercado Pago</a>
-        <!-- Botão PayPal -->
-        <div id="paypal-button-container"></div>
-      </div>
-      <div class="cookie-warning" id="paypal-cookie-warning">
-        O PayPal requer cookies de terceiros. <a href="https://support.google.com/chrome/answer/95647" target="_blank">Saiba como ativar</a> ou use o Mercado Pago.
-      </div>
-      <div class="security-note">
-        <i>🔒</i> Pagamento seguro com Mercado Pago e PayPal
-      </div>
-      <div id="error-message" class="error-message">
-        Ocorreu um erro ao processar o pagamento. Tente novamente.
-      </div>
-      <div id="success-message" class="success-message">
-        Assinatura confirmada! Bem-vindo(a) ao NVP Concursos!<br>
-        <a href="guia.html">Conheça o Guia Inicial</a>
-      </div>
+    <section class="hero-banner">
+        <h1>Prepare-se para o Sucesso no seu Concurso!</h1>
+        <p>Plataforma completa com cursos, questões comentadas e simulados atualizados para você conquistar a sua vaga.</p>
+        <a href="https://nvp-concursos.firebaseapp.com/cadastro.html" class="cta-button">ASSINE JÁ</a>
     </section>
-  </div>
-</main>
 
+    <section class="homepage-section featured-courses">
+        <h2>Nossos Principais Cursos</h2>
+        <div class="carousel-container">
+            <div class="carousel-track">
+                <div class="course-card">
+                    <div class="icon-placeholder">🏛️</div>
+                    <h3>Direito Constitucional</h3>
+                    <p>Domine os fundamentos e os tópicos mais cobrados em Direito Constitucional.</p>
+                    <a href="#" class="w3-btn">Saiba Mais</a>
+                </div>
+                <div class="course-card">
+                     <div class="icon-placeholder">✍️</div>
+                    <h3>Português para Concursos</h3>
+                    <p>Gramática, interpretação e redação com foco total nas principais bancas.</p>
+                    <a href="#" class="w3-btn">Saiba Mais</a>
+                </div>
+                <div class="course-card">
+                     <div class="icon-placeholder">🏢</div>
+                    <h3>Direito Administrativo</h3>
+                    <p>Entenda licitações, atos administrativos, agentes públicos e muito mais.</p>
+                    <a href="#" class="w3-btn">Saiba Mais</a>
+                </div>
+                 <div class="course-card">
+                     <div class="icon-placeholder">💻</div>
+                    <h3>Informática Essencial</h3>
+                    <p>Hardware, software, redes e segurança da informação para concursos.</p>
+                    <a href="#" class="w3-btn">Saiba Mais</a>
+                </div>
+                 <div class="course-card">
+                     <div class="icon-placeholder">🧠</div>
+                    <h3>Raciocínio Lógico</h3>
+                    <p>Desenvolva seu raciocínio lógico-matemático para gabaritar as provas.</p>
+                    <a href="#" class="w3-btn">Saiba Mais</a>
+                </div>
+              </div>
+        </div>
+    </section>
+
+    <section class="homepage-section news-section">
+        <h2>Últimas Notícias de Concursos</h2>
+        <ul class="news-list">
+            <li class="news-item">
+                <h4><a href="#">Edital Publicado: Concurso Banco Central 2025</a></h4>
+                <span class="news-meta">Publicado em: 25/04/2025</span>
+                <p>Saiu o edital para o concurso do BACEN com vagas para Analista e Técnico...</p>
+            </li>
+            <li class="news-item">
+                <h4><a href="#">Prefeitura de Lages/SC Anuncia Novo Concurso</a></h4>
+                <span class="news-meta">Publicado em: 23/04/2025</span>
+                <p>Previsto para o segundo semestre, com vagas para área da educação e administrativa...</p>
+            </li>
+            <li class="news-item">
+                <h4><a href="#">INSS: Previsão de Novo Edital para Técnico</a></h4>
+                <span class="news-meta">Publicado em: 21/04/2025</span>
+                <p>Órgão solicita autorização para novo concurso visando suprir déficit de servidores...</p>
+            </li>
+        </ul>
+        <div class="view-all-news">
+             <a href="#" class="w3-btn">Ver Todas as Notícias</a>
+        </div>
+     </section>
+
+     <section class="homepage-section how-it-works">
+         <h2>Como Funciona?</h2>
+           <div class="steps-grid"> <div class="step-card"> <div class="icon-placeholder">1️⃣</div>
+                <h3>Cadastre-se</h3>
+                <p>Crie sua conta ou escolha um plano de assinatura ideal para você.</p>
+            </div>
+              <div class="step-card">
+                <div class="icon-placeholder">2️⃣</div>
+                <h3>Escolha seu Foco</h3>
+                <p>Navegue pelos cursos e selecione as matérias ou carreiras desejadas.</p>
+            </div>
+              <div class="step-card">
+                <div class="icon-placeholder">3️⃣</div>
+                <h3>Estude e Pratique</h3>
+                <p>Acesse os materiais, resolva questões e faça simulados para fixar.</p>
+            </div>
+        </div>
+     </section> </main>
 <footer class="footer">
-  <div class="footer-content">
-    <div class="footer-section">
-      <h4>Recursos Adicionais</h4>
-      <ul>
-        <li><a href="#">Questões Comentadas</a></li>
-        <li><a href="#">Mapas Mentais</a></li>
-        <li><a href="#">Legislação Compilada</a></li>
-      </ul>
+    <div class="footer-content">
+        <div class="footer-section">
+          <h4>Recursos Adicionais</h4>
+          <ul>
+              <li><a href="#">Questões Comentadas</a></li>
+              <li><a href="#">Mapas Mentais</a></li>
+              <li><a href="#">Legislação Compilada</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Próximos Módulos</h4>
+            <p><a href="#">Direito Administrativo</a></p>
+            <p><a href="#">Português para Concursos</a></p>
+        </div>
+         <div class="footer-section">
+          <h4>Links Úteis</h4>
+          <ul>
+              <li><a href="#">Termos de Uso</a></li>
+              <li><a href="#">Política de Privacidade</a></li>
+              <li><a href="#">Sobre Nós</a></li>
+              <li><a href="#">Mapa do Site</a></li>
+            </ul>
+        </div>
     </div>
-    <div class="footer-section">
-      <h4>Próximos Módulos</h4>
-      <p><a href="#">Direito Administrativo</a></p>
-      <p><a href="#">Português para Concursos</a></p>
+     <div class="footer-copyright">
+        <span>&copy; <?php echo date("Y"); ?> NVP Concursos. Todos os direitos reservados.</span>
     </div>
-    <div class="footer-section">
-      <h4>Links Úteis</h4>
-      <ul>
-        <li><a href="#">Termos de Uso</a></li>
-        <li><a href="#">Política de Privacidade</a></li>
-        <li><a href="#">Sobre Nós</a></li>
-        <li><a href="#">Mapa do Site</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-copyright">
-    <span>© <span id="current-year"></span> NVP Concursos. Todos os direitos reservados.</span>
-  </div>
 </footer>
+<?php // wp_footer(); ?>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<!-- Mercado Pago SDK -->
-<script src="https://sdk.mercadopago.com/js/v2"></script>
-<!-- PayPal SDK -->
-<script src="https://www.paypal.com/sdk/js?client-id=AcwJztgY_UReyUkD_Yw2Yr...&vault=true&intent=subscription"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
-    authDomain: "nvp-concursos.firebaseapp.com",
-    projectId: "nvp-concursos",
-    storageBucket: "nvp-concursos.firebasestorage.app",
-    messagingSenderId: "397960760271",
-    appId: "1:397960760271:web:1550ff01910ae927d860ba"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  const bodyElement = document.body;
-  const sunIcon = themeToggleBtn?.querySelector('.theme-icon-light');
-  const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
-
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      bodyElement.classList.add('dark-mode');
-      if (sunIcon) sunIcon.style.display = 'none';
-      if (moonIcon) moonIcon.style.display = 'inline';
-    } else {
-      bodyElement.classList.remove('dark-mode');
-      if (sunIcon) sunIcon.style.display = 'inline';
-      if (moonIcon) moonIcon.style.display = 'none';
+    // --- Configuração e Inicialização Firebase ---
+     const firebaseConfig = {
+        apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // SUBSTITUA POR SEUS VALORES REAIS
+        authDomain: "nvp-concursos.firebaseapp.com",
+        projectId: "nvp-concursos",
+        storageBucket: "nvp-concursos.firebasestorage.app", // Verifique terminação
+        messagingSenderId: "397960760271",
+        appId: "1:397960760271:web:1550ff01910ae927d860ba"
+     };
+     let auth;
+     let db;
+    try {
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth(); // Define auth aqui
+        db = firebase.firestore(); // Define db aqui
+        console.log("Firebase inicializado e serviços acessados.");
+    } catch (e) {
+         console.error("Erro CRÍTICO na inicialização do Firebase:", e);
+         alert("Falha grave ao inicializar o sistema. Verifique o console.");
+         // Talvez desabilitar funcionalidades que dependem do Firebase
     }
-  }
+    // --- Fim Configuração Firebase ---
 
-  const savedTheme = localStorage.getItem('theme');
-  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-  let currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
-  applyTheme(currentTheme);
 
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
-      applyTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
-    });
-  }
+    // --- Executa o restante do JS após o DOM carregar ---
+    document.addEventListener('DOMContentLoaded', () => {
 
-  prefersDarkScheme.addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      applyTheme(e.matches ? 'dark' : 'light');
-    }
-  });
+        // --- Bloco Dark Mode ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const bodyElement = document.body;
+        const sunIcon = themeToggleBtn?.querySelector('.theme-icon-light');
+        const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
 
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      auth.signOut().then(() => {
-        window.location.href = 'index.html';
-      }).catch(error => {
-        console.error('Erro ao fazer logout:', error);
-        alert('Erro ao tentar sair. Tente novamente.');
-      });
-    });
-  }
+        function applyTheme(theme) { if (theme === 'dark') { bodyElement.classList.add('dark-mode'); if (sunIcon) sunIcon.style.display = 'none'; if (moonIcon) moonIcon.style.display = 'inline'; } else { bodyElement.classList.remove('dark-mode'); if (sunIcon) sunIcon.style.display = 'inline'; if (moonIcon) moonIcon.style.display = 'none'; } }
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        let currentTheme = 'light';
+        if (savedTheme) { currentTheme = savedTheme; } else if (prefersDarkScheme.matches) { currentTheme = 'dark'; }
+        applyTheme(currentTheme);
 
-  function showSuccessMessage() {
-    document.getElementById('success-message').style.display = 'block';
-    document.querySelector('.payment-options').style.display = 'none';
-    document.querySelector('.security-note').style.display = 'none';
-    setTimeout(() => {
-      window.location.href = 'guia.html';
-    }, 3000);
-  }
+        if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+        prefersDarkScheme.addEventListener('change', (e) => { if (!localStorage.getItem('theme')) { applyTheme(e.matches ? 'dark' : 'light'); } });
+        // --- Fim Bloco Dark Mode ---
 
-  // Verifica se o usuário está logado
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.href = 'index.html';
-    } else {
-      initializePayment(user);
-    }
-  });
 
-  function initializePayment(user) {
-    // Mercado Pago
-    const mp = new MercadoPago('YOUR_MERCADO_PAGO_PUBLIC_KEY', {
-      locale: 'pt-BR'
-    });
+        // --- Lógica Dropdown Login ---
+        const loginBtn = document.getElementById('login-btn');
+        const loginDropdown = document.getElementById('login-dropdown');
+        // Não precisamos mais da lógica do signup dropdown aqui
 
-    const mercadoPagoBtn = document.getElementById('mercado-pago-btn');
-    mercadoPagoBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      try {
-        // Simulação de criação de preferência (deve ser feita no backend em produção)
-        const preference = {
-          items: [
-            {
-              title: 'Assinatura Mensal NVP Concursos',
-              unit_price: 29.90,
-              quantity: 1,
-            }
-          ],
-          auto_recurring: {
-            frequency: 1,
-            frequency_type: 'months',
-            transaction_amount: 29.90,
-            currency_id: 'BRL'
-          },
-          back_urls: {
-            success: window.location.origin + '/pagamento.html?status=success',
-            failure: window.location.origin + '/pagamento.html?status=failure',
-            pending: window.location.origin + '/pagamento.html?status=pending'
-          },
-          payer: {
-            email: user.email
-          }
-        };
-
-        // Em produção, isso deve ser feito no backend com o Access Token
-        const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer YOUR_MERCADO_PAGO_ACCESS_TOKEN',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(preference)
-        });
-        const data = await response.json();
-        window.location.href = data.init_point;
-      } catch (error) {
-        console.error('Erro ao criar preferência Mercado Pago:', error);
-        document.getElementById('error-message').style.display = 'block';
-      }
-    });
-
-    // Verifica se cookies de terceiros estão bloqueados
-    function areThirdPartyCookiesBlocked() {
-      // Testa se cookies de terceiros estão bloqueados criando um iframe e tentando acessar um cookie
-      return new Promise((resolve) => {
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = 'https://www.paypal.com';
-        document.body.appendChild(iframe);
-
-        setTimeout(() => {
-          try {
-            iframe.contentWindow.document.cookie;
-            resolve(false); // Cookies de terceiros estão habilitados
-          } catch (e) {
-            resolve(true); // Cookies de terceiros estão bloqueados
-          } finally {
-            document.body.removeChild(iframe);
-          }
-        }, 1000);
-      });
-    }
-
-    // Inicializa o PayPal
-    areThirdPartyCookiesBlocked().then(blocked => {
-      if (blocked) {
-        document.getElementById('paypal-cookie-warning').style.display = 'block';
-        document.getElementById('paypal-button-container').innerHTML = '<a href="#" class="payment-button paypal">Pagar com PayPal (indisponível)</a>';
-      } else {
-        paypal.Buttons({
-          createSubscription: (data, actions) => {
-            return actions.subscription.create({
-              plan_id: 'YOUR_PAYPAL_PLAN_ID',
-              custom_id: user.uid
+        if (loginBtn && loginDropdown) {
+             console.log("Setting up index.html login dropdown listener..."); // Log para depuração
+            loginBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                 console.log("Login button clicked!"); // Log para depuração
+                // Simplesmente alterna a classe 'active'
+                loginDropdown.classList.toggle('active');
+                 // Ajusta display baseado na classe (melhor que style inline)
+                 loginDropdown.style.display = loginDropdown.classList.contains('active') ? 'block' : 'none';
             });
-          },
-          onApprove: async (data, actions) => {
-            try {
-              await db.collection('users').doc(user.uid).update({
-                is_subscriber: true,
-                subscription_id: data.subscriptionID,
-                subscription_start: firebase.firestore.FieldValue.serverTimestamp()
-              });
-              showSuccessMessage();
-            } catch (error) {
-              console.error('Erro ao atualizar status de assinatura:', error);
-              document.getElementById('error-message').style.display = 'block';
+
+            // Fecha se clicar fora
+            document.addEventListener('click', function(event) {
+                if (!loginDropdown.contains(event.target) && !loginBtn.contains(event.target)) {
+                    if (loginDropdown.classList.contains('active')) {
+                         loginDropdown.classList.remove('active');
+                         loginDropdown.style.display = 'none';
+                    }
+                }
+            });
+
+            // Não fecha se clicar dentro
+            loginDropdown.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        } else {
+            console.error("Botão de Login (#login-btn) ou Dropdown (#login-dropdown) não encontrado no HTML.");
+        }
+        // --- Fim Lógica Dropdown Login ---
+
+
+        // --- Lógica Formulário de Login ---
+        const loginForm = document.getElementById('login-form');
+
+        if (loginForm && auth && db) { // Verifica se form, auth e db estão ok
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const emailInput = document.getElementById('login-email');
+                const passwordInput = document.getElementById('login-password');
+                const email = emailInput ? emailInput.value : null;
+                const password = passwordInput ? passwordInput.value : null;
+                const loginButton = loginForm.querySelector('button[type="submit"]');
+
+                if (!email || !password) { alert('Por favor, preencha email e senha.'); return; }
+
+                loginButton.disabled = true;
+                loginButton.textContent = 'Entrando...';
+
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(userCredential => db.collection('users').doc(userCredential.user.uid).get())
+                    .then(doc => {
+                        // Lógica de redirecionamento
+                        if (doc.exists && doc.data().role === 'admin') { window.location.href = '/admin/dashboard.html'; }
+                        else if (doc.exists && doc.data().hasPersonalized === true) { window.location.href = 'saladeestudos.html'; }
+                        else { window.location.href = 'personalizar.html'; } // Inclui caso doc não exista (novo usuário)
+                    })
+                    .catch(error => {
+                        console.error("Erro no login ou busca Firestore:", error);
+                        let friendlyMessage = 'Erro no login. Verifique suas credenciais.';
+                        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') { friendlyMessage = 'Email ou senha inválidos.'; }
+                        else if (error.code === 'auth/invalid-email') { friendlyMessage = 'Formato de email inválido.'; }
+                        alert(friendlyMessage);
+                        loginButton.disabled = false;
+                        loginButton.textContent = 'Entrar';
+                    });
+            });
+        } else if (loginForm) {
+            console.warn("Formulário de login encontrado, mas serviços Firebase (auth/db) não estão prontos.");
+            // Desabilitar o botão do formulário se o Firebase falhou
+            const loginButton = loginForm.querySelector('button[type="submit"]');
+             if(loginButton) {
+                loginButton.disabled = true;
+                loginButton.textContent = 'Erro Init';
+                loginButton.style.backgroundColor = 'grey';
             }
-          },
-          onError: (err) => {
-            console.error('Erro no PayPal:', err);
-            document.getElementById('error-message').style.display = 'block';
-          }
-        }).render('#paypal-button-container');
-      }
-    });
+        }
+        // --- Fim Lógica Formulário de Login ---
 
-    // Verifica o status de retorno do Mercado Pago
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-    if (status === 'success') {
-      db.collection('users').doc(user.uid).update({
-        is_subscriber: true,
-        subscription_start: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        showSuccessMessage();
-      }).catch(error => {
-        console.error('Erro ao atualizar status de assinatura:', error);
-        document.getElementById('error-message').style.display = 'block';
-      });
-    } else if (status === 'failure' || status === 'pending') {
-      document.getElementById('error-message').style.display = 'block';
-    }
-  }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const yearSpan = document.getElementById('current-year');
-    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-  });
+        // --- Ano no Rodapé ---
+        const yearSpan = document.getElementById('current-year');
+        if(yearSpan) yearSpan.textContent = new Date().getFullYear();
+        // --- Fim Ano no Rodapé ---
+
+    }); // --- Fim do DOMContentLoaded listener ---
+
 </script>
 
 </body>
