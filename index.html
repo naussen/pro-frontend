@@ -66,7 +66,7 @@
     z-index: 103; border-bottom: 1px solid var(--header-border); gap: 15px;
   }
   .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; }
-  .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
+  .w3s-logo-placeholder { width: 42px; height: 42px; margin-right: 8px; }
   .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif;}
   .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
   .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 12px; }
@@ -173,7 +173,6 @@
   body.dark-mode .view-all-news a.w3-btn { color: var(--button-text-dark); }
   .view-all-news a.w3-btn:hover { background-color: var(--dark-bg) !important; color: var(--text-light) !important; }
   body.dark-mode .view-all-news a.w3-btn:hover { background-color: #8fceff !important; color: var(--button-text-dark) !important;}
-
   /* Destaque Logo */
   .logo-highlight-section {
       text-align: center;
@@ -235,6 +234,9 @@
       .w3s-header-actions a span.link-text { display: none; } /* Esconde texto dos links no header */
       .w3s-header { gap: 10px; padding: 0 10px; }
       .course-card, .step-card { width: calc(50% - 30px); } /* 2 colunas */
+      .steps-grid { flex-direction: column; align-items: center;} /* Empilha Como Funciona */
+      .footer-content { flex-direction: column; align-items: center; text-align: center; }
+      .footer-section { min-width: unset; width: 80%; margin-bottom: 15px;}
     }
     @media screen and (max-width: 768px) {
       .w3s-header { height: 50px; }
@@ -244,10 +246,6 @@
       .hero-banner p { font-size: 1em;}
       .homepage-section h2 { font-size: 1.8em;}
       .course-card, .step-card { width: calc(100% - 20px); min-width: unset; } /* 1 coluna, remove min-width */
-      .steps-grid { flex-direction: column; align-items: center;} /* Empilha Como Funciona */
-
-      .footer-content { flex-direction: column; align-items: center; text-align: center; }
-      .footer-section { min-width: unset; width: 80%; margin-bottom: 15px;}
     }
     @media screen and (max-width: 480px) {
         .w3s-search-area { display: none; }
@@ -346,357 +344,354 @@
                 </div>
                  <div class="course-card">
                      <div class="icon-placeholder">💻</div>
-                    <h3>Informática Essencial</h3>
-                    <p>Hardware, software, redes e segurança da informação para concursos.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
-                </div>
+                     <h3>Informática Essencial</h3>
+                     <p>Hardware, software, redes e segurança da informação para concursos.</p>
+                     <a href="#" class="w3-btn">Saiba Mais</a>
+                 </div>
                  <div class="course-card">
                      <div class="icon-placeholder">🧠</div>
-                    <h3>Raciocínio Lógico</h3>
-                    <p>Desenvolva seu raciocínio lógico-matemático para gabaritar as provas.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
-                </div>
-              </div>
-        </div>
-    </section>
-
-    <section class="homepage-section news-section">
-        <h2>Últimas Notícias de Concursos</h2>
-        <ul class="news-list">
-            <li class="news-item">
-                <h4><a href="#">Edital Publicado: Concurso Banco Central 2025</a></h4>
-                <span class="news-meta">Publicado em: 25/04/2025</span>
-                <p>Saiu o edital para o concurso do BACEN com vagas para Analista e Técnico...</p>
-            </li>
-            <li class="news-item">
-                <h4><a href="#">Prefeitura de Lages/SC Anuncia Novo Concurso</a></h4>
-                <span class="news-meta">Publicado em: 23/04/2025</span>
-                <p>Previsto para o segundo semestre, com vagas para área da educação e administrativa...</p>
-            </li>
-            <li class="news-item">
-                <h4><a href="#">INSS: Previsão de Novo Edital para Técnico</a></h4>
-                <span class="news-meta">Publicado em: 21/04/2025</span>
-                <p>Órgão solicita autorização para novo concurso visando suprir déficit de servidores...</p>
-            </li>
-        </ul>
-        <div class="view-all-news">
-             <a href="#" class="w3-btn">Ver Todas as Notícias</a>
-        </div>
+                     <h3>Raciocínio Lógico</h3>
+                     <p>Desenvolva seu raciocínio lógico-matemático para gabaritar as provas.</p>
+                     <a href="#" class="w3-btn">Saiba Mais</a>
+                 </div>
+               </div>
+         </div>
      </section>
 
-     <section class="homepage-section how-it-works">
-         <h2>Como Funciona?</h2>
-           <div class="steps-grid"> <div class="step-card"> <div class="icon-placeholder">1️⃣</div>
-                <h3>Cadastre-se</h3>
-                <p>Crie sua conta ou escolha um plano de assinatura ideal para você.</p>
-            </div>
-              <div class="step-card">
-                <div class="icon-placeholder">2️⃣</div>
-                <h3>Escolha seu Foco</h3>
-                <p>Navegue pelos cursos e selecione as matérias ou carreiras desejadas.</p>
-            </div>
-              <div class="step-card">
-                <div class="icon-placeholder">3️⃣</div>
-                <h3>Estude e Pratique</h3>
-                <p>Acesse os materiais, resolva questões e faça simulados para fixar.</p>
-            </div>
-        </div>
-     </section> </main>
-<footer class="footer">
-    <div class="footer-content">
-        <div class="footer-section">
-          <h4>Recursos Adicionais</h4>
-          <ul>
-              <li><a href="#">Questões Comentadas</a></li>
-              <li><a href="#">Mapas Mentais</a></li>
-              <li><a href="#">Legislação Compilada</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Próximos Módulos</h4>
-            <p><a href="#">Direito Administrativo</a></p>
-            <p><a href="#">Português para Concursos</a></p>
-        </div>
+     <section class="homepage-section news-section">
+         <h2>Últimas Notícias de Concursos</h2>
+         <ul class="news-list">
+             <li class="news-item">
+                 <h4><a href="#">Edital Publicado: Concurso Banco Central 2025</a></h4>
+                 <span class="news-meta">Publicado em: 25/04/2025</span>
+                 <p>Saiu o edital para o concurso do BACEN com vagas para Analista e Técnico...</p>
+             </li>
+             <li class="news-item">
+                 <h4><a href="#">Prefeitura de Lages/SC Anuncia Novo Concurso</a></h4>
+                 <span class="news-meta">Publicado em: 23/04/2025</span>
+                 <p>Previsto para o segundo semestre, com vagas para área da educação e administrativa...</p>
+             </li>
+             <li class="news-item">
+                 <h4><a href="#">INSS: Previsão de Novo Edital para Técnico</a></h4>
+                 <span class="news-meta">Publicado em: 21/04/2025</span>
+                 <p>Órgão solicita autorização para novo concurso visando suprir déficit de servidores...</p>
+             </li>
+         </ul>
+         <div class="view-all-news">
+              <a href="#" class="w3-btn">Ver Todas as Notícias</a>
+         </div>
+      </section>
+
+      <section class="homepage-section how-it-works">
+          <h2>Como Funciona?</h2>
+            <div class="steps-grid"> <div class="step-card"> <div class="icon-placeholder">1️⃣</div>
+                 <h3>Cadastre-se</h3>
+                 <p>Crie sua conta ou escolha um plano de assinatura ideal para você.</p>
+             </div>
+               <div class="step-card">
+                 <div class="icon-placeholder">2️⃣</div>
+                 <h3>Escolha seu Foco</h3>
+                 <p>Navegue pelos cursos e selecione as matérias ou carreiras desejadas.</p>
+             </div>
+               <div class="step-card">
+                 <div class="icon-placeholder">3️⃣</div>
+                 <h3>Estude e Pratique</h3>
+                 <p>Acesse os materiais, resolva questões e faça simulados para fixar.</p>
+             </div>
+         </div>
+      </section> </main>
+ <footer class="footer">
+     <div class="footer-content">
          <div class="footer-section">
-          <h4>Links Úteis</h4>
-          <ul>
-              <li><a href="#">Termos de Uso</a></li>
-              <li><a href="#">Política de Privacidade</a></li>
-              <li><a href="#">Sobre Nós</a></li>
-              <li><a href="#">Mapa do Site</a></li>
-            </ul>
-        </div>
-    </div>
-     <div class="footer-copyright">
-        <span>&copy; <?php echo date("Y"); ?> PRO Concursos. Todos os direitos reservados.</span>
-    </div>
-</footer>
-<?php // wp_footer(); ?>
+           <h4>Recursos Adicionais</h4>
+           <ul>
+               <li><a href="#">Questões Comentadas</a></li>
+               <li><a href="#">Mapas Mentais</a></li>
+               <li><a href="#">Legislação Compilada</a></li>
+           </ul>
+         </div>
+         <div class="footer-section">
+           <h4>Próximos Módulos</h4>
+             <p><a href="#">Direito Administrativo</a></p>
+             <p><a href="#">Português para Concursos</a></p>
+         </div>
+          <div class="footer-section">
+           <h4>Links Úteis</h4>
+           <ul>
+               <li><a href="#">Termos de Uso</a></li>
+               <li><a href="#">Política de Privacidade</a></li>
+               <li><a href="#">Sobre Nós</a></li>
+               <li><a href="#">Mapa do Site</a></li>
+             </ul>
+         </div>
+     </div>
+      <div class="footer-copyright">
+         <span>&copy; <?php echo date("Y"); ?> PRO Concursos. Todos os direitos reservados.</span>
+     </div>
+ </footer>
+ <?php // wp_footer(); ?>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-<script>
-    // --- Configuração e Inicialização Firebase ---
-     const firebaseConfig = {
-        apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // SUBSTITUA POR SEUS VALORES REAIS
-        authDomain: "nvp-concursos.firebaseapp.com",
-        projectId: "nvp-concursos",
-        storageBucket: "nvp-concursos.firebasestorage.app", // Verifique terminação
-        messagingSenderId: "397960760271",
-        appId: "1:397960760271:web:1550ff01910ae927d860ba"
-     };
-     let auth;
-     let db;
-    try {
-        firebase.initializeApp(firebaseConfig);
-        auth = firebase.auth(); // Define auth aqui
-        db = firebase.firestore(); // Define db aqui
-        console.log("Firebase inicializado e serviços acessados.");
-    } catch (e) {
-         console.error("Erro CRÍTICO na inicialização do Firebase:", e);
-         alert("Falha grave ao inicializar o sistema. Verifique o console.");
-         // Talvez desabilitar funcionalidades que dependem do Firebase
-    }
-    // --- Fim Configuração Firebase ---
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 
-    // --- Executa o restante do JS após o DOM carregar ---
-    document.addEventListener('DOMContentLoaded', () => {
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-        // --- Bloco Dark Mode ---
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const bodyElement = document.body;
-        const sunIcon = themeToggleBtn?.querySelector('.theme-icon-light');
-        const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
-
-        function applyTheme(theme) { if (theme === 'dark') { bodyElement.classList.add('dark-mode'); if (sunIcon) sunIcon.style.display = 'none'; if (moonIcon) moonIcon.style.display = 'inline'; } else { bodyElement.classList.remove('dark-mode'); if (sunIcon) sunIcon.style.display = 'inline'; if (moonIcon) moonIcon.style.display = 'none'; } }
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        let currentTheme = 'light';
-        if (savedTheme) { currentTheme = savedTheme; } else if (prefersDarkScheme.matches) { currentTheme = 'dark'; }
-        applyTheme(currentTheme);
-
-        if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
-        prefersDarkScheme.addEventListener('change', (e) => { if (!localStorage.getItem('theme')) { applyTheme(e.matches ? 'dark' : 'light'); } });
-        // --- Fim Bloco Dark Mode ---
-
-
-        // --- Lógica Dropdown Login ---
-        const loginBtn = document.getElementById('login-btn');
-        const loginDropdown = document.getElementById('login-dropdown');
-        // Não precisamos mais da lógica do signup dropdown aqui
-
-        if (loginBtn && loginDropdown) {
-             console.log("Setting up index.html login dropdown listener..."); // Log para depuração
-            loginBtn.addEventListener('click', function(event) {
-                event.stopPropagation();
-                 console.log("Login button clicked!"); // Log para depuração
-                // Simplesmente alterna a classe 'active'
-                loginDropdown.classList.toggle('active');
-                 // Ajusta display baseado na classe (melhor que style inline)
-                 loginDropdown.style.display = loginDropdown.classList.contains('active') ? 'block' : 'none';
-            });
-
-            // Fecha se clicar fora
-            document.addEventListener('click', function(event) {
-                if (!loginDropdown.contains(event.target) && !loginBtn.contains(event.target)) {
-                    if (loginDropdown.classList.contains('active')) {
-                         loginDropdown.classList.remove('active');
-                         loginDropdown.style.display = 'none';
-                    }
-                }
-            });
-
-            // Não fecha se clicar dentro
-            loginDropdown.addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-        } else {
-            console.error("Botão de Login (#login-btn) ou Dropdown (#login-dropdown) não encontrado no HTML.");
-        }
-        // --- Fim Lógica Dropdown Login ---
+ <script>
+     // --- Configuração e Inicialização Firebase ---
+      const firebaseConfig = {
+         apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // SUBSTITUA POR SEUS VALORES REAIS
+         authDomain: "nvp-concursos.firebaseapp.com",
+         projectId: "nvp-concursos",
+         storageBucket: "nvp-concursos.firebasestorage.app", // Verifique terminação
+         messagingSenderId: "397960760271",
+         appId: "1:397960760271:web:1550ff01910ae927d860ba"
+      };
+      let auth;
+      let db;
+     try {
+         firebase.initializeApp(firebaseConfig);
+         auth = firebase.auth(); // Define auth aqui
+         db = firebase.firestore(); // Define db aqui
+         console.log("Firebase inicializado e serviços acessados.");
+     } catch (e) {
+          console.error("Erro CRÍTICO na inicialização do Firebase:", e);
+          alert("Falha grave ao inicializar o sistema. Verifique o console.");
+          // Talvez desabilitar funcionalidades que dependem do Firebase
+     }
+     // --- Fim Configuração Firebase ---
 
 
-        // --- Lógica Formulário de Login ---
-        const loginForm = document.getElementById('login-form');
+     // --- Executa o restante do JS após o DOM carregar ---
+     document.addEventListener('DOMContentLoaded', () => {
 
-        if (loginForm && auth && db) { // Verifica se form, auth e db estão ok
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const emailInput = document.getElementById('login-email');
-                const passwordInput = document.getElementById('login-password');
-                const email = emailInput ? emailInput.value : null;
-                const password = passwordInput ? passwordInput.value : null;
-                const loginButton = loginForm.querySelector('button[type="submit"]');
+         // --- Bloco Dark Mode ---
+         const themeToggleBtn = document.getElementById('theme-toggle');
+         const bodyElement = document.body;
+         const sunIcon = themeToggleBtn?.querySelector('.theme-icon-light');
+         const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
 
-                if (!email || !password) { alert('Por favor, preencha email e senha.'); return; }
+         function applyTheme(theme) {
+             if (theme === 'dark') {
+                 bodyElement.classList.add('dark-mode');
+                 if (sunIcon) sunIcon.style.display = 'none';
+                 if (moonIcon) moonIcon.style.display = 'inline';
+             } else {
+                 bodyElement.classList.remove('dark-mode');
+                 if (sunIcon) sunIcon.style.display = 'inline';
+                 if (moonIcon) moonIcon.style.display = 'none';
+             }
+         }
 
-                loginButton.disabled = true;
-                loginButton.textContent = 'Entrando...';
+         const savedTheme = localStorage.getItem('theme');
+         const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+         let currentTheme = 'light';
 
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(userCredential => db.collection('users').doc(userCredential.user.uid).get())
-                    .then(doc => {
-                        // Lógica de redirecionamento
-                        if (doc.exists && doc.data().role === 'admin') { window.location.href = '/admin/dashboard.html'; }
-                        else if (doc.exists && doc.data().hasPersonalized === true) { window.location.href = 'saladeestudos.html'; }
-                        else { window.location.href = 'personalizar.html'; } // Inclui caso doc não exista (novo usuário)
-                    })
-                    .catch(error => {
-                        console.error("Erro no login ou busca Firestore:", error);
-                        let friendlyMessage = 'Erro no login. Verifique suas credenciais.';
-                        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') { friendlyMessage = 'Email ou senha inválidos.'; }
-                        else if (error.code === 'auth/invalid-email') { friendlyMessage = 'Formato de email inválido.'; }
-                        alert(friendlyMessage);
-                        loginButton.disabled = false;
-                        loginButton.textContent = 'Entrar';
-                    });
-            });
-        } else if (loginForm) {
-            console.warn("Formulário de login encontrado, mas serviços Firebase (auth/db) não estão prontos.");
-            // Desabilitar o botão do formulário se o Firebase falhou
-            const loginButton = loginForm.querySelector('button[type="submit"]');
-             if(loginButton) {
-                loginButton.disabled = true;
-                loginButton.textContent = 'Erro Init';
-                loginButton.style.backgroundColor = 'grey';
-            }
-        }
-        // --- Fim Lógica Formulário de Login ---
+         if (savedTheme) {
+             currentTheme = savedTheme;
+         } else if (prefersDarkScheme.matches) {
+             currentTheme = 'dark';
+         }
+
+         applyTheme(currentTheme);
+
+         if (themeToggleBtn) {
+             themeToggleBtn.addEventListener('click', () => {
+                 let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
+                 applyTheme(newTheme);
+                 localStorage.setItem('theme', newTheme);
+             });
+         }
+
+         prefersDarkScheme.addEventListener('change', (e) => {
+             if (!localStorage.getItem('theme')) {
+                 applyTheme(e.matches ? 'dark' : 'light');
+             }
+         });
+         // --- Fim Bloco Dark Mode ---
 
 
-        // --- Ano no Rodapé ---
-        const yearSpan = document.getElementById('current-year');
-        if(yearSpan) yearSpan.textContent = new Date().getFullYear();
-        // --- Fim Ano no Rodapé ---
+         // --- Lógica Dropdown Login ---
+         const loginBtn = document.getElementById('login-btn');
+         const loginDropdown = document.getElementById('login-dropdown');
+         const signupDropdown = document.getElementById('signup-dropdown');
+         const showSignupLink = document.getElementById('show-signup');
+         const showLoginLink = document.getElementById('show-login');
 
-    }); // --- Fim do DOMContentLoaded listener ---
 
-</script>
+         if (loginBtn && loginDropdown && signupDropdown) {
+              console.log("Setting up index.html login dropdown listener..."); // Log para depuração
+             loginBtn.addEventListener('click', function(event) {
+                 event.stopPropagation();
+                  console.log("Login button clicked!"); // Log para depuração
+                 const isLoginVisible = loginDropdown.style.display === 'block';
+
+                 // Esconde ambos os dropdowns primeiro
+                 loginDropdown.style.display = 'none';
+                 signupDropdown.style.display = 'none';
+
+                 // Se o login não estava visível, mostra ele
+                 if (!isLoginVisible) {
+                     loginDropdown.style.display = 'block';
+                 }
+             });
+
+             // Alternar para o formulário de cadastro
+             if (showSignupLink) {
+                 showSignupLink.addEventListener('click', function(e) {
+                     e.preventDefault();
+                     loginDropdown.style.display = 'none';
+                     signupDropdown.style.display = 'block';
+                 });
+             }
+
+             // Alternar para o formulário de login
+             if (showLoginLink) {
+                 showLoginLink.addEventListener('click', function(e) {
+                     e.preventDefault();
+                     signupDropdown.style.display = 'none';
+                     loginDropdown.style.display = 'block';
+                 });
+             }
+
+
+             // Fecha se clicar fora dos dropdowns ou do botão de login
+             document.addEventListener('click', function(event) {
+                 if (!loginDropdown.contains(event.target) && !signupDropdown.contains(event.target) && !loginBtn.contains(event.target)) {
+                      loginDropdown.style.display = 'none';
+                      signupDropdown.style.display = 'none';
+                 }
+             });
+
+             // Não fecha se clicar dentro dos dropdowns
+             loginDropdown.addEventListener('click', function(event) {
+                 event.stopPropagation();
+             });
+              signupDropdown.addEventListener('click', function(event) {
+                 event.stopPropagation();
+             });
+
+         } else {
+             console.error("Botão de Login (#login-btn) ou Dropdowns (#login-dropdown, #signup-dropdown) não encontrados no HTML.");
+         }
+         // --- Fim Lógica Dropdown Login ---
+
+
+         // --- Lógica Formulário de Login ---
+         const loginForm = document.getElementById('login-form');
+
+         if (loginForm && auth && db) { // Verifica se form, auth e db estão ok
+             loginForm.addEventListener('submit', (e) => {
+                 e.preventDefault();
+                 const emailInput = document.getElementById('login-email');
+                 const passwordInput = document.getElementById('login-password');
+                 const email = emailInput ? emailInput.value : null;
+                 const password = passwordInput ? passwordInput.value : null;
+                 const loginButton = loginForm.querySelector('button[type="submit"]');
+
+                 if (!email || !password) { alert('Por favor, preencha email e senha.'); return; }
+
+                 loginButton.disabled = true;
+                 loginButton.textContent = 'Entrando...';
+
+                 auth.signInWithEmailAndPassword(email, password)
+                     .then(userCredential => db.collection('users').doc(userCredential.user.uid).get())
+                     .then(doc => {
+                         // Lógica de redirecionamento
+                         if (doc.exists && doc.data().role === 'admin') { window.location.href = '/admin/dashboard.html'; }
+                         else if (doc.exists && doc.data().hasPersonalized === true) { window.location.href = 'saladeestudos.html'; }
+                         else { window.location.href = 'personalizar.html'; } // Inclui caso doc não exista (novo usuário)
+                     })
+                     .catch(error => {
+                         console.error("Erro no login ou busca Firestore:", error);
+                         let friendlyMessage = 'Erro no login. Verifique suas credenciais.';
+                         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') { friendlyMessage = 'Email ou senha inválidos.'; }
+                         else if (error.code === 'auth/invalid-email') { friendlyMessage = 'Formato de email inválido.'; }
+                         alert(friendlyMessage);
+                         loginButton.disabled = false;
+                         loginButton.textContent = 'Entrar';
+                     });
+             });
+         } else if (loginForm) {
+             console.warn("Formulário de login encontrado, mas serviços Firebase (auth/db) não estão prontos.");
+             // Desabilitar o botão do formulário se o Firebase falhou
+             const loginButton = loginForm.querySelector('button[type="submit"]');
+              if(loginButton) {
+                 loginButton.disabled = true;
+                 loginButton.textContent = 'Erro Init';
+                 loginButton.style.backgroundColor = 'grey';
+             }
+         }
+         // --- Fim Lógica Formulário de Login ---
+
+         // --- Lógica Formulário de Cadastro ---
+         const signupForm = document.getElementById('signup-form');
+
+         if (signupForm && auth && db) { // Verifica se form, auth e db estão ok
+             signupForm.addEventListener('submit', (e) => {
+                 e.preventDefault();
+                 const emailInput = document.getElementById('signup-email');
+                 const passwordInput = document.getElementById('signup-password');
+                 const confirmPasswordInput = document.getElementById('confirm-password');
+                 const email = emailInput ? emailInput.value : null;
+                 const password = passwordInput ? passwordInput.value : null;
+                 const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : null;
+                 const signupButton = signupForm.querySelector('button[type="submit"]');
+
+                 if (!email || !password || !confirmPassword) { alert('Por favor, preencha todos os campos.'); return; }
+                 if (password !== confirmPassword) { alert('As senhas não coincidem!'); return; }
+
+                 signupButton.disabled = true;
+                 signupButton.textContent = 'Cadastrando...';
+
+                 auth.createUserWithEmailAndPassword(email, password)
+                     .then(userCredential => {
+                         // Cria um documento no Firestore para o novo usuário
+                         return db.collection('users').doc(userCredential.user.uid).set({
+                             email: email,
+                             role: 'user', // Define um papel padrão
+                             hasPersonalized: false // Novo usuário ainda não personalizou
+                         });
+                     })
+                     .then(() => {
+                         // Redireciona após cadastro bem-sucedido e criação do documento
+                         window.location.href = 'personalizar.html';
+                     })
+                     .catch(error => {
+                         console.error("Erro no cadastro ou criação Firestore:", error);
+                         let friendlyMessage = 'Erro no cadastro. Tente novamente.';
+                          if (error.code === 'auth/email-already-in-use') { friendlyMessage = 'Este email já está em uso.'; }
+                          else if (error.code === 'auth/invalid-email') { friendlyMessage = 'Formato de email inválido.'; }
+                          else if (error.code === 'auth/weak-password') { friendlyMessage = 'A senha deve ter pelo menos 6 caracteres.'; }
+                         alert(friendlyMessage);
+                         signupButton.disabled = false;
+                         signupButton.textContent = 'Cadastrar';
+                     });
+             });
+         } else if (signupForm) {
+              console.warn("Formulário de cadastro encontrado, mas serviços Firebase (auth/db) não estão prontos.");
+              // Desabilitar o botão do formulário se o Firebase falhou
+              const signupButton = signupForm.querySelector('button[type="submit"]');
+               if(signupButton) {
+                  signupButton.disabled = true;
+                  signupButton.textContent = 'Erro Init';
+                  signupButton.style.backgroundColor = 'grey';
+              }
+         }
+         // --- Fim Lógica Formulário de Cadastro ---
+
+
+         // --- Ano no Rodapé ---
+         const yearSpan = document.getElementById('current-year');
+         if(yearSpan) yearSpan.textContent = new Date().getFullYear();
+         // --- Fim Ano no Rodapé ---
+
+     }); // --- Fim do DOMContentLoaded listener ---
+
+ </script>
 
 </body>
 </html>
-<script>
-    // --- Bloco Dark Mode ---
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const bodyElement = document.body;
-    const sunIcon = themeToggleBtn?.querySelector('.theme-icon-light');
-    const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
-
-    function applyTheme(theme) { if (theme === 'dark') { bodyElement.classList.add('dark-mode'); if (sunIcon) sunIcon.style.display = 'none'; if (moonIcon) moonIcon.style.display = 'inline'; } else { bodyElement.classList.remove('dark-mode'); if (sunIcon) sunIcon.style.display = 'inline'; if (moonIcon) moonIcon.style.display = 'none'; } }
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    let currentTheme = 'light';
-    if (savedTheme) { currentTheme = savedTheme; } else if (prefersDarkScheme.matches) { currentTheme = 'dark'; }
-    applyTheme(currentTheme);
-
-    if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { let newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
-    prefersDarkScheme.addEventListener('change', (e) => { if (!localStorage.getItem('theme')) { applyTheme(e.matches ? 'dark' : 'light'); } });
-    // --- Fim Bloco Dark Mode ---
-
-    // --- Lógica Dropdown Login ---
-    const loginBtn = document.getElementById('login-btn');
-    const loginDropdown = document.getElementById('login-dropdown');
-    const signupDropdown = document.getElementById('signup-dropdown'); // Adicionado para consistência
-    const showSignupLink = document.getElementById('show-signup'); // Adicionado para consistência
-    const showLoginLink = document.getElementById('show-login'); // Adicionado para consistência
-
-    if (loginBtn && loginDropdown) {
-         console.log("Setting up index.html login dropdown listener..."); // Log para depuração
-        loginBtn.addEventListener('click', function(event) {
-            event.stopPropagation();
-             console.log("Login button clicked!"); // Log para depuração
-            // Simplesmente alterna a classe 'active'
-            loginDropdown.classList.toggle('active');
-             // Ajusta display baseado na classe (melhor que style inline)
-             loginDropdown.style.display = loginDropdown.classList.contains('active') ? 'block' : 'none';
-             // Garante que o signup dropdown esteja escondido ao abrir o login
-             if (signupDropdown) signupDropdown.style.display = 'none';
-        });
-
-        // Fecha se clicar fora
-        document.addEventListener('click', function(event) {
-            if (!loginDropdown.contains(event.target) && !loginBtn.contains(event.target)) {
-                if (loginDropdown.classList.contains('active')) {
-                     loginDropdown.classList.remove('active');
-                     loginDropdown.style.display = 'none';
-                }
-            }
-        });
-
-        // Não fecha se clicar dentro
-        loginDropdown.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-    } else {
-        console.error("Botão de Login (#login-btn) ou Dropdown (#login-dropdown) não encontrado no HTML.");
-    }
-    // --- Fim Lógica Dropdown Login ---
-
-    // --- Lógica Alternar Login/Cadastro no Dropdown ---
-    if (showSignupLink && loginDropdown && signupDropdown) {
-        showSignupLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            loginDropdown.style.display = 'none';
-            signupDropdown.style.display = 'block';
-        });
-    }
-
-    if (showLoginLink && loginDropdown && signupDropdown) {
-        showLoginLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            signupDropdown.style.display = 'none';
-            loginDropdown.style.display = 'block';
-        });
-    }
-    // --- Fim Lógica Alternar Login/Cadastro ---
-
-
-    // --- Lógica Formulário de Login (Manter se necessário) ---
-    // Se você precisa da funcionalidade de login/cadastro via Firebase neste dropdown,
-    // o código Firebase e a lógica de submit dos formulários devem ser mantidos ou adaptados aqui.
-    // O código original de index.html já tinha essa lógica.
-    // Vou assumir que você quer manter a lógica de submit básica que estava no header.html
-    // e que a inicialização do Firebase já está no index.html.
-
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            console.log('Login com:', email, password);
-            // Adicione aqui a lógica de autenticação Firebase se necessário
-        });
-    }
-
-    if (signupForm) {
-        signupForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem!');
-                return;
-            }
-
-            console.log('Cadastro com:', email, password);
-            // Adicione aqui a lógica de registro Firebase se necessário
-        });
-    }
-    // --- Fim Lógica Formulário de Login ---
-
-
-    // --- Ano no Rodapé (Manter se necessário) ---
-    const yearSpan = document.getElementById('current-year');
-    if(yearSpan) yearSpan.textContent = new Date().getFullYear();
-    // --- Fim Ano no Rodapé ---
-
-</script>
