@@ -570,26 +570,6 @@
                 console.error('Erro ao carregar o header:', error);
                 document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
             });
-// --- Modifica o link "Sala de Estudos" para "Personalizar Sala de Estudos" nesta página ---
-        // Este script roda APÓS o header ser carregado dinamicamente
-        document.addEventListener('DOMContentLoaded', function() {
-            // Espera um pouco para garantir que o header foi totalmente processado pelo navegador
-            setTimeout(() => {
-                const personalizeLink = document.querySelector('#header-placeholder a[href="saladeestudos.html"]');
-                if (personalizeLink) {
-                    personalizeLink.href = 'personalizar.html';
-                    personalizeLink.title = 'Personalizar Sala de Estudos';
-                    const linkTextSpan = personalizeLink.querySelector('.link-text');
-                    if (linkTextSpan) {
-                        linkTextSpan.textContent = 'Personalizar sala de estudos';
-                    }
-                    console.log("Link 'Sala de estudos' modificado para 'Personalizar sala de estudos' em saladeestudos.html");
-                } else {
-                    console.warn("Link 'Sala de estudos' não encontrado no header carregado em saladeestudos.html para modificação.");
-                }
-            }, 100); // Pequeno delay para garantir que o DOM do header está pronto
-        });
-
         // --- Configuração Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM", // Substitua pela sua chave real
