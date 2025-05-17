@@ -654,6 +654,19 @@
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
                 initializeHeaderEvents();
+                // Modifica o botão "PERSONALIZAR SALA DE ESTUDOS" para "SALA DE ESTUDOS"
+                const personalizeButton = document.querySelector('#header-placeholder a[href="personalizar.html"]');
+                if (personalizeButton) {
+                    personalizeButton.href = 'saladeestudos.html';
+                    const linkTextSpan = personalizeButton.querySelector('.link-text');
+                    if (linkTextSpan) {
+                        linkTextSpan.textContent = 'SALA DE ESTUDOS';
+                    }
+                    personalizeButton.title = 'Sala de Estudos';
+                    console.log("Botão 'PERSONALIZAR SALA DE ESTUDOS' modificado para 'SALA DE ESTUDOS' em personalizar.html");
+                } else {
+                    console.warn("Botão 'PERSONALIZAR SALA DE ESTUDOS' não encontrado no header carregado em personalizar.html");
+                }
             })
             .catch(error => console.error('Erro ao carregar o header:', error));
 
