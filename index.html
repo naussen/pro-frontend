@@ -69,6 +69,10 @@
   .w3s-logo-placeholder { width: 42px; height: 42px; margin-right: 8px; }
   .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif;}
   .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
+  .w3s-logo-area .logo-text {
+    font-size: 2em; /* Aumenta em 100% */
+    font-weight: bold; /* Aplica negrito */
+  }
   .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 12px; }
   .w3s-search-area { display: flex; align-items: center; max-width: 220px; }
   .w3s-search-area input[type="text"] { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 25px 0 0 25px; font-size: 14px; width: 100%; border-right: none; height: 36px; box-sizing: border-box; background-color: var(--main-content-bg); color: var(--text-dark); }
@@ -270,7 +274,6 @@
             <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
         </svg>
         <span class="logo-text">PRO Concursos</span>
-      </a>
     </div>
     <div class="w3s-header-right-group">
         <div class="w3s-header-actions">
@@ -280,12 +283,12 @@
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>
             </button>
             <!-- Assinatura Link -->
-            <a href="assinatura.html" title="Assinaturas"><span class="icon">➕</span> <span class="link-text">ASSINATURA</span></a>
+            <a href="assinatura.html" title="Assinaturas"><span class="icon">➕</span> <span class="link-text">Assinatura</span></a>
             <!-- Contato Link -->
-            <a href="contato.html" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">CONTATO</span></a>
+            <a href="contato.html" title="Contato"><span class="icon">👨‍🏫</span> <span class="link-text">Contato</span></a>
             <!-- Login Button/Dropdown -->
             <div style="position: relative;">
-                <button id="login-btn" title="Login"><span class="icon">👤</span> <span class="link-text">LOGIN</span></button>
+                <button id="login-btn" title="Login"><span class="icon">👤</span> <span class="link-text">Login</span></button>
                 <div id="login-dropdown" class="login-dropdown">
                     <form id="login-form">
                         <label for="login-email">Email:</label>
