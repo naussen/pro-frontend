@@ -82,28 +82,16 @@
     
     // Listener para fornecer o subtopicId ao iframe (MANTÉM O AJUSTE ANTERIOR)
     window.addEventListener('message', function(event) {
-        if (event.origin !== 'https://app-questoes.netlify.app') {
-             // Ignora mensagens de origens inesperadas por segurança
+        // Verifica a origem da mensagem por segurança
+        // Adicione a origem de desenvolvimento local se aplicável
+        if (event.origin !== 'https://questoes.proconcursos.com.br' && event.origin !== 'http://localhost:5173') { // Corrigida a origem
+             console.warn('Mensagem ignorada de origem desconhecida:', event.origin);
             return;
         }
-        if (event.data === 'getSubtopicId') {
-            let questionsKeyForApp = null;
-            const activeLink = document.querySelector('.subtopic-link.active');
-            if (activeLink) {
-                // O link ativo deve ter o subtopicId no atributo data-subtopic-id
-                const subtopicIdFromLink = activeLink.getAttribute('data-subtopic-id');
-                if (subtopicIdFromLink && subtopicIdFromLink.trim() !== '') {
-                    iframe.contentWindow.postMessage({ subtopicId: subtopicIdFromLink, type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
-                    console.log('Enviando subtopicId para app-questoes:', subtopicIdFromLink);
-                } else {
-                    console.warn("data-subtopic-id está vazio ou ausente no link ativo.", activeLink);
-                    iframe.contentWindow.postMessage({ subtopicId: null, error: "subtopicId missing or empty on active link", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
-                }
-            } else {
-                console.log('Nenhum subtopic-link ativo. Enviando null para app-questoes.');
-                iframe.contentWindow.postMessage({ subtopicId: null, error: "No active subtopic", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
-            }
-        }
+        // A lógica de recebimento de mensagens foi movida para App.jsx
+        // Este listener em questoes-injector.js não é mais necessário para passar o subtopicId para o App.jsx
+        // A comunicação agora é direta de saladeestudos.html para o iframe (App.jsx)
+        console.log('Mensagem recebida no questoes-injector.js (listener antigo):', event.data); // Log para depuração
     });
 
 })();
