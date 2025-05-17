@@ -648,28 +648,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-                initializeHeaderEvents();
-                // Modifica o botão "PERSONALIZAR SALA DE ESTUDOS" para "SALA DE ESTUDOS"
-                const personalizeButton = document.querySelector('#header-placeholder a[href="personalizar.html"]');
-                if (personalizeButton) {
-                    personalizeButton.href = 'saladeestudos.html';
-                    const linkTextSpan = personalizeButton.querySelector('.link-text');
-                    if (linkTextSpan) {
-                        linkTextSpan.textContent = 'SALA DE ESTUDOS';
-                    }
-                    personalizeButton.title = 'Sala de Estudos';
-                    console.log("Botão 'PERSONALIZAR SALA DE ESTUDOS' modificado para 'SALA DE ESTUDOS' em personalizar.html");
-                } else {
-                    console.warn("Botão 'PERSONALIZAR SALA DE ESTUDOS' não encontrado no header carregado em personalizar.html");
-                }
-            })
-            .catch(error => console.error('Erro ao carregar o header:', error));
-
         // --- Configuração Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
