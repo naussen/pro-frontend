@@ -971,9 +971,12 @@
                 // Comunica o subtopicId para o iframe de questões, se estiver aberto
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
                 if (questoesIframe && questoesIframe.contentWindow) {
+                    console.log('Tentando enviar mensagem para o iframe de questões...'); // Log antes do postMessage
                     // Envia o subtopicId e o userId para o iframe de questões
                     questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: userId }, 'https://questoes.proconcursos.com.br'); // Corrigido o targetOrigin
-                    console.log('SubtopicId', subtopicId, 'e userId', userId, 'enviados para o painel de questões após carregar aula.');
+                    console.log('Mensagem setSubtopicId enviada para o iframe de questões.'); // Log após o postMessage
+                } else {
+                    console.warn('Iframe de questões não encontrado ou contentWindow indisponível.'); // Log se o iframe não for encontrado
                 }
 
             } catch (error) {
