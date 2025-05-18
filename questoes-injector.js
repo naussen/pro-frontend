@@ -119,6 +119,10 @@
             iframeIsReady = true;
             // Envia os dados da aula atual para o iframe assim que ele estiver pronto
             sendCurrentLessonDataToIframe();
+        } 
+        else if (event.data && event.data.type === 'closeQuestionsApp') {
+            console.log('[QI] Recebida solicitação para fechar painel de questões');
+            toggleQuestoesAppVisibility(); // Fecha o painel
         }
     });
 
