@@ -318,7 +318,9 @@
         #lessonContent { min-height: 300px; }
 
         /* --- Floating Tools Panel (se houver) --- */
-        /* O bloco de regras para #floatingToolsPanel estava vazio e foi removido para evitar alertas. */
+        #floatingToolsPanel {
+            /* Estilos existentes... */
+        }
         
         /* --- NOVO: Estilos para o Botão de Questões Fixo Moderno --- */
         .proconcursos-questoes-container { /* Contêiner do botão */
@@ -538,6 +540,36 @@
                     if (window.toggleQuestoesAppGlobal) {
                         window.toggleQuestoesAppGlobal(); // Chama a função para mostrar/esconder o painel
                         console.log('Botão de questões personalizado ("proConcursosQuestoesBtn") acionou a função global toggleQuestoesAppGlobal.');
+                        
+                        // Envia os dados da aula atual para o iframe após abrir o painel
+                        setTimeout(() => {
+                            const questoesIframe = document.getElementById('questoes-app-iframe');
+                            const activeLink = document.querySelector('.subtopic-link.active');
+                            if (questoesIframe && questoesIframe.contentWindow && activeLink) {
+                                const subtopicId = activeLink.getAttribute('data-subtopic-id');
+                                if (subtopicId && window.userId) {
+                                    questoesIframe.contentWindow.postMessage({
+                                        type: 'loadQuestions',
+                                        subtopicId: subtopicId,
+                                        userId: window.userId
+                                    }, 'https://app-questoes.netlify.app');
+                                    
+                                    // Também envia para localhost para desenvolvimento
+                                    questoesIframe.contentWindow.postMessage({
+                                        type: 'loadQuestions',
+                                        subtopicId: subtopicId,
+                                        userId: window.userId
+                                    }, 'http://localhost:5173');
+                                    
+                                    console.log('Dados enviados ao clicar no botão QUESTÕES:', {
+                                        subtopicId: subtopicId,
+                                        userId: window.userId
+                                    });
+                                } else {
+                                    console.warn('Não foi possível enviar dados ao clicar no botão QUESTÕES. subtopicId ou userId ausente.');
+                                }
+                            }
+                        }, 500); // Pequeno atraso para garantir que o iframe esteja pronto
                     } else {
                         console.error('Função global toggleQuestoesAppGlobal não encontrada. Verifique se o "questoes-injector.js" foi carregado corretamente.');
                         alert('Sistema de questões não pôde ser iniciado. Verifique o console para detalhes.');
@@ -587,6 +619,7 @@
 
         // --- Variáveis Globais ---
         let userId = null;
+        window.userId = null; // Adiciona variável global para o questoes-injector.js
         let sidebarToggleBtn = null; // Será definido em initializeHeaderEvents
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
@@ -690,6 +723,7 @@
                 window.location.href = 'index.html';
             } else {
                 userId = user.uid;
+                window.userId = user.uid; // Copia para a variável global
                 console.log("Usuário autenticado:", userId);
                 loadCourses(); // Carrega cursos
                 applySavedPreferences(); // Aplica tema e cor de fundo salvos
@@ -970,9 +1004,17 @@
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
                 if (questoesIframe && questoesIframe.contentWindow) {
                     // Envia o subtopicId e o userId para o iframe de questões
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: userId }, 'https://app-questoes.netlify.app');
-                    console.log('SubtopicId', subtopicId, 'e userId', userId, 'enviados para o painel de questões após carregar aula.');
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: window.userId }, 'https://app-questoes.netlify.app');
+                    // Também envia para localhost para desenvolvimento
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: window.userId }, 'http://localhost:5173');
+                    
+                    console.log('SubtopicId', subtopicId, 'e userId', window.userId, 'enviados para o painel de questões após carregar aula.');
                 }
+                
+                // Dispara evento personalizado para indicar que a aula foi carregada
+                const lessonLoadedEvent = new Event('lessonContentLoaded');
+                window.dispatchEvent(lessonLoadedEvent);
+                console.log('Evento lessonContentLoaded disparado.');
 
             } catch (error) {
                 console.error('Erro ao carregar conteúdo da aula:', error);
