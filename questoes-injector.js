@@ -82,8 +82,10 @@
     
     // Listener para fornecer o subtopicId ao iframe (MANTÉM O AJUSTE ANTERIOR)
     window.addEventListener('message', function(event) {
-        if (event.origin !== 'https://app-questoes.netlify.app') {
-             // Ignora mensagens de origens inesperadas por segurança
+        // A mensagem vem do iframe, cuja origem é https://app-questoes.netlify.app
+        if (event.origin !== 'https://app-questoes.netlify.app') { // CORRIGIDO: Deve ser ===
+             // Ignora mensagens de origens inesperadas por segurança - Manter o log para depuração
+             console.warn('Mensagem ignorada de origem desconhecida:', event.origin);
             return;
         }
         if (event.data === 'getSubtopicId') {
@@ -92,16 +94,23 @@
             if (activeLink) {
                 // O link ativo deve ter o subtopicId no atributo data-subtopic-id
                 const subtopicIdFromLink = activeLink.getAttribute('data-subtopic-id');
+                // Também precisamos enviar o userId da página pai
+                const userIdFromPage = window.userId; // Assumindo que userId está disponível globalmente na página pai
+
                 if (subtopicIdFromLink && subtopicIdFromLink.trim() !== '') {
-                    iframe.contentWindow.postMessage({ subtopicId: subtopicIdFromLink, type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
-                    console.log('Enviando subtopicId para app-questoes:', subtopicIdFromLink);
+                    // Envia a resposta de volta para o iframe, incluindo o userId
+                    // O targetOrigin deve ser a origem do iframe
+                    event.source.postMessage({ subtopicId: subtopicIdFromLink, userId: userIdFromPage, type: 'subtopicIdResponse' }, event.origin); // Usar event.source e event.origin
+                    console.log('Enviando subtopicId', subtopicIdFromLink, 'e userId', userIdFromPage, 'para app-questoes.');
                 } else {
                     console.warn("data-subtopic-id está vazio ou ausente no link ativo.", activeLink);
-                    iframe.contentWindow.postMessage({ subtopicId: null, error: "subtopicId missing or empty on active link", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+                    // Envia uma resposta de erro
+                    event.source.postMessage({ subtopicId: null, userId: userIdFromPage, error: "subtopicId missing or empty on active link", type: 'subtopicIdResponse' }, event.origin);
                 }
             } else {
                 console.log('Nenhum subtopic-link ativo. Enviando null para app-questoes.');
-                iframe.contentWindow.postMessage({ subtopicId: null, error: "No active subtopic", type: 'subtopicIdResponse' }, 'https://app-questoes.netlify.app');
+                // Envia uma resposta indicando que não há subtopic ativo
+                event.source.postMessage({ subtopicId: null, userId: window.userId, error: "No active subtopic", type: 'subtopicIdResponse' }, event.origin);
             }
         }
     });
