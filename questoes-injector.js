@@ -1,8 +1,14 @@
 // questoe_injector.js
 (function() {
+    console.log('[QI] Iniciando injeção de questoes-injector.js');
+
     // Evita múltiplas injeções
-    if (window.__QUESTOES_APP_INJECTED_V2__) return; // Use uma nova flag para garantir que esta versão seja carregada
+    if (window.__QUESTOES_APP_INJECTED_V2__) {
+        console.log('[QI] Script já injetado anteriormente, retornando.');
+        return; 
+    }
     window.__QUESTOES_APP_INJECTED_V2__ = true;
+    console.log('[QI] Flag de injeção definida: __QUESTOES_APP_INJECTED_V2__');
 
     // Cria container do app React (mantém esta parte)
     const container = document.createElement('div');
@@ -51,6 +57,7 @@
     const iframe = document.createElement('iframe');
     iframe.id = 'questoes-app-iframe';
     iframe.src = 'https://app-questoes.netlify.app'; // URL do seu app de questões
+    console.log('[QI] Iframe criado com src:', iframe.src);
     Object.assign(iframe.style, {
         width: '100%',
         height: '100%',
@@ -62,16 +69,25 @@
     appBox.appendChild(iframe);
     container.appendChild(appBox);
     document.body.appendChild(container);
+    console.log('[QI] Container e iframe adicionados ao DOM');
 
     // Função para abrir/fechar o painel de questões
     function toggleQuestoesAppVisibility() {
         const isOpen = container.style.display === 'flex';
         container.style.display = isOpen ? 'none' : 'flex';
+        console.log('[QI] Painel de questões ' + (isOpen ? 'fechado' : 'aberto'));
+        
+        if (!isOpen) {
+            // Ao abrir o painel, tenta enviar os dados atuais
+            console.log('[QI] Tentando enviar dados atuais ao abrir painel');
+            setTimeout(sendCurrentLessonDataToIframe, 300);
+        }
     }
     closeBtnInternal.onclick = toggleQuestoesAppVisibility; // Botão de fechar interno
 
     // Torna a função de toggle acessível globalmente
     window.toggleQuestoesAppGlobal = toggleQuestoesAppVisibility;
+    console.log('[QI] Função toggleQuestoesAppGlobal definida globalmente');
 
     // Fecha ao clicar fora da caixa do app (no overlay escuro)
     container.addEventListener('click', function(e) {
@@ -84,17 +100,22 @@
     let iframeIsReady = false;
 
     // Listener para mensagens do iframe
+    console.log('[QI] Adicionando listener de mensagens de window');
     window.addEventListener('message', function(event) {
+        console.log('[QI] Mensagem recebida de origem:', event.origin, 'dados:', event.data);
+        
         // Verifica a origem da mensagem por segurança
         // Permite localhost:5173 para desenvolvimento local
+        /*
         if (event.origin !== 'https://app-questoes.netlify.app' && event.origin !== 'http://localhost:5173') {
-            console.warn('Mensagem ignorada de origem desconhecida:', event.origin);
+            console.warn('[QI] Mensagem ignorada de origem desconhecida:', event.origin);
             return;
         }
+        */
 
         // Verifica se a mensagem indica que o iframe está pronto
         if (event.data === 'iframeReady') {
-            console.log('Mensagem iframeReady recebida do iframe.');
+            console.log('[QI] Mensagem iframeReady recebida do iframe.');
             iframeIsReady = true;
             // Envia os dados da aula atual para o iframe assim que ele estiver pronto
             sendCurrentLessonDataToIframe();
@@ -104,27 +125,43 @@
     // Função para enviar os dados da aula atual para o iframe
     function sendCurrentLessonDataToIframe() {
         const questoesIframe = document.getElementById('questoes-app-iframe');
+        console.log('[QI] Tentando enviar dados para o iframe. Estado: iframeIsReady=', iframeIsReady, 
+                    'iframe existe=', !!questoesIframe, 
+                    'contentWindow existe=', !!(questoesIframe && questoesIframe.contentWindow),
+                    'window.userId=', window.userId);
+        
         // Verifica se o iframe está pronto e se temos os dados da aula e userId
-        if (iframeIsReady && questoesIframe && questoesIframe.contentWindow && window.userId) {
+        if (iframeIsReady && questoesIframe && questoesIframe.contentWindow) {
+            if (!window.userId) {
+                console.warn('[QI] window.userId não está definido!');
+                if (typeof userId !== 'undefined') {
+                    console.log('[QI] Variável local userId encontrada:', userId);
+                    window.userId = userId;
+                    console.log('[QI] Copiada para window.userId:', window.userId);
+                }
+            }
+            
             const activeLink = document.querySelector('.subtopic-link.active');
             if (activeLink) {
                 const subtopicIdFromLink = activeLink.getAttribute('data-subtopic-id');
+                console.log('[QI] Link ativo encontrado com subtopicId:', subtopicIdFromLink);
+                
                 if (subtopicIdFromLink && subtopicIdFromLink.trim() !== '') {
                     // Envia a mensagem 'loadQuestions' com os dados
-                    questoesIframe.contentWindow.postMessage({
+                    const messageData = {
                         type: 'loadQuestions',
                         subtopicId: subtopicIdFromLink,
                         userId: window.userId // userId deve estar disponível globalmente
-                    }, 'https://app-questoes.netlify.app');
-                    // Também envia para localhost para desenvolvimento local
-                     questoesIframe.contentWindow.postMessage({
-                        type: 'loadQuestions',
-                        subtopicId: subtopicIdFromLink,
-                        userId: window.userId
-                    }, 'http://localhost:5173');
-                    console.log('Mensagem loadQuestions enviada para o iframe com subtopicId e userId.');
+                    };
+                    console.log('[QI] Enviando mensagem para app-questoes.netlify.app:', JSON.stringify(messageData));
+                    questoesIframe.contentWindow.postMessage(messageData, 'https://app-questoes.netlify.app');
+                    
+                    console.log('[QI] Enviando mensagem para localhost:5173:', JSON.stringify(messageData));
+                    questoesIframe.contentWindow.postMessage(messageData, 'http://localhost:5173');
+                    
+                    console.log('[QI] Mensagem loadQuestions enviada para o iframe com subtopicId e userId.');
                 } else {
-                    console.warn("data-subtopic-id está vazio ou ausente no link ativo. Não foi possível enviar dados para o iframe.");
+                    console.warn("[QI] data-subtopic-id está vazio ou ausente no link ativo. Não foi possível enviar dados completos para o iframe.");
                      questoesIframe.contentWindow.postMessage({
                         type: 'loadQuestions',
                         subtopicId: null,
@@ -139,7 +176,7 @@
                     }, 'http://localhost:5173');
                 }
             } else {
-                 console.log('Nenhum subtopic-link ativo. Não foi possível enviar dados para o iframe.');
+                 console.log('[QI] Nenhum subtopic-link ativo. Não foi possível enviar dados para o iframe.');
                  questoesIframe.contentWindow.postMessage({
                     type: 'loadQuestions',
                     subtopicId: null,
@@ -154,15 +191,16 @@
                 }, 'http://localhost:5173');
             }
         } else {
-            console.log('Iframe não pronto ou userId não disponível. Não foi possível enviar dados da aula.');
+            console.log('[QI] Iframe não pronto ou userId não disponível. Não foi possível enviar dados da aula.');
         }
     }
 
     // Adiciona um listener para o evento 'lessonContentLoaded' (assumindo que este evento é disparado na página pai)
-    // Este listener garantirá que os dados da aula sejam enviados sempre que uma nova aula for carregada.
-    // Você precisará adicionar um evento personalizado 'lessonContentLoaded' na página saladeestudos.html
-    // onde o conteúdo da aula é carregado (por exemplo, após lessonContentDiv.innerHTML = htmlContent;).
-    window.addEventListener('lessonContentLoaded', sendCurrentLessonDataToIframe);
-    console.log('Listener para lessonContentLoaded adicionado.');
+    console.log('[QI] Adicionando listener para evento lessonContentLoaded');
+    window.addEventListener('lessonContentLoaded', function() {
+        console.log('[QI] Evento lessonContentLoaded recebido! Chamando sendCurrentLessonDataToIframe');
+        sendCurrentLessonDataToIframe();
+    });
 
+    console.log('[QI] questoes-injector.js carregado e inicializado com sucesso!');
 })();
