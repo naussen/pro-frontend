@@ -552,14 +552,7 @@
                                         type: 'loadQuestions',
                                         subtopicId: subtopicId,
                                         userId: window.userId
-                                    }, 'https://app-questoes.netlify.app');
-                                    
-                                    // Também envia para localhost para desenvolvimento
-                                    questoesIframe.contentWindow.postMessage({
-                                        type: 'loadQuestions',
-                                        subtopicId: subtopicId,
-                                        userId: window.userId
-                                    }, 'http://localhost:5173');
+                                    }, '*');
                                     
                                     console.log('Dados enviados ao clicar no botão QUESTÕES:', {
                                         subtopicId: subtopicId,
@@ -1004,10 +997,7 @@
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
                 if (questoesIframe && questoesIframe.contentWindow) {
                     // Envia o subtopicId e o userId para o iframe de questões
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: window.userId }, 'https://app-questoes.netlify.app');
-                    // Também envia para localhost para desenvolvimento
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: window.userId }, 'http://localhost:5173');
-                    
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: window.userId }, '*');
                     console.log('SubtopicId', subtopicId, 'e userId', window.userId, 'enviados para o painel de questões após carregar aula.');
                 }
                 
