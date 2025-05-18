@@ -120,6 +120,31 @@
             // Envia os dados da aula atual para o iframe assim que ele estiver pronto
             sendCurrentLessonDataToIframe();
         } 
+        else if (event.data === 'getSubtopicId') {
+            console.log('[QI] Recebida solicitação getSubtopicId do iframe, enviando dados...');
+            // Responde com os mesmos dados que enviaria com o evento loadQuestions
+            const questoesIframe = document.getElementById('questoes-app-iframe');
+            if (questoesIframe && questoesIframe.contentWindow) {
+                const activeLink = document.querySelector('.subtopic-link.active');
+                if (activeLink && activeLink.getAttribute('data-subtopic-id')) {
+                    const subtopicId = activeLink.getAttribute('data-subtopic-id');
+                    console.log('[QI] Enviando subtopicId:', subtopicId, 'e userId:', window.userId);
+                    questoesIframe.contentWindow.postMessage({
+                        type: 'subtopicIdResponse',
+                        subtopicId: subtopicId,
+                        userId: window.userId
+                    }, '*');
+                } else {
+                    console.log('[QI] Nenhum link ativo ou sem subtopicId para enviar');
+                    questoesIframe.contentWindow.postMessage({
+                        type: 'subtopicIdResponse',
+                        subtopicId: null,
+                        userId: window.userId,
+                        error: 'No active subtopic'
+                    }, '*');
+                }
+            }
+        }
         else if (event.data && event.data.type === 'closeQuestionsApp') {
             console.log('[QI] Recebida solicitação para fechar painel de questões');
             toggleQuestoesAppVisibility(); // Fecha o painel
