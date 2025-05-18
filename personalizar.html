@@ -648,6 +648,15 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
+        // --- Carrega o Cabeçalho Dinamicamente ---
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                initializeHeaderEvents();
+            })
+            .catch(error => console.error('Erro ao carregar o header:', error));
+
         // --- Configuração Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",

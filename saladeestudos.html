@@ -946,36 +946,6 @@
             });
         }
 
-        // Variáveis para armazenar os dados da aula enquanto espera o iframe
-        let pendingSubtopicId = null;
-        let pendingUserId = null;
-
-        // Listener para mensagens do iframe (handshake)
-        window.addEventListener('message', function(event) {
-            // Verifica a origem da mensagem por segurança
-            if (event.origin !== 'https://app-questoes.netlify.app' && event.origin !== 'http://localhost:5173') { // Revertido para o domínio antigo
-                // console.warn('Mensagem do iframe ignorada de origem desconhecida:', event.origin); // Pode ser muito verboso
-                return;
-            }
-
-            // Se receber a mensagem 'iframeReady' e houver dados pendentes, envia os dados da aula
-            if (event.data && event.data.type === 'iframeReady') {
-                console.log('Mensagem "iframeReady" recebida do iframe.');
-                const questoesIframe = document.getElementById('questoes-app-iframe');
-                if (questoesIframe && questoesIframe.contentWindow && pendingSubtopicId && pendingUserId) {
-                    console.log('Iframe pronto. Enviando dados da aula pendentes:', { subtopicId: pendingSubtopicId, userId: pendingUserId });
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: pendingSubtopicId, userId: pendingUserId }, 'https://app-questoes.netlify.app'); // Revertido para o domínio antigo
-                    // Limpa os dados pendentes após o envio
-                    pendingSubtopicId = null;
-                    pendingUserId = null;
-                } else {
-                    console.warn('Mensagem "iframeReady" recebida, mas iframe não encontrado ou dados pendentes ausentes.');
-                }
-            }
-            // Pode adicionar outros tipos de mensagem do iframe aqui no futuro
-        });
-
-
         async function loadLessonContent(courseId, moduleId, subtopicId) {
             if (!lessonContentDiv) return;
             lessonContentDiv.innerHTML = '<p>Carregando aula...</p>';
@@ -990,7 +960,7 @@
                     console.warn("URL do conteúdo não encontrada para o subtema:", subtopicId, subtopic);
                     return;
                 }
-
+                
                 console.log("Carregando conteúdo de:", subtopic.content_url);
                 const response = await fetch(subtopic.content_url);
                 if (!response.ok) throw new Error(`Falha ao carregar conteúdo: ${response.status} ${response.statusText}`);
@@ -998,17 +968,12 @@
                 lessonContentDiv.innerHTML = htmlContent;
                 console.log("Conteúdo da aula carregado com sucesso.");
 
-                // Armazena os dados da aula e tenta enviar para o iframe (se já estiver pronto)
-                pendingSubtopicId = subtopicId;
-                pendingUserId = userId; // userId é uma variável global em saladeestudos.html
-
+                // Comunica o subtopicId para o iframe de questões, se estiver aberto
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
                 if (questoesIframe && questoesIframe.contentWindow) {
-                     // Tenta enviar imediatamente. Se o iframe não estiver pronto, ele enviará quando receber o 'iframeReady'.
-                    console.log('Tentando enviar dados da aula para o iframe imediatamente...');
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: pendingSubtopicId, userId: pendingUserId }, 'https://app-questoes.netlify.app'); // Revertido para o domínio antigo
-                } else {
-                    console.warn('Iframe de questões não encontrado ou contentWindow indisponível ao tentar enviar dados da aula.');
+                    // Envia o subtopicId e o userId para o iframe de questões
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: userId }, 'https://app-questoes.netlify.app');
+                    console.log('SubtopicId', subtopicId, 'e userId', userId, 'enviados para o painel de questões após carregar aula.');
                 }
 
             } catch (error) {
