@@ -50,7 +50,7 @@
 
     const iframe = document.createElement('iframe');
     iframe.id = 'questoes-app-iframe';
-    iframe.src = 'https://questoes.proconcursos.com.br'; // URL do seu app de questões (corrigido)
+    iframe.src = 'https://app-questoes.netlify.app'; // URL do seu app de questões (revertido)
     Object.assign(iframe.style, {
         width: '100%',
         height: '100%',

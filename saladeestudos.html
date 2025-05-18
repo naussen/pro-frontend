@@ -953,7 +953,7 @@
         // Listener para mensagens do iframe (handshake)
         window.addEventListener('message', function(event) {
             // Verifica a origem da mensagem por segurança
-            if (event.origin !== 'https://questoes.proconcursos.com.br' && event.origin !== 'http://localhost:5173') {
+            if (event.origin !== 'https://app-questoes.netlify.app' && event.origin !== 'http://localhost:5173') { // Revertido para o domínio antigo
                 // console.warn('Mensagem do iframe ignorada de origem desconhecida:', event.origin); // Pode ser muito verboso
                 return;
             }
@@ -964,7 +964,7 @@
                 const questoesIframe = document.getElementById('questoes-app-iframe');
                 if (questoesIframe && questoesIframe.contentWindow && pendingSubtopicId && pendingUserId) {
                     console.log('Iframe pronto. Enviando dados da aula pendentes:', { subtopicId: pendingSubtopicId, userId: pendingUserId });
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: pendingSubtopicId, userId: pendingUserId }, 'https://questoes.proconcursos.com.br');
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: pendingSubtopicId, userId: pendingUserId }, 'https://app-questoes.netlify.app'); // Revertido para o domínio antigo
                     // Limpa os dados pendentes após o envio
                     pendingSubtopicId = null;
                     pendingUserId = null;
@@ -1006,7 +1006,7 @@
                 if (questoesIframe && questoesIframe.contentWindow) {
                      // Tenta enviar imediatamente. Se o iframe não estiver pronto, ele enviará quando receber o 'iframeReady'.
                     console.log('Tentando enviar dados da aula para o iframe imediatamente...');
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: pendingSubtopicId, userId: pendingUserId }, 'https://questoes.proconcursos.com.br');
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: pendingSubtopicId, userId: pendingUserId }, 'https://app-questoes.netlify.app'); // Revertido para o domínio antigo
                 } else {
                     console.warn('Iframe de questões não encontrado ou contentWindow indisponível ao tentar enviar dados da aula.');
                 }
