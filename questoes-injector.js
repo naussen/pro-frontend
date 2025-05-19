@@ -29,12 +29,14 @@
     const appBox = document.createElement('div');
     Object.assign(appBox.style, {
         position: 'relative',
-        width: 'min(117.6vw, 1404px)', // Revertido para o tamanho original
-        height: 'min(90.25vh, 864.5px)', // Revertido para o tamanho original
+        width: '100%', // Preenche a largura do container pai
+        height: '100%', // Preenche a altura do container pai
+        maxWidth: '1404px', // Mantém o max-width original
+        maxHeight: '864.5px', // Mantém o max-height original
         background: '#fff', // Cor de fundo da caixa do app
         borderRadius: '16px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
-        overflow: 'hidden',
+        overflow: 'hidden', // Garante que o conteúdo do iframe não vaze
         display: 'flex',
         flexDirection: 'column',
     });
