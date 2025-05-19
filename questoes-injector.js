@@ -29,8 +29,8 @@
     const appBox = document.createElement('div');
     Object.assign(appBox.style, {
         position: 'relative',
-        width: 'min(200.92vw, 2386.8px)', /* Aumentado em 70% */
-        height: 'min(153.425vh, 1469.65px)', /* Aumentado em 70% */
+        width: 'min(117.6vw, 1404px)', // Revertido para o tamanho original
+        height: 'min(90.25vh, 864.5px)', // Revertido para o tamanho original
         background: '#fff', // Cor de fundo da caixa do app
         borderRadius: '16px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
