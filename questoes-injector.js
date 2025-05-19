@@ -173,13 +173,15 @@
             const activeLink = document.querySelector('.subtopic-link.active');
             if (activeLink) {
                 const subtopicIdFromLink = activeLink.getAttribute('data-subtopic-id');
-                console.log('[QI] Link ativo encontrado com subtopicId:', subtopicIdFromLink);
+                const subtopicNameFromLink = activeLink.textContent.trim(); // Pega o texto do link (nome da aula)
+                console.log('[QI] Link ativo encontrado com subtopicId:', subtopicIdFromLink, 'e subtopicName:', subtopicNameFromLink);
                 
                 if (subtopicIdFromLink && subtopicIdFromLink.trim() !== '') {
-                    // Envia a mensagem 'loadQuestions' com os dados
+                    // Envia a mensagem 'loadQuestions' com os dados, incluindo o nome
                     const messageData = {
                         type: 'loadQuestions',
                         subtopicId: subtopicIdFromLink,
+                        subtopicName: subtopicNameFromLink, // Inclui o nome do subtópico
                         userId: window.userId // userId deve estar disponível globalmente
                     };
                     console.log('[QI] Enviando mensagem para app-questoes.netlify.app:', JSON.stringify(messageData));
@@ -188,18 +190,20 @@
                     console.log('[QI] Enviando mensagem para localhost:5173:', JSON.stringify(messageData));
                     questoesIframe.contentWindow.postMessage(messageData, 'http://localhost:5173');
                     
-                    console.log('[QI] Mensagem loadQuestions enviada para o iframe com subtopicId e userId.');
+                    console.log('[QI] Mensagem loadQuestions enviada para o iframe com subtopicId, subtopicName e userId.');
                 } else {
                     console.warn("[QI] data-subtopic-id está vazio ou ausente no link ativo. Não foi possível enviar dados completos para o iframe.");
                      questoesIframe.contentWindow.postMessage({
                         type: 'loadQuestions',
                         subtopicId: null,
+                        subtopicName: null, // Envia null para o nome também
                         userId: window.userId,
                         error: "subtopicId missing or empty on active link"
                     }, 'https://app-questoes.netlify.app');
                      questoesIframe.contentWindow.postMessage({
                         type: 'loadQuestions',
                         subtopicId: null,
+                        subtopicName: null, // Envia null para o nome também
                         userId: window.userId,
                         error: "subtopicId missing or empty on active link"
                     }, 'http://localhost:5173');
@@ -209,12 +213,14 @@
                  questoesIframe.contentWindow.postMessage({
                     type: 'loadQuestions',
                     subtopicId: null,
+                    subtopicName: null, // Envia null para o nome também
                     userId: window.userId,
                     error: "No active subtopic"
                 }, 'https://app-questoes.netlify.app');
                  questoesIframe.contentWindow.postMessage({
                     type: 'loadQuestions',
                     subtopicId: null,
+                    subtopicName: null, // Envia null para o nome também
                     userId: window.userId,
                     error: "No active subtopic"
                 }, 'http://localhost:5173');
