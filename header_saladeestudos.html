@@ -29,16 +29,36 @@
             <button type="submit" aria-label="Buscar">🔍</button>
         </div>
         <div class="w3s-header-actions">
+            <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
+            <button id="pomodoro-btn" title="Timer Pomodoro" aria-label="Abrir Timer Pomodoro"><span class="icon">🍅</span></button> 
             <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
                 <span class="icon theme-icon-light">☀️</span>
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>
             </button>
-            <button id="color-picker-btn" title="Mudar Cor de Fundo"><span class="icon">🎨</span> <span class="link-text">Cor</span></button>
             <a href="personalizar.html" title="Personalizar Sala de Estudos"><span class="icon">⚙️</span> <span class="link-text">Personalizar Sala de Estudos</span></a>
-            <a href="index.html" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></a>
+            <a id="logout-btn" href="index.html" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></a>
         </div>
     </div>
 </header>
+
+<div id="pomodoro-panel" class="pomodoro-panel" style="display: none;">
+    <div class="pomodoro-header">
+        <h3>Timer Pomodoro <span class="pomodoro-icon">🍅</span></h3>
+        <button id="pomodoro-close-btn" class="pomodoro-close-btn" aria-label="Fechar Timer Pomodoro">&times;</button>
+    </div>
+    <div class="pomodoro-timer-display">
+        <span id="pomodoro-time">25:00</span>
+    </div>
+    <div class="pomodoro-controls">
+        <button id="pomodoro-start-btn" class="pomodoro-btn">Iniciar</button>
+        <button id="pomodoro-pause-btn" class="pomodoro-btn" style="display: none;">Pausar</button>
+        <button id="pomodoro-reset-btn" class="pomodoro-btn">Resetar</button>
+    </div>
+    <div class="pomodoro-status">
+        <p id="pomodoro-session-status">Sessão de Trabalho</p>
+        <p>Ciclos: <span id="pomodoro-cycles">0</span></p>
+    </div>
+</div>
 
 <style>
     /* Estilos do header para corrigir alinhamentos */
@@ -260,6 +280,173 @@
             display: none;
         }
     }
+
+    /* Pomodoro Timer Styles */
+    .pomodoro-panel {
+        position: fixed;
+        top: var(--header-height, 55px); /* Position below the header */
+        right: 20px;
+        width: 300px;
+        max-width: 90%;
+        background-color: var(--main-content-bg, #ffffff);
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000; /* High z-index to be on top */
+        padding: 15px;
+        display: none; /* Initially hidden - JS controls this */
+        flex-direction: column;
+        gap: 15px;
+        color: var(--text-dark, #333);
+    }
+    body.dark-mode .pomodoro-panel { /* Example for dark mode compatibility */
+        background-color: var(--dark-bg, #161b22);
+        border-color: var(--header-border, #30363d);
+        color: var(--text-light, #f0f6fc);
+    }
+
+    .pomodoro-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color, #ccc);
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+    }
+    body.dark-mode .pomodoro-header {
+        border-bottom-color: var(--header-border, #30363d);
+    }
+    .pomodoro-header h3 {
+        margin: 0;
+        font-size: 1.2em;
+        color: var(--main-color, #1A5276);
+        display: flex;
+        align-items: center;
+    }
+    body.dark-mode .pomodoro-header h3 {
+        color: var(--main-color, #6cb6ff); /* Adjust if main-color changes too much */
+    }
+    .pomodoro-icon {
+        margin-left: 8px;
+        font-size: 1em; /* Adjust if emoji is too big/small */
+    }
+    .pomodoro-close-btn {
+        background: none;
+        border: none;
+        font-size: 1.8em;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 0 5px;
+        line-height: 1;
+        color: var(--text-muted, #6c757d);
+    }
+    .pomodoro-close-btn:hover {
+        color: var(--text-dark, #333);
+    }
+    body.dark-mode .pomodoro-close-btn {
+        color: var(--text-muted, #8b949e);
+    }
+    body.dark-mode .pomodoro-close-btn:hover {
+        color: var(--text-light, #f0f6fc);
+    }
+
+    .pomodoro-timer-display {
+        text-align: center;
+    }
+    #pomodoro-time {
+        font-size: 3.5em; /* Large display for time */
+        font-weight: bold;
+        color: var(--accent-1, #D4AC0D); /* Use an accent color */
+        display: block;
+        margin: 10px 0;
+    }
+    body.dark-mode #pomodoro-time {
+        color: var(--accent-1, #e4c05c);
+    }
+
+    .pomodoro-controls {
+        display: flex;
+        justify-content: space-around;
+        gap: 10px;
+    }
+    .pomodoro-btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.95em;
+        font-weight: 500;
+        transition: background-color 0.2s, transform 0.1s;
+        flex-grow: 1;
+    }
+    #pomodoro-start-btn {
+        background-color: var(--main-color, #1A5276);
+        color: var(--text-light, #f8f9fa);
+    }
+    body.dark-mode #pomodoro-start-btn {
+         color: var(--button-text-dark, #161b22); /* If main-color becomes light in dark mode */
+    }
+    #pomodoro-start-btn:hover {
+        background-color: var(--dark-blue-hover, #113a54); /* Slightly darker version of main-color */
+    }
+    #pomodoro-pause-btn {
+        background-color: var(--accent-2, #CA6F1E);
+        color: var(--text-light, #f8f9fa);
+    }
+    body.dark-mode #pomodoro-pause-btn {
+        color: var(--button-text-dark, #161b22);
+    }
+    #pomodoro-pause-btn:hover {
+        filter: brightness(0.9);
+    }
+    #pomodoro-reset-btn {
+        background-color: var(--light-highlight-bg, #EAF2F8);
+        color: var(--text-dark, #333);
+        border: 1px solid var(--border-color, #ccc);
+    }
+    body.dark-mode #pomodoro-reset-btn {
+        background-color: var(--subnav-bg, #22272e);
+        color: var(--text-light, #f0f6fc);
+        border-color: var(--border-color, #444c56);
+    }
+    #pomodoro-reset-btn:hover {
+        filter: brightness(0.95);
+    }
+    .pomodoro-btn:active {
+        transform: translateY(1px);
+    }
+
+    .pomodoro-status {
+        text-align: center;
+        font-size: 0.9em;
+        color: var(--text-muted, #6c757d);
+    }
+    .pomodoro-status p {
+        margin: 5px 0;
+    }
+    #pomodoro-session-status {
+        font-weight: bold;
+    }
+
+    @media (max-width: 480px) {
+        .pomodoro-panel {
+            width: calc(100% - 20px); /* Full width with some margin */
+            right: 10px;
+            left: 10px;
+            padding: 10px;
+        }
+        #pomodoro-time {
+            font-size: 2.8em;
+        }
+        .pomodoro-header h3 {
+            font-size: 1.1em;
+        }
+        .pomodoro-btn {
+            padding: 8px 10px;
+            font-size: 0.9em;
+        }
+    }
+    /* End Pomodoro Timer Styles */
 </style>
 
 <script>
@@ -347,4 +534,166 @@
             });
         }
     });
+
+    // Pomodoro Timer Logic (now wrapped in initPomodoro)
+    function initPomodoro() {
+        console.log("initPomodoro called"); // Add this new diagnostic log
+
+        const workDuration = 25 * 60;
+        const shortBreakDuration = 5 * 60;
+        const longBreakDuration = 15 * 60;
+        const pomodorosBeforeLongBreak = 4;
+
+        let currentTime = workDuration;
+        let timerInterval = null;
+        let isTimerRunning = false;
+        let currentSession = 'work'; // 'work', 'shortBreak', 'longBreak'
+        let pomodoroCount = 0;
+
+        const pomodoroBtn = document.getElementById('pomodoro-btn');
+        const pomodoroPanel = document.getElementById('pomodoro-panel');
+        const pomodoroCloseBtn = document.getElementById('pomodoro-close-btn');
+        const pomodoroTimeDisplay = document.getElementById('pomodoro-time');
+        const pomodoroStartBtn = document.getElementById('pomodoro-start-btn');
+        const pomodoroPauseBtn = document.getElementById('pomodoro-pause-btn');
+        const pomodoroResetBtn = document.getElementById('pomodoro-reset-btn');
+        const pomodoroSessionStatus = document.getElementById('pomodoro-session-status');
+        const pomodoroCyclesDisplay = document.getElementById('pomodoro-cycles');
+        
+        // Ensure all elements are present before proceeding
+        if (!pomodoroBtn || !pomodoroPanel || !pomodoroCloseBtn || !pomodoroTimeDisplay || 
+            !pomodoroStartBtn || !pomodoroPauseBtn || !pomodoroResetBtn || 
+            !pomodoroSessionStatus || !pomodoroCyclesDisplay) {
+            console.error("Pomodoro DOM elements not found. Timer will not initialize properly inside initPomodoro.");
+            return; // Stop initialization if critical elements are missing
+        }
+
+        function updateDisplay() {
+            if (!pomodoroTimeDisplay) return; // Guard clause
+            const minutes = Math.floor(currentTime / 60);
+            const seconds = currentTime % 60;
+            pomodoroTimeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (isTimerRunning) return;
+            isTimerRunning = true;
+            if (pomodoroStartBtn) pomodoroStartBtn.style.display = 'none';
+            if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'inline-block';
+            
+            timerInterval = setInterval(() => {
+                currentTime--;
+                updateDisplay();
+                if (currentTime < 0) {
+                    clearInterval(timerInterval);
+                    switchSession();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            if (pomodoroStartBtn) pomodoroStartBtn.style.display = 'inline-block';
+            if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'none';
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer(resetCycles = false) {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            currentSession = 'work';
+            currentTime = workDuration;
+            if (resetCycles) {
+                pomodoroCount = 0;
+            }
+            updateDisplay(); // updateDisplay has its own guard clause for pomodoroTimeDisplay
+            if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
+            if (pomodoroCyclesDisplay) pomodoroCyclesDisplay.textContent = pomodoroCount;
+            if (pomodoroStartBtn) pomodoroStartBtn.style.display = 'inline-block';
+            if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'none';
+        }
+
+        function switchSession() {
+            if (currentSession === 'work') {
+                pomodoroCount++;
+                if (pomodoroCyclesDisplay) pomodoroCyclesDisplay.textContent = pomodoroCount;
+                if (pomodoroCount % pomodorosBeforeLongBreak === 0) {
+                    currentSession = 'longBreak';
+                    currentTime = longBreakDuration;
+                    if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Pausa Longa';
+                } else {
+                    currentSession = 'shortBreak';
+                    currentTime = shortBreakDuration;
+                    if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Pausa Curta';
+                }
+            } else { // 'shortBreak' or 'longBreak'
+                currentSession = 'work';
+                currentTime = workDuration;
+                if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
+            }
+            updateDisplay();
+            startTimer(); 
+        }
+
+        function togglePanel() {
+            console.log("togglePanel called. Panel display before change:", pomodoroPanel ? pomodoroPanel.style.display : 'Pomodoro Panel N/A'); // Diagnostic log
+            if (!pomodoroPanel) return;
+            if (pomodoroPanel.style.display === 'none' || pomodoroPanel.style.display === '') {
+                pomodoroPanel.style.display = 'flex'; 
+            } else {
+                pomodoroPanel.style.display = 'none';
+            }
+            console.log("togglePanel finished. Panel display after change:", pomodoroPanel.style.display); // Diagnostic log
+        }
+        
+        // Event Listeners
+        console.log("Attempting to attach listener to pomodoroBtn:", pomodoroBtn); // Existing diagnostic log
+        if (pomodoroBtn) {
+            pomodoroBtn.addEventListener('click', function(event) {
+                 console.log("Pomodoro button clicked. Event target:", event.target); // Added diagnostic for click
+                 togglePanel(); 
+            });
+        } else {
+            console.error("Pomodoro button (pomodoro-btn) not found during initPomodoro event listener attachment.");
+        }
+
+        if (pomodoroCloseBtn) {
+            pomodoroCloseBtn.addEventListener('click', () => {
+                if (pomodoroPanel) pomodoroPanel.style.display = 'none';
+            });
+        } else {
+            console.error("Pomodoro close button (pomodoro-close-btn) not found.");
+        }
+
+        if (pomodoroStartBtn) {
+            pomodoroStartBtn.addEventListener('click', startTimer);
+        } else {
+            console.error("Pomodoro start button (pomodoro-start-btn) not found.");
+        }
+
+        if (pomodoroPauseBtn) {
+            pomodoroPauseBtn.addEventListener('click', pauseTimer);
+        } else {
+            console.error("Pomodoro pause button (pomodoro-pause-btn) not found.");
+        }
+        
+        if (pomodoroResetBtn) {
+            pomodoroResetBtn.addEventListener('click', () => resetTimer(true));
+        } else {
+             console.error("Pomodoro reset button (pomodoro-reset-btn) not found.");
+        }
+
+        document.addEventListener('click', (event) => {
+            if (pomodoroPanel && pomodoroPanel.style.display === 'flex' && 
+                !pomodoroPanel.contains(event.target) && 
+                pomodoroBtn && !pomodoroBtn.contains(event.target) 
+                ) {
+                pomodoroPanel.style.display = 'none';
+            }
+        });
+
+        // Initial State
+        updateDisplay(); // updateDisplay has its own guard clause
+        if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'none'; 
+    }
 </script>
