@@ -635,14 +635,17 @@
         }
 
         function togglePanel() {
+            console.log("togglePanel called. Panel display before change:", pomodoroPanel.style.display); // Diagnostic log
             if (pomodoroPanel.style.display === 'none' || pomodoroPanel.style.display === '') {
                 pomodoroPanel.style.display = 'flex'; // Changed to 'flex'
             } else {
                 pomodoroPanel.style.display = 'none';
             }
+            console.log("togglePanel finished. Panel display after change:", pomodoroPanel.style.display); // Diagnostic log
         }
         
         // Event Listeners
+        console.log("Attempting to attach listener to pomodoroBtn:", pomodoroBtn); // Diagnostic log
         pomodoroBtn.addEventListener('click', togglePanel);
         pomodoroCloseBtn.addEventListener('click', () => {
             pomodoroPanel.style.display = 'none';
