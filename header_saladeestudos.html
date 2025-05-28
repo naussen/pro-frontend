@@ -652,10 +652,10 @@
         pomodoroResetBtn.addEventListener('click', () => resetTimer(true));
 
         document.addEventListener('click', (event) => {
-            if (pomodoroPanel.style.display === 'block' && 
+            if (pomodoroPanel.style.display === 'flex' && // Changed to 'flex'
                 !pomodoroPanel.contains(event.target) && 
                 event.target !== pomodoroBtn &&
-                !pomodoroBtn.contains(event.target) // In case pomodoroBtn has children like the icon
+                !pomodoroBtn.contains(event.target) 
                 ) {
                 pomodoroPanel.style.display = 'none';
             }
