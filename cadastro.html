@@ -715,12 +715,12 @@
           </div>
           <div class="form-group">
             <label for="cpf">CPF:</label>
-            <input type="text" id="cpf" name="cpf" required pattern="\d{11}" maxlength="11" title="Digite 11 números, sem pontos ou traços">
+            <input type="text" id="cpf" name="cpf" required maxlength="14" title="Digite seu CPF">
             <span class="error-message" id="cpf-error"></span>
           </div>
           <div class="form-group">
             <label for="nascimento">Data de nascimento:</label>
-            <input type="text" id="nascimento" name="nascimento" required placeholder="DD/MM/AAAA" pattern="\d{2}/\d{2}/\d{4}">
+            <input type="text" id="nascimento" name="nascimento" required placeholder="DD/MM/AAAA" pattern="\d{2}/\d{2}/\d{4}" maxlength="10">
             <span class="error-message" id="nascimento-error"></span>
           </div>
           <div class="form-group">
@@ -766,7 +766,7 @@
           <div class="form-group">
             <label for="senha">Senha:</label>
             <input type="password" id="senha" name="senha" required minlength="8">
-            <span class="password-requirements">Mín. 8 caracteres, 1 maiúscula, 1 minúscula, 1 número, 1 especial.</span>
+            <span class="password-requirements">Mín. 8 caracteres, 1 maiúscula, 1 minúscula, 1 número, 1 caractere especial.</span>
             <span class="error-message" id="senha-error"></span>
           </div>
           <div class="form-group">
@@ -924,6 +924,223 @@
   }
 
   const form = document.getElementById('cadastro-form');
+  const cpfInput = document.getElementById('cpf');
+  const nascimentoInput = document.getElementById('nascimento');
+  const cepInput = document.getElementById('cep');
+  const logradouroInput = document.getElementById('logradouro');
+  const complementoInput = document.getElementById('complemento'); // ID for "Complemento/Apto"
+
+  if (cepInput && logradouroInput && complementoInput) {
+    cepInput.addEventListener('blur', function() {
+      const cepValue = cepInput.value.replace(/\D/g, '');
+      const cepErrorSpan = document.getElementById('cep-error'); // Get the error span for CEP
+
+      // Clear previous address fields and errors if CEP is being re-typed or cleared
+      // but only if the current cepValue is not 8 digits (otherwise fetch will handle)
+      if (cepValue.length !== 8) {
+          logradouroInput.value = "";
+          complementoInput.value = "";
+          logradouroInput.disabled = false;
+          complementoInput.disabled = false;
+          if (cepValue.length === 0) { // If CEP is empty, clear its error
+            showError('cep', '');
+          } else { // If CEP is partially filled but not 8 digits
+            showError('cep', 'CEP deve conter 8 números.');
+          }
+      }
+
+
+      if (cepValue.length === 8) {
+        // Visual feedback: disable fields and show "Buscando..."
+        if (cepErrorSpan) cepErrorSpan.textContent = 'Buscando...';
+        logradouroInput.value = "..."; // Placeholder while loading
+        complementoInput.value = "..."; // Placeholder while loading
+        logradouroInput.disabled = true;
+        complementoInput.disabled = true;
+
+        fetch(`https://viacep.com.br/ws/${cepValue}/json/`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            logradouroInput.disabled = false;
+            complementoInput.disabled = false;
+            if (cepErrorSpan) cepErrorSpan.textContent = ''; // Clear "Buscando..."
+
+            if (data.erro) {
+              showError('cep', 'CEP não encontrado.');
+              logradouroInput.value = ""; // Clear placeholder
+              complementoInput.value = ""; // Clear placeholder
+            } else {
+              logradouroInput.value = data.logradouro || "";
+              
+              let complementoStr = "";
+              if (data.bairro && data.bairro.trim() !== "") {
+                complementoStr = data.bairro;
+              }
+              if (data.localidade && data.localidade.trim() !== "") {
+                if (complementoStr) complementoStr += " - ";
+                complementoStr += data.localidade;
+              }
+              if (data.uf && data.uf.trim() !== "") {
+                if (complementoStr.includes(data.localidade)) { // Already have localidade
+                    complementoStr += "/" + data.uf;
+                } else { // Only UF, unlikely but handle
+                    if(complementoStr) complementoStr += " - ";
+                    complementoStr += data.uf;
+                }
+              }
+              complementoInput.value = complementoStr; // Set the "Complemento/Apto" field as per instruction
+
+              showError('cep', ''); // Clear any previous CEP error on success
+              
+              // Focus logic: if logradouro is empty after successful fetch (e.g. for some rural CEPs), focus it.
+              // Otherwise, if logradouro is filled, a common UX is to focus the next logical field,
+              // which might be a "Número" (number) field if one existed. Here, we'll focus 'logradouro' if empty.
+              if (!data.logradouro && logradouroInput.value === "") {
+                logradouroInput.focus();
+              } else if (data.logradouro) {
+                // If a 'numero' field existed, it would be: document.getElementById('numero').focus();
+                // For now, let's focus on the 'complemento' field if logradouro is filled,
+                // as 'complemento' also serves as a general address info field here.
+                // Or better, focus the next field in form order if logradouro is filled.
+                // The next field is 'tempo_estudo'.
+                 document.getElementById('tempo_estudo').focus();
+              }
+            }
+          })
+          .catch(error => {
+            logradouroInput.disabled = false;
+            complementoInput.disabled = false;
+            if (cepErrorSpan) cepErrorSpan.textContent = ''; // Clear "Buscando..."
+            showError('cep', 'Erro ao buscar CEP. Verifique a conexão ou o CEP.');
+            logradouroInput.value = ""; // Clear placeholder
+            complementoInput.value = ""; // Clear placeholder
+            console.error('Erro ao buscar CEP:', error);
+          });
+      }
+      // No 'else if' here for cepValue.length > 0 && < 8, because it's handled at the start of blur.
+      // No 'else' for cepValue.length === 0, also handled at the start.
+    });
+  }
+
+  if (nascimentoInput) {
+    nascimentoInput.addEventListener('input', function(e) {
+      const input = e.target;
+      let value = input.value;
+      let cursorPos = input.selectionStart;
+      const originalValueWithSlashes = value; // Store the complete original value with slashes
+
+      // 1. Get the raw digits by removing all non-digits.
+      let rawValue = value.replace(/\D/g, "");
+
+      // 4. Limit the raw digits to 8 (DDMMYYYY).
+      if (rawValue.length > 8) {
+        rawValue = rawValue.substring(0, 8);
+      }
+
+      let formattedValue = "";
+      // 2. If digits length > 2, insert / after the 2nd digit.
+      // 3. If digits length > 4, insert / after the 4th digit
+      if (rawValue.length > 0) {
+        formattedValue = rawValue.substring(0, 2);
+      }
+      if (rawValue.length > 2) {
+        formattedValue += "/" + rawValue.substring(2, 4);
+      }
+      if (rawValue.length > 4) {
+        formattedValue += "/" + rawValue.substring(4, 8);
+      }
+      
+      // 5. Update the input field's value with this formatted string.
+      input.value = formattedValue;
+
+      // Adjust cursor position
+      if (cursorPos !== null) {
+        // Count number of digits in original input up to the cursor position
+        const digitsBeforeCursorInOriginal = originalValueWithSlashes.substring(0, cursorPos).replace(/\D/g, "").length;
+        
+        let newCursorPos = 0;
+        let numDigitsEncountered = 0;
+        for (let i = 0; i < formattedValue.length && numDigitsEncountered < digitsBeforeCursorInOriginal; i++) {
+          if (formattedValue[i] !== '/') {
+            numDigitsEncountered++;
+          }
+          newCursorPos++;
+        }
+        
+        // If typing (not deleting) and a slash was auto-inserted just before or at the new cursor position
+        // and the number of raw digits typed by user increased at that position, advance cursor.
+        if (formattedValue.length > originalValueWithSlashes.length) { // Typing, not deleting
+          if ((newCursorPos === 2 || newCursorPos === 5) && formattedValue.charAt(newCursorPos) === '/') {
+            // Check if the character that *was* at this position in original string was not a slash
+            // or if the raw character count at this point in original string is less than current
+            if (originalValueWithSlashes.charAt(newCursorPos) !== '/' || 
+                originalValueWithSlashes.substring(0,newCursorPos).replace(/\D/g,"").length < rawValue.substring(0,newCursorPos).replace(/\D/g,"").length ) {
+                 // Check if the character at newCursorPos in formattedValue is a slash
+                 // that was not at the same position in originalValueWithSlashes (or was different type)
+                 if (formattedValue.charAt(newCursorPos) === '/' && originalValueWithSlashes.charAt(newCursorPos) !== '/') {
+                    // If the user typed a digit that caused a slash to be inserted at newCursorPos
+                    if ( (digitsBeforeCursorInOriginal === 2 && rawValue.length > 2 && newCursorPos ===2) ||
+                         (digitsBeforeCursorInOriginal === 4 && rawValue.length > 4 && newCursorPos ===5) )
+                         {
+                         newCursorPos++;
+                    }
+                 }
+            }
+          }
+        }
+         // Handling backspace: If a slash was deleted, but the formatter re-adds it,
+         // the cursor might need to be pulled back.
+         // Example: "12/3" -> delete "/" -> raw "123" -> formatted "12/3". Cursor was at 2, should remain 2.
+         // The loop for newCursorPos generally handles placing it after the corresponding number of digits.
+         // If backspacing from "12/" to "12" (cursor was 3, now 2)
+         if (originalValueWithSlashes.length > formattedValue.length && originalValueWithSlashes.charAt(cursorPos-1) === '/') {
+             // if the character before original cursor was a slash, and it's gone now.
+             // The loop for newCursorPos should naturally place it correctly based on remaining digits.
+         }
+
+
+        // Ensure cursor is not out of bounds
+        newCursorPos = Math.max(0, Math.min(newCursorPos, formattedValue.length));
+
+        try {
+          input.setSelectionRange(newCursorPos, newCursorPos);
+        } catch (ex) {
+          // Ignore if input is not focusable
+        }
+      }
+    });
+  }
+
+  if (cpfInput) {
+    cpfInput.addEventListener('input', function(e) {
+      let value = e.target.value;
+      value = value.replace(/\D/g, ""); // Remove all non-digits
+
+      if (value.length > 11) {
+        value = value.substring(0, 11); // Truncate to 11 digits
+      }
+
+      let formattedValue = "";
+      if (value.length > 0) {
+        formattedValue = value.substring(0, 3);
+      }
+      if (value.length > 3) {
+        formattedValue += "." + value.substring(3, 6);
+      }
+      if (value.length > 6) {
+        formattedValue += "." + value.substring(6, 9);
+      }
+      if (value.length > 9) {
+        formattedValue += "-" + value.substring(9, 11);
+      }
+      e.target.value = formattedValue;
+    });
+  }
 
   if (form) {
     form.addEventListener('submit', function(event) {
@@ -933,8 +1150,12 @@
       document.querySelectorAll('.error-message').forEach(span => span.textContent = '');
       document.querySelectorAll('.form-group input').forEach(input => input.classList.remove('error'));
 
+      // Clear previous errors specifically for cpf before new validation
+      showError('cpf', '');
+
+
       isValid = validateRequiredField('nome', 'Nome completo é obrigatório.', 3) && isValid;
-      isValid = validateCpf('cpf') && isValid;
+      isValid = validateCpf('cpf') && isValid; // validateCpf will now handle its own error display
       isValid = validateDateField('nascimento', 'Data de nascimento inválida (DD/MM/AAAA).') && isValid;
       isValid = validateCep('cep') && isValid;
       isValid = validateRequiredField('logradouro', 'Logradouro é obrigatório.') && isValid;
@@ -1029,11 +1250,43 @@
 
   function validateCpf(fieldId) {
     const field = document.getElementById(fieldId);
-    const cpfPattern = /^\d{11}$/;
-    if (!field || !cpfPattern.test(field.value)) {
-      showError(fieldId, 'CPF inválido (11 números).');
+    const cpf = field.value.replace(/\D/g, ''); // Remove non-digit characters
+
+    if (cpf.length !== 11) {
+      showError(fieldId, 'CPF deve conter 11 números.');
       return false;
     }
+
+    if (/^(\d)\1+$/.test(cpf)) {
+      showError(fieldId, 'CPF inválido (dígitos repetidos).');
+      return false; // Check for repeated digits
+    }
+
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let remainder = sum % 11;
+    let digit1 = remainder < 2 ? 0 : 11 - remainder;
+
+    if (digit1 !== parseInt(cpf.charAt(9))) {
+      showError(fieldId, 'CPF inválido (dígito verificador 1).');
+      return false;
+    }
+
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    remainder = sum % 11;
+    let digit2 = remainder < 2 ? 0 : 11 - remainder;
+
+    if (digit2 !== parseInt(cpf.charAt(10))) {
+      showError(fieldId, 'CPF inválido (dígito verificador 2).');
+      return false;
+    }
+
+    showError(fieldId, ''); // Clear any previous error message
     return true;
   }
 
@@ -1099,8 +1352,8 @@
       errorMessage += '1 número. ';
       isValid = false;
     }
-    if (!/[@$!%*?&.\-_]/.test(value)) {
-      errorMessage += '1 especial (@$!%*?&.-_).';
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\|,.<>\/?~`]/.test(value)) {
+      errorMessage += '1 caractere especial.';
       isValid = false;
     }
     if (!isValid) {
