@@ -588,6 +588,13 @@
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
                 initializeHeaderEvents(); // Inicializa eventos APÓS o header ser carregado
+
+                if (window.PomodoroTimerApp && typeof window.PomodoroTimerApp.init === 'function') {
+                    console.log('saladeestudos.html: Attempting to explicitly initialize PomodoroTimerApp...');
+                    window.PomodoroTimerApp.init();
+                } else {
+                    console.warn('saladeestudos.html: PomodoroTimerApp not found or init function is missing. Pomodoro might not start correctly.');
+                }
             })
             .catch(error => {
                 console.error('Erro ao carregar o header:', error);
