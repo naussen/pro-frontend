@@ -631,15 +631,7 @@
             const topNav = document.getElementById('topNav');
             const megaMenuContainer = document.getElementById('megaMenuContainer');
             const themeToggleBtn = document.getElementById('theme-toggle');
-
-            // Call to initialize Pomodoro
-            if (typeof initPomodoro === 'function') {
-                console.log("Chamando initPomodoro() de dentro de initializeHeaderEvents..."); // Diagnostic log
-                initPomodoro();
-            } else {
-                console.warn('Função initPomodoro() não encontrada em header_saladeestudos.html. O timer Pomodoro não será inicializado.');
-            }
-
+            
             if (sidebarToggleBtn) {
                 sidebarToggleBtn.addEventListener('click', toggleSidebar);
             } else {
