@@ -36,7 +36,7 @@
                 <span class="icon theme-icon-dark" style="display: none;">🌙</span>
             </button>
             <a href="personalizar.html" title="Personalizar Sala de Estudos"><span class="icon">⚙️</span> <span class="link-text">Personalizar Sala de Estudos</span></a>
-            <a href="index.html" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></a>
+            <a id="logout-btn" href="index.html" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></a>
         </div>
     </div>
 </header>
@@ -535,8 +535,15 @@
         }
     });
 
+        feature/cadastro-enhancements
+    // Pomodoro Timer Logic (now wrapped in initPomodoro)
+    function initPomodoro() {
+        console.log("initPomodoro called"); // Add this new diagnostic log
+
+=======
     // Pomodoro Timer Logic
     document.addEventListener('DOMContentLoaded', () => {
+        main
         const workDuration = 25 * 60;
         const shortBreakDuration = 5 * 60;
         const longBreakDuration = 15 * 60;
@@ -562,11 +569,20 @@
         if (!pomodoroBtn || !pomodoroPanel || !pomodoroCloseBtn || !pomodoroTimeDisplay || 
             !pomodoroStartBtn || !pomodoroPauseBtn || !pomodoroResetBtn || 
             !pomodoroSessionStatus || !pomodoroCyclesDisplay) {
+        feature/cadastro-enhancements
+            console.error("Pomodoro DOM elements not found. Timer will not initialize properly inside initPomodoro.");
+            return; // Stop initialization if critical elements are missing
+        }
+
+        function updateDisplay() {
+            if (!pomodoroTimeDisplay) return; // Guard clause
+
             console.error("Pomodoro DOM elements not found. Timer will not initialize.");
             return;
         }
 
         function updateDisplay() {
+        main
             const minutes = Math.floor(currentTime / 60);
             const seconds = currentTime % 60;
             pomodoroTimeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -575,8 +591,13 @@
         function startTimer() {
             if (isTimerRunning) return;
             isTimerRunning = true;
+        feature/cadastro-enhancements
+            if (pomodoroStartBtn) pomodoroStartBtn.style.display = 'none';
+            if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'inline-block';
+
             pomodoroStartBtn.style.display = 'none';
             pomodoroPauseBtn.style.display = 'inline-block'; // Changed to inline-block for proper layout
+        main
             
             timerInterval = setInterval(() => {
                 currentTime--;
@@ -590,8 +611,13 @@
 
         function pauseTimer() {
             isTimerRunning = false;
+        feature/cadastro-enhancements
+            if (pomodoroStartBtn) pomodoroStartBtn.style.display = 'inline-block';
+            if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'none';
+
             pomodoroStartBtn.style.display = 'inline-block'; // Changed to inline-block
             pomodoroPauseBtn.style.display = 'none';
+        main
             clearInterval(timerInterval);
         }
 
@@ -603,16 +629,35 @@
             if (resetCycles) {
                 pomodoroCount = 0;
             }
+        feature/cadastro-enhancements
+            updateDisplay(); // updateDisplay has its own guard clause for pomodoroTimeDisplay
+            if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
+            if (pomodoroCyclesDisplay) pomodoroCyclesDisplay.textContent = pomodoroCount;
+            if (pomodoroStartBtn) pomodoroStartBtn.style.display = 'inline-block';
+            if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'none';
+
             updateDisplay();
             pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
             pomodoroCyclesDisplay.textContent = pomodoroCount;
             pomodoroStartBtn.style.display = 'inline-block'; // Changed to inline-block
             pomodoroPauseBtn.style.display = 'none';
+        main
         }
 
         function switchSession() {
             if (currentSession === 'work') {
                 pomodoroCount++;
+        feature/cadastro-enhancements
+                if (pomodoroCyclesDisplay) pomodoroCyclesDisplay.textContent = pomodoroCount;
+                if (pomodoroCount % pomodorosBeforeLongBreak === 0) {
+                    currentSession = 'longBreak';
+                    currentTime = longBreakDuration;
+                    if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Pausa Longa';
+                } else {
+                    currentSession = 'shortBreak';
+                    currentTime = shortBreakDuration;
+                    if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Pausa Curta';
+
                 pomodoroCyclesDisplay.textContent = pomodoroCount;
                 if (pomodoroCount % pomodorosBeforeLongBreak === 0) {
                     currentSession = 'longBreak';
@@ -622,10 +667,24 @@
                     currentSession = 'shortBreak';
                     currentTime = shortBreakDuration;
                     pomodoroSessionStatus.textContent = 'Pausa Curta';
+          main
                 }
             } else { // 'shortBreak' or 'longBreak'
                 currentSession = 'work';
                 currentTime = workDuration;
+        feature/cadastro-enhancements
+                if (pomodoroSessionStatus) pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
+            }
+            updateDisplay();
+            startTimer(); 
+        }
+
+        function togglePanel() {
+            console.log("togglePanel called. Panel display before change:", pomodoroPanel ? pomodoroPanel.style.display : 'Pomodoro Panel N/A'); // Diagnostic log
+            if (!pomodoroPanel) return;
+            if (pomodoroPanel.style.display === 'none' || pomodoroPanel.style.display === '') {
+                pomodoroPanel.style.display = 'flex'; 
+
                 pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
             }
             updateDisplay();
@@ -638,6 +697,7 @@
             console.log("togglePanel called. Panel display before change:", pomodoroPanel.style.display); // Diagnostic log
             if (pomodoroPanel.style.display === 'none' || pomodoroPanel.style.display === '') {
                 pomodoroPanel.style.display = 'flex'; // Changed to 'flex'
+        main
             } else {
                 pomodoroPanel.style.display = 'none';
             }
@@ -645,6 +705,48 @@
         }
         
         // Event Listeners
+        feature/cadastro-enhancements
+        console.log("Attempting to attach listener to pomodoroBtn:", pomodoroBtn); // Existing diagnostic log
+        if (pomodoroBtn) {
+            pomodoroBtn.addEventListener('click', function(event) {
+                 console.log("Pomodoro button clicked. Event target:", event.target); // Added diagnostic for click
+                 togglePanel(); 
+            });
+        } else {
+            console.error("Pomodoro button (pomodoro-btn) not found during initPomodoro event listener attachment.");
+        }
+
+        if (pomodoroCloseBtn) {
+            pomodoroCloseBtn.addEventListener('click', () => {
+                if (pomodoroPanel) pomodoroPanel.style.display = 'none';
+            });
+        } else {
+            console.error("Pomodoro close button (pomodoro-close-btn) not found.");
+        }
+
+        if (pomodoroStartBtn) {
+            pomodoroStartBtn.addEventListener('click', startTimer);
+        } else {
+            console.error("Pomodoro start button (pomodoro-start-btn) not found.");
+        }
+
+        if (pomodoroPauseBtn) {
+            pomodoroPauseBtn.addEventListener('click', pauseTimer);
+        } else {
+            console.error("Pomodoro pause button (pomodoro-pause-btn) not found.");
+        }
+        
+        if (pomodoroResetBtn) {
+            pomodoroResetBtn.addEventListener('click', () => resetTimer(true));
+        } else {
+             console.error("Pomodoro reset button (pomodoro-reset-btn) not found.");
+        }
+
+        document.addEventListener('click', (event) => {
+            if (pomodoroPanel && pomodoroPanel.style.display === 'flex' && 
+                !pomodoroPanel.contains(event.target) && 
+                pomodoroBtn && !pomodoroBtn.contains(event.target) 
+
         console.log("Attempting to attach listener to pomodoroBtn:", pomodoroBtn); // Diagnostic log
         pomodoroBtn.addEventListener('click', togglePanel);
         pomodoroCloseBtn.addEventListener('click', () => {
@@ -659,13 +761,20 @@
                 !pomodoroPanel.contains(event.target) && 
                 event.target !== pomodoroBtn &&
                 !pomodoroBtn.contains(event.target) 
+        main
                 ) {
                 pomodoroPanel.style.display = 'none';
             }
         });
 
         // Initial State
+        feature/cadastro-enhancements
+        updateDisplay(); // updateDisplay has its own guard clause
+        if (pomodoroPauseBtn) pomodoroPauseBtn.style.display = 'none'; 
+    }
+
         updateDisplay();
         pomodoroPauseBtn.style.display = 'none'; // Ensure pause is hidden initially
     });
+        main
 </script>

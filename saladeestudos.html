@@ -627,15 +627,23 @@
         function initializeHeaderEvents() {
             sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); // Agora o header está carregado
             const colorPickerBtn = document.getElementById('color-picker-btn');
-            const logoutBtn = document.getElementById('logout-btn');
+            const logoutBtn = document.getElementById('logout-btn'); // Already had ID from previous task
             const topNav = document.getElementById('topNav');
             const megaMenuContainer = document.getElementById('megaMenuContainer');
             const themeToggleBtn = document.getElementById('theme-toggle');
 
+            // Call to initialize Pomodoro
+            if (typeof initPomodoro === 'function') {
+                console.log("Chamando initPomodoro() de dentro de initializeHeaderEvents..."); // Diagnostic log
+                initPomodoro();
+            } else {
+                console.warn('Função initPomodoro() não encontrada em header_saladeestudos.html. O timer Pomodoro não será inicializado.');
+            }
+
             if (sidebarToggleBtn) {
                 sidebarToggleBtn.addEventListener('click', toggleSidebar);
             } else {
-                console.warn('Botão sidebarToggleBtn não encontrado no header.html carregado.');
+                console.warn('Botão sidebarToggleBtn não encontrado em header_saladeestudos.html carregado.');
             }
 
             if (themeToggleBtn) {
@@ -644,13 +652,13 @@
                     applyTheme(newTheme); // Salva no localStorage dentro desta função
                 });
             } else {
-                console.warn('Botão theme-toggle não encontrado no header.html carregado.');
+                console.warn('Botão theme-toggle não encontrado em header_saladeestudos.html carregado.');
             }
 
             if (colorPickerBtn) {
                 colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
             } else {
-                console.warn('Botão color-picker-btn não encontrado no header.html carregado.');
+                console.warn('Botão color-picker-btn não encontrado em header_saladeestudos.html carregado.');
             }
 
             if (logoutBtn) {
@@ -666,7 +674,7 @@
                         });
                 });
             } else {
-                console.warn('Botão logout-btn não encontrado no header.html carregado.');
+                console.warn('Botão logout-btn não encontrado em header_saladeestudos.html carregado.');
             }
 
             const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
