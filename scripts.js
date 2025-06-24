@@ -1,11 +1,11 @@
 // scripts.js
 const firebaseConfig = {
-    apiKey: "AIzaSyD103GQaVxUfLuH-ySnCxu7rl0xE8noaJM",
+    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
     authDomain: "nvp-concursos.firebaseapp.com",
     projectId: "nvp-concursos",
     storageBucket: "nvp-concursos.firebasestorage.app",
     messagingSenderId: "397960760271",
-    appId: "1:397960760271:web:1550ff01910ae927d860ba"
+    appId: "1:397960760271:web:1243b04141178453d860ba"
 };
 
 let auth, db;
