@@ -7,12 +7,12 @@
 
 const firebaseConfig = {
   // POR FAVOR, SUBSTITUA ESTAS CHAVES PELAS NOVAS CHAVES GERADAS NO SEU PAINEL
-  apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
+  apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
   authDomain: "nvp-concursos.firebaseapp.com",
   projectId: "nvp-concursos",
   storageBucket: "nvp-concursos.firebasestorage.app",
   messagingSenderId: "397960760271",
-  appId: "1:397960760271:web:9800834925e31635d860ba"
+  appId: "1:397960760271:web:1243b04141178453d860ba"
 };
 
 // Inicializa o Firebase e torna os serviços disponíveis globalmente

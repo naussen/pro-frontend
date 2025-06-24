@@ -7,14 +7,14 @@
 <style>
   :root {
     --header-height: 55px;
-    --main-color: #1A5276;
-    --light-highlight-bg: #EAF2F8;
-    --accent-1: #D4AC0D;
-    --accent-1-darker: #b3910b;
-    --accent-2: #CA6F1E;
-    --dark-bg: #154360;
-    --subnav-bg: #282A35;
-    --text-dark: #333;
+    --main-color: #4e4d4a;
+    --light-highlight-bg: #f5f5f4;
+    --accent-1: #94ba65;
+    --accent-1-darker: #7da052;
+    --accent-2: #2790b0;
+    --dark-bg: #353432;
+    --subnav-bg: #4e4d4a;
+    --text-dark: #4e4d4a;
     --text-light: #f8f9fa;
     --text-muted: #6c757d;
     --border-color: #ccc;
@@ -23,40 +23,40 @@
     --header-border: #e7e7e7;
     --main-content-bg: #ffffff;
     --code-bg: #f1f1f1;
-    --button-text-dark: #333;
+    --button-text-dark: #353432;
     --footer-text-muted: #ccc;
     --footer-link-color: #ccc;
     --footer-link-hover: var(--accent-1);
     --footer-separator: #555;
     --footer-h4: #f1f1f1;
-    --dark-blue-hover: #113a54;
+    --dark-blue-hover: #2b4e72;
     --error-color: #D32F2F;
   }
 
   body.dark-mode {
-    --main-color: #6cb6ff;
+    --main-color: #94ba65;
     --light-highlight-bg: #2d333b;
-    --accent-1: #e4c05c;
-    --accent-1-darker: #cfae51;
-    --accent-2: #d98234;
-    --dark-bg: #0d1117;
-    --subnav-bg: #22272e;
+    --accent-1: #2790b0;
+    --accent-1-darker: #1e7a96;
+    --accent-2: #2b4e72;
+    --dark-bg: #353432;
+    --subnav-bg: #4e4d4a;
     --text-dark: #c9d1d9;
     --text-light: #f0f6fc;
     --text-muted: #8b949e;
     --border-color: #444c56;
-    --light-grey-bg: #0d1117;
-    --header-bg: #161b22;
-    --header-border: #30363d;
-    --main-content-bg: #161b22;
-    --code-bg: #22272e;
-    --button-text-dark: #161b22;
+    --light-grey-bg: #353432;
+    --header-bg: #4e4d4a;
+    --header-border: #5a5955;
+    --main-content-bg: #4e4d4a;
+    --code-bg: #353432;
+    --button-text-dark: #353432;
     --footer-text-muted: #8b949e;
     --footer-link-color: #8b949e;
     --footer-link-hover: var(--accent-1);
-    --footer-separator: #30363d;
+    --footer-separator: #5a5955;
     --footer-h4: var(--text-light);
-    --dark-blue-hover: #1a6fba;
+    --dark-blue-hover: #2b4e72;
     --error-color: #FF5252;
   }
 
@@ -811,26 +811,19 @@
   </div>
 </footer>
 
-<!-- Carrega as bibliotecas do Firebase primeiro -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<!-- AGORA, carrega o NOSSO arquivo de configuração -->
-<script src="firebase-config.js"></script>
-
-<!-- Por último, carrega o seu script principal que USA o firebase -->
-<script src="scripts.js"></script> <!-- ou o nome do seu arquivo de script específico da página -->
-
-
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
+    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
 	authDomain: "nvp-concursos.firebaseapp.com",
 	projectId: "nvp-concursos",
-	storageBucket: "nvp-concursos.firebasestorage.app",
+	storageBucket: "nvp-concursos.firebasestorage.com",
 	messagingSenderId: "397960760271",
-	appId: "1:397960760271:web:9800834925e31635d860ba"
+	appId: "1:397960760271:web:1243b04141178453d860ba",
+	measurementId: "G-T6RVBM12BQ"
   };
 
   firebase.initializeApp(firebaseConfig);

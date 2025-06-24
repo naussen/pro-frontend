@@ -9,14 +9,14 @@
         :root {
             --header-height: 55px;
             --sidebar-width: 240px; /* Adicionado para consistência com index.html */
-            --main-color: #1A5276;
-            --light-highlight-bg: #EAF2F8;
-            --accent-1: #D4AC0D;
-            --accent-1-darker: #b3910b;
-            --accent-2: #CA6F1E;
-            --dark-bg: #154360;
-            --subnav-bg: #282A35;
-            --text-dark: #333;
+            --main-color: #4e4d4a;
+            --light-highlight-bg: #f5f5f4;
+            --accent-1: #94ba65;
+            --accent-1-darker: #7da052;
+            --accent-2: #2790b0;
+            --dark-bg: #353432;
+            --subnav-bg: #4e4d4a;
+            --text-dark: #4e4d4a;
             --text-light: #f8f9fa;
             --text-muted: #6c757d;
             --border-color: #ccc;
@@ -25,65 +25,65 @@
             --header-border: #e7e7e7;
             --main-content-bg: #ffffff;
             --code-bg: #f1f1f1;
-            --button-text-dark: #333;
+            --button-text-dark: #353432;
             --footer-text-muted: #ccc;
             --footer-link-color: #ccc;
             --footer-link-hover: var(--accent-1);
             --footer-separator: #555;
             --footer-h4: #f1f1f1;
-            --dark-blue-hover: #113a54;
+            --dark-blue-hover: #2b4e72;
             --error-color: #D32F2F;
             --sidebar-bg: #f1f1f1; /* Adicionado para consistência */
             --sidebar-border: #d4d4d4;
             --top-nav-bg: #ffffff; /* Adicionado para consistência */
-            --top-nav-link-color: #333;
+            --top-nav-link-color: #4e4d4a;
             --top-nav-link-hover-bg: #f1f1f1;
             --top-nav-link-active-bg: #ddd;
             --mega-menu-bg: #f8f9fa;
             --mega-menu-border: #dee2e6;
             --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            --mega-menu-link-color: #212529;
-            --mega-menu-link-hover-color: #0056b3;
-            --mega-menu-heading-color: #495057;
+            --mega-menu-link-color: #4e4d4a;
+            --mega-menu-link-hover-color: #2790b0;
+            --mega-menu-heading-color: #4e4d4a;
         }
 
         body.dark-mode {
-            --main-color: #6cb6ff;
+            --main-color: #94ba65;
             --light-highlight-bg: #2d333b;
-            --accent-1: #e4c05c;
-            --accent-1-darker: #cfae51;
-            --accent-2: #d98234;
-            --dark-bg: #0d1117;
-            --subnav-bg: #22272e;
+            --accent-1: #2790b0;
+            --accent-1-darker: #1e7a96;
+            --accent-2: #2b4e72;
+            --dark-bg: #353432;
+            --subnav-bg: #4e4d4a;
             --text-dark: #c9d1d9;
             --text-light: #f0f6fc;
             --text-muted: #8b949e;
             --border-color: #444c56;
-            --light-grey-bg: #0d1117;
-            --header-bg: #161b22;
-            --header-border: #30363d;
-            --main-content-bg: #161b22;
-            --code-bg: #22272e;
-            --button-text-dark: #161b22;
+            --light-grey-bg: #353432;
+            --header-bg: #4e4d4a;
+            --header-border: #5a5955;
+            --main-content-bg: #4e4d4a;
+            --code-bg: #353432;
+            --button-text-dark: #353432;
             --footer-text-muted: #8b949e;
             --footer-link-color: #8b949e;
             --footer-link-hover: var(--accent-1);
-            --footer-separator: #30363d;
+            --footer-separator: #5a5955;
             --footer-h4: var(--text-light);
-            --dark-blue-hover: #1a6fba;
+            --dark-blue-hover: #2b4e72;
             --error-color: #FF5252;
-            --sidebar-bg: #161b22;
-            --sidebar-border: #30363d;
-            --top-nav-bg: #161b22;
+            --sidebar-bg: #4e4d4a;
+            --sidebar-border: #5a5955;
+            --top-nav-bg: #4e4d4a;
             --top-nav-link-color: var(--text-light);
-            --top-nav-link-hover-bg: #2d333b;
-            --top-nav-link-active-bg: #0d1117;
-            --mega-menu-bg: #212529;
-            --mega-menu-border: #343a40;
+            --top-nav-link-hover-bg: #5a5955;
+            --top-nav-link-active-bg: #353432;
+            --mega-menu-bg: #353432;
+            --mega-menu-border: #5a5955;
             --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.4);
-            --mega-menu-link-color: #adb5bd;
-            --mega-menu-link-hover-color: #dee2e6;
-            --mega-menu-heading-color: #ced4da;
+            --mega-menu-link-color: #e6edf3;
+            --mega-menu-link-hover-color: #f0f6fc;
+            --mega-menu-heading-color: #f0f6fc;
         }
 
         html { height: 100%; box-sizing: border-box; }
@@ -644,20 +644,13 @@
         <div class="footer-copyright"><span>© <span id="current-year">2025</span> PRO Concursos. Todos os direitos reservados.</span></div>
     </footer>
 
-    <!-- Carrega as bibliotecas do Firebase primeiro -->
-	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-	<!-- AGORA, carrega o NOSSO arquivo de configuração -->
-	<script src="firebase-config.js"></script>
-
-	<!-- Por último, carrega o seu script principal que USA o firebase -->
-	<script src="scripts.js"></script> <!-- ou o nome do seu arquivo de script específico da página -->
-
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     <script>
         // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('header_saladeestudos.html')
+        fetch('header.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
@@ -667,21 +660,24 @@
 
         // --- Configuração Firebase ---
         const firebaseConfig = {
-			apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
+            apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
 			authDomain: "nvp-concursos.firebaseapp.com",
 			projectId: "nvp-concursos",
-			storageBucket: "nvp-concursos.firebasestorage.app",
+			storageBucket: "nvp-concursos.firebasestorage.com",
 			messagingSenderId: "397960760271",
-			appId: "1:397960760271:web:9800834925e31635d860ba"
+			appId: "1:397960760271:web:1243b04141178453d860ba",
+			measurementId: "G-T6RVBM12BQ"
         };
         let db;
         let auth;
+        let storage;
         try {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
             }
             auth = firebase.auth();
             db = firebase.firestore();
+            storage = firebase.storage();
             console.log("Firebase inicializado com sucesso (Personalizar).");
         } catch (e) {
             console.error("Firebase initialization error:", e);
