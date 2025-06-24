@@ -611,7 +611,7 @@
                             <label for="login-email">Email:</label>
                             <input type="email" id="login-email" name="email" required>
                             <label for="login-password">Senha:</label>
-                            <input type="password" id="login-password" name="password" required>
+                            <input type="password" id="login-password" name="password" autocomplete="current-password" required>
                             <button type="submit">Entrar</button>
                             <p>Não tem conta? <a href="#" id="show-signup">Cadastre-se</a></p>
                         </form>
@@ -621,9 +621,9 @@
                             <label for="signup-email">Email:</label>
                             <input type="email" id="signup-email" name="email" required>
                             <label for="signup-password">Senha:</label>
-                            <input type="password" id="signup-password" name="password" required>
+                            <input type="password" id="signup-password" name="password" autocomplete="new-password" required>
                             <label for="confirm-password">Confirmar Senha:</label>
-                            <input type="password" id="confirm-password" name="confirmPassword" required>
+                            <input type="password" id="confirm-password" name="confirmPassword" autocomplete="new-password" required>
                             <button type="submit">Cadastrar</button>
                             <p>Já tem conta? <a href="#" id="show-login">Faça Login</a></p>
                         </form>
@@ -853,7 +853,7 @@
             apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
 			authDomain: "nvp-concursos.firebaseapp.com",
 			projectId: "nvp-concursos",
-			storageBucket: "nvp-concursos.firebasestorage.com",
+			storageBucket: "nvp-concursos.firebasestorage.app",
 			messagingSenderId: "397960760271",
 			appId: "1:397960760271:web:1243b04141178453d860ba",
 			measurementId: "G-T6RVBM12BQ"
