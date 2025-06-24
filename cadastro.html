@@ -811,18 +811,26 @@
   </div>
 </footer>
 
+<!-- Carrega as bibliotecas do Firebase primeiro -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+<!-- AGORA, carrega o NOSSO arquivo de configuração -->
+<script src="firebase-config.js"></script>
+
+<!-- Por último, carrega o seu script principal que USA o firebase -->
+<script src="scripts.js"></script> <!-- ou o nome do seu arquivo de script específico da página -->
+
+
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-    authDomain: "nvp-concursos.firebaseapp.com",
-    projectId: "nvp-concursos",
-    storageBucket: "nvp-concursos.firebasestorage.app",
-    messagingSenderId: "397960760271",
-    appId: "1:397960760271:web:1243b04141178453d860ba"
+    apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
+	authDomain: "nvp-concursos.firebaseapp.com",
+	projectId: "nvp-concursos",
+	storageBucket: "nvp-concursos.firebasestorage.app",
+	messagingSenderId: "397960760271",
+	appId: "1:397960760271:web:9800834925e31635d860ba"
   };
 
   firebase.initializeApp(firebaseConfig);
