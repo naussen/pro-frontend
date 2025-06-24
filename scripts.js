@@ -1,18 +1,27 @@
 // scripts.js
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
 const firebaseConfig = {
     apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
     authDomain: "nvp-concursos.firebaseapp.com",
     projectId: "nvp-concursos",
-    storageBucket: "nvp-concursos.firebasestorage.app",
+    storageBucket: "nvp-concursos.firebasestorage.com",
     messagingSenderId: "397960760271",
-    appId: "1:397960760271:web:1243b04141178453d860ba"
+    appId: "1:397960760271:web:1243b04141178453d860ba",
+    measurementId: "G-T6RVBM12BQ"
 };
 
-let auth, db;
+let auth, db, storage, analytics;
 try {
-    firebase.initializeApp(firebaseConfig);
-    auth = firebase.auth();
-    db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    analytics = getAnalytics(app);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
     console.log("Firebase inicializado e serviços acessados.");
 } catch (e) {
     console.error("Erro CRÍTICO na inicialização do Firebase:", e);
@@ -264,4 +273,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yearSpan) {
         yearSpan.textContent = new Date().getFullYear();
     }
-});
+}); 
