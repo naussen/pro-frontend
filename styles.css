@@ -27,32 +27,6 @@
     --dark-blue-hover: #113a54;
 }
 
-body.dark-mode {
-    --main-color: #6cb6ff;
-    --light-highlight-bg: #2d333b;
-    --accent-1: #e4c05c;
-    --accent-1-darker: #cfae51;
-    --accent-2: #d98234;
-    --dark-bg: #0d1117;
-    --subnav-bg: #22272e;
-    --text-dark: #c9d1d9;
-    --text-light: #f0f6fc;
-    --text-muted: #8b949e;
-    --border-color: #444c56;
-    --light-grey-bg: #0d1117;
-    --header-bg: #161b22;
-    --header-border: #30363d;
-    --main-content-bg: #161b22;
-    --code-bg: #22272e;
-    --button-text-dark: #161b22;
-    --footer-text-muted: #8b949e;
-    --footer-link-color: #8b949e;
-    --footer-link-hover: var(--accent-1);
-    --footer-separator: #30363d;
-    --footer-h4: var(--text-light);
-    --dark-blue-hover: #1a6fba;
-}
-
 html { height: 100%; }
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
