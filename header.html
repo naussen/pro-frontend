@@ -14,12 +14,31 @@
     <nav class="w3s-nav-menu" id="topNav">
         <div class="nav-item">
             <button class="nav-button" data-target="cursos-menu">Cursos ▼</button>
+            <div class="dropdown-content">
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Direito Administrativo</a>
+                <a href="#">Direito Penal</a>
+                <a href="#">Direito Tributário</a>
+                <a href="#">Português</a>
+                <a href="#">Raciocínio Lógico</a>
+            </div>
         </div>
         <div class="nav-item">
             <button class="nav-button" data-target="questoes-menu">Questões ▼</button>
+            <div class="dropdown-content">
+                <a href="#">Questões por Matéria</a>
+                <a href="#">Simulados</a>
+                <a href="#">Provas Anteriores</a>
+                <a href="#">Questões Comentadas</a>
+            </div>
         </div>
         <div class="nav-item">
             <button class="nav-button" data-target="flashcards-menu">Flashcards ▼</button>
+            <div class="dropdown-content">
+                <a href="#">Criar Flashcards</a>
+                <a href="#">Meus Flashcards</a>
+                <a href="#">Flashcards Públicos</a>
+            </div>
         </div>
     </nav>
     
@@ -190,6 +209,30 @@
         background-color: var(--top-nav-link-active-bg, #ddd);
     }
     
+    /* Dropdown do menu */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--header-bg);
+        border: 1px solid var(--header-border);
+        border-radius: 4px;
+        min-width: 200px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 110;
+    }
+    .dropdown-content a {
+        display: block;
+        padding: 12px 16px;
+        color: var(--text-dark);
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+    .dropdown-content a:hover {
+        background-color: var(--top-nav-link-hover-bg, #f1f1f1);
+    }
+    
     /* Área de busca */
     .w3s-search-area {
         display: flex;
@@ -333,6 +376,13 @@
 <script>
     // Inicialização do botão de tema quando o header é carregado diretamente
     document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar dropdowns de navegação
+        initNavigationDropdowns();
+        
+        // Inicializar sistema de login
+        initLoginSystem();
+        
+        // Inicializar botão de tema
         const themeToggleBtn = document.getElementById('theme-toggle');
         if (themeToggleBtn) {
             const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
@@ -374,6 +424,88 @@
             });
         }
     });
+    
+    // Função para inicializar dropdowns de navegação
+    function initNavigationDropdowns() {
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        navItems.forEach(item => {
+            const btn = item.querySelector('.nav-button');
+            const dropdown = item.querySelector('.dropdown-content');
+            
+            if (btn && dropdown) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    // Fecha todos os outros dropdowns
+                    navItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            const otherDropdown = otherItem.querySelector('.dropdown-content');
+                            if (otherDropdown) otherDropdown.style.display = 'none';
+                        }
+                    });
+                    
+                    // Alterna o dropdown atual
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+        });
+
+        // Fechar ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-item')) {
+                navItems.forEach(item => {
+                    const dropdown = item.querySelector('.dropdown-content');
+                    if (dropdown) dropdown.style.display = 'none';
+                });
+            }
+        });
+    }
+    
+    // Função para inicializar sistema de login
+    function initLoginSystem() {
+        const loginBtn = document.getElementById('login-btn');
+        const loginDropdown = document.getElementById('login-dropdown');
+        const signupDropdown = document.getElementById('signup-dropdown');
+        const showSignupLink = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
+
+        // Toggle dropdowns
+        if (loginBtn && loginDropdown && signupDropdown) {
+            loginBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = loginDropdown.style.display === 'block';
+                
+                loginDropdown.style.display = isVisible ? 'none' : 'block';
+                signupDropdown.style.display = 'none';
+            });
+
+            // Alternar entre login e cadastro
+            if (showSignupLink) {
+                showSignupLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loginDropdown.style.display = 'none';
+                    signupDropdown.style.display = 'block';
+                });
+            }
+
+            if (showLoginLink) {
+                showLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    signupDropdown.style.display = 'none';
+                    loginDropdown.style.display = 'block';
+                });
+            }
+
+            // Fechar ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.login-container')) {
+                    loginDropdown.style.display = 'none';
+                    signupDropdown.style.display = 'none';
+                }
+            });
+        }
+    }
     
     // Escutar eventos de mudança de tema de outros componentes
     document.addEventListener('themeChanged', function(e) {
