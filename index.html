@@ -58,6 +58,10 @@
             --header-bg: rgba(26, 32, 44, 0.95);
             --header-border: #2d3748;
             --main-content-bg: #1a202c;
+        }
+
+        .dark-mode .carousel-wrapper {
+            background: linear-gradient(180deg, rgba(var(--main-color-rgb), 0.1) 0%, rgba(var(--main-color-rgb), 0) 100%);
             --button-text-dark: #1a202c;
             --footer-text-muted: #718096;
             --footer-link-color: #a0aec0;
@@ -529,8 +533,11 @@
         .carousel-wrapper {
             position: relative;
             width: 100%;
-            padding: 0 50px; /* Espaço para os botões */
+            padding: 40px 50px; /* Espaço para os botões e respiro */
             box-sizing: border-box;
+            background: linear-gradient(180deg, rgba(var(--main-color-rgb), 0.05) 0%, rgba(var(--main-color-rgb), 0) 100%);
+            border-radius: 20px;
+            margin-top: 20px;
         }
 
         .course-grid {
@@ -553,7 +560,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: var(--header-bg);
             border: 1px solid var(--border-color);
             border-radius: 50%;
             width: 45px;
@@ -564,9 +571,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--card-shadow);
             transition: all 0.3s ease;
             color: var(--text-dark);
+            backdrop-filter: blur(5px);
         }
 
         .carousel-btn:hover {
