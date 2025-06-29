@@ -525,31 +525,62 @@
             box-shadow: 0 12px 35px rgba(255, 107, 53, 0.6), 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* Cursos */
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
+        /* Cursos - Carrossel */
+        .carousel-wrapper {
+            position: relative;
             width: 100%;
+            padding: 0 50px; /* Espaço para os botões */
+            box-sizing: border-box;
+        }
+
+        .course-grid {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE 10+ */
             padding: 20px 0;
+            gap: 25px;
+            scroll-behavior: smooth;
         }
 
-        @media (max-width: 1200px) {
-            .course-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        .course-grid::-webkit-scrollbar {
+            display: none; /* Safari e Chrome */
         }
 
-        @media (max-width: 992px) {
-            .course-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            color: var(--text-dark);
         }
 
-        @media (max-width: 576px) {
-            .course-grid {
-                grid-template-columns: 1fr;
-            }
+        .carousel-btn:hover {
+            background-color: var(--main-color);
+            color: var(--text-light);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-btn.prev {
+            left: 0;
+        }
+
+        .carousel-btn.next {
+            right: 0;
         }
 
         .course-filters {
@@ -614,7 +645,6 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 30px;
-            width: 100%;
             box-shadow: var(--card-shadow);
             display: flex;
             flex-direction: column;
@@ -623,6 +653,39 @@
             overflow: hidden;
             position: relative;
             backdrop-filter: blur(10px);
+            flex: 0 0 calc(25% - 20px); /* 4 cards, com ajuste para o gap */
+            scroll-snap-align: start;
+        }
+
+        @media (max-width: 1200px) {
+            .course-card {
+                flex: 0 0 calc(33.33% - 20px); /* 3 cards */
+            }
+        }
+
+        @media (max-width: 992px) {
+            .course-card {
+                flex: 0 0 calc(50% - 15px); /* 2 cards */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .carousel-wrapper {
+                padding: 0 15px;
+            }
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .carousel-btn.prev { left: -5px; }
+            .carousel-btn.next { right: -5px; }
+        }
+
+        @media (max-width: 576px) {
+            .course-card {
+                flex: 0 0 85%; /* ~1 card */
+            }
         }
         .course-card::before {
             content: '';
@@ -967,55 +1030,59 @@
                 <button class="filter-btn" data-filter="basicas"><span>Básicas</span></button>
             </div>
             
-            <div class="course-grid">
-                <div class="course-card" data-category="basicas tribunais">
-                    <div class="icon-placeholder">🏛️</div>
-                    <h3>Direito Constitucional</h3>
-                    <p>Domine os fundamentos e os tópicos mais cobrados em Direito Constitucional.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+            <div class="carousel-wrapper">
+                <button class="carousel-btn prev">&#10094;</button>
+                <div class="course-grid">
+                    <div class="course-card" data-category="basicas tribunais">
+                        <div class="icon-placeholder">🏛️</div>
+                        <h3>Direito Constitucional</h3>
+                        <p>Domine os fundamentos e os tópicos mais cobrados em Direito Constitucional.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
+                    <div class="course-card" data-category="basicas tribunais">
+                        <div class="icon-placeholder">🏢</div>
+                        <h3>Direito Administrativo</h3>
+                        <p>Entenda licitações, atos administrativos, agentes públicos e muito mais.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
+                    <div class="course-card" data-category="basicas">
+                        <div class="icon-placeholder">🧠</div>
+                        <h3>Raciocínio Lógico</h3>
+                        <p>Desenvolva seu raciocínio lógico-matemático para gabaritar as provas.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
+                    <div class="course-card" data-category="fiscal">
+                        <div class="icon-placeholder">📊</div>
+                        <h3>Estatística</h3>
+                        <p>Compreenda conceitos estatísticos essenciais para concursos das áreas fiscal e bancária.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
+                    <div class="course-card" data-category="fiscal tribunais">
+                        <div class="icon-placeholder">💼</div>
+                        <h3>Direito Tributário</h3>
+                        <p>Estude o Sistema Tributário Nacional, competências e princípios tributários.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
+                    <div class="course-card" data-category="carreiras-policiais">
+                        <div class="icon-placeholder">👮</div>
+                        <h3>Direito Penal</h3>
+                        <p>Estude os princípios do Direito Penal, teoria do crime e legislação penal especial.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
+                    <div class="course-card" data-category="carreiras-policiais">
+                        <div class="icon-placeholder">🔍</div>
+                        <h3>Criminologia</h3>
+                        <p>Compreenda as teorias criminológicas, prevenção criminal e política criminal.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
+                    <div class="course-card" data-category="basicas">
+                        <div class="icon-placeholder">✍️</div>
+                        <h3>Português para Concursos</h3>
+                        <p>Gramática, interpretação e redação com foco total nas principais bancas.</p>
+                        <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
+                    </div>
                 </div>
-                <div class="course-card" data-category="basicas tribunais">
-                    <div class="icon-placeholder">🏢</div>
-                    <h3>Direito Administrativo</h3>
-                    <p>Entenda licitações, atos administrativos, agentes públicos e muito mais.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
-                </div>
-                <div class="course-card" data-category="basicas">
-                    <div class="icon-placeholder">🧠</div>
-                    <h3>Raciocínio Lógico</h3>
-                    <p>Desenvolva seu raciocínio lógico-matemático para gabaritar as provas.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
-                </div>
-                <div class="course-card" data-category="fiscal">
-                    <div class="icon-placeholder">📊</div>
-                    <h3>Estatística</h3>
-                    <p>Compreenda conceitos estatísticos essenciais para concursos das áreas fiscal e bancária.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
-                </div>
-                <div class="course-card" data-category="fiscal tribunais">
-                    <div class="icon-placeholder">💼</div>
-                    <h3>Direito Tributário</h3>
-                    <p>Estude o Sistema Tributário Nacional, competências e princípios tributários.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
-                </div>
-                <div class="course-card" data-category="carreiras-policiais">
-                    <div class="icon-placeholder">👮</div>
-                    <h3>Direito Penal</h3>
-                    <p>Estude os princípios do Direito Penal, teoria do crime e legislação penal especial.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
-                </div>
-                <div class="course-card" data-category="carreiras-policiais">
-                    <div class="icon-placeholder">🔍</div>
-                    <h3>Criminologia</h3>
-                    <p>Compreenda as teorias criminológicas, prevenção criminal e política criminal.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
-                </div>
-                <div class="course-card" data-category="basicas">
-                    <div class="icon-placeholder">✍️</div>
-                    <h3>Português para Concursos</h3>
-                    <p>Gramática, interpretação e redação com foco total nas principais bancas.</p>
-                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
-                </div>
+                <button class="carousel-btn next">&#10095;</button>
             </div>
         </section>
 
@@ -1340,6 +1407,76 @@
             // Formulários
             initLoginForm();
             initSignupForm();
+            initCourseCarousel(); // Adicionado para o carrossel
+        }
+
+        // Lógica do Carrossel de Cursos
+        function initCourseCarousel() {
+            const courseGrid = document.querySelector('.course-grid');
+            const prevBtn = document.querySelector('.carousel-btn.prev');
+            const nextBtn = document.querySelector('.carousel-btn.next');
+            const filters = document.querySelectorAll('.course-filters .filter');
+
+            if (!courseGrid || !prevBtn || !nextBtn) return;
+
+            const scrollStep = () => {
+                const card = courseGrid.querySelector('.course-card');
+                if (!card) return 250; 
+                const cardStyle = window.getComputedStyle(card);
+                const cardMargin = parseFloat(cardStyle.marginRight) || parseFloat(window.getComputedStyle(courseGrid).gap) || 25;
+                return card.offsetWidth + cardMargin;
+            };
+
+            nextBtn.addEventListener('click', () => {
+                courseGrid.scrollBy({ left: scrollStep(), behavior: 'smooth' });
+            });
+
+            prevBtn.addEventListener('click', () => {
+                courseGrid.scrollBy({ left: -scrollStep(), behavior: 'smooth' });
+            });
+
+            // Lógica de Filtro para o Carrossel
+            filters.forEach(filter => {
+                filter.addEventListener('click', function() {
+                    filters.forEach(f => f.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const category = this.getAttribute('data-filter');
+                    const allCards = Array.from(courseGrid.querySelectorAll('.course-card'));
+                    
+                    // Animação de saída
+                    allCards.forEach(card => {
+                        card.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.9)';
+                    });
+
+                    setTimeout(() => {
+                        // Esconde todos os cards
+                        allCards.forEach(card => card.style.display = 'none');
+
+                        // Mostra apenas os cards filtrados
+                        const filteredCards = (category === 'all')
+                            ? allCards
+                            : allCards.filter(card => card.getAttribute('data-category').includes(category));
+                        
+                        filteredCards.forEach(card => {
+                            card.style.display = 'flex';
+                        });
+
+                        // Animação de entrada
+                        setTimeout(() => {
+                             filteredCards.forEach(card => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'scale(1)';
+                            });
+                        }, 50);
+
+                        courseGrid.scrollTo({ left: 0, behavior: 'smooth' });
+
+                    }, 300); // Espera a animação de saída terminar
+                });
+            });
         }
 
         function initLoginForm() {
