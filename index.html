@@ -79,13 +79,30 @@
             min-height: 100vh;
             background: var(--light-grey-bg);
             background-image: 
-                radial-gradient(circle at 20% 80%, rgba(76, 205, 196, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(255, 230, 109, 0.05) 0%, transparent 50%);
+                url('../PRO/fundo.png'),
+                radial-gradient(circle at 20% 80%, rgba(76, 205, 196, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 230, 109, 0.04) 0%, transparent 50%);
+            background-size: cover, 800px, 600px, 400px;
+            background-position: center, 20% 80%, 80% 20%, 40% 40%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: var(--text-dark);
             padding-top: var(--header-height);
             box-sizing: border-box;
             transition: all 0.3s ease;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(247, 250, 252, 0.85);
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* --- Header --- */
@@ -324,14 +341,39 @@
         /* --- Conteúdo Principal --- */
         main.homepage-main { 
             flex-grow: 1; 
-            background-color: var(--main-content-bg); 
+            background: transparent;
             width: 100%; 
-            box-sizing: border-box; 
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        /* Animação sutil para elementos flutuantes */
+        @keyframes floatAnimation {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .course-card, .step-card {
+            animation: floatAnimation 6s ease-in-out infinite;
+        }
+        
+        .course-card:nth-child(2n) {
+            animation-delay: -2s;
+        }
+        
+        .course-card:nth-child(3n) {
+            animation-delay: -4s;
         }
         .homepage-section { 
             padding: 60px 20px; 
             max-width: 1200px; 
-            margin: 0 auto; 
+            margin: 0 auto 40px auto;
+            position: relative;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .homepage-section h2 { 
             text-align: center; 
@@ -367,11 +409,12 @@
 			align-items: center;
 			justify-content: center;
 			background-image: 
-				url('../PRO/images/pro2.png'),
+				url('../../PRO/fundo.png'),
+				url('../../PRO/fundo.png'),
 				var(--gradient-primary);
-			background-size: contain, cover;
-			background-position: right center, center;
-			background-repeat: no-repeat, no-repeat;
+			background-size: cover, contain, cover;
+			background-position: center, right center, center;
+			background-repeat: no-repeat, no-repeat, no-repeat;
 			min-height: 600px;
 		}
 
@@ -382,7 +425,7 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: linear-gradient(135deg, rgba(44, 90, 160, 0.9) 0%, rgba(78, 205, 196, 0.8) 100%);
+			background: linear-gradient(135deg, rgba(44, 90, 160, 0.7) 0%, rgba(78, 205, 196, 0.6) 100%);
 			z-index: 1;
 		}
 
@@ -420,9 +463,9 @@
             margin-top: 0; 
             margin-bottom: 25px; 
             font-weight: 800; 
-            text-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            text-shadow: 0 3px 10px rgba(0,0,0,0.5);
             line-height: 1.1;
-            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f5fa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -432,7 +475,7 @@
             margin-bottom: 35px; 
             opacity: 0.95; 
             line-height: 1.7;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
@@ -457,7 +500,7 @@
             font-weight: 700;
             border-radius: 50px;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5), 0 0 15px rgba(0, 0, 0, 0.2);
             letter-spacing: 1px;
             text-transform: uppercase;
             position: relative;
@@ -478,7 +521,7 @@
         }
         .cta-button:hover {
             transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.6), 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         /* Cursos */
@@ -773,7 +816,12 @@
 
         /* --- Footer --- */
         .footer {
-            background-color: var(--dark-bg);
+            background: linear-gradient(135deg, 
+                rgba(26, 32, 44, 0.95) 0%, 
+                rgba(45, 55, 72, 0.9) 50%, 
+                rgba(26, 32, 44, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--footer-text-muted);
             padding: 50px 20px 30px;
             text-align: left;
@@ -781,6 +829,22 @@
             box-sizing: border-box;
             z-index: 101;
             flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
         .footer-content {
             max-width: 1200px;
