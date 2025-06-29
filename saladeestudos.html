@@ -636,7 +636,7 @@
         // --- Inicializar Eventos do Header (e outros elementos dependentes do header) ---
         function initializeHeaderEvents() {
             sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); // Agora o header está carregado
-            const colorPickerBtn = document.getElementById('color-picker-btn');
+
             const logoutBtn = document.getElementById('logout-btn'); // Already had ID from previous task
             const topNav = document.getElementById('topNav');
             const megaMenuContainer = document.getElementById('megaMenuContainer');
@@ -657,11 +657,7 @@
                 console.warn('Botão theme-toggle não encontrado em header_saladeestudos.html carregado.');
             }
 
-            if (colorPickerBtn) {
-                colorPickerBtn.addEventListener('click', changeMainBackgroundColor);
-            } else {
-                console.warn('Botão color-picker-btn não encontrado em header_saladeestudos.html carregado.');
-            }
+
 
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
@@ -734,13 +730,6 @@
         });
 
         function applySavedPreferences() {
-            // Aplica cor de fundo salva
-            const savedMainBgColor = localStorage.getItem('userMainBgColor-' + userId); // Chave por usuário
-            if (savedMainBgColor && mainContent) {
-                mainContent.style.backgroundColor = savedMainBgColor;
-                console.log("Cor de fundo pessoal aplicada:", savedMainBgColor);
-            }
-
             // Aplica tema salvo
             const savedTheme = localStorage.getItem('theme'); // Tema é global ou por usuário? Assumindo global.
             const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -766,33 +755,7 @@
             localStorage.setItem('theme', theme);
         }
 
-        function changeMainBackgroundColor() {
-            const colorInput = document.createElement('input');
-            colorInput.type = 'color';
-            // Pega a cor atual do mainContent ou um fallback
-            const currentMainBg = mainContent.style.backgroundColor || getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
-            colorInput.value = currentMainBg.startsWith('#') ? currentMainBg : rgbToHex(currentMainBg); // Converte se for rgb()
-            
-            colorInput.addEventListener('input', () => {
-                const color = colorInput.value;
-                mainContent.style.backgroundColor = color;
-                if (userId) { // Salva apenas se o usuário estiver logado
-                    localStorage.setItem('userMainBgColor-' + userId, color); // Chave por usuário
-                    console.log("Cor de fundo pessoal salva para usuário", userId, ":", color);
-                }
-            });
-            colorInput.click(); // Abre o seletor de cores
-        }
 
-        function rgbToHex(rgb) { // Função auxiliar para converter rgb para hex
-            if (!rgb || typeof rgb !== 'string' || rgb.startsWith('#')) return rgb; // Já é hex ou inválido
-            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!rgbMatch) return rgb; // Não é formato rgb() esperado
-            const r = parseInt(rgbMatch[1]);
-            const g = parseInt(rgbMatch[2]);
-            const b = parseInt(rgbMatch[3]);
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-        }
 
         // --- Carregar Cursos para o Menu Lateral ---
         async function loadCourses() {
