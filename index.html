@@ -4,75 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PRO Concursos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --header-height: 55px;
-            /* Nova Paleta Aconchegante */
-            --main-color: #2e5077; /* Azul mais profundo e aconchegante */
-            --light-highlight-bg: #f0f5fa;
-            --accent-1: #e6b54a; /* Dourado mais suave */
-            --accent-1-darker: #d4a53c;
-            --accent-2: #c17a3d; /* Marrom aconchegante */
-            --dark-bg: #1e3a5f;
-            --text-dark: #333333;
+            /* Paleta Aconchegante e Moderna */
+            --main-color: #2c5aa0; /* Azul profissional e confiável */
+            --light-highlight-bg: #f7f9fc;
+            --accent-1: #ff6b35; /* Laranja vibrante e energético */
+            --accent-1-darker: #e55a2b;
+            --accent-2: #4ecdc4; /* Verde-azulado suave */
+            --accent-3: #ffe66d; /* Amarelo dourado suave */
+            --dark-bg: #1a365d;
+            --text-dark: #2d3748;
             --text-light: #ffffff;
-            --text-muted: #6c757d;
-            --border-color: #dcdfe4;
-            --light-grey-bg: #f8f9fa;
-            --header-bg: #ffffff;
-            --header-border: #e7e7e7;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --light-grey-bg: #f7fafc;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --header-border: #e2e8f0;
             --main-content-bg: #ffffff;
-            --button-text-dark: #333;
-            --footer-text-muted: #ccc;
-            --footer-link-color: #ccc;
+            --button-text-dark: #2d3748;
+            --footer-text-muted: #a0aec0;
+            --footer-link-color: #cbd5e0;
             --footer-link-hover: var(--accent-1);
-            --footer-separator: #555;
-            --footer-h4: #f1f1f1;
-            --card-shadow: 0 4px 8px rgba(0,0,0,0.08);
-            --card-hover-shadow: 0 8px 16px rgba(0,0,0,0.12);
+            --footer-separator: #4a5568;
+            --footer-h4: #f7fafc;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --card-hover-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            --gradient-primary: linear-gradient(135deg, #2c5aa0 0%, #4ecdc4 100%);
+            --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #ffe66d 100%);
         }
 
         /* --- Modo Escuro --- */
         body.dark-mode {
             --header-height: 55px;
-            /* Nova Paleta Escura Aconchegante */
-            --main-color: #3a6ea5; /* Azul mais claro para o modo escuro */
-            --light-highlight-bg: #1a2530;
-            --accent-1: #e6b54a; /* Mantendo o dourado */
-            --accent-1-darker: #d4a53c;
-            --accent-2: #c17a3d; /* Marrom aconchegante */
-            --dark-bg: #1e3a5f;
-            --text-dark: #e1e1e1;
+            /* Paleta Escura Moderna */
+            --main-color: #63b3ed;
+            --light-highlight-bg: #1a202c;
+            --accent-1: #ff8a65;
+            --accent-1-darker: #ff7043;
+            --accent-2: #4fd1c7;
+            --accent-3: #ffd93d;
+            --dark-bg: #0f1419;
+            --text-dark: #e2e8f0;
             --text-light: #ffffff;
-            --text-muted: #a0a0a0;
-            --border-color: #444;
-            --light-grey-bg: #2c2c2c;
-            --header-bg: #1a1a1a;
-            --header-border: #333333;
-            --main-content-bg: #222222;
-            --button-text-dark: #e1e1e1;
-            --footer-text-muted: #888;
-            --footer-link-color: #aaa;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --light-grey-bg: #1a202c;
+            --header-bg: rgba(26, 32, 44, 0.95);
+            --header-border: #2d3748;
+            --main-content-bg: #1a202c;
+            --button-text-dark: #1a202c;
+            --footer-text-muted: #718096;
+            --footer-link-color: #a0aec0;
             --footer-link-hover: var(--accent-1);
-            --footer-separator: #444;
-            --footer-h4: #f1f1f1;
-            --card-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            --card-hover-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            --footer-separator: #2d3748;
+            --footer-h4: #e2e8f0;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --card-hover-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            --gradient-primary: linear-gradient(135deg, #63b3ed 0%, #4fd1c7 100%);
+            --gradient-accent: linear-gradient(135deg, #ff8a65 0%, #ffd93d 100%);
         }
 
         /* --- Estilos Base --- */
         html { height: 100%; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: var(--light-grey-bg);
+            background: var(--light-grey-bg);
+            background-image: 
+                url('../PRO/fundo.png'),
+                radial-gradient(circle at 20% 80%, rgba(76, 205, 196, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 230, 109, 0.04) 0%, transparent 50%);
+            background-size: cover, 800px, 600px, 400px;
+            background-position: center, 20% 80%, 80% 20%, 40% 40%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: var(--text-dark);
             padding-top: var(--header-height);
             box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(247, 250, 252, 0.85);
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* --- Header --- */
@@ -311,14 +341,39 @@
         /* --- Conteúdo Principal --- */
         main.homepage-main { 
             flex-grow: 1; 
-            background-color: var(--main-content-bg); 
+            background: transparent;
             width: 100%; 
-            box-sizing: border-box; 
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        /* Animação sutil para elementos flutuantes */
+        @keyframes floatAnimation {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .course-card, .step-card {
+            animation: floatAnimation 6s ease-in-out infinite;
+        }
+        
+        .course-card:nth-child(2n) {
+            animation-delay: -2s;
+        }
+        
+        .course-card:nth-child(3n) {
+            animation-delay: -4s;
         }
         .homepage-section { 
             padding: 60px 20px; 
             max-width: 1200px; 
-            margin: 0 auto; 
+            margin: 0 auto 40px auto;
+            position: relative;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .homepage-section h2 { 
             text-align: center; 
@@ -343,9 +398,9 @@
 
 		/* Hero Banner */
 		.hero-banner {
-			background-color: var(--main-color);
+			background: var(--gradient-primary);
 			color: var(--text-light);
-			padding: 80px 20px;
+			padding: 100px 20px;
 			text-align: center;
 			position: relative;
 			overflow: hidden;
@@ -353,10 +408,14 @@
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			background-image: url('c:/PRO/images/pro.png');
-			background-size: cover;
-			background-position: center;
-			min-height: 500px;
+			background-image: 
+				url('../../PRO/fundo.png'),
+				url('../../PRO/fundo.png'),
+				var(--gradient-primary);
+			background-size: cover, contain, cover;
+			background-position: center, right center, center;
+			background-repeat: no-repeat, no-repeat, no-repeat;
+			min-height: 600px;
 		}
 
 		.hero-banner::before {
@@ -366,8 +425,21 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: rgba(30, 58, 95, 0.85); /* Cor base do dark-bg com opacidade */
+			background: linear-gradient(135deg, rgba(44, 90, 160, 0.7) 0%, rgba(78, 205, 196, 0.6) 100%);
 			z-index: 1;
+		}
+
+		.hero-banner::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-image: 
+				radial-gradient(circle at 30% 70%, rgba(255, 230, 109, 0.2) 0%, transparent 50%),
+				radial-gradient(circle at 70% 30%, rgba(255, 107, 53, 0.15) 0%, transparent 50%);
+			z-index: 2;
 		}
 
         .hero-banner > * { position: relative; z-index: 2; }
@@ -387,19 +459,26 @@
             max-width: 600px;
         }
         .hero-banner h1 { 
-            font-size: 3em; 
+            font-size: 3.5em; 
             margin-top: 0; 
-            margin-bottom: 20px; 
-            font-weight: 700; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            line-height: 1.2;
+            margin-bottom: 25px; 
+            font-weight: 800; 
+            text-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .hero-banner p { 
-            font-size: 1.2em; 
-            margin-bottom: 30px; 
+            font-size: 1.3em; 
+            margin-bottom: 35px; 
             opacity: 0.95; 
-            line-height: 1.6;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            line-height: 1.7;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         @media (max-width: 992px) {
@@ -413,21 +492,36 @@
         }
         .cta-button {
             display: inline-block;
-            padding: 14px 32px;
-            background-color: var(--accent-1);
-            color: var(--dark-bg);
+            padding: 18px 40px;
+            background: var(--gradient-accent);
+            color: var(--text-light);
             text-decoration: none;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            letter-spacing: 0.5px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5), 0 0 15px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .cta-button:hover::before {
+            left: 100%;
         }
         .cta-button:hover {
-            background-color: var(--accent-1-darker);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.6), 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         /* Cursos */
@@ -466,51 +560,97 @@
         }
 
         .filter-btn {
-            background-color: var(--header-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 25px;
-            padding: 10px 20px;
+            background: var(--header-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            padding: 12px 24px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-accent);
+            transition: left 0.3s ease;
+            z-index: 0;
+        }
+
+        .filter-btn:hover::before {
+            left: 0;
         }
 
         .filter-btn:hover {
-            background-color: var(--light-highlight-bg);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: var(--text-light);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            border-color: transparent;
         }
 
         .filter-btn.active {
-            background-color: var(--accent-1);
-            color: var(--dark-bg);
-            border-color: var(--accent-1);
-            font-weight: 600;
+            background: var(--gradient-primary);
+            color: var(--text-light);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn span {
+            position: relative;
+            z-index: 1;
         }
         
         .course-card {
-            background-color: var(--header-bg);
+            background: var(--header-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 16px;
+            padding: 30px;
             width: 100%;
             box-shadow: var(--card-shadow);
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s ease;
             height: 100%;
             overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .course-card:hover::before {
+            transform: scaleX(1);
         }
         .course-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: var(--card-hover-shadow); 
+            transform: translateY(-10px) scale(1.02); 
+            box-shadow: var(--card-hover-shadow);
+            border-color: var(--accent-2);
         }
         .course-card .icon-placeholder { 
-            font-size: 3.5em; 
+            font-size: 4em; 
             text-align: center; 
-            margin-bottom: 20px; 
-            color: var(--main-color); 
+            margin-bottom: 25px; 
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
         .course-card h3 { 
             margin-top: 0; 
@@ -530,17 +670,36 @@
             margin-top: auto;
             text-align: center;
             display: block;
-            background-color: var(--main-color);
+            background: var(--gradient-primary);
             color: var(--text-light);
-            font-weight: bold;
+            font-weight: 600;
             text-decoration: none;
-            border-radius: 8px;
-            padding: 12px 15px;
-            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 25px;
+            padding: 14px 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-card a.w3-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-accent);
+            transition: left 0.3s ease;
+        }
+        .course-card a.w3-btn:hover::before {
+            left: 0;
         }
         .course-card a.w3-btn:hover { 
-            background-color: var(--accent-1) !important; 
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(44, 90, 160, 0.3);
+        }
+        .course-card a.w3-btn span {
+            position: relative;
+            z-index: 1;
         }
 
         /* Notícias */
@@ -657,7 +816,12 @@
 
         /* --- Footer --- */
         .footer {
-            background-color: var(--dark-bg);
+            background: linear-gradient(135deg, 
+                rgba(26, 32, 44, 0.95) 0%, 
+                rgba(45, 55, 72, 0.9) 50%, 
+                rgba(26, 32, 44, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--footer-text-muted);
             padding: 50px 20px 30px;
             text-align: left;
@@ -665,6 +829,22 @@
             box-sizing: border-box;
             z-index: 101;
             flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
         .footer-content {
             max-width: 1200px;
@@ -778,11 +958,11 @@
             <h2>Nossos Principais Cursos</h2>
             
             <div class="course-filters">
-                <button class="filter-btn active" data-filter="todos">Todos</button>
-                <button class="filter-btn" data-filter="carreiras-policiais">Carreiras Policiais</button>
-                <button class="filter-btn" data-filter="tribunais">Tribunais</button>
-                <button class="filter-btn" data-filter="fiscal">Fiscal</button>
-                <button class="filter-btn" data-filter="basicas">Básicas</button>
+                <button class="filter-btn active" data-filter="todos"><span>Todos</span></button>
+                <button class="filter-btn" data-filter="carreiras-policiais"><span>Carreiras Policiais</span></button>
+                <button class="filter-btn" data-filter="tribunais"><span>Tribunais</span></button>
+                <button class="filter-btn" data-filter="fiscal"><span>Fiscal</span></button>
+                <button class="filter-btn" data-filter="basicas"><span>Básicas</span></button>
             </div>
             
             <div class="course-grid">
@@ -790,49 +970,49 @@
                     <div class="icon-placeholder">🏛️</div>
                     <h3>Direito Constitucional</h3>
                     <p>Domine os fundamentos e os tópicos mais cobrados em Direito Constitucional.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
                 <div class="course-card" data-category="basicas tribunais">
                     <div class="icon-placeholder">🏢</div>
                     <h3>Direito Administrativo</h3>
                     <p>Entenda licitações, atos administrativos, agentes públicos e muito mais.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
                 <div class="course-card" data-category="basicas">
                     <div class="icon-placeholder">🧠</div>
                     <h3>Raciocínio Lógico</h3>
                     <p>Desenvolva seu raciocínio lógico-matemático para gabaritar as provas.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
                 <div class="course-card" data-category="fiscal">
                     <div class="icon-placeholder">📊</div>
                     <h3>Estatística</h3>
                     <p>Compreenda conceitos estatísticos essenciais para concursos das áreas fiscal e bancária.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
                 <div class="course-card" data-category="fiscal tribunais">
                     <div class="icon-placeholder">💼</div>
                     <h3>Direito Tributário</h3>
                     <p>Estude o Sistema Tributário Nacional, competências e princípios tributários.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
                 <div class="course-card" data-category="carreiras-policiais">
                     <div class="icon-placeholder">👮</div>
                     <h3>Direito Penal</h3>
                     <p>Estude os princípios do Direito Penal, teoria do crime e legislação penal especial.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
                 <div class="course-card" data-category="carreiras-policiais">
                     <div class="icon-placeholder">🔍</div>
                     <h3>Criminologia</h3>
                     <p>Compreenda as teorias criminológicas, prevenção criminal e política criminal.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
                 <div class="course-card" data-category="basicas">
                     <div class="icon-placeholder">✍️</div>
                     <h3>Português para Concursos</h3>
                     <p>Gramática, interpretação e redação com foco total nas principais bancas.</p>
-                    <a href="#" class="w3-btn">Saiba Mais</a>
+                    <a href="#" class="w3-btn"><span>Saiba Mais</span></a>
                 </div>
             </div>
         </section>
