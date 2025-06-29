@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="fundo.png" as="image">
     <style>
         :root {
             --header-height: 55px;
@@ -91,13 +92,14 @@
             left: 0;
             width: 100%;
             height: 100%;
+            background-color: rgba(44, 90, 160, 0.3);
             background-image: url('fundo.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             z-index: -1;
-            opacity: 0.8;
-            filter: brightness(0.9);
+            opacity: 1;
+            filter: brightness(1);
         }
         
         body::before {
@@ -107,7 +109,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(247, 250, 252, 0.1);
+            background: rgba(247, 250, 252, 0.05);
             z-index: -2;
             pointer-events: none;
         }
@@ -405,7 +407,6 @@
 
 		/* Hero Banner */
 		.hero-banner {
-			background: var(--gradient-primary);
 			color: var(--text-light);
 			padding: 100px 20px;
 			text-align: center;
@@ -415,10 +416,7 @@
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			background-image: var(--gradient-primary);
-			background-size: cover;
-			background-position: center;
-			background-repeat: no-repeat;
+			background: transparent;
 			min-height: 600px;
 		}
 
@@ -429,7 +427,7 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: linear-gradient(135deg, rgba(44, 90, 160, 0.5) 0%, rgba(78, 205, 196, 0.4) 100%);
+			background: linear-gradient(135deg, rgba(44, 90, 160, 0.6) 0%, rgba(78, 205, 196, 0.5) 100%);
 			z-index: 1;
 		}
 
@@ -441,8 +439,8 @@
 			width: 100%;
 			height: 100%;
 			background-image: 
-				radial-gradient(circle at 30% 70%, rgba(255, 230, 109, 0.2) 0%, transparent 50%),
-				radial-gradient(circle at 70% 30%, rgba(255, 107, 53, 0.15) 0%, transparent 50%);
+				radial-gradient(circle at 30% 70%, rgba(255, 230, 109, 0.25) 0%, transparent 60%),
+				radial-gradient(circle at 70% 30%, rgba(255, 107, 53, 0.2) 0%, transparent 60%);
 			z-index: 2;
 		}
 
