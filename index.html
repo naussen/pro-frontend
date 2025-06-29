@@ -309,7 +309,7 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: rgba(0, 0, 0, 0.4); /* Overlay mais leve para melhorar a visibilidade da imagem */
+			background-color: rgba(0, 0, 0, 0.3); /* Overlay mais leve para melhorar a visibilidade da imagem */
 			z-index: 1;
 		}
 
@@ -323,15 +323,34 @@
             max-width: 1200px;
             width: 100%;
         }
+        
+        .hero-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 320px;
+            position: relative;
+            z-index: 2;
+            padding: 10px;
+        }
         .hero-image {
             width: 300px;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.3);
             padding: 10px;
-            mix-blend-mode: lighten;
+            mix-blend-mode: screen;
             object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
+        .hero-image:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
         }
         .hero-text {
             text-align: left;
@@ -347,9 +366,15 @@
             }
             .hero-text {
                 text-align: center;
+                order: 2;
+            }
+            .hero-image-container {
+                order: 1;
+                margin-bottom: 20px;
             }
             .hero-image {
                 width: 250px;
+                margin: 20px auto;
             }
         }
         .cta-button {
@@ -589,7 +614,9 @@
     <main class="homepage-main">
         <section class="hero-banner">
             <div class="hero-content">
-                <img src="study-draw.png" alt="Estudante se preparando para concurso" class="hero-image">
+                <div class="hero-image-container">
+                    <img src="study-draw.png" alt="Estudante se preparando para concurso" class="hero-image">
+                </div>
                 <div class="hero-text">
                     <h1>Prepare-se para o Sucesso no seu Concurso!</h1>
                     <p>Plataforma completa com cursos, questões comentadas e simulados atualizados para você conquistar a sua vaga.</p>
@@ -803,8 +830,7 @@
             // Dropdowns de navegação
             initNavigationDropdowns();
             
-            // Seletor de cor
-            initColorPicker();
+
             
             // Botão sidebar
             initSidebarToggle();
@@ -892,30 +918,7 @@
             });
         }
 
-        function initColorPicker() {
-            const colorPickerBtn = document.getElementById('color-picker-btn');
-            
-            if (colorPickerBtn) {
-                colorPickerBtn.addEventListener('click', () => {
-                    const colorInput = document.createElement('input');
-                    colorInput.type = 'color';
-                    colorInput.value = getComputedStyle(document.body).backgroundColor || '#ffffff';
-                    
-                    colorInput.addEventListener('change', () => {
-                        document.body.style.backgroundColor = colorInput.value;
-                        localStorage.setItem('selectedBgColor', colorInput.value);
-                    });
-                    
-                    colorInput.click();
-                });
-                
-                // Carregar cor salva
-                const savedColor = localStorage.getItem('selectedBgColor');
-                if (savedColor) {
-                    document.body.style.backgroundColor = savedColor;
-                }
-            }
-            
+
             // Inicializar filtros de cursos
             initCourseFilters();
         }

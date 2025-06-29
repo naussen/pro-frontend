@@ -691,7 +691,7 @@
         // --- Função para Inicializar Eventos do Header ---
         function initializeHeaderEvents() {
             const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-            const colorPickerBtn = document.getElementById('color-picker-btn');
+
             const logoutBtn = document.getElementById('logout-btn');
             const topNav = document.getElementById('topNav');
             const megaMenuContainer = document.getElementById('megaMenuContainer');
@@ -723,24 +723,7 @@
                 });
             }
 
-            // --- Mudar Cor de Fundo ---
-            if (colorPickerBtn) {
-                colorPickerBtn.addEventListener('click', () => {
-                    const colorInput = document.createElement('input');
-                    colorInput.type = 'color';
-                    const mainContent = document.querySelector('main');
-                    const currentMainBg = mainContent.style.backgroundColor;
-                    const defaultColor = getComputedStyle(mainContent).getPropertyValue('--main-content-bg').trim() || '#ffffff';
-                    colorInput.value = currentMainBg ? rgbToHex(currentMainBg) : defaultColor;
 
-                    colorInput.addEventListener('input', () => {
-                        const color = colorInput.value;
-                        mainContent.style.backgroundColor = color;
-                        localStorage.setItem('userMainBgColor', color);
-                    });
-                    colorInput.click();
-                });
-            }
 
             // --- Logout ---
             if (logoutBtn) {
@@ -805,15 +788,7 @@
             localStorage.setItem('theme', theme);
         }
 
-        function rgbToHex(rgb) {
-            if (!rgb || rgb === '') return '#ffffff';
-            const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!rgbMatch) return rgb;
-            const r = parseInt(rgbMatch[1]);
-            const g = parseInt(rgbMatch[2]);
-            const b = parseInt(rgbMatch[3]);
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-        }
+
 
         // Função dummy para toggleSidebar (mantida para compatibilidade com header.html)
         function toggleSidebar() {
