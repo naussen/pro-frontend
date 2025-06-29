@@ -295,6 +295,10 @@
 	text-align: center;
 	position: relative;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 		.hero-banner::before {
@@ -310,8 +314,41 @@
 
 		/* Os outros estilos do seu CSS para main.homepage-main e .homepage-section continuam os mesmos */
         .hero-banner > * { position: relative; z-index: 2; }
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        .hero-image {
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+        }
+        .hero-text {
+            text-align: left;
+            max-width: 600px;
+        }
         .hero-banner h1 { font-size: 2.8em; margin-top: 0; margin-bottom: 15px; font-weight: 600; }
-        .hero-banner p { font-size: 1.1em; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.9; }
+        .hero-banner p { font-size: 1.1em; margin-bottom: 30px; opacity: 0.9; }
+        
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero-text {
+                text-align: center;
+            }
+            .hero-image {
+                width: 250px;
+            }
+        }
         .cta-button {
     display: inline-block;
     padding: 12px 30px;
@@ -548,9 +585,14 @@
 
     <main class="homepage-main">
         <section class="hero-banner">
-            <h1>Prepare-se para o Sucesso no seu Concurso!</h1>
-            <p>Plataforma completa com cursos, questões comentadas e simulados atualizados para você conquistar a sua vaga.</p>
-            <a href="https://nvp-concursos.firebaseapp.com/cadastro.html" class="cta-button">ASSINE JÁ</a>
+            <div class="hero-content">
+                <img src="study-image.svg" alt="Estudante se preparando para concurso" class="hero-image">
+                <div class="hero-text">
+                    <h1>Prepare-se para o Sucesso no seu Concurso!</h1>
+                    <p>Plataforma completa com cursos, questões comentadas e simulados atualizados para você conquistar a sua vaga.</p>
+                    <a href="https://nvp-concursos.firebaseapp.com/cadastro.html" class="cta-button">ASSINE JÁ</a>
+                </div>
+            </div>
         </section>
 
         <section class="homepage-section featured-courses">
@@ -616,67 +658,8 @@
             </div>
         </section>
 
-        <section class="homepage-section testimonials-section">
-            <h2>Depoimentos de Aprovados</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="testimonial-image">
-                        <img src="https://via.placeholder.com/150" alt="Foto de Ana Silva" class="testimonial-photo">
-                    </div>
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"Graças ao método de estudo do PRO Concursos, consegui ser aprovada em primeiro lugar. Os materiais são completos e os professores são excelentes!"</p>
-                        <p class="testimonial-author">Ana Silva</p>
-                        <p class="testimonial-position">Aprovada - Tribunal Regional Federal</p>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-image">
-                        <img src="https://via.placeholder.com/150" alt="Foto de Carlos Mendes" class="testimonial-photo">
-                    </div>
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"Estudei por apenas 8 meses com o PRO Concursos e consegui minha aprovação. As questões comentadas fizeram toda a diferença na minha preparação."</p>
-                        <p class="testimonial-author">Carlos Mendes</p>
-                        <p class="testimonial-position">Aprovado - Polícia Federal</p>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-image">
-                        <img src="https://via.placeholder.com/150" alt="Foto de Juliana Costa" class="testimonial-photo">
-                    </div>
-                    <div class="testimonial-content">
-                        <p class="testimonial-text">"O diferencial do PRO Concursos são as aulas direcionadas e o suporte dos professores. Consegui minha aprovação estudando de forma estratégica."</p>
-                        <p class="testimonial-author">Juliana Costa</p>
-                        <p class="testimonial-position">Aprovada - Receita Federal</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section class="homepage-section stats-section">
-            <h2>Nossos Números</h2>
-            <div class="stats-container">
-                <div class="stat-item">
-                    <div class="stat-icon">📝</div>
-                    <div class="stat-number">5.000+</div>
-                    <div class="stat-label">Questões comentadas</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">🎓</div>
-                    <div class="stat-number">800+</div>
-                    <div class="stat-label">Horas de videoaulas</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">🏆</div>
-                    <div class="stat-number">1.200+</div>
-                    <div class="stat-label">Alunos aprovados</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">📚</div>
-                    <div class="stat-number">50+</div>
-                    <div class="stat-label">Cursos completos</div>
-                </div>
-            </div>
-        </section>
+
+
         
         <section class="homepage-section news-section">
             <h2>Últimas Notícias de Concursos</h2>
@@ -833,25 +816,40 @@
             const moonIcon = themeToggleBtn?.querySelector('.theme-icon-dark');
 
             function applyTheme(theme) {
+                // Aplicar classe ao body para modo escuro
                 document.body.classList.toggle('dark-mode', theme === 'dark');
+                
+                // Atualizar ícones do botão
                 if (sunIcon && moonIcon) {
                     sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
                     moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
                 }
+                
+                // Atualizar variáveis CSS para modo escuro
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                // Disparar evento para que outros componentes possam reagir à mudança de tema
+                document.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
             }
 
+            // Obter tema salvo ou usar preferência do sistema
             const savedTheme = localStorage.getItem('theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
             
+            // Aplicar tema atual
             applyTheme(currentTheme);
 
+            // Adicionar evento de clique ao botão de alternar tema
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
                     const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
                     applyTheme(newTheme);
                     localStorage.setItem('theme', newTheme);
+                    console.log('Tema alterado para:', newTheme);
                 });
+            } else {
+                console.warn('Botão de alternar tema não encontrado');
             }
         }
 
