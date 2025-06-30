@@ -13,11 +13,11 @@
     --text-light: #f8f9fa;
     --text-muted: #6c757d;
     --border-color: #ccc;
-    --light-grey-bg: #f1f1f1;
-    --header-bg: #ffffff;
+    --light-grey-bg: #f0f7ff;
+    --header-bg: rgba(240, 248, 255, 0.95);
     --header-border: #e7e7e7;
-    --main-content-bg: #ffffff;
-    --code-bg: #f1f1f1;
+    --main-content-bg: #f7fbff;
+    --code-bg: #f0f7ff;
     --button-text-dark: #333;
     --footer-text-muted: #ccc;
     --footer-link-color: #ccc;
@@ -41,11 +41,11 @@ body.dark-mode {
     --text-light: #f8f9fa;
     --text-muted: #6c757d;
     --border-color: #ccc;
-    --light-grey-bg: #f1f1f1;
-    --header-bg: #ffffff;
-    --header-border: #e7e7e7;
-    --main-content-bg: #ffffff;
-    --code-bg: #f1f1f1;
+    --light-grey-bg: #1a202c;
+    --header-bg: rgba(26, 32, 44, 0.95);
+    --header-border: #2d3748;
+    --main-content-bg: #1a202c;
+    --code-bg: #2d3748;
     --button-text-dark: #333;
     --footer-text-muted: #ccc;
     --footer-link-color: #ccc;
@@ -220,14 +220,14 @@ body.dark-mode .cta-button { color: var(--button-text-dark); } */
 /* Carrossel Cursos */
 .carousel-container { overflow-x: auto; padding-bottom: 20px; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
 .carousel-container::-webkit-scrollbar { height: 8px; }
-.carousel-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.carousel-container::-webkit-scrollbar-track { background: #f0f7ff; border-radius: 4px; }
 body.dark-mode .carousel-container::-webkit-scrollbar-track { background: #2d333b; }
 .carousel-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 body.dark-mode .carousel-container::-webkit-scrollbar-thumb { background: #555; }
 .carousel-container::-webkit-scrollbar-thumb:hover { background: #aaa; }
 body.dark-mode .carousel-container::-webkit-scrollbar-thumb:hover { background: #777; }
 .carousel-track { display: inline-flex; gap: 25px; }
-.course-card { background-color: var(--header-bg); border: 1px solid var(--header-border); border-radius: 8px; padding: 20px; width: 300px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.08); display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.course-card { background: linear-gradient(135deg, rgba(240, 248, 255, 0.9) 0%, rgba(245, 245, 255, 0.9) 100%); border: 1px solid var(--header-border); border-radius: 8px; padding: 20px; width: 300px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.08); display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .course-card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
 .course-card .icon-placeholder { font-size: 3em; text-align: center; margin-bottom: 15px; color: var(--main-color); }
 .course-card h3 { margin-top: 0; margin-bottom: 10px; color: var(--main-color); font-size: 1.3em; }
@@ -254,7 +254,7 @@ body.dark-mode .view-all-news a.w3-btn:hover { background-color: #8fceff !import
 
 /* Como Funciona? */
 .steps-grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; }
-.step-card { background-color: var(--header-bg); border: 1px solid var(--header-border); border-radius: 8px; padding: 20px; width: calc(33.333% - 30px); min-width: 280px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); display: flex; flex-direction: column; text-align: center; }
+.step-card { background: linear-gradient(135deg, rgba(240, 248, 255, 0.9) 0%, rgba(230, 240, 250, 0.9) 100%); border: 1px solid var(--header-border); border-radius: 8px; padding: 20px; width: calc(33.333% - 30px); min-width: 280px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); display: flex; flex-direction: column; text-align: center; }
 .step-card .icon-placeholder { font-size: 2.5em; margin-bottom: 10px; color: var(--main-color); font-weight: bold; }
 .step-card h3 { margin-top: 0; margin-bottom: 10px; color: var(--main-color); font-size: 1.2em; }
 .step-card p { font-size: 0.95em; line-height: 1.6; color: var(--text-muted); flex-grow: 1; }
