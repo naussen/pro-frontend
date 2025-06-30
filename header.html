@@ -98,13 +98,14 @@
     /* Variáveis CSS para modo claro/escuro */
     :root {
         /* Modo claro (padrão) */
-        --header-bg: #ffffff;
+        --header-height: 55px;
+        --header-bg: rgba(240, 248, 255, 0.95);
         --text-dark: #333;
         --header-border: #e7e7e7;
         --top-nav-link-color: #4e4d4a;
-        --top-nav-link-hover-bg: #f1f1f1;
+        --top-nav-link-hover-bg: #f0f7ff;
         --border-color: #ccc;
-        --main-content-bg: #ffffff;
+        --main-content-bg: #f7fbff;
     }
     
     /* Modo escuro */
@@ -202,7 +203,7 @@
         border-left: 1px solid var(--header-border, #e7e7e7);
     }
     .nav-button:hover {
-        background-color: var(--top-nav-link-hover-bg, #f1f1f1);
+        background-color: var(--top-nav-link-hover-bg, #f0f7ff);
     }
     .nav-button.active {
         background-color: var(--top-nav-link-active-bg, #ddd);
@@ -229,7 +230,7 @@
         transition: background-color 0.2s;
     }
     .dropdown-content a:hover {
-        background-color: var(--top-nav-link-hover-bg, #f1f1f1);
+        background-color: var(--top-nav-link-hover-bg, #f0f7ff);
     }
     
     /* Área de busca */
@@ -246,7 +247,7 @@
         width: 100%;
         border-right: none;
         height: 36px;
-        background-color: var(--main-content-bg, #ffffff);
+        background-color: var(--main-content-bg, #f7fbff);
         color: var(--text-dark, #4e4d4a);
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
@@ -315,7 +316,7 @@
         position: absolute;
         top: 100%;
         right: 0;
-        background-color: var(--main-content-bg, #ffffff);
+        background-color: var(--main-content-bg, #f7fbff);
         border: 1px solid var(--border-color, #ccc);
         border-radius: 4px;
         padding: 15px;

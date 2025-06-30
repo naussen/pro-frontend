@@ -33,7 +33,7 @@
         height: '100%', // Preenche a altura do container pai
         maxWidth: '1404px', // Mantém o max-width original
         maxHeight: '864.5px', // Mantém o max-height original
-        background: '#fff', // Cor de fundo da caixa do app
+        background: '#f7fbff', // Cor de fundo da caixa do app
         borderRadius: '16px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
         overflow: 'hidden', // Garante que o conteúdo do iframe não vaze
