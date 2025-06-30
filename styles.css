@@ -13,11 +13,11 @@
     --text-light: #f8f9fa;
     --text-muted: #6c757d;
     --border-color: #ccc;
-    --light-grey-bg: rgba(245, 244, 240, 0.9); /* Bege claro com 90% de opacidade */
-    --header-bg: rgba(245, 244, 240, 0.95); /* Bege claro com 95% de opacidade */
+    --light-grey-bg: #f0f7ff;
+    --header-bg: rgba(240, 248, 255, 0.95);
     --header-border: #e7e7e7;
-    --main-content-bg: rgba(245, 244, 240, 0.9); /* Bege claro com 90% de opacidade */
-    --code-bg: rgba(245, 244, 240, 0.9); /* Bege claro com 90% de opacidade */
+    --main-content-bg: #f7fbff;
+    --code-bg: #f0f7ff;
     --button-text-dark: #333;
     --footer-text-muted: #ccc;
     --footer-link-color: #ccc;
