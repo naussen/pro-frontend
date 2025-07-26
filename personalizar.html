@@ -930,12 +930,11 @@
                                     console.warn("Item de módulo inválido ou faltando ID:", module);
                                     return '';
                                 }
-                                const lessonsCount = module.lessons ? module.lessons.length : 0;
                                 return `
                                     <li class="module-item">
                                         <div class="module-header">
                                             <input type="checkbox" id="module-${module.id}" data-module-id="${module.id}" data-course-parent="${course.id}" class="module-checkbox">
-                                            <label for="module-${module.id}">${module.name || 'Módulo sem nome'} (${lessonsCount} aulas)</label>
+                                            <label for="module-${module.id}">${module.name || 'Módulo sem nome'}</label>
                                         </div>
                                     </li>
                                 `;
@@ -1015,9 +1014,8 @@
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 if (course && module) {
-                    const lessonsCount = module.lessons ? module.lessons.length : 0;
                     const li = document.createElement('li');
-                    li.textContent = `${course.name} - ${module.name} (${lessonsCount} aulas)`;
+                    li.textContent = `${course.name} - ${module.name}`;
                     selectedListUl.appendChild(li);
                 }
             });
