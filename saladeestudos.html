@@ -771,20 +771,17 @@
                 const userDoc = await userDocRef.get();
                 let coursesToDisplay = [];
 
-                if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedLessons?.length > 0) {
-                    console.log("Usuário tem cursos personalizados. Carregando...");
-                    const selectedLessonsInfo = userDoc.data().selectedLessons; // Array de {courseId, moduleId, lessonId}
+                if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedModules?.length > 0) {
+                    console.log("Usuário tem módulos personalizados. Carregando...");
+                    const selectedModulesInfo = userDoc.data().selectedModules; // Array de {courseId, moduleId}
                     
-                    // Agrupa aulas por curso e módulo para reconstruir a estrutura
+                    // Agrupa módulos por curso para reconstruir a estrutura
                     const structuredSelections = {};
-                    for (const selection of selectedLessonsInfo) {
+                    for (const selection of selectedModulesInfo) {
                         if (!structuredSelections[selection.courseId]) {
-                            structuredSelections[selection.courseId] = {};
+                            structuredSelections[selection.courseId] = [];
                         }
-                        if (!structuredSelections[selection.courseId][selection.moduleId]) {
-                            structuredSelections[selection.courseId][selection.moduleId] = [];
-                        }
-                        structuredSelections[selection.courseId][selection.moduleId].push(selection.lessonId);
+                        structuredSelections[selection.courseId].push(selection.moduleId);
                     }
 
                     for (const courseId in structuredSelections) {
@@ -794,34 +791,26 @@
                         const courseData = courseDoc.data();
                         const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
 
-                        for (const moduleId in structuredSelections[courseId]) {
+                        for (const moduleId of structuredSelections[courseId]) {
                             const moduleRef = courseRef.collection('modules').doc(moduleId);
                             const moduleDoc = await moduleRef.get();
                             if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} (personalizado) não encontrado.`); continue; }
                             const moduleData = moduleDoc.data();
-                            const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, lessons: [] };
-
-                            // Processa as aulas selecionadas do array lessons dentro do documento do módulo
-                            const allLessons = moduleData.lessons || [];
-                            const selectedLessonIds = structuredSelections[courseId][moduleId];
                             
-                            for (const lessonId of selectedLessonIds) {
-                                const lessonData = allLessons.find(l => l.id === lessonId);
-                                if (!lessonData) { console.warn(`Aula ${lessonId} (personalizada) não encontrada no módulo ${moduleId}.`); continue; }
-                                moduleEntry.lessons.push({
-                                    id: lessonId,
-                                    name: lessonData.name || 'Aula s/ Nome',
-                                    order: lessonData.order || 0,
-                                    content_url: lessonData.content_url || '',
-                                    file_name: lessonData.file_name || ''
-                                });
-                            }
+                            // Inclui o módulo completo com todas as suas aulas
+                            const moduleEntry = { 
+                                id: moduleId, 
+                                name: moduleData.name || 'Módulo s/ Nome', 
+                                order: moduleData.order || 0, 
+                                lessons: moduleData.lessons || []  // Todas as aulas do módulo
+                            };
                             
                             if(moduleEntry.lessons.length > 0) {
                                 moduleEntry.lessons.sort((a, b) => a.order - b.order);
                                 courseEntry.modules.push(moduleEntry);
                             }
                         }
+                        
                         if(courseEntry.modules.length > 0) {
                            courseEntry.modules.sort((a, b) => a.order - b.order);
                            coursesToDisplay.push(courseEntry);
