@@ -516,6 +516,7 @@
                         <button onclick="debugLoadAllCourses()" style="background: #4ecdc4; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Carregar Todos os Cursos</button>
                         <button onclick="debugShowUserData()" style="background: #45b7d1; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Mostrar Dados do Usuário</button>
                         <button onclick="debugInspectFirestore()" style="background: #f39c12; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Inspecionar Firestore</button>
+                        <button onclick="debugDiagnoseLessons()" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">🔍 Diagnosticar Problema</button>
                     </div>
                 </div>
                 <div id="lessonContent">
@@ -952,7 +953,24 @@
 
                 if (coursesToDisplay.length === 0) {
                     console.warn("DEBUG: Nenhum curso para exibir!");
-                    courseMenuContainer.innerHTML = '<p>Nenhum curso disponível para você no momento.</p>'; 
+                    let errorMessage = `
+                        <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 10px 0;">
+                            <h3 style="color: #856404; margin-top: 0;">⚠️ Nenhum curso disponível</h3>
+                            <p style="color: #856404; margin-bottom: 10px;">
+                                Você tem personalização ativa, mas os módulos selecionados não contêm aulas.
+                            </p>
+                            <p style="color: #856404; margin-bottom: 15px;">
+                                <strong>Causa provável:</strong> Os dados ainda não foram sincronizados após a refatoração.
+                            </p>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                <p style="color: #495057; margin: 5px 0;"><strong>🛠️ Soluções:</strong></p>
+                                <p style="color: #495057; margin: 5px 0;">1. Use o botão "🔍 Diagnosticar Problema" acima</p>
+                                <p style="color: #495057; margin: 5px 0;">2. Execute: <code>python sync_sheets_to_firestore.py</code></p>
+                                <p style="color: #495057; margin: 5px 0;">3. Ou use "Carregar Todos os Cursos" para testar</p>
+                            </div>
+                        </div>
+                    `;
+                    courseMenuContainer.innerHTML = errorMessage; 
                     return;
                 }
 
@@ -1258,6 +1276,99 @@
              } catch (error) {
                  console.error('Erro ao inspecionar Firestore:', error);
                  alert('Erro ao inspecionar Firestore: ' + error.message);
+             }
+         }
+
+         async function debugDiagnoseLessons() {
+             if (!userId) {
+                 alert('Usuário não logado. Por favor, faça login.');
+                 return;
+             }
+             try {
+                 console.log('=== DIAGNÓSTICO ESPECÍFICO DE AULAS ===');
+                 
+                 const userDocRef = db.collection('users').doc(userId);
+                 const userDoc = await userDocRef.get();
+                 if (!userDoc.exists) {
+                     alert('Usuário não encontrado no Firestore.');
+                     return;
+                 }
+                 
+                 const userData = userDoc.data();
+                 console.log('Dados do usuário:', userData);
+                 
+                 if (!userData.hasPersonalized || !userData.selectedModules?.length) {
+                     alert('DIAGNÓSTICO: Usuário não tem personalização ativa.\nUse o botão "Carregar Todos os Cursos" para testar.');
+                     return;
+                 }
+
+                 let modulesWithoutLessons = 0;
+                 let modulesWithLessons = 0;
+                 let totalModules = 0;
+
+                 // Verifica cada módulo selecionado
+                 for (const selection of userData.selectedModules) {
+                     totalModules++;
+                     const courseRef = db.collection('courses').doc(selection.courseId);
+                     const moduleRef = courseRef.collection('modules').doc(selection.moduleId);
+                     const moduleDoc = await moduleRef.get();
+                     
+                     if (moduleDoc.exists) {
+                         const moduleData = moduleDoc.data();
+                         const lessons = moduleData.lessons || [];
+                         
+                         if (lessons.length === 0) {
+                             modulesWithoutLessons++;
+                             console.log(`❌ Módulo SEM aulas: ${selection.courseId}/${selection.moduleId}`, moduleData);
+                         } else {
+                             modulesWithLessons++;
+                             console.log(`✅ Módulo COM aulas: ${selection.courseId}/${selection.moduleId}`, {
+                                 moduleName: moduleData.name,
+                                 lessonsCount: lessons.length,
+                                 firstLesson: lessons[0]
+                             });
+                         }
+                     } else {
+                         console.log(`⚠️ Módulo não encontrado: ${selection.courseId}/${selection.moduleId}`);
+                     }
+                 }
+
+                 let diagMessage = `DIAGNÓSTICO COMPLETO:\n\n`;
+                 diagMessage += `📊 Total de módulos selecionados: ${totalModules}\n`;
+                 diagMessage += `✅ Módulos com aulas: ${modulesWithLessons}\n`;
+                 diagMessage += `❌ Módulos sem aulas: ${modulesWithoutLessons}\n\n`;
+
+                 if (modulesWithoutLessons === totalModules) {
+                     diagMessage += `🚨 PROBLEMA IDENTIFICADO!\n`;
+                     diagMessage += `Todos os módulos estão vazios (sem aulas).\n\n`;
+                     diagMessage += `🛠️ SOLUÇÃO:\n`;
+                     diagMessage += `1. Execute o script de sincronização:\n`;
+                     diagMessage += `   python PRO_Import_System/sync_sheets_to_firestore.py\n\n`;
+                     diagMessage += `2. Este script irá:\n`;
+                     diagMessage += `   - Ler dados do Google Sheets\n`;
+                     diagMessage += `   - Poplar o campo 'lessons' nos módulos\n`;
+                     diagMessage += `   - Atualizar a estrutura do Firestore\n\n`;
+                     diagMessage += `📝 O problema é que a refatoração removeu\n`;
+                     diagMessage += `a subcoleção 'subtopics' mas os dados\n`;
+                     diagMessage += `ainda não foram migrados para 'lessons'.`;
+                 } else if (modulesWithoutLessons > 0) {
+                     diagMessage += `⚠️ PROBLEMA PARCIAL!\n`;
+                     diagMessage += `Alguns módulos não têm aulas.\n`;
+                     diagMessage += `Execute o script de sincronização\n`;
+                     diagMessage += `para corrigir: sync_sheets_to_firestore.py`;
+                 } else {
+                     diagMessage += `✅ Estrutura OK!\n`;
+                     diagMessage += `Todos os módulos têm aulas.\n`;
+                     diagMessage += `O problema pode ser outro.\n`;
+                     diagMessage += `Verifique os logs no console.`;
+                 }
+
+                 console.log(diagMessage);
+                 alert(diagMessage);
+
+             } catch (error) {
+                 console.error('Erro ao diagnosticar:', error);
+                 alert('Erro ao diagnosticar: ' + error.message);
              }
          }
     </script>
