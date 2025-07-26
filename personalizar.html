@@ -627,7 +627,7 @@
                 <div class="selected-items-display">
                     <h2>Itens Selecionados</h2>
                     <ul id="selected-list">
-                        <li>Nenhum subtema selecionado.</li>
+                        <li>Nenhuma aula selecionada.</li>
                     </ul>
                     <button id="confirm-personalization-btn">CONFIRMAR E IR PARA A SUA SALA DE ESTUDOS</button>
                 </div>
@@ -841,35 +841,36 @@
                     const modulesSnapshot = await modulesRef.get();
                     const modules = [];
                     if (!modulesSnapshot.empty) {
-                        const modulePromises = modulesSnapshot.docs.map(async (moduleDoc) => {
+                        modulesSnapshot.docs.forEach(moduleDoc => {
                             const moduleData = moduleDoc.data();
                             const moduleId = moduleDoc.id;
-                            console.log(`Carregando aulas (subtopics) para o módulo ${moduleId} (${moduleData.name || 'Sem nome'})...`);
-                            const subtopicsRef = moduleDoc.ref.collection('subtopics').orderBy('order');
-                            const subtopicsSnapshot = await subtopicsRef.get();
-                            const subtopics = [];
-                            if (!subtopicsSnapshot.empty) {
-                                subtopicsSnapshot.docs.forEach(subtopicDoc => {
-                                    const subtopicData = subtopicDoc.data();
-                                    subtopics.push({
-                                        id: subtopicDoc.id,
-                                        name: subtopicData.name || 'Aula s/ Nome',
-                                        order: typeof subtopicData.order === 'number' ? subtopicData.order : Infinity,
-                                        content: subtopicData.content || '' // Adicionando conteúdo para uso futuro
+                            console.log(`Carregando aulas para o módulo ${moduleId} (${moduleData.name || 'Sem nome'})...`);
+                            
+                            // As aulas agora estão como array 'lessons' dentro do documento do módulo
+                            const lessons = moduleData.lessons || [];
+                            const processedLessons = [];
+                            
+                            if (lessons.length > 0) {
+                                lessons.forEach(lessonData => {
+                                    processedLessons.push({
+                                        id: lessonData.id || 'lesson-s-id',
+                                        name: lessonData.name || 'Aula s/ Nome',
+                                        order: typeof lessonData.order === 'number' ? lessonData.order : Infinity,
+                                        content_url: lessonData.content_url || '',
+                                        file_name: lessonData.file_name || ''
                                     });
                                 });
                             } else {
-                                console.log(`Nenhum subtema/aula encontrado para o módulo ${moduleId}.`);
+                                console.log(`Nenhuma aula encontrada para o módulo ${moduleId}.`);
                             }
-                            return {
+                            
+                            modules.push({
                                 id: moduleId,
                                 name: moduleData.name || 'Módulo s/ Nome',
                                 order: typeof moduleData.order === 'number' ? moduleData.order : Infinity,
-                                subtopics: subtopics
-                            };
+                                lessons: processedLessons  // Mudou de 'subtopics' para 'lessons'
+                            });
                         });
-                        const resolvedModules = await Promise.all(modulePromises);
-                        resolvedModules.forEach(module => modules.push(module));
                     } else {
                         console.log(`Nenhum módulo encontrado para o curso ${courseId}.`);
                     }
@@ -885,7 +886,7 @@
                 loadedCoursesData.forEach(course => {
                     course.modules.sort((a, b) => a.order - b.order);
                     course.modules.forEach(module => {
-                        module.subtopics.sort((a, b) => a.order - b.order);
+                        module.lessons.sort((a, b) => a.order - b.order);  // Mudou de 'subtopics' para 'lessons'
                     });
                 });
                 console.log("Personalizar: Estrutura final carregada:", JSON.stringify(loadedCoursesData, null, 2));
@@ -934,18 +935,18 @@
                                         <div class="module-header">
                                             <input type="checkbox" id="module-${module.id}" data-module-id="${module.id}" data-course-parent="${course.id}" class="module-checkbox">
                                             <label for="module-${module.id}">${module.name || 'Módulo sem nome'}</label>
-                                            ${module.subtopics && module.subtopics.length > 0 ? '<span class="toggle-icon">▶</span>' : ''}
+                                            ${module.lessons && module.lessons.length > 0 ? '<span class="toggle-icon">▶</span>' : ''}
                                         </div>
                                         <ul class="subtopic-list" id="subtopics-${module.id}">
-                                            ${module.subtopics && module.subtopics.length > 0 ? module.subtopics.map(subtopic => {
-                                                if (!subtopic || !subtopic.id) {
-                                                    console.warn("Item de subtema inválido ou faltando ID:", subtopic);
+                                            ${module.lessons && module.lessons.length > 0 ? module.lessons.map(lesson => {
+                                                if (!lesson || !lesson.id) {
+                                                    console.warn("Item de subtema inválido ou faltando ID:", lesson);
                                                     return '';
                                                 }
                                                 return `
                                                     <li class="subtopic-item">
-                                                        <input type="checkbox" id="subtopic-${subtopic.id}" data-subtopic-id="${subtopic.id}" data-module-parent="${module.id}" data-course-parent="${course.id}" class="subtopic-checkbox">
-                                                        <label for="subtopic-${subtopic.id}">${subtopic.name || 'Aula sem nome'}</label>
+                                                        <input type="checkbox" id="subtopic-${lesson.id}" data-subtopic-id="${lesson.id}" data-module-parent="${module.id}" data-course-parent="${course.id}" class="subtopic-checkbox">
+                                                        <label for="subtopic-${lesson.id}">${lesson.name || 'Aula sem nome'}</label>
                                                     </li>
                                                 `;
                                             }).join('') : '<li>Nenhuma aula neste módulo.</li>'}
@@ -1048,25 +1049,25 @@
             }
             selectedListUl.innerHTML = '';
             let hasSelection = false;
-            const selectedSubtopicsCheckboxes = document.querySelectorAll('.subtopic-checkbox:checked');
-            console.log(`Personalizar: Atualizando display com ${selectedSubtopicsCheckboxes.length} subtemas selecionados.`);
-            selectedSubtopicsCheckboxes.forEach(checkbox => {
+            const selectedLessonCheckboxes = document.querySelectorAll('.subtopic-checkbox:checked');
+            console.log(`Personalizar: Atualizando display com ${selectedLessonCheckboxes.length} aulas selecionadas.`);
+            selectedLessonCheckboxes.forEach(checkbox => {
                 hasSelection = true;
-                const subtopicId = checkbox.dataset.subtopicId;
+                const lessonId = checkbox.dataset.subtopicId;  // Mantendo nome do dataset por compatibilidade
                 const moduleId = checkbox.dataset.moduleParent;
                 const courseId = checkbox.dataset.courseParent;
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
-                const subtopic = module?.subtopics.find(s => s.id === subtopicId);
-                if (course && module && subtopic) {
+                const lesson = module?.lessons.find(s => s.id === lessonId);
+                if (course && module && lesson) {
                     const li = document.createElement('li');
-                    li.textContent = `${course.name} - ${module.name} - ${subtopic.name}`;
+                    li.textContent = `${course.name} - ${module.name} - ${lesson.name}`;
                     selectedListUl.appendChild(li);
                 }
             });
             if (!hasSelection) {
                 const li = document.createElement('li');
-                li.textContent = 'Nenhum subtema selecionado.';
+                li.textContent = 'Nenhuma aula selecionada.';
                 selectedListUl.appendChild(li);
             }
             if (confirmBtn) {
@@ -1080,15 +1081,15 @@
                     alert("Erro de conexão com Firebase. Tente recarregar.");
                     return;
                 }
-                const selectedSubtopics = [];
+                const selectedLessons = [];
                 document.querySelectorAll('.subtopic-checkbox:checked').forEach(checkbox => {
-                    selectedSubtopics.push({
-                        subtopicId: checkbox.dataset.subtopicId,
+                    selectedLessons.push({
+                        lessonId: checkbox.dataset.subtopicId,  // Mantendo nome do dataset por compatibilidade
                         moduleId: checkbox.dataset.moduleParent,
                         courseId: checkbox.dataset.courseParent
                     });
                 });
-                console.log('Confirmando seleção. Subtemas:', selectedSubtopics);
+                console.log('Confirmando seleção. Aulas:', selectedLessons);
                 const currentUser = auth.currentUser;
                 if (currentUser) {
                     const userId = currentUser.uid;
@@ -1097,7 +1098,7 @@
                     confirmBtn.textContent = 'Salvando...';
                     const userDocRef = db.collection('users').doc(userId);
                     userDocRef.set({
-                        selectedSubtopics: selectedSubtopics,
+                        selectedLessons: selectedLessons,  // Mudou de selectedSubtopics para selectedLessons
                         hasPersonalized: true
                     }, { merge: true })
                         .then(() => {

@@ -771,20 +771,20 @@
                 const userDoc = await userDocRef.get();
                 let coursesToDisplay = [];
 
-                if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
+                if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedLessons?.length > 0) {
                     console.log("Usuário tem cursos personalizados. Carregando...");
-                    const selectedSubtopicsInfo = userDoc.data().selectedSubtopics; // Array de {courseId, moduleId, subtopicId}
+                    const selectedLessonsInfo = userDoc.data().selectedLessons; // Array de {courseId, moduleId, lessonId}
                     
-                    // Agrupa subtemas por curso e módulo para reconstruir a estrutura
+                    // Agrupa aulas por curso e módulo para reconstruir a estrutura
                     const structuredSelections = {};
-                    for (const selection of selectedSubtopicsInfo) {
+                    for (const selection of selectedLessonsInfo) {
                         if (!structuredSelections[selection.courseId]) {
                             structuredSelections[selection.courseId] = {};
                         }
                         if (!structuredSelections[selection.courseId][selection.moduleId]) {
                             structuredSelections[selection.courseId][selection.moduleId] = [];
                         }
-                        structuredSelections[selection.courseId][selection.moduleId].push(selection.subtopicId);
+                        structuredSelections[selection.courseId][selection.moduleId].push(selection.lessonId);
                     }
 
                     for (const courseId in structuredSelections) {
@@ -799,22 +799,26 @@
                             const moduleDoc = await moduleRef.get();
                             if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} (personalizado) não encontrado.`); continue; }
                             const moduleData = moduleDoc.data();
-                            const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
+                            const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, lessons: [] };
 
-                            for (const subtopicId of structuredSelections[courseId][moduleId]) {
-                                const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
-                                const subtopicDoc = await subtopicRef.get();
-                                if (!subtopicDoc.exists) { console.warn(`Subtema ${subtopicId} (personalizado) não encontrado.`); continue; }
-                                const subtopicData = subtopicDoc.data();
-                                moduleEntry.subtopics.push({
-                                    id: subtopicId,
-                                    name: subtopicData.name || 'Aula s/ Nome',
-                                    order: subtopicData.order || 0,
-                                    content_url: subtopicData.content_url || ''
+                            // Processa as aulas selecionadas do array lessons dentro do documento do módulo
+                            const allLessons = moduleData.lessons || [];
+                            const selectedLessonIds = structuredSelections[courseId][moduleId];
+                            
+                            for (const lessonId of selectedLessonIds) {
+                                const lessonData = allLessons.find(l => l.id === lessonId);
+                                if (!lessonData) { console.warn(`Aula ${lessonId} (personalizada) não encontrada no módulo ${moduleId}.`); continue; }
+                                moduleEntry.lessons.push({
+                                    id: lessonId,
+                                    name: lessonData.name || 'Aula s/ Nome',
+                                    order: lessonData.order || 0,
+                                    content_url: lessonData.content_url || '',
+                                    file_name: lessonData.file_name || ''
                                 });
                             }
-                            if(moduleEntry.subtopics.length > 0) {
-                                moduleEntry.subtopics.sort((a, b) => a.order - b.order);
+                            
+                            if(moduleEntry.lessons.length > 0) {
+                                moduleEntry.lessons.sort((a, b) => a.order - b.order);
                                 courseEntry.modules.push(moduleEntry);
                             }
                         }
@@ -837,9 +841,8 @@
                         const modules = [];
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
-                            const subtopicsSnapshot = await moduleDoc.ref.collection('subtopics').orderBy('order').get();
-                            const subtopics = subtopicsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                            if (subtopics.length > 0) modules.push({ id: moduleDoc.id, ...moduleData, subtopics });
+                            const lessons = moduleData.lessons || [];  // Aulas estão no array lessons
+                            if (lessons.length > 0) modules.push({ id: moduleDoc.id, ...moduleData, lessons });
                         }
                         if (modules.length > 0) coursesToDisplay.push({ id: courseDoc.id, ...courseData, modules });
                     }
@@ -853,15 +856,15 @@
                 renderCourseMenu(loadedCoursesData); // Renderiza o menu
 
                 // Tenta carregar a primeira aula do primeiro módulo do primeiro curso
-                if (loadedCoursesData[0]?.modules[0]?.subtopics[0]) {
+                if (loadedCoursesData[0]?.modules[0]?.lessons[0]) {
                     const firstCourse = loadedCoursesData[0];
                     const firstModule = firstCourse.modules[0];
-                    const firstSubtopic = firstModule.subtopics[0];
-                    console.log("Carregando automaticamente o primeiro subtema:", firstSubtopic.id);
-                    loadLessonContent(firstCourse.id, firstModule.id, firstSubtopic.id);
+                    const firstLesson = firstModule.lessons[0];
+                    console.log("Carregando automaticamente a primeira aula:", firstLesson.id);
+                    loadLessonContent(firstCourse.id, firstModule.id, firstLesson.id);
                     // Marca o link como ativo
-                    const firstSubtopicLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstSubtopic.id}"]`);
-                    if (firstSubtopicLink) firstSubtopicLink.classList.add('active');
+                    const firstLessonLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstLesson.id}"]`);
+                    if (firstLessonLink) firstLessonLink.classList.add('active');
                 } else {
                     lessonContentDiv.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
                 }
@@ -890,13 +893,13 @@
                                         <span class="toggle-icon">▶</span>
                                     </div>
                                     <ul class="subtopic-list" id="subtopics-${module.id}">
-                                        ${(module.subtopics || []).map(subtopic => `
+                                        ${(module.lessons || []).map(lesson => `
                                             <li class="subtopic-item">
                                                 <a href="#" class="subtopic-link" 
-                                                   data-subtopic-id="${subtopic.id}" 
+                                                   data-subtopic-id="${lesson.id}" 
                                                    data-module-id="${module.id}" 
                                                    data-course-id="${course.id}">
-                                                   ${subtopic.name || 'Aula Sem Nome'}
+                                                   ${lesson.name || 'Aula Sem Nome'}
                                                 </a>
                                             </li>
                                         `).join('')}
@@ -951,18 +954,18 @@
                 // Encontra o subtema nos dados já carregados para obter a content_url
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
-                const subtopic = module?.subtopics.find(s => s.id === subtopicId);
+                const lesson = module?.lessons.find(s => s.id === subtopicId);
 
-                if (!subtopic || !subtopic.content_url) {
+                if (!lesson || !lesson.content_url) {
                     lessonContentDiv.innerHTML = `<p>Conteúdo não disponível para esta aula (ID: ${subtopicId}).</p>`;
-                    console.warn("URL do conteúdo não encontrada para o subtema:", subtopicId, subtopic);
+                    console.warn("URL do conteúdo não encontrada para o subtema:", subtopicId, lesson);
                     return;
                 }
                 
-                console.log("Carregando conteúdo de:", subtopic.content_url);
+                console.log("Carregando conteúdo de:", lesson.content_url);
                 
                 // Verifica se a URL é uma referência do Firebase Storage ou uma URL direta
-                let contentUrl = subtopic.content_url;
+                let contentUrl = lesson.content_url;
                 
                 // Se a URL começar com 'gs://' ou não começar com 'http', é uma referência do Storage
                 if (contentUrl.startsWith('gs://') || (!contentUrl.startsWith('http://') && !contentUrl.startsWith('https://'))) {
