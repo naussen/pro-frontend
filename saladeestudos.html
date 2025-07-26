@@ -510,6 +510,13 @@
                 <div class="study-room-header">
                     <h1>Sala de Estudos</h1>
                     <p>Acesse os conteúdos que você selecionou para estudar de forma organizada.</p>
+                    <!-- DEBUG: Botões temporários para teste -->
+                    <div style="margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+                        <button onclick="debugClearPersonalization()" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Limpar Personalização</button>
+                        <button onclick="debugLoadAllCourses()" style="background: #4ecdc4; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Carregar Todos os Cursos</button>
+                        <button onclick="debugShowUserData()" style="background: #45b7d1; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Mostrar Dados do Usuário</button>
+                        <button onclick="debugInspectFirestore()" style="background: #f39c12; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Inspecionar Firestore</button>
+                    </div>
                 </div>
                 <div id="lessonContent">
                     <p>Selecione uma aula no menu à esquerda para começar.</p>
@@ -769,11 +776,27 @@
                 console.log("Iniciando carregamento de cursos para o usuário:", userId);
                 const userDocRef = db.collection('users').doc(userId);
                 const userDoc = await userDocRef.get();
+                
+                console.log("DEBUG: Documento do usuário existe?", userDoc.exists);
+                console.log("DEBUG: Dados do usuário:", userDoc.exists ? userDoc.data() : null);
+                
+                // DEBUG: Verificação detalhada do estado de personalização
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    console.log("DEBUG: hasPersonalized?", userData.hasPersonalized);
+                    console.log("DEBUG: selectedModules?", userData.selectedModules);
+                    console.log("DEBUG: selectedLessons?", userData.selectedLessons);
+                    console.log("DEBUG: Tamanho selectedModules:", userData.selectedModules?.length);
+                    console.log("DEBUG: Tamanho selectedLessons:", userData.selectedLessons?.length);
+                }
+                
                 let coursesToDisplay = [];
 
                 if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedModules?.length > 0) {
                     console.log("Usuário tem módulos personalizados. Carregando...");
                     const selectedModulesInfo = userDoc.data().selectedModules; // Array de {courseId, moduleId}
+                    
+                    console.log("DEBUG: selectedModules encontrados:", selectedModulesInfo);
                     
                     // Agrupa módulos por curso para reconstruir a estrutura
                     const structuredSelections = {};
@@ -783,19 +806,36 @@
                         }
                         structuredSelections[selection.courseId].push(selection.moduleId);
                     }
+                    
+                    console.log("DEBUG: Estrutura de seleções agrupadas:", structuredSelections);
 
                     for (const courseId in structuredSelections) {
+                        console.log(`DEBUG: Processando curso ${courseId}...`);
                         const courseRef = db.collection('courses').doc(courseId);
                         const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} (personalizado) não encontrado.`); continue; }
+                        
+                        if (!courseDoc.exists) { 
+                            console.warn(`Curso ${courseId} (personalizado) não encontrado.`); 
+                            continue; 
+                        }
+                        
                         const courseData = courseDoc.data();
+                        console.log(`DEBUG: Dados do curso ${courseId}:`, courseData);
+                        
                         const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
 
                         for (const moduleId of structuredSelections[courseId]) {
+                            console.log(`DEBUG: Processando módulo ${moduleId} do curso ${courseId}...`);
                             const moduleRef = courseRef.collection('modules').doc(moduleId);
                             const moduleDoc = await moduleRef.get();
-                            if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} (personalizado) não encontrado.`); continue; }
+                            
+                            if (!moduleDoc.exists) { 
+                                console.warn(`Módulo ${moduleId} (personalizado) não encontrado.`); 
+                                continue; 
+                            }
+                            
                             const moduleData = moduleDoc.data();
+                            console.log(`DEBUG: Dados do módulo ${moduleId}:`, moduleData);
                             
                             // Inclui o módulo completo com todas as suas aulas
                             const moduleEntry = { 
@@ -805,18 +845,90 @@
                                 lessons: moduleData.lessons || []  // Todas as aulas do módulo
                             };
                             
+                            console.log(`DEBUG: ModuleEntry criado:`, moduleEntry);
+                            
+                            if(moduleEntry.lessons.length > 0) {
+                                moduleEntry.lessons.sort((a, b) => a.order - b.order);
+                                courseEntry.modules.push(moduleEntry);
+                                console.log(`DEBUG: Módulo ${moduleId} adicionado ao curso (${moduleEntry.lessons.length} aulas)`);
+                            } else {
+                                console.warn(`DEBUG: Módulo ${moduleId} não tem aulas, pulando...`);
+                            }
+                        }
+                        
+                        console.log(`DEBUG: CourseEntry final:`, courseEntry);
+                        
+                        if(courseEntry.modules.length > 0) {
+                           courseEntry.modules.sort((a, b) => a.order - b.order);
+                           coursesToDisplay.push(courseEntry);
+                           console.log(`DEBUG: Curso ${courseId} adicionado (${courseEntry.modules.length} módulos)`);
+                        } else {
+                           console.warn(`DEBUG: Curso ${courseId} não tem módulos válidos, pulando...`);
+                        }
+                    }
+                    coursesToDisplay.sort((a,b) => a.order - b.order);
+                    console.log("DEBUG: coursesToDisplay final (personalizado):", coursesToDisplay);
+
+                } else if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedLessons?.length > 0) {
+                    // COMPATIBILIDADE: Tenta carregar com estrutura antiga (selectedLessons)
+                    console.log("COMPATIBILIDADE: Usuário tem aulas personalizadas (estrutura antiga). Carregando...");
+                    const selectedLessonsInfo = userDoc.data().selectedLessons; // Array de {courseId, moduleId, lessonId}
+                    console.log("DEBUG: selectedLessons encontrados:", selectedLessonsInfo);
+                    
+                    // Agrupa aulas por curso e módulo para reconstruir a estrutura
+                    const structuredSelections = {};
+                    for (const selection of selectedLessonsInfo) {
+                        if (!structuredSelections[selection.courseId]) {
+                            structuredSelections[selection.courseId] = {};
+                        }
+                        if (!structuredSelections[selection.courseId][selection.moduleId]) {
+                            structuredSelections[selection.courseId][selection.moduleId] = [];
+                        }
+                        structuredSelections[selection.courseId][selection.moduleId].push(selection.lessonId);
+                    }
+
+                    for (const courseId in structuredSelections) {
+                        const courseRef = db.collection('courses').doc(courseId);
+                        const courseDoc = await courseRef.get();
+                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} (estrutura antiga) não encontrado.`); continue; }
+                        const courseData = courseDoc.data();
+                        const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
+
+                        for (const moduleId in structuredSelections[courseId]) {
+                            const moduleRef = courseRef.collection('modules').doc(moduleId);
+                            const moduleDoc = await moduleRef.get();
+                            if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} (estrutura antiga) não encontrado.`); continue; }
+                            const moduleData = moduleDoc.data();
+                            const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, lessons: [] };
+
+                            // Processa as aulas selecionadas do array lessons dentro do documento do módulo
+                            const allLessons = moduleData.lessons || [];
+                            const selectedLessonIds = structuredSelections[courseId][moduleId];
+                            
+                            for (const lessonId of selectedLessonIds) {
+                                const lessonData = allLessons.find(l => l.id === lessonId);
+                                if (!lessonData) { console.warn(`Aula ${lessonId} (estrutura antiga) não encontrada no módulo ${moduleId}.`); continue; }
+                                moduleEntry.lessons.push({
+                                    id: lessonId,
+                                    name: lessonData.name || 'Aula s/ Nome',
+                                    order: lessonData.order || 0,
+                                    content_url: lessonData.content_url || '',
+                                    file_name: lessonData.file_name || ''
+                                });
+                            }
+                            
                             if(moduleEntry.lessons.length > 0) {
                                 moduleEntry.lessons.sort((a, b) => a.order - b.order);
                                 courseEntry.modules.push(moduleEntry);
                             }
                         }
-                        
                         if(courseEntry.modules.length > 0) {
                            courseEntry.modules.sort((a, b) => a.order - b.order);
                            coursesToDisplay.push(courseEntry);
                         }
                     }
                     coursesToDisplay.sort((a,b) => a.order - b.order);
+                    console.log("DEBUG: coursesToDisplay final (estrutura antiga):", coursesToDisplay);
 
                 } else { // Carrega todos os cursos se não houver personalização ou se a personalização estiver vazia
                     console.log("Carregando todos os cursos (sem personalização ou personalização vazia).");
@@ -835,13 +947,17 @@
                         }
                         if (modules.length > 0) coursesToDisplay.push({ id: courseDoc.id, ...courseData, modules });
                     }
+                    console.log("DEBUG: coursesToDisplay final (todos os cursos):", coursesToDisplay);
                 }
 
                 if (coursesToDisplay.length === 0) {
-                    courseMenuContainer.innerHTML = '<p>Nenhum curso disponível para você no momento.</p>'; return;
+                    console.warn("DEBUG: Nenhum curso para exibir!");
+                    courseMenuContainer.innerHTML = '<p>Nenhum curso disponível para você no momento.</p>'; 
+                    return;
                 }
 
                 loadedCoursesData = coursesToDisplay; // Armazena os dados carregados
+                console.log("DEBUG: loadedCoursesData definido:", loadedCoursesData);
                 renderCourseMenu(loadedCoursesData); // Renderiza o menu
 
                 // Tenta carregar a primeira aula do primeiro módulo do primeiro curso
@@ -855,6 +971,7 @@
                     const firstLessonLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstLesson.id}"]`);
                     if (firstLessonLink) firstLessonLink.classList.add('active');
                 } else {
+                    console.log("DEBUG: Não há aulas para carregar automaticamente");
                     lessonContentDiv.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
                 }
 
@@ -1048,6 +1165,101 @@
             // que é chamada após o fetch do header.html.
             // A chamada `applySavedPreferences` é feita após a autenticação.
         });
+
+        // Funções de debug para testar a personalização
+        async function debugClearPersonalization() {
+            if (!userId) {
+                alert('Usuário não logado. Por favor, faça login.');
+                return;
+            }
+            try {
+                await db.collection('users').doc(userId).update({
+                    hasPersonalized: false,
+                    selectedModules: [],
+                    selectedLessons: []
+                });
+                console.log('Personalização do usuário limpa com sucesso.');
+                alert('Personalização do usuário limpa com sucesso!');
+                loadCourses(); // Recarrega os cursos para mostrar a lista completa
+            } catch (error) {
+                console.error('Erro ao limpar personalização:', error);
+                alert('Erro ao limpar personalização: ' + error.message);
+            }
+        }
+
+        async function debugLoadAllCourses() {
+            if (!userId) {
+                alert('Usuário não logado. Por favor, faça login.');
+                return;
+            }
+            try {
+                const userDocRef = db.collection('users').doc(userId);
+                await userDocRef.update({
+                    hasPersonalized: false,
+                    selectedModules: [],
+                    selectedLessons: []
+                });
+                console.log('Personalização do usuário removida com sucesso.');
+                alert('Personalização do usuário removida com sucesso!');
+                loadCourses(); // Recarrega os cursos para mostrar a lista completa
+            } catch (error) {
+                console.error('Erro ao remover personalização:', error);
+                alert('Erro ao remover personalização: ' + error.message);
+            }
+        }
+
+        async function debugShowUserData() {
+            if (!userId) {
+                alert('Usuário não logado. Por favor, faça login.');
+                return;
+            }
+            try {
+                const userDoc = await db.collection('users').doc(userId).get();
+                console.log('Dados do Usuário:', userDoc.data());
+                alert('Dados do Usuário:\n' + JSON.stringify(userDoc.data(), null, 2));
+            } catch (error) {
+                console.error('Erro ao mostrar dados do usuário:', error);
+                alert('Erro ao mostrar dados do usuário: ' + error.message);
+            }
+        }
+
+                 async function debugInspectFirestore() {
+             try {
+                 console.log('=== INSPEÇÃO DO FIRESTORE ===');
+                 
+                 // Inspeciona usuário atual
+                 if (userId) {
+                     const userDoc = await db.collection('users').doc(userId).get();
+                     console.log('Dados do usuário atual:', userDoc.data());
+                 }
+
+                 // Inspeciona cursos
+                 const coursesRef = db.collection('courses');
+                 const coursesSnapshot = await coursesRef.get();
+                 console.log('=== CURSOS NO FIRESTORE ===');
+                 for (const courseDoc of coursesSnapshot.docs) {
+                     const courseData = courseDoc.data();
+                     console.log(`Curso: ${courseDoc.id}`, courseData);
+                     
+                     // Inspeciona módulos do curso
+                     const modulesSnapshot = await courseDoc.ref.collection('modules').get();
+                     console.log(`  Módulos do curso ${courseDoc.id}:`);
+                     for (const moduleDoc of modulesSnapshot.docs) {
+                         const moduleData = moduleDoc.data();
+                         console.log(`    Módulo: ${moduleDoc.id}`, moduleData);
+                         console.log(`    Lessons no módulo: ${moduleData.lessons ? moduleData.lessons.length : 0}`);
+                         if (moduleData.lessons && moduleData.lessons.length > 0) {
+                             console.log(`    Primeira aula:`, moduleData.lessons[0]);
+                         }
+                     }
+                 }
+
+                 alert('Firestore inspecionado! Verifique o console do navegador para detalhes completos.');
+             } catch (error) {
+                 console.error('Erro ao inspecionar Firestore:', error);
+                 alert('Erro ao inspecionar Firestore: ' + error.message);
+             }
+         }
     </script>
 </body>
 </html>
