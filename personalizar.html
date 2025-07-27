@@ -847,22 +847,21 @@
                             const moduleId = moduleDoc.id;
                             console.log(`Carregando aulas para o módulo ${moduleId} (${moduleData.name || 'Sem nome'})...`);
                             
-                            // As aulas agora estão como array 'lessons' dentro do documento do módulo
-                            const lessons = moduleData.lessons || [];
+                            // ===== NOVA LÓGICA - SEM ARRAY LESSONS =====
+                            // Na nova estrutura, criar lesson baseada nos dados diretos do módulo
                             const processedLessons = [];
                             
-                            if (lessons.length > 0) {
-                                lessons.forEach(lessonData => {
-                                    processedLessons.push({
-                                        id: lessonData.id || 'lesson-s-id',
-                                        name: lessonData.name || 'Aula s/ Nome',
-                                        order: typeof lessonData.order === 'number' ? lessonData.order : Infinity,
-                                        content_url: lessonData.content_url || '',
-                                        file_name: lessonData.file_name || ''
-                                    });
+                            if (moduleData.content_url && moduleData.file_name) {
+                                processedLessons.push({
+                                    id: moduleData.id || moduleId,
+                                    name: moduleData.name || 'Aula s/ Nome',
+                                    order: moduleData.order || 0,
+                                    content_url: moduleData.content_url || '',
+                                    file_name: moduleData.file_name || ''
                                 });
+                                console.log(`Conteúdo encontrado para o módulo ${moduleId}: ${moduleData.name}`);
                             } else {
-                                console.log(`Nenhuma aula encontrada para o módulo ${moduleId}.`);
+                                console.log(`Nenhum conteúdo encontrado para o módulo ${moduleId}.`);
                             }
                             
                             modules.push({

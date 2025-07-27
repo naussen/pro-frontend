@@ -837,20 +837,35 @@
                             const moduleData = moduleDoc.data();
                             console.log(`DEBUG: Dados do módulo ${moduleId}:`, moduleData);
                             
-                            // Inclui o módulo completo com todo o seu conteúdo
-                            const moduleEntry = { 
+                            // ===== NOVA LÓGICA - SEM ARRAY LESSONS =====
+                            // Na nova estrutura, criar lesson baseada nos dados diretos do módulo
+                            const processedLessons = [];
+                            
+                            if (moduleData.content_url && moduleData.file_name) {
+                                processedLessons.push({
+                                    id: moduleData.id || moduleDoc.id,
+                                    name: moduleData.name || 'Conteúdo sem nome',
+                                    order: moduleData.order || 0,
+                                    content_url: moduleData.content_url || '',
+                                    file_name: moduleData.file_name || ''
+                                });
+                            }
+                            
+                            console.log(`DEBUG: ModuleEntry criado:`, {
                                 id: moduleId, 
                                 name: moduleData.name || 'Módulo s/ Nome', 
                                 order: moduleData.order || 0, 
-                                lessons: moduleData.lessons || []  // Todo o conteúdo do módulo
-                            };
+                                lessons: processedLessons
+                            });
                             
-                            console.log(`DEBUG: ModuleEntry criado:`, moduleEntry);
-                            
-                            if(moduleEntry.lessons.length > 0) {
-                                moduleEntry.lessons.sort((a, b) => a.order - b.order);
-                                courseEntry.modules.push(moduleEntry);
-                                console.log(`DEBUG: Módulo ${moduleId} adicionado ao curso (${moduleEntry.lessons.length} conteúdos)`);
+                            if(processedLessons.length > 0) {
+                                courseEntry.modules.push({
+                                    id: moduleId, 
+                                    name: moduleData.name || 'Módulo s/ Nome', 
+                                    order: moduleData.order || 0, 
+                                    lessons: processedLessons
+                                });
+                                console.log(`DEBUG: Módulo ${moduleId} adicionado ao curso (${processedLessons.length} conteúdos)`);
                             } else {
                                 console.warn(`DEBUG: Módulo ${moduleId} não tem conteúdo, pulando...`);
                             }
@@ -1387,6 +1402,15 @@
                      for (const moduleDoc of modulesSnapshot.docs) {
                          const moduleData = moduleDoc.data();
                          console.log(`    Módulo: ${moduleDoc.id}`, moduleData);
+                         console.log(`    Conteúdos no módulo: ${moduleData.content_url ? 1 : 0} (nova estrutura)`);
+                         if (moduleData.content_url && moduleData.file_name) {
+                             console.log(`    Conteúdo:`, {
+                                 id: moduleData.id,
+                                 name: moduleData.name,
+                                 content_url: moduleData.content_url,
+                                 file_name: moduleData.file_name
+                             });
+                         }
                          console.log(`    Conteúdos no módulo: ${moduleData.lessons ? moduleData.lessons.length : 0}`);
                          if (moduleData.lessons && moduleData.lessons.length > 0) {
                              console.log(`    Primeiro conteúdo:`, moduleData.lessons[0]);
@@ -1439,15 +1463,22 @@
                          const moduleData = moduleDoc.data();
                          const lessons = moduleData.lessons || [];
                          
-                         if (lessons.length === 0) {
+                         // ===== VERIFICAÇÃO COM NOVA ESTRUTURA =====
+                         const hasContent = moduleData.content_url && moduleData.file_name;
+                         
+                         if (!hasContent) {
                              modulesWithoutContent++;
                              console.log(`❌ Módulo SEM conteúdo: ${selection.courseId}/${selection.moduleId}`, moduleData);
                          } else {
                              modulesWithContent++;
                              console.log(`✅ Módulo COM conteúdo: ${selection.courseId}/${selection.moduleId}`, {
-                                 moduleName: moduleData.name,
-                                 contentCount: lessons.length,
-                                 firstContent: lessons[0]
+                                 contentCount: 1, // Na nova estrutura sempre é 1
+                                 firstContent: {
+                                     id: moduleData.id,
+                                     name: moduleData.name,
+                                     content_url: moduleData.content_url,
+                                     file_name: moduleData.file_name
+                                 }
                              });
                          }
                      } else {
