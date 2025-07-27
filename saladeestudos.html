@@ -286,9 +286,9 @@
         .module-header:hover { background-color: var(--sidebar-link-hover-bg); }
         .module-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
         .module-header .toggle-icon.expanded { transform: rotate(90deg); }
-        .subtopic-list { list-style: none; padding: 0; margin: 0; display: none; }
-        .subtopic-list.visible { display: block; }
-        .subtopic-item a {
+        .lesson-list { list-style: none; padding: 0; margin: 0; display: none; }
+        .lesson-list.visible { display: block; }
+        .lesson-item a {
             display: block;
             padding: 8px 40px;
             color: var(--sidebar-link-color);
@@ -296,8 +296,8 @@
             font-size: 0.9em;
             transition: background-color 0.2s;
         }
-        .subtopic-item a:hover { background-color: var(--sidebar-link-hover-bg); }
-        .subtopic-item a.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); }
+        .lesson-item a:hover { background-color: var(--sidebar-link-hover-bg); }
+        .lesson-item a.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); }
 
         /* --- Main Content Area --- */
         main {
@@ -552,22 +552,22 @@
                         // Envia os dados da aula atual para o iframe após abrir o painel
                         setTimeout(() => {
                             const questoesIframe = document.getElementById('questoes-app-iframe');
-                            const activeLink = document.querySelector('.subtopic-link.active');
+                            const activeLink = document.querySelector('.lesson-link.active');
                             if (questoesIframe && questoesIframe.contentWindow && activeLink) {
-                                const subtopicId = activeLink.getAttribute('data-subtopic-id');
-                                if (subtopicId && window.userId) {
+                                const lessonId = activeLink.getAttribute('data-lesson-id');
+                                if (lessonId && window.userId) {
                                     questoesIframe.contentWindow.postMessage({
                                         type: 'loadQuestions',
-                                        subtopicId: subtopicId,
+                                        subtopicId: lessonId, // Mantém subtopicId para compatibilidade
                                         userId: window.userId
                                     }, '*');
                                     
                                     console.log('Dados enviados ao clicar no botão QUESTÕES:', {
-                                        subtopicId: subtopicId,
+                                        lessonId: lessonId,
                                         userId: window.userId
                                     });
                                 } else {
-                                    console.warn('Não foi possível enviar dados ao clicar no botão QUESTÕES. subtopicId ou userId ausente.');
+                                    console.warn('Não foi possível enviar dados ao clicar no botão QUESTÕES. lessonId ou userId ausente.');
                                 }
                             }
                         }, 500); // Pequeno atraso para garantir que o iframe esteja pronto
@@ -986,7 +986,7 @@
                     console.log("Carregando automaticamente a primeira aula:", firstLesson.id);
                     loadLessonContent(firstCourse.id, firstModule.id, firstLesson.id);
                     // Marca o link como ativo
-                    const firstLessonLink = document.querySelector(`.subtopic-link[data-subtopic-id="${firstLesson.id}"]`);
+                    const firstLessonLink = document.querySelector(`.lesson-link[data-lesson-id="${firstLesson.id}"]`);
                     if (firstLessonLink) firstLessonLink.classList.add('active');
                 } else {
                     console.log("DEBUG: Não há aulas para carregar automaticamente");
@@ -1013,14 +1013,14 @@
                             ${(course.modules || []).map(module => `
                                 <li class="module-item">
                                     <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                        <span>${module.name || 'Módulo Sem Nome'}</span>
+                                        <span>${module.name || 'Módulo Sem Nome'} (${module.lessons?.length || 0} aulas)</span>
                                         <span class="toggle-icon">▶</span>
                                     </div>
-                                    <ul class="subtopic-list" id="subtopics-${module.id}">
+                                    <ul class="lesson-list" id="lessons-${module.id}">
                                         ${(module.lessons || []).map(lesson => `
-                                            <li class="subtopic-item">
-                                                <a href="#" class="subtopic-link" 
-                                                   data-subtopic-id="${lesson.id}" 
+                                            <li class="lesson-item">
+                                                <a href="#" class="lesson-link" 
+                                                   data-lesson-id="${lesson.id}" 
                                                    data-module-id="${module.id}" 
                                                    data-course-id="${course.id}">
                                                    ${lesson.name || 'Aula Sem Nome'}
@@ -1051,38 +1051,38 @@
 
             document.querySelectorAll('.module-header').forEach(header => {
                 header.addEventListener('click', () => {
-                    const subtopicList = header.nextElementSibling; // O UL de subtemas
+                    const lessonList = header.nextElementSibling; // O UL de aulas
                     const toggleIcon = header.querySelector('.toggle-icon');
-                    subtopicList.classList.toggle('visible');
+                    lessonList.classList.toggle('visible');
                     toggleIcon.classList.toggle('expanded');
                     toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
                 });
             });
 
-            document.querySelectorAll('.subtopic-link').forEach(link => {
+            document.querySelectorAll('.lesson-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const { subtopicId, moduleId, courseId } = link.dataset;
-                    document.querySelectorAll('.subtopic-link.active').forEach(l => l.classList.remove('active'));
+                    const { lessonId, moduleId, courseId } = link.dataset;
+                    document.querySelectorAll('.lesson-link.active').forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
-                    console.log(`Carregando aula: Curso=${courseId}, Módulo=${moduleId}, Subtema=${subtopicId}`);
-                    loadLessonContent(courseId, moduleId, subtopicId);
+                    console.log(`Carregando aula: Curso=${courseId}, Módulo=${moduleId}, Aula=${lessonId}`);
+                    loadLessonContent(courseId, moduleId, lessonId);
                 });
             });
         }
 
-        async function loadLessonContent(courseId, moduleId, subtopicId) {
+        async function loadLessonContent(courseId, moduleId, lessonId) {
             if (!lessonContentDiv) return;
             lessonContentDiv.innerHTML = '<p>Carregando aula...</p>';
             try {
-                // Encontra o subtema nos dados já carregados para obter a content_url
+                // Encontra a aula nos dados já carregados para obter a content_url
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
-                const lesson = module?.lessons.find(s => s.id === subtopicId);
+                const lesson = module?.lessons.find(s => s.id === lessonId);
 
                 if (!lesson || !lesson.content_url) {
-                    lessonContentDiv.innerHTML = `<p>Conteúdo não disponível para esta aula (ID: ${subtopicId}).</p>`;
-                    console.warn("URL do conteúdo não encontrada para o subtema:", subtopicId, lesson);
+                    lessonContentDiv.innerHTML = `<p>Conteúdo não disponível para esta aula (ID: ${lessonId}).</p>`;
+                    console.warn("URL do conteúdo não encontrada para a aula:", lessonId, lesson);
                     return;
                 }
                 
@@ -1113,12 +1113,12 @@
                 lessonContentDiv.innerHTML = htmlContent;
                 console.log("Conteúdo da aula carregado com sucesso.");
 
-                // Comunica o subtopicId para o iframe de questões, se estiver aberto
+                // Comunica o lessonId para o iframe de questões, se estiver aberto (mantém subtopicId para compatibilidade)
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
                 if (questoesIframe && questoesIframe.contentWindow) {
-                    // Envia o subtopicId e o userId para o iframe de questões
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: subtopicId, userId: window.userId }, '*');
-                    console.log('SubtopicId', subtopicId, 'e userId', window.userId, 'enviados para o painel de questões após carregar aula.');
+                    // Envia o lessonId (como subtopicId para compatibilidade) e o userId para o iframe de questões
+                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: lessonId, userId: window.userId }, '*');
+                    console.log('LessonId', lessonId, 'e userId', window.userId, 'enviados para o painel de questões após carregar aula.');
                 }
                 
                 // Dispara evento personalizado para indicar que a aula foi carregada
