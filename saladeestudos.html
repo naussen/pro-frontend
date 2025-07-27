@@ -944,9 +944,33 @@
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
                             const lessons = moduleData.lessons || [];  // Aulas estão no array lessons
-                            if (lessons.length > 0) modules.push({ id: moduleDoc.id, ...moduleData, lessons });
+                            
+                            // Processa cada aula para garantir que tenha todos os campos necessários
+                            const processedLessons = lessons.map((lesson, index) => ({
+                                id: lesson.id || `lesson-${index}`,
+                                name: lesson.name || 'Aula sem nome',
+                                order: typeof lesson.order === 'number' ? lesson.order : index,
+                                content_url: lesson.content_url || '',
+                                file_name: lesson.file_name || ''
+                            }));
+                            
+                            if (processedLessons.length > 0) {
+                                modules.push({ 
+                                    id: moduleDoc.id, 
+                                    name: moduleData.name || 'Módulo sem nome',
+                                    order: moduleData.order || 0,
+                                    lessons: processedLessons
+                                });
+                            }
                         }
-                        if (modules.length > 0) coursesToDisplay.push({ id: courseDoc.id, ...courseData, modules });
+                        if (modules.length > 0) {
+                            coursesToDisplay.push({ 
+                                id: courseDoc.id, 
+                                name: courseData.name || 'Curso sem nome',
+                                order: courseData.order || 0,
+                                modules 
+                            });
+                        }
                     }
                     console.log("DEBUG: coursesToDisplay final (todos os cursos):", coursesToDisplay);
                 }
@@ -983,14 +1007,52 @@
                     const firstCourse = loadedCoursesData[0];
                     const firstModule = firstCourse.modules[0];
                     const firstLesson = firstModule.lessons[0];
-                    console.log("Carregando automaticamente a primeira aula:", firstLesson.id);
+                    
+                    console.log("Carregando automaticamente a primeira aula:", {
+                        course: firstCourse.name,
+                        module: firstModule.name,
+                        lesson: firstLesson.name,
+                        lessonId: firstLesson.id
+                    });
+                    
+                    // Expande o curso e módulo automaticamente
+                    setTimeout(() => {
+                        const courseHeader = document.querySelector(`[data-course-id="${firstCourse.id}"]`);
+                        const moduleHeader = document.querySelector(`[data-module-id="${firstModule.id}"]`);
+                        
+                        if (courseHeader) {
+                            const moduleList = courseHeader.nextElementSibling;
+                            const toggleIcon = courseHeader.querySelector('.toggle-icon');
+                            moduleList.classList.add('visible');
+                            toggleIcon.classList.add('expanded');
+                            toggleIcon.textContent = '▼';
+                        }
+                        
+                        if (moduleHeader) {
+                            const lessonList = moduleHeader.nextElementSibling;
+                            const toggleIcon = moduleHeader.querySelector('.toggle-icon');
+                            lessonList.classList.add('visible');
+                            toggleIcon.classList.add('expanded');
+                            toggleIcon.textContent = '▼';
+                        }
+                        
+                        // Marca o link como ativo
+                        const firstLessonLink = document.querySelector(`.lesson-link[data-lesson-id="${firstLesson.id}"]`);
+                        if (firstLessonLink) {
+                            firstLessonLink.classList.add('active');
+                        }
+                    }, 100);
+                    
                     loadLessonContent(firstCourse.id, firstModule.id, firstLesson.id);
-                    // Marca o link como ativo
-                    const firstLessonLink = document.querySelector(`.lesson-link[data-lesson-id="${firstLesson.id}"]`);
-                    if (firstLessonLink) firstLessonLink.classList.add('active');
                 } else {
                     console.log("DEBUG: Não há aulas para carregar automaticamente");
-                    lessonContentDiv.innerHTML = '<p>Selecione uma aula no menu à esquerda para começar.</p>';
+                    lessonContentDiv.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <h3>👋 Bem-vindo à Sala de Estudos!</h3>
+                            <p>Selecione uma aula no menu à esquerda para começar seus estudos.</p>
+                            <p style="font-size: 0.9em;">💡 Dica: Clique nos cursos e módulos para expandir e ver as aulas disponíveis.</p>
+                        </div>
+                    `;
                 }
 
             } catch (error) {
@@ -1080,8 +1142,22 @@
                 const module = course?.modules.find(m => m.id === moduleId);
                 const lesson = module?.lessons.find(s => s.id === lessonId);
 
+                console.log(`DEBUG loadLessonContent: Procurando aula ${lessonId} no módulo ${moduleId} do curso ${courseId}`);
+                console.log(`DEBUG loadLessonContent: Course encontrado:`, course);
+                console.log(`DEBUG loadLessonContent: Module encontrado:`, module);
+                console.log(`DEBUG loadLessonContent: Lesson encontrada:`, lesson);
+
                 if (!lesson || !lesson.content_url) {
-                    lessonContentDiv.innerHTML = `<p>Conteúdo não disponível para esta aula (ID: ${lessonId}).</p>`;
+                    const errorMsg = `Conteúdo não disponível para esta aula (ID: ${lessonId}).`;
+                    lessonContentDiv.innerHTML = `
+                        <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 10px 0;">
+                            <h3 style="color: #856404; margin-top: 0;">⚠️ Aula não encontrada</h3>
+                            <p style="color: #856404;">${errorMsg}</p>
+                            <p style="color: #856404; font-size: 0.9em;">
+                                <strong>Debug:</strong> Curso=${courseId}, Módulo=${moduleId}, Aula=${lessonId}
+                            </p>
+                        </div>
+                    `;
                     console.warn("URL do conteúdo não encontrada para a aula:", lessonId, lesson);
                     return;
                 }
@@ -1091,7 +1167,7 @@
                 // Verifica se a URL é uma referência do Firebase Storage ou uma URL direta
                 let contentUrl = lesson.content_url;
                 
-                // Se a URL começar com 'gs://' ou não começar com 'http', é uma referência do Storage
+                // Se a URL começar with 'gs://' ou não começar com 'http', é uma referência do Storage
                 if (contentUrl.startsWith('gs://') || (!contentUrl.startsWith('http://') && !contentUrl.startsWith('https://'))) {
                     try {
                         console.log("Detectada referência do Firebase Storage, obtendo URL de download...");
@@ -1102,7 +1178,39 @@
                         console.log("URL de download obtida:", contentUrl);
                     } catch (storageError) {
                         console.error("Erro ao obter URL do Firebase Storage:", storageError);
-                        throw new Error(`Falha ao obter URL do Firebase Storage: ${storageError.message}`);
+                        
+                        // FALLBACK: Tentar construir URL pública direta
+                        if (storageError.code === 'storage/unauthorized') {
+                            console.warn("⚠️ PROBLEMA DE PERMISSÃO DO STORAGE DETECTADO!");
+                            console.warn("🔧 Tentando URL pública direta como fallback...");
+                            
+                            // Extrai o path do arquivo da URL gs://
+                            const gsMatch = contentUrl.match(/gs:\/\/([^\/]+)\/(.+)/);
+                            if (gsMatch) {
+                                const [, bucket, filePath] = gsMatch;
+                                const publicUrl = `https://storage.googleapis.com/${bucket}/${filePath}`;
+                                console.log("🔄 Tentando URL pública:", publicUrl);
+                                
+                                try {
+                                    const testResponse = await fetch(publicUrl, { method: 'HEAD' });
+                                    if (testResponse.ok) {
+                                        contentUrl = publicUrl;
+                                        console.log("✅ URL pública funcionou!");
+                                    } else {
+                                        throw new Error("URL pública também falhou");
+                                    }
+                                } catch (publicError) {
+                                    console.error("❌ URL pública também falhou:", publicError);
+                                    showStorageConfigError();
+                                    return;
+                                }
+                            } else {
+                                showStorageConfigError();
+                                return;
+                            }
+                        } else {
+                            throw new Error(`Falha ao obter URL do Firebase Storage: ${storageError.message}`);
+                        }
                     }
                 }
                 
@@ -1370,6 +1478,86 @@
                  console.error('Erro ao diagnosticar:', error);
                  alert('Erro ao diagnosticar: ' + error.message);
              }
+         }
+
+         function showStorageConfigError() {
+             if (!lessonContentDiv) return;
+             
+             lessonContentDiv.innerHTML = `
+                 <div style="padding: 30px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 8px;">
+                     <h2 style="color: #856404; margin-top: 0;">⚠️ Problema de Configuração do Firebase Storage</h2>
+                     
+                     <div style="background: #f8d7da; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 3px solid #dc3545;">
+                         <h3 style="color: #721c24; margin-top: 0;">🚨 Erro Detectado:</h3>
+                         <p style="color: #721c24; margin: 5px 0;">
+                             <strong>Firebase Storage: User does not have permission to access content/aulas/</strong>
+                         </p>
+                         <p style="color: #721c24; margin: 5px 0;">
+                             As regras do Firebase Storage estão bloqueando o acesso aos arquivos das aulas.
+                         </p>
+                     </div>
+
+                     <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 3px solid #0c5460;">
+                         <h3 style="color: #0c5460; margin-top: 0;">🛠️ Solução Rápida:</h3>
+                         <ol style="color: #0c5460; margin: 10px 0;">
+                             <li><strong>Acesse:</strong> <a href="https://console.firebase.google.com/project/nvp-concursos" target="_blank" style="color: #0c5460;">Firebase Console</a></li>
+                             <li><strong>Clique em:</strong> Storage (menu lateral)</li>
+                             <li><strong>Clique na aba:</strong> Rules</li>
+                             <li><strong>Substitua o código</strong> pelas regras corretas</li>
+                             <li><strong>Clique em:</strong> Publish</li>
+                         </ol>
+                     </div>
+
+                     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                         <h4 style="color: #495057; margin-top: 0;">📋 Código das Regras (copie e cole):</h4>
+                         <pre style="background: #343a40; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 14px;">rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Permite leitura para arquivos de conteúdo (aulas)
+    match /content/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    
+    // Regras padrão para outros caminhos
+    match /{allPaths=**} {
+      allow read: if false;
+      allow write: if request.auth != null;
+    }
+  }
+}</pre>
+                     </div>
+
+                     <div style="background: #d4edda; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 3px solid #155724;">
+                         <h4 style="color: #155724; margin-top: 0;">✅ Após aplicar as regras:</h4>
+                         <p style="color: #155724; margin: 5px 0;">
+                             1. Recarregue esta página (F5)<br/>
+                             2. Clique novamente na aula<br/>
+                             3. O conteúdo deve carregar normalmente
+                         </p>
+                     </div>
+
+                     <div style="text-align: center; margin: 20px 0;">
+                         <button onclick="location.reload()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                             🔄 Recarregar Página
+                         </button>
+                         <button onclick="debugDiagnoseLessons()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px;">
+                             🔍 Diagnosticar
+                         </button>
+                     </div>
+
+                     <div style="font-size: 12px; color: #6c757d; text-align: center; margin-top: 15px;">
+                         <p>💡 <strong>Dica:</strong> Este erro só aparece quando as regras do Firebase Storage não foram aplicadas corretamente.</p>
+                         <p>Após seguir os passos acima, este problema será resolvido definitivamente.</p>
+                     </div>
+                 </div>
+             `;
+         }
+
+         // Função para detectar automaticamente problemas de Storage
+         function detectStorageIssues() {
+             // Esta função pode ser expandida para detectar outros problemas
+             console.log("🔍 Sistema de detecção automática de problemas ativo...");
          }
     </script>
 </body>
