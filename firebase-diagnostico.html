@@ -282,11 +282,11 @@
 
                 // Testar acesso a um arquivo de exemplo
                 log("📖 Tentando acessar arquivos do Storage...");
-                const storageRef = storage.ref('content/aulas/');
+                const storageRef = storage.ref('content/');
                 
                 try {
                     const listResult = await storageRef.listAll();
-                    showResult("Storage - Listagem", "success", `Encontrados ${listResult.items.length} arquivos na pasta content/aulas/`);
+                    showResult("Storage - Listagem", "success", `Encontrados ${listResult.items.length} arquivos na pasta content/`);
                     log(`✅ Listagem do Storage OK: ${listResult.items.length} arquivos encontrados`);
 
                     // Testar download de um arquivo se existir
