@@ -511,7 +511,7 @@
                         <button onclick="debugLoadAllCourses()" style="background: #4ecdc4; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Carregar Todos os Cursos</button>
                         <button onclick="debugShowUserData()" style="background: #45b7d1; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Mostrar Dados do Usuário</button>
                         <button onclick="debugInspectFirestore()" style="background: #f39c12; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Inspecionar Firestore</button>
-                        <button onclick="debugDiagnoseLessons()" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">🔍 Diagnosticar Problema</button>
+                        <button onclick="debugDiagnoseContent()" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">🔍 Diagnosticar Problema</button>
                     </div>
                 </div>
                 <div id="lessonContent">
@@ -785,9 +785,9 @@
                     const userData = userDoc.data();
                     console.log("DEBUG: hasPersonalized?", userData.hasPersonalized);
                     console.log("DEBUG: selectedModules?", userData.selectedModules);
-                    console.log("DEBUG: selectedLessons?", userData.selectedLessons);
+                    console.log("DEBUG: selectedLessons (estrutura antiga)?", userData.selectedLessons);
                     console.log("DEBUG: Tamanho selectedModules:", userData.selectedModules?.length);
-                    console.log("DEBUG: Tamanho selectedLessons:", userData.selectedLessons?.length);
+                    console.log("DEBUG: Tamanho selectedLessons (estrutura antiga):", userData.selectedLessons?.length);
                 }
                 
                 let coursesToDisplay = [];
@@ -837,12 +837,12 @@
                             const moduleData = moduleDoc.data();
                             console.log(`DEBUG: Dados do módulo ${moduleId}:`, moduleData);
                             
-                            // Inclui o módulo completo com todas as suas aulas
+                            // Inclui o módulo completo com todo o seu conteúdo
                             const moduleEntry = { 
                                 id: moduleId, 
                                 name: moduleData.name || 'Módulo s/ Nome', 
                                 order: moduleData.order || 0, 
-                                lessons: moduleData.lessons || []  // Todas as aulas do módulo
+                                lessons: moduleData.lessons || []  // Todo o conteúdo do módulo
                             };
                             
                             console.log(`DEBUG: ModuleEntry criado:`, moduleEntry);
@@ -850,9 +850,9 @@
                             if(moduleEntry.lessons.length > 0) {
                                 moduleEntry.lessons.sort((a, b) => a.order - b.order);
                                 courseEntry.modules.push(moduleEntry);
-                                console.log(`DEBUG: Módulo ${moduleId} adicionado ao curso (${moduleEntry.lessons.length} aulas)`);
+                                console.log(`DEBUG: Módulo ${moduleId} adicionado ao curso (${moduleEntry.lessons.length} conteúdos)`);
                             } else {
-                                console.warn(`DEBUG: Módulo ${moduleId} não tem aulas, pulando...`);
+                                console.warn(`DEBUG: Módulo ${moduleId} não tem conteúdo, pulando...`);
                             }
                         }
                         
@@ -871,11 +871,11 @@
 
                 } else if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedLessons?.length > 0) {
                     // COMPATIBILIDADE: Tenta carregar com estrutura antiga (selectedLessons)
-                    console.log("COMPATIBILIDADE: Usuário tem aulas personalizadas (estrutura antiga). Carregando...");
+                    console.log("COMPATIBILIDADE: Usuário tem conteúdo personalizado (estrutura antiga). Carregando...");
                     const selectedLessonsInfo = userDoc.data().selectedLessons; // Array de {courseId, moduleId, lessonId}
                     console.log("DEBUG: selectedLessons encontrados:", selectedLessonsInfo);
                     
-                    // Agrupa aulas por curso e módulo para reconstruir a estrutura
+                    // Agrupa conteúdos por curso e módulo para reconstruir a estrutura
                     const structuredSelections = {};
                     for (const selection of selectedLessonsInfo) {
                         if (!structuredSelections[selection.courseId]) {
@@ -901,13 +901,13 @@
                             const moduleData = moduleDoc.data();
                             const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, lessons: [] };
 
-                            // Processa as aulas selecionadas do array lessons dentro do documento do módulo
+                            // Processa os conteúdos selecionados do array lessons dentro do documento do módulo
                             const allLessons = moduleData.lessons || [];
                             const selectedLessonIds = structuredSelections[courseId][moduleId];
                             
                             for (const lessonId of selectedLessonIds) {
                                 const lessonData = allLessons.find(l => l.id === lessonId);
-                                if (!lessonData) { console.warn(`Aula ${lessonId} (estrutura antiga) não encontrada no módulo ${moduleId}.`); continue; }
+                                if (!lessonData) { console.warn(`Conteúdo ${lessonId} (estrutura antiga) não encontrado no módulo ${moduleId}.`); continue; }
                                 moduleEntry.lessons.push({
                                     id: lessonId,
                                     name: lessonData.name || 'Aula s/ Nome',
@@ -942,12 +942,12 @@
                         const modules = [];
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
-                            const lessons = moduleData.lessons || [];  // Aulas estão no array lessons
+                            const lessons = moduleData.lessons || [];  // Conteúdos estão no array lessons
                             
-                            // Processa cada aula para garantir que tenha todos os campos necessários
+                            // Processa cada conteúdo para garantir que tenha todos os campos necessários
                             const processedLessons = lessons.map((lesson, index) => ({
-                                id: lesson.id || `lesson-${index}`,
-                                name: lesson.name || 'Aula sem nome',
+                                id: lesson.id || `content-${index}`,
+                                name: lesson.name || 'Conteúdo sem nome',
                                 order: typeof lesson.order === 'number' ? lesson.order : index,
                                 content_url: lesson.content_url || '',
                                 file_name: lesson.file_name || ''
@@ -980,7 +980,7 @@
                         <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 10px 0;">
                             <h3 style="color: #856404; margin-top: 0;">⚠️ Nenhum curso disponível</h3>
                             <p style="color: #856404; margin-bottom: 10px;">
-                                Você tem personalização ativa, mas os módulos selecionados não contêm aulas.
+                                Você tem personalização ativa, mas os módulos selecionados não contêm conteúdo.
                             </p>
                             <p style="color: #856404; margin-bottom: 15px;">
                                 <strong>Causa provável:</strong> Os dados ainda não foram sincronizados após a refatoração.
@@ -1114,20 +1114,20 @@
                     lessonContentDiv.innerHTML = `
                         <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                             <h3>📚 Módulo: ${module?.name || 'Módulo não encontrado'}</h3>
-                            <p>Este módulo ainda não possui aulas disponíveis.</p>
+                            <p>Este módulo ainda não possui conteúdo disponível.</p>
                             <p style="font-size: 0.9em;">💡 Verifique se os dados foram sincronizados corretamente.</p>
                         </div>
                     `;
                     return;
                 }
                 
-                // Ordena as aulas por ordem e pega a primeira
+                // Ordena o conteúdo por ordem e pega o primeiro
                 const sortedLessons = [...module.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
                 const firstLesson = sortedLessons[0];
                 
-                console.log(`Carregando primeira aula do módulo ${moduleId}:`, firstLesson);
+                console.log(`Carregando primeiro conteúdo do módulo ${moduleId}:`, firstLesson);
                 
-                // Carrega o conteúdo da primeira aula
+                // Carrega o primeiro conteúdo
                 await loadLessonContent(courseId, moduleId, firstLesson.id);
                 
             } catch (error) {
@@ -1144,30 +1144,30 @@
 
         async function loadLessonContent(courseId, moduleId, lessonId) {
             if (!lessonContentDiv) return;
-            lessonContentDiv.innerHTML = '<p>Carregando aula...</p>';
+            lessonContentDiv.innerHTML = '<p>Carregando conteúdo...</p>';
             try {
-                // Encontra a aula nos dados já carregados para obter a content_url
+                // Encontra o conteúdo nos dados já carregados para obter a content_url
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 const lesson = module?.lessons.find(s => s.id === lessonId);
 
-                console.log(`DEBUG loadLessonContent: Procurando aula ${lessonId} no módulo ${moduleId} do curso ${courseId}`);
+                console.log(`DEBUG loadLessonContent: Procurando conteúdo ${lessonId} no módulo ${moduleId} do curso ${courseId}`);
                 console.log(`DEBUG loadLessonContent: Course encontrado:`, course);
                 console.log(`DEBUG loadLessonContent: Module encontrado:`, module);
-                console.log(`DEBUG loadLessonContent: Lesson encontrada:`, lesson);
+                console.log(`DEBUG loadLessonContent: Content encontrado:`, lesson);
 
                 if (!lesson || !lesson.content_url) {
-                    const errorMsg = `Conteúdo não disponível para esta aula (ID: ${lessonId}).`;
+                    const errorMsg = `Conteúdo não disponível (ID: ${lessonId}).`;
                     lessonContentDiv.innerHTML = `
                         <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 10px 0;">
-                            <h3 style="color: #856404; margin-top: 0;">⚠️ Aula não encontrada</h3>
+                            <h3 style="color: #856404; margin-top: 0;">⚠️ Conteúdo não encontrado</h3>
                             <p style="color: #856404;">${errorMsg}</p>
                             <p style="color: #856404; font-size: 0.9em;">
-                                <strong>Debug:</strong> Curso=${courseId}, Módulo=${moduleId}, Aula=${lessonId}
+                                <strong>Debug:</strong> Curso=${courseId}, Módulo=${moduleId}, Conteúdo=${lessonId}
                             </p>
                         </div>
                     `;
-                    console.warn("URL do conteúdo não encontrada para a aula:", lessonId, lesson);
+                    console.warn("URL do conteúdo não encontrada:", lessonId, lesson);
                     return;
                 }
                 
@@ -1228,9 +1228,9 @@
                 if (!response.ok) throw new Error(`Falha ao carregar conteúdo: ${response.status} ${response.statusText}`);
                 const htmlContent = await response.text();
                 lessonContentDiv.innerHTML = htmlContent;
-                console.log("Conteúdo da aula carregado com sucesso.");
+                console.log("Conteúdo carregado com sucesso.");
                 
-                // TEMPORARIAMENTE REMOVIDO: Atualiza a variável global com o ID da aula atual (questões)
+                // TEMPORARIAMENTE REMOVIDO: Atualiza a variável global com o ID do conteúdo atual (questões)
                 // window.currentLessonId = lessonId;
 
                 // TEMPORARIAMENTE REMOVIDO: Comunicação com iframe de questões
@@ -1249,8 +1249,8 @@
                 */
 
             } catch (error) {
-                console.error('Erro ao carregar conteúdo da aula:', error);
-                lessonContentDiv.innerHTML = `<p>Erro ao carregar a aula. Tente novamente. Detalhes: ${error.message}</p>`;
+                console.error('Erro ao carregar conteúdo:', error);
+                lessonContentDiv.innerHTML = `<p>Erro ao carregar o conteúdo. Tente novamente. Detalhes: ${error.message}</p>`;
             }
         }
 
@@ -1387,9 +1387,9 @@
                      for (const moduleDoc of modulesSnapshot.docs) {
                          const moduleData = moduleDoc.data();
                          console.log(`    Módulo: ${moduleDoc.id}`, moduleData);
-                         console.log(`    Lessons no módulo: ${moduleData.lessons ? moduleData.lessons.length : 0}`);
+                         console.log(`    Conteúdos no módulo: ${moduleData.lessons ? moduleData.lessons.length : 0}`);
                          if (moduleData.lessons && moduleData.lessons.length > 0) {
-                             console.log(`    Primeira aula:`, moduleData.lessons[0]);
+                             console.log(`    Primeiro conteúdo:`, moduleData.lessons[0]);
                          }
                      }
                  }
@@ -1401,13 +1401,13 @@
              }
          }
 
-         async function debugDiagnoseLessons() {
+         async function debugDiagnoseContent() {
              if (!userId) {
                  alert('Usuário não logado. Por favor, faça login.');
                  return;
              }
              try {
-                 console.log('=== DIAGNÓSTICO ESPECÍFICO DE AULAS ===');
+                 console.log('=== DIAGNÓSTICO ESPECÍFICO DE CONTEÚDO ===');
                  
                  const userDocRef = db.collection('users').doc(userId);
                  const userDoc = await userDocRef.get();
@@ -1424,8 +1424,8 @@
                      return;
                  }
 
-                 let modulesWithoutLessons = 0;
-                 let modulesWithLessons = 0;
+                 let modulesWithoutContent = 0;
+                 let modulesWithContent = 0;
                  let totalModules = 0;
 
                  // Verifica cada módulo selecionado
@@ -1440,14 +1440,14 @@
                          const lessons = moduleData.lessons || [];
                          
                          if (lessons.length === 0) {
-                             modulesWithoutLessons++;
-                             console.log(`❌ Módulo SEM aulas: ${selection.courseId}/${selection.moduleId}`, moduleData);
+                             modulesWithoutContent++;
+                             console.log(`❌ Módulo SEM conteúdo: ${selection.courseId}/${selection.moduleId}`, moduleData);
                          } else {
-                             modulesWithLessons++;
-                             console.log(`✅ Módulo COM aulas: ${selection.courseId}/${selection.moduleId}`, {
+                             modulesWithContent++;
+                             console.log(`✅ Módulo COM conteúdo: ${selection.courseId}/${selection.moduleId}`, {
                                  moduleName: moduleData.name,
-                                 lessonsCount: lessons.length,
-                                 firstLesson: lessons[0]
+                                 contentCount: lessons.length,
+                                 firstContent: lessons[0]
                              });
                          }
                      } else {
@@ -1457,30 +1457,30 @@
 
                  let diagMessage = `DIAGNÓSTICO COMPLETO:\n\n`;
                  diagMessage += `📊 Total de módulos selecionados: ${totalModules}\n`;
-                 diagMessage += `✅ Módulos com aulas: ${modulesWithLessons}\n`;
-                 diagMessage += `❌ Módulos sem aulas: ${modulesWithoutLessons}\n\n`;
+                 diagMessage += `✅ Módulos com conteúdo: ${modulesWithContent}\n`;
+                 diagMessage += `❌ Módulos sem conteúdo: ${modulesWithoutContent}\n\n`;
 
-                 if (modulesWithoutLessons === totalModules) {
+                 if (modulesWithoutContent === totalModules) {
                      diagMessage += `🚨 PROBLEMA IDENTIFICADO!\n`;
-                     diagMessage += `Todos os módulos estão vazios (sem aulas).\n\n`;
+                     diagMessage += `Todos os módulos estão vazios (sem conteúdo).\n\n`;
                      diagMessage += `🛠️ SOLUÇÃO:\n`;
                      diagMessage += `1. Execute o script de sincronização:\n`;
                      diagMessage += `   python PRO_Import_System/sync_sheets_to_firestore.py\n\n`;
                      diagMessage += `2. Este script irá:\n`;
                      diagMessage += `   - Ler dados do Google Sheets\n`;
-                     diagMessage += `   - Poplar o campo 'lessons' nos módulos\n`;
+                     diagMessage += `   - Popular o campo 'lessons' nos módulos\n`;
                      diagMessage += `   - Atualizar a estrutura do Firestore\n\n`;
                      diagMessage += `📝 O problema é que a refatoração removeu\n`;
                      diagMessage += `a subcoleção 'subtopics' mas os dados\n`;
                      diagMessage += `ainda não foram migrados para 'lessons'.`;
-                 } else if (modulesWithoutLessons > 0) {
+                 } else if (modulesWithoutContent > 0) {
                      diagMessage += `⚠️ PROBLEMA PARCIAL!\n`;
-                     diagMessage += `Alguns módulos não têm aulas.\n`;
+                     diagMessage += `Alguns módulos não têm conteúdo.\n`;
                      diagMessage += `Execute o script de sincronização\n`;
                      diagMessage += `para corrigir: sync_sheets_to_firestore.py`;
                  } else {
                      diagMessage += `✅ Estrutura OK!\n`;
-                     diagMessage += `Todos os módulos têm aulas.\n`;
+                     diagMessage += `Todos os módulos têm conteúdo.\n`;
                      diagMessage += `O problema pode ser outro.\n`;
                      diagMessage += `Verifique os logs no console.`;
                  }
@@ -1555,9 +1555,9 @@ service firebase.storage {
                          <button onclick="location.reload()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">
                              🔄 Recarregar Página
                          </button>
-                         <button onclick="debugDiagnoseLessons()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px;">
-                             🔍 Diagnosticar
-                         </button>
+                                                 <button onclick="debugDiagnoseContent()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px;">
+                            🔍 Diagnosticar
+                        </button>
                      </div>
 
                      <div style="font-size: 12px; color: #6c757d; text-align: center; margin-top: 15px;">
