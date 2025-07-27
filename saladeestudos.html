@@ -286,18 +286,7 @@
         .module-header:hover { background-color: var(--sidebar-link-hover-bg); }
         .module-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
         .module-header .toggle-icon.expanded { transform: rotate(90deg); }
-        .lesson-list { list-style: none; padding: 0; margin: 0; display: none; }
-        .lesson-list.visible { display: block; }
-        .lesson-item a {
-            display: block;
-            padding: 8px 40px;
-            color: var(--sidebar-link-color);
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: background-color 0.2s;
-        }
-        .lesson-item a:hover { background-color: var(--sidebar-link-hover-bg); }
-        .lesson-item a.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); }
+        .module-header.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); }
 
         /* --- Main Content Area --- */
         main {
@@ -552,18 +541,17 @@
                         // Envia os dados da aula atual para o iframe após abrir o painel
                         setTimeout(() => {
                             const questoesIframe = document.getElementById('questoes-app-iframe');
-                            const activeLink = document.querySelector('.lesson-link.active');
-                            if (questoesIframe && questoesIframe.contentWindow && activeLink) {
-                                const lessonId = activeLink.getAttribute('data-lesson-id');
-                                if (lessonId && window.userId) {
+                            const activeModule = document.querySelector('.module-header.active');
+                            if (questoesIframe && questoesIframe.contentWindow && activeModule && window.currentLessonId) {
+                                if (window.currentLessonId && window.userId) {
                                     questoesIframe.contentWindow.postMessage({
                                         type: 'loadQuestions',
-                                        subtopicId: lessonId, // Mantém subtopicId para compatibilidade
+                                        subtopicId: window.currentLessonId, // Mantém subtopicId para compatibilidade
                                         userId: window.userId
                                     }, '*');
                                     
                                     console.log('Dados enviados ao clicar no botão QUESTÕES:', {
-                                        lessonId: lessonId,
+                                        lessonId: window.currentLessonId,
                                         userId: window.userId
                                     });
                                 } else {
@@ -631,6 +619,7 @@
         // --- Variáveis Globais ---
         let userId = null;
         window.userId = null; // Adiciona variável global para o questoes-injector.js
+        window.currentLessonId = null; // Armazena o ID da aula atualmente carregada
         let sidebarToggleBtn = null; // Será definido em initializeHeaderEvents
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
@@ -1002,20 +991,19 @@
                 console.log("DEBUG: loadedCoursesData definido:", loadedCoursesData);
                 renderCourseMenu(loadedCoursesData); // Renderiza o menu
 
-                // Tenta carregar a primeira aula do primeiro módulo do primeiro curso
-                if (loadedCoursesData[0]?.modules[0]?.lessons[0]) {
+                // Tenta carregar o primeiro módulo do primeiro curso automaticamente
+                if (loadedCoursesData[0]?.modules[0]) {
                     const firstCourse = loadedCoursesData[0];
                     const firstModule = firstCourse.modules[0];
-                    const firstLesson = firstModule.lessons[0];
                     
-                    console.log("Carregando automaticamente a primeira aula:", {
+                    console.log("Carregando automaticamente o primeiro módulo:", {
                         course: firstCourse.name,
                         module: firstModule.name,
-                        lesson: firstLesson.name,
-                        lessonId: firstLesson.id
+                        courseId: firstCourse.id,
+                        moduleId: firstModule.id
                     });
                     
-                    // Expande o curso e módulo automaticamente
+                    // Expande o curso automaticamente e marca o módulo como ativo
                     setTimeout(() => {
                         const courseHeader = document.querySelector(`[data-course-id="${firstCourse.id}"]`);
                         const moduleHeader = document.querySelector(`[data-module-id="${firstModule.id}"]`);
@@ -1029,28 +1017,18 @@
                         }
                         
                         if (moduleHeader) {
-                            const lessonList = moduleHeader.nextElementSibling;
-                            const toggleIcon = moduleHeader.querySelector('.toggle-icon');
-                            lessonList.classList.add('visible');
-                            toggleIcon.classList.add('expanded');
-                            toggleIcon.textContent = '▼';
-                        }
-                        
-                        // Marca o link como ativo
-                        const firstLessonLink = document.querySelector(`.lesson-link[data-lesson-id="${firstLesson.id}"]`);
-                        if (firstLessonLink) {
-                            firstLessonLink.classList.add('active');
+                            moduleHeader.classList.add('active');
                         }
                     }, 100);
                     
-                    loadLessonContent(firstCourse.id, firstModule.id, firstLesson.id);
+                    loadFirstLessonFromModule(firstCourse.id, firstModule.id);
                 } else {
-                    console.log("DEBUG: Não há aulas para carregar automaticamente");
+                    console.log("DEBUG: Não há módulos para carregar automaticamente");
                     lessonContentDiv.innerHTML = `
                         <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                             <h3>👋 Bem-vindo à Sala de Estudos!</h3>
-                            <p>Selecione uma aula no menu à esquerda para começar seus estudos.</p>
-                            <p style="font-size: 0.9em;">💡 Dica: Clique nos cursos e módulos para expandir e ver as aulas disponíveis.</p>
+                            <p>Selecione um módulo no menu à esquerda para começar seus estudos.</p>
+                            <p style="font-size: 0.9em;">💡 Dica: Clique nos cursos para expandir e ver os módulos disponíveis.</p>
                         </div>
                     `;
                 }
@@ -1075,21 +1053,8 @@
                             ${(course.modules || []).map(module => `
                                 <li class="module-item">
                                     <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                        <span>${module.name || 'Módulo Sem Nome'} (${module.lessons?.length || 0} aulas)</span>
-                                        <span class="toggle-icon">▶</span>
+                                        <span>${module.name || 'Módulo Sem Nome'}</span>
                                     </div>
-                                    <ul class="lesson-list" id="lessons-${module.id}">
-                                        ${(module.lessons || []).map(lesson => `
-                                            <li class="lesson-item">
-                                                <a href="#" class="lesson-link" 
-                                                   data-lesson-id="${lesson.id}" 
-                                                   data-module-id="${module.id}" 
-                                                   data-course-id="${course.id}">
-                                                   ${lesson.name || 'Aula Sem Nome'}
-                                                </a>
-                                            </li>
-                                        `).join('')}
-                                    </ul>
                                 </li>
                             `).join('')}
                         </ul>
@@ -1113,24 +1078,58 @@
 
             document.querySelectorAll('.module-header').forEach(header => {
                 header.addEventListener('click', () => {
-                    const lessonList = header.nextElementSibling; // O UL de aulas
-                    const toggleIcon = header.querySelector('.toggle-icon');
-                    lessonList.classList.toggle('visible');
-                    toggleIcon.classList.toggle('expanded');
-                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
+                    const { moduleId, courseId } = header.dataset;
+                    
+                    // Remove seleção anterior
+                    document.querySelectorAll('.module-header.active').forEach(h => h.classList.remove('active'));
+                    
+                    // Marca o módulo atual como ativo
+                    header.classList.add('active');
+                    
+                    console.log(`Carregando módulo: Curso=${courseId}, Módulo=${moduleId}`);
+                    
+                    // Carrega a primeira aula do módulo automaticamente
+                    loadFirstLessonFromModule(courseId, moduleId);
                 });
             });
+        }
 
-            document.querySelectorAll('.lesson-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const { lessonId, moduleId, courseId } = link.dataset;
-                    document.querySelectorAll('.lesson-link.active').forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                    console.log(`Carregando aula: Curso=${courseId}, Módulo=${moduleId}, Aula=${lessonId}`);
-                    loadLessonContent(courseId, moduleId, lessonId);
-                });
-            });
+        async function loadFirstLessonFromModule(courseId, moduleId) {
+            try {
+                // Encontra o módulo nos dados carregados
+                const course = loadedCoursesData.find(c => c.id === courseId);
+                const module = course?.modules.find(m => m.id === moduleId);
+                
+                if (!module || !module.lessons || module.lessons.length === 0) {
+                    lessonContentDiv.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <h3>📚 Módulo: ${module?.name || 'Módulo não encontrado'}</h3>
+                            <p>Este módulo ainda não possui aulas disponíveis.</p>
+                            <p style="font-size: 0.9em;">💡 Verifique se os dados foram sincronizados corretamente.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Ordena as aulas por ordem e pega a primeira
+                const sortedLessons = [...module.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
+                const firstLesson = sortedLessons[0];
+                
+                console.log(`Carregando primeira aula do módulo ${moduleId}:`, firstLesson);
+                
+                // Carrega o conteúdo da primeira aula
+                await loadLessonContent(courseId, moduleId, firstLesson.id);
+                
+            } catch (error) {
+                console.error('Erro ao carregar primeira aula do módulo:', error);
+                lessonContentDiv.innerHTML = `
+                    <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107;">
+                        <h3 style="color: #856404; margin-top: 0;">⚠️ Erro ao carregar módulo</h3>
+                        <p style="color: #856404;">Não foi possível carregar o conteúdo do módulo.</p>
+                        <p style="color: #856404; font-size: 0.9em;">Detalhes: ${error.message}</p>
+                    </div>
+                `;
+            }
         }
 
         async function loadLessonContent(courseId, moduleId, lessonId) {
@@ -1220,6 +1219,9 @@
                 const htmlContent = await response.text();
                 lessonContentDiv.innerHTML = htmlContent;
                 console.log("Conteúdo da aula carregado com sucesso.");
+                
+                // Atualiza a variável global com o ID da aula atual
+                window.currentLessonId = lessonId;
 
                 // Comunica o lessonId para o iframe de questões, se estiver aberto (mantém subtopicId para compatibilidade)
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
