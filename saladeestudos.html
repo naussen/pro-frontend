@@ -306,51 +306,11 @@
         .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
         #lessonContent { min-height: 300px; }
 
-        /* --- Floating Tools Panel (se houver) --- */
+        /* --- Floating Tools Panel --- */
         #floatingToolsPanel {
-            /* Estilos existentes... */
+            display: none;
         }
         
-        /* TEMPORARIAMENTE REMOVIDO: Estilos para o Botão de Questões (causando erros Firebase)
-        .proconcursos-questoes-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1010;
-        }
-
-        .proconcursos-questoes-btn {
-            background-color: var(--modern-green-button-bg);
-            color: white;
-            padding: 15px 30px; 
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1em; 
-            font-weight: 600; 
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .proconcursos-questoes-btn:hover {
-            background-color: var(--modern-green-button-hover-bg);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .proconcursos-questoes-btn:active {
-            background-color: var(--modern-green-button-active-bg);
-            transform: translateY(-1px); 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-        */
-
-
         /* --- Estilos do Conteúdo Carregado --- */
         .module-content { padding: 1rem; color: var(--text-dark); }
         body.dark-mode .module-content { color: var(--text-light); }
@@ -385,38 +345,14 @@
             }
             .sidebar.visible { transform: translateX(0); }
             main { margin-left: 0; }
-            /* .w3s-sidebar-toggle { display: block; }  Já está no header, não precisa redefinir aqui */
             #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
             .mega-menu-panel { padding: 15px; }
             .mega-menu-column { min-width: calc(50% - 20px); }
             .mega-menu-column:not(:last-child) { border-right: none; }
-            
-            /* TEMPORARIAMENTE REMOVIDO: Estilos responsivos do botão de questões
-            .proconcursos-questoes-container {
-                right: 20px;
-                bottom: 20px;
-            }
-            .proconcursos-questoes-btn {
-                padding: 12px 24px;
-                font-size: 1em;
-            }
-            */
         }
         @media screen and (max-width: 480px) {
             #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
-            /* .tool-buttons button { font-size: 0.85em; padding: 6px 8px; } */ /* Se houver .tool-buttons */
             .mega-menu-column { min-width: 100%; padding: 0; }
-
-            /* TEMPORARIAMENTE REMOVIDO: Estilos mobile do botão de questões
-            .proconcursos-questoes-container {
-                right: 15px;
-                bottom: 15px;
-            }
-            .proconcursos-questoes-btn {
-                padding: 10px 20px;
-                font-size: 0.95em;
-            }
-            */
         }
     </style>
 </head>
@@ -454,24 +390,6 @@
                 <a href="#">Segurança da Informação</a>
             </div>
         </div>
-        <!-- TEMPORARIAMENTE REMOVIDO: Menu de questões causando erros Firebase
-        <div class="mega-menu-panel" id="questoes-menu">
-            <div class="mega-menu-column">
-                <h4>Por Disciplina</h4>
-                <a href="#">Direito Constitucional</a>
-                <a href="#">Matemática Básica</a>
-                <a href="#">Português</a>
-                <a href="#">Informática</a>
-            </div>
-            <div class="mega-menu-column">
-                <h4>Por Concurso</h4>
-                <a href="#">Polícia Federal</a>
-                <a href="#">INSS</a>
-                <a href="#">Receita Federal</a>
-                <a href="#">Tribunais</a>
-            </div>
-        </div>
-        -->
         <div class="mega-menu-panel" id="flashcards-menu">
             <div class="mega-menu-column">
                 <h4>Por Disciplina</h4>
@@ -522,64 +440,8 @@
     </div>
 
     <div id="floatingToolsPanel" style="display:none;">
-        </div>
-
-    <!-- TEMPORARIAMENTE REMOVIDO: Botão de questões causando erros de autenticação Firebase
-    <div id="proConcursosQuestoesContainer" class="proconcursos-questoes-container">
-        <button id="proConcursosQuestoesBtn" class="proconcursos-questoes-btn">
-            QUESTÕES
-        </button>
     </div>
-    -->
-    
-    <!-- <script src="questoes-injector.js"></script> <!-- TEMPORARIAMENTE REMOVIDO: Sistema de questões causando erros de autenticação Firebase --> -->
-    
-    <!-- TEMPORARIAMENTE REMOVIDO: Script do sistema de questões causando erros de autenticação Firebase
-    <script>
-        // Script para o NOVO botão de QUESTÕES acionar o sistema injetado
-        document.addEventListener('DOMContentLoaded', function() {
-            const customQuestoesBtn = document.getElementById('proConcursosQuestoesBtn');
-            
-            if (customQuestoesBtn) {
-                customQuestoesBtn.addEventListener('click', function() {
-                    // O questoes-injector.js expõe a função global window.toggleQuestoesAppGlobal
-                    if (window.toggleQuestoesAppGlobal) {
-                        window.toggleQuestoesAppGlobal(); // Chama a função para mostrar/esconder o painel
-                        console.log('Botão de questões personalizado ("proConcursosQuestoesBtn") acionou a função global toggleQuestoesAppGlobal.');
-                        
-                        // Envia os dados da aula atual para o iframe após abrir o painel
-                        setTimeout(() => {
-                            const questoesIframe = document.getElementById('questoes-app-iframe');
-                            const activeModule = document.querySelector('.module-header.active');
-                            if (questoesIframe && questoesIframe.contentWindow && activeModule && window.currentLessonId) {
-                                if (window.currentLessonId && window.userId) {
-                                    questoesIframe.contentWindow.postMessage({
-                                        type: 'loadQuestions',
-                                        subtopicId: window.currentLessonId, // Mantém subtopicId para compatibilidade
-                                        userId: window.userId
-                                    }, '*');
-                                    
-                                    console.log('Dados enviados ao clicar no botão QUESTÕES:', {
-                                        lessonId: window.currentLessonId,
-                                        userId: window.userId
-                                    });
-                                } else {
-                                    console.warn('Não foi possível enviar dados ao clicar no botão QUESTÕES. lessonId ou userId ausente.');
-                                }
-                            }
-                        }, 500); // Pequeno atraso para garantir que o iframe esteja pronto
-                    } else {
-                        console.error('Função global toggleQuestoesAppGlobal não encontrada. Verifique se o "questoes-injector.js" foi carregado corretamente.');
-                        alert('Sistema de questões não pôde ser iniciado. Verifique o console para detalhes.');
-                    }
-                });
-            } else {
-                console.error('Botão "#proConcursosQuestoesBtn" não encontrado no DOM.');
-            }
-        });
-    </script>
-    -->
-    
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -628,8 +490,6 @@
 
         // --- Variáveis Globais ---
         let userId = null;
-        // window.userId = null; // TEMPORARIAMENTE REMOVIDO: Variável para o questoes-injector.js
-        // window.currentLessonId = null; // TEMPORARIAMENTE REMOVIDO: Armazena o ID da aula atualmente carregada
         let sidebarToggleBtn = null; // Será definido em initializeHeaderEvents
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
@@ -729,7 +589,6 @@
                 window.location.href = 'index.html';
             } else {
                 userId = user.uid;
-                // window.userId = user.uid; // TEMPORARIAMENTE REMOVIDO: Copia para a variável global (questões)
                 console.log("Usuário autenticado:", userId);
                 loadCourses(); // Carrega cursos
                 applySavedPreferences(); // Aplica tema e cor de fundo salvos
@@ -1125,25 +984,57 @@
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
                 
-                if (!module || !module.lessons || module.lessons.length === 0) {
+                if (!module) {
                     lessonContentDiv.innerHTML = `
                         <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                            <h3>📚 Módulo: ${module?.name || 'Módulo não encontrado'}</h3>
+                            <h3>📚 Módulo não encontrado</h3>
+                            <p>O módulo solicitado não foi encontrado nos dados carregados.</p>
+                            <p style="font-size: 0.9em;">💡 Debug: Curso=${courseId}, Módulo=${moduleId}</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // ===== NOVA LÓGICA - COMPATÍVEL COM AMBAS ESTRUTURAS =====
+                let contentToLoad = null;
+
+                // Verifica se o módulo tem conteúdo direto (nova estrutura)
+                if (module.content_url && module.file_name) {
+                    contentToLoad = {
+                        id: module.id,
+                        name: module.name || 'Conteúdo do Módulo',
+                        content_url: module.content_url,
+                        file_name: module.file_name
+                    };
+                    console.log(`Módulo ${moduleId} tem conteúdo direto (nova estrutura):`, contentToLoad);
+                }
+                // Senão, verifica se tem array lessons (estrutura antiga)
+                else if (module.lessons && module.lessons.length > 0) {
+                    const sortedLessons = [...module.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
+                    contentToLoad = sortedLessons[0];
+                    console.log(`Módulo ${moduleId} tem array lessons (estrutura antiga), primeiro conteúdo:`, contentToLoad);
+                }
+
+                if (!contentToLoad) {
+                    lessonContentDiv.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <h3>📚 Módulo: ${module.name || 'Módulo sem nome'}</h3>
                             <p>Este módulo ainda não possui conteúdo disponível.</p>
-                            <p style="font-size: 0.9em;">💡 Verifique se os dados foram sincronizados corretamente.</p>
+                            <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; text-align: left;">
+                                <h4 style="color: #856404; margin-top: 0;">🔧 Possíveis Soluções:</h4>
+                                <p style="color: #856404; margin: 5px 0;">1. Execute o script de sincronização de dados</p>
+                                <p style="color: #856404; margin: 5px 0;">2. Verifique se os dados foram migrados corretamente</p>
+                                <p style="color: #856404; margin: 5px 0;">3. Use o botão "🔍 Diagnosticar" para mais detalhes</p>
+                            </div>
                         </div>
                     `;
                     return;
                 }
                 
-                // Ordena o conteúdo por ordem e pega o primeiro
-                const sortedLessons = [...module.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
-                const firstLesson = sortedLessons[0];
+                console.log(`Carregando conteúdo do módulo ${moduleId}:`, contentToLoad);
                 
-                console.log(`Carregando primeiro conteúdo do módulo ${moduleId}:`, firstLesson);
-                
-                // Carrega o primeiro conteúdo
-                await loadLessonContent(courseId, moduleId, firstLesson.id);
+                // Carrega o conteúdo usando a função existente
+                await loadLessonContent(courseId, moduleId, contentToLoad.id);
                 
             } catch (error) {
                 console.error('Erro ao carregar primeira aula do módulo:', error);
@@ -1152,6 +1043,7 @@
                         <h3 style="color: #856404; margin-top: 0;">⚠️ Erro ao carregar módulo</h3>
                         <p style="color: #856404;">Não foi possível carregar o conteúdo do módulo.</p>
                         <p style="color: #856404; font-size: 0.9em;">Detalhes: ${error.message}</p>
+                        <p style="color: #856404; font-size: 0.9em;">Debug: Curso=${courseId}, Módulo=${moduleId}</p>
                     </div>
                 `;
             }
@@ -1164,7 +1056,25 @@
                 // Encontra o conteúdo nos dados já carregados para obter a content_url
                 const course = loadedCoursesData.find(c => c.id === courseId);
                 const module = course?.modules.find(m => m.id === moduleId);
-                const lesson = module?.lessons.find(s => s.id === lessonId);
+                
+                let lesson = null;
+
+                // ===== BUSCA COMPATÍVEL COM AMBAS ESTRUTURAS =====
+                // Primeira tentativa: conteúdo direto no módulo (nova estrutura)
+                if (module?.content_url && module.file_name && (lessonId === module.id || lessonId === moduleId)) {
+                    lesson = {
+                        id: module.id,
+                        name: module.name || 'Conteúdo do Módulo',
+                        content_url: module.content_url,
+                        file_name: module.file_name
+                    };
+                    console.log(`DEBUG loadLessonContent: Usando conteúdo direto do módulo:`, lesson);
+                }
+                // Segunda tentativa: busca no array lessons (estrutura antiga)
+                else if (module?.lessons) {
+                    lesson = module.lessons.find(s => s.id === lessonId);
+                    console.log(`DEBUG loadLessonContent: Encontrado no array lessons:`, lesson);
+                }
 
                 console.log(`DEBUG loadLessonContent: Procurando conteúdo ${lessonId} no módulo ${moduleId} do curso ${courseId}`);
                 console.log(`DEBUG loadLessonContent: Course encontrado:`, course);
@@ -1180,6 +1090,12 @@
                             <p style="color: #856404; font-size: 0.9em;">
                                 <strong>Debug:</strong> Curso=${courseId}, Módulo=${moduleId}, Conteúdo=${lessonId}
                             </p>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                <p style="color: #495057; margin: 5px 0;"><strong>🛠️ Verificações:</strong></p>
+                                <p style="color: #495057; margin: 5px 0;">• Módulo tem content_url? ${!!module?.content_url}</p>
+                                <p style="color: #495057; margin: 5px 0;">• Módulo tem lessons array? ${!!module?.lessons?.length}</p>
+                                <p style="color: #495057; margin: 5px 0;">• LessonId procurado: ${lessonId}</p>
+                            </div>
                         </div>
                     `;
                     console.warn("URL do conteúdo não encontrada:", lessonId, lesson);
@@ -1244,28 +1160,25 @@
                 const htmlContent = await response.text();
                 lessonContentDiv.innerHTML = htmlContent;
                 console.log("Conteúdo carregado com sucesso.");
-                
-                // TEMPORARIAMENTE REMOVIDO: Atualiza a variável global com o ID do conteúdo atual (questões)
-                // window.currentLessonId = lessonId;
-
-                // TEMPORARIAMENTE REMOVIDO: Comunicação com iframe de questões
-                /*
-                const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
-                if (questoesIframe && questoesIframe.contentWindow) {
-                    // Envia o lessonId (como subtopicId para compatibilidade) e o userId para o iframe de questões
-                    questoesIframe.contentWindow.postMessage({ type: 'setSubtopicId', subtopicId: lessonId, userId: window.userId }, '*');
-                    console.log('LessonId', lessonId, 'e userId', window.userId, 'enviados para o painel de questões após carregar aula.');
-                }
-                
-                // Dispara evento personalizado para indicar que a aula foi carregada
-                const lessonLoadedEvent = new Event('lessonContentLoaded');
-                window.dispatchEvent(lessonLoadedEvent);
-                console.log('Evento lessonContentLoaded disparado.');
-                */
 
             } catch (error) {
                 console.error('Erro ao carregar conteúdo:', error);
-                lessonContentDiv.innerHTML = `<p>Erro ao carregar o conteúdo. Tente novamente. Detalhes: ${error.message}</p>`;
+                lessonContentDiv.innerHTML = `
+                    <div style="padding: 20px; background: #f8d7da; border-left: 4px solid #dc3545;">
+                        <h3 style="color: #721c24; margin-top: 0;">❌ Erro ao carregar conteúdo</h3>
+                        <p style="color: #721c24;">Não foi possível carregar o conteúdo solicitado.</p>
+                        <p style="color: #721c24; font-size: 0.9em;">Detalhes: ${error.message}</p>
+                        <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            <p style="color: #495057; margin: 5px 0;"><strong>🔧 Possíveis causas:</strong></p>
+                            <p style="color: #495057; margin: 5px 0;">• Arquivo não existe no Firebase Storage</p>
+                            <p style="color: #495057; margin: 5px 0;">• Regras do Storage restritivas</p>
+                            <p style="color: #495057; margin: 5px 0;">• Problemas de conectividade</p>
+                        </div>
+                        <button onclick="location.reload()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                            🔄 Recarregar Página
+                        </button>
+                    </div>
+                `;
             }
         }
 
@@ -1450,7 +1363,10 @@
 
                  let modulesWithoutContent = 0;
                  let modulesWithContent = 0;
+                 let modulesWithNewStructure = 0;
+                 let modulesWithOldStructure = 0;
                  let totalModules = 0;
+                 let detailedReport = [];
 
                  // Verifica cada módulo selecionado
                  for (const selection of userData.selectedModules) {
@@ -1461,63 +1377,139 @@
                      
                      if (moduleDoc.exists) {
                          const moduleData = moduleDoc.data();
-                         const lessons = moduleData.lessons || [];
                          
                          // ===== VERIFICAÇÃO COM NOVA ESTRUTURA =====
-                         const hasContent = moduleData.content_url && moduleData.file_name;
+                         const hasNewStructure = moduleData.content_url && moduleData.file_name;
+                         const hasOldStructure = moduleData.lessons && moduleData.lessons.length > 0;
                          
-                         if (!hasContent) {
-                             modulesWithoutContent++;
-                             console.log(`❌ Módulo SEM conteúdo: ${selection.courseId}/${selection.moduleId}`, moduleData);
-                         } else {
+                         if (hasNewStructure) {
+                             modulesWithNewStructure++;
                              modulesWithContent++;
-                             console.log(`✅ Módulo COM conteúdo: ${selection.courseId}/${selection.moduleId}`, {
-                                 contentCount: 1, // Na nova estrutura sempre é 1
-                                 firstContent: {
-                                     id: moduleData.id,
-                                     name: moduleData.name,
-                                     content_url: moduleData.content_url,
-                                     file_name: moduleData.file_name
-                                 }
+                             detailedReport.push({
+                                 courseId: selection.courseId,
+                                 moduleId: selection.moduleId,
+                                 name: moduleData.name || 'Sem nome',
+                                 structure: 'NOVA (content_url)',
+                                 status: '✅ OK',
+                                 contentUrl: moduleData.content_url,
+                                 fileName: moduleData.file_name
+                             });
+                         } else if (hasOldStructure) {
+                             modulesWithOldStructure++;
+                             modulesWithContent++;
+                             detailedReport.push({
+                                 courseId: selection.courseId,
+                                 moduleId: selection.moduleId,
+                                 name: moduleData.name || 'Sem nome',
+                                 structure: 'ANTIGA (lessons array)',
+                                 status: '✅ OK',
+                                 lessonsCount: moduleData.lessons.length
+                             });
+                         } else {
+                             modulesWithoutContent++;
+                             detailedReport.push({
+                                 courseId: selection.courseId,
+                                 moduleId: selection.moduleId,
+                                 name: moduleData.name || 'Sem nome',
+                                 structure: 'NENHUMA',
+                                 status: '❌ SEM CONTEÚDO',
+                                 data: moduleData
                              });
                          }
                      } else {
-                         console.log(`⚠️ Módulo não encontrado: ${selection.courseId}/${selection.moduleId}`);
+                         modulesWithoutContent++;
+                         detailedReport.push({
+                             courseId: selection.courseId,
+                             moduleId: selection.moduleId,
+                             name: 'Módulo não encontrado',
+                             structure: 'N/A',
+                             status: '❌ NÃO EXISTE'
+                         });
                      }
                  }
 
-                 let diagMessage = `DIAGNÓSTICO COMPLETO:\n\n`;
-                 diagMessage += `📊 Total de módulos selecionados: ${totalModules}\n`;
-                 diagMessage += `✅ Módulos com conteúdo: ${modulesWithContent}\n`;
-                 diagMessage += `❌ Módulos sem conteúdo: ${modulesWithoutContent}\n\n`;
+                 // Gera relatório detalhado
+                 let diagMessage = `🔍 DIAGNÓSTICO COMPLETO:\n\n`;
+                 diagMessage += `📊 RESUMO:\n`;
+                 diagMessage += `• Total de módulos selecionados: ${totalModules}\n`;
+                 diagMessage += `• Módulos com conteúdo: ${modulesWithContent}\n`;
+                 diagMessage += `• Módulos sem conteúdo: ${modulesWithoutContent}\n\n`;
+                 
+                 diagMessage += `🏗️ ESTRUTURA DE DADOS:\n`;
+                 diagMessage += `• Nova estrutura (content_url): ${modulesWithNewStructure}\n`;
+                 diagMessage += `• Estrutura antiga (lessons): ${modulesWithOldStructure}\n\n`;
 
+                 // Adiciona detalhes por módulo
+                 diagMessage += `📝 DETALHES POR MÓDULO:\n`;
+                 detailedReport.forEach((module, index) => {
+                     diagMessage += `${index + 1}. ${module.name}\n`;
+                     diagMessage += `   Curso: ${module.courseId}\n`;
+                     diagMessage += `   Status: ${module.status}\n`;
+                     diagMessage += `   Estrutura: ${module.structure}\n`;
+                     if (module.contentUrl) {
+                         diagMessage += `   URL: ${module.contentUrl}\n`;
+                     }
+                     if (module.lessonsCount) {
+                         diagMessage += `   Conteúdos: ${module.lessonsCount}\n`;
+                     }
+                     diagMessage += `\n`;
+                 });
+
+                 // Determina o problema e solução
                  if (modulesWithoutContent === totalModules) {
-                     diagMessage += `🚨 PROBLEMA IDENTIFICADO!\n`;
+                     diagMessage += `🚨 PROBLEMA IDENTIFICADO:\n`;
                      diagMessage += `Todos os módulos estão vazios (sem conteúdo).\n\n`;
-                     diagMessage += `🛠️ SOLUÇÃO:\n`;
+                     diagMessage += `🛠️ SOLUÇÃO RECOMENDADA:\n`;
                      diagMessage += `1. Execute o script de sincronização:\n`;
                      diagMessage += `   python PRO_Import_System/sync_sheets_to_firestore.py\n\n`;
-                     diagMessage += `2. Este script irá:\n`;
-                     diagMessage += `   - Ler dados do Google Sheets\n`;
-                     diagMessage += `   - Popular o campo 'lessons' nos módulos\n`;
-                     diagMessage += `   - Atualizar a estrutura do Firestore\n\n`;
-                     diagMessage += `📝 O problema é que a refatoração removeu\n`;
-                     diagMessage += `a subcoleção 'subtopics' mas os dados\n`;
-                     diagMessage += `ainda não foram migrados para 'lessons'.`;
+                     diagMessage += `2. Ou configure os módulos manualmente no Firebase Console\n`;
+                     diagMessage += `3. Certifique-se de que os arquivos existem no Storage\n\n`;
                  } else if (modulesWithoutContent > 0) {
-                     diagMessage += `⚠️ PROBLEMA PARCIAL!\n`;
-                     diagMessage += `Alguns módulos não têm conteúdo.\n`;
-                     diagMessage += `Execute o script de sincronização\n`;
-                     diagMessage += `para corrigir: sync_sheets_to_firestore.py`;
+                     diagMessage += `⚠️ PROBLEMA PARCIAL:\n`;
+                     diagMessage += `${modulesWithoutContent} módulos não têm conteúdo.\n\n`;
+                     diagMessage += `🛠️ AÇÕES RECOMENDADAS:\n`;
+                     diagMessage += `1. Execute o script de sincronização\n`;
+                     diagMessage += `2. Verifique os módulos sem conteúdo listados acima\n\n`;
                  } else {
-                     diagMessage += `✅ Estrutura OK!\n`;
-                     diagMessage += `Todos os módulos têm conteúdo.\n`;
-                     diagMessage += `O problema pode ser outro.\n`;
-                     diagMessage += `Verifique os logs no console.`;
+                     diagMessage += `✅ ESTRUTURA OK!\n`;
+                     diagMessage += `Todos os módulos têm conteúdo.\n\n`;
+                     if (modulesWithNewStructure > 0 && modulesWithOldStructure > 0) {
+                         diagMessage += `ℹ️ OBSERVAÇÃO:\n`;
+                         diagMessage += `Você tem módulos em ambas estruturas (nova e antiga).\n`;
+                         diagMessage += `Isso é normal durante a migração.\n\n`;
+                     }
+                     diagMessage += `🔍 Se ainda há problemas, verifique:\n`;
+                     diagMessage += `• Regras do Firebase Storage\n`;
+                     diagMessage += `• Conectividade de rede\n`;
+                     diagMessage += `• Console do navegador para erros\n`;
                  }
 
                  console.log(diagMessage);
-                 alert(diagMessage);
+                 
+                 // Exibe resultado em uma janela melhor formatada
+                 const diagWindow = window.open('', 'Diagnóstico', 'width=800,height=600,scrollbars=yes');
+                 diagWindow.document.write(`
+                     <html>
+                     <head>
+                         <title>Diagnóstico Detalhado - Sala de Estudos</title>
+                         <style>
+                             body { font-family: monospace; padding: 20px; background: #f5f5f5; }
+                             .container { background: white; padding: 20px; border-radius: 8px; }
+                             .status-ok { color: #28a745; }
+                             .status-error { color: #dc3545; }
+                             .status-warning { color: #ffc107; }
+                             pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+                         </style>
+                     </head>
+                     <body>
+                         <div class="container">
+                             <h1>🔍 Diagnóstico Detalhado</h1>
+                             <pre>${diagMessage}</pre>
+                             <button onclick="window.close()" style="padding: 10px 20px; margin-top: 20px;">Fechar</button>
+                         </div>
+                     </body>
+                     </html>
+                 `);
 
              } catch (error) {
                  console.error('Erro ao diagnosticar:', error);
