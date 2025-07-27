@@ -311,20 +311,20 @@
             /* Estilos existentes... */
         }
         
-        /* --- NOVO: Estilos para o Botão de Questões Fixo Moderno --- */
-        .proconcursos-questoes-container { /* Contêiner do botão */
+        /* TEMPORARIAMENTE REMOVIDO: Estilos para o Botão de Questões (causando erros Firebase)
+        .proconcursos-questoes-container {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            z-index: 1010; /* Acima da maioria dos elementos, mas abaixo de modais de alta prioridade se houver */
+            z-index: 1010;
         }
 
-        .proconcursos-questoes-btn { /* Estilo do botão */
+        .proconcursos-questoes-btn {
             background-color: var(--modern-green-button-bg);
             color: white;
             padding: 15px 30px; 
             border: none;
-            border-radius: 50px; /* Bordas bem arredondadas */
+            border-radius: 50px;
             font-size: 1.1em; 
             font-weight: 600; 
             cursor: pointer;
@@ -332,14 +332,14 @@
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            display: flex; /* Para alinhar ícone e texto se adicionar ícone no futuro */
+            display: flex;
             align-items: center;
-            gap: 8px; /* Espaço entre ícone e texto se adicionar ícone */
+            gap: 8px;
         }
 
         .proconcursos-questoes-btn:hover {
             background-color: var(--modern-green-button-hover-bg);
-            transform: translateY(-3px); /* Efeito de elevação */
+            transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
 
@@ -348,7 +348,7 @@
             transform: translateY(-1px); 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        /* --- FIM: Estilos para o Botão de Questões --- */
+        */
 
 
         /* --- Estilos do Conteúdo Carregado --- */
@@ -391,6 +391,7 @@
             .mega-menu-column { min-width: calc(50% - 20px); }
             .mega-menu-column:not(:last-child) { border-right: none; }
             
+            /* TEMPORARIAMENTE REMOVIDO: Estilos responsivos do botão de questões
             .proconcursos-questoes-container {
                 right: 20px;
                 bottom: 20px;
@@ -399,12 +400,14 @@
                 padding: 12px 24px;
                 font-size: 1em;
             }
+            */
         }
         @media screen and (max-width: 480px) {
             #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
             /* .tool-buttons button { font-size: 0.85em; padding: 6px 8px; } */ /* Se houver .tool-buttons */
             .mega-menu-column { min-width: 100%; padding: 0; }
 
+            /* TEMPORARIAMENTE REMOVIDO: Estilos mobile do botão de questões
             .proconcursos-questoes-container {
                 right: 15px;
                 bottom: 15px;
@@ -413,6 +416,7 @@
                 padding: 10px 20px;
                 font-size: 0.95em;
             }
+            */
         }
     </style>
 </head>
@@ -450,6 +454,7 @@
                 <a href="#">Segurança da Informação</a>
             </div>
         </div>
+        <!-- TEMPORARIAMENTE REMOVIDO: Menu de questões causando erros Firebase
         <div class="mega-menu-panel" id="questoes-menu">
             <div class="mega-menu-column">
                 <h4>Por Disciplina</h4>
@@ -466,6 +471,7 @@
                 <a href="#">Tribunais</a>
             </div>
         </div>
+        -->
         <div class="mega-menu-panel" id="flashcards-menu">
             <div class="mega-menu-column">
                 <h4>Por Disciplina</h4>
@@ -518,14 +524,17 @@
     <div id="floatingToolsPanel" style="display:none;">
         </div>
 
+    <!-- TEMPORARIAMENTE REMOVIDO: Botão de questões causando erros de autenticação Firebase
     <div id="proConcursosQuestoesContainer" class="proconcursos-questoes-container">
         <button id="proConcursosQuestoesBtn" class="proconcursos-questoes-btn">
             QUESTÕES
         </button>
     </div>
+    -->
     
-    <script src="questoes-injector.js"></script>
+    <!-- <script src="questoes-injector.js"></script> <!-- TEMPORARIAMENTE REMOVIDO: Sistema de questões causando erros de autenticação Firebase --> -->
     
+    <!-- TEMPORARIAMENTE REMOVIDO: Script do sistema de questões causando erros de autenticação Firebase
     <script>
         // Script para o NOVO botão de QUESTÕES acionar o sistema injetado
         document.addEventListener('DOMContentLoaded', function() {
@@ -569,6 +578,7 @@
             }
         });
     </script>
+    -->
     
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -618,8 +628,8 @@
 
         // --- Variáveis Globais ---
         let userId = null;
-        window.userId = null; // Adiciona variável global para o questoes-injector.js
-        window.currentLessonId = null; // Armazena o ID da aula atualmente carregada
+        // window.userId = null; // TEMPORARIAMENTE REMOVIDO: Variável para o questoes-injector.js
+        // window.currentLessonId = null; // TEMPORARIAMENTE REMOVIDO: Armazena o ID da aula atualmente carregada
         let sidebarToggleBtn = null; // Será definido em initializeHeaderEvents
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
@@ -719,7 +729,7 @@
                 window.location.href = 'index.html';
             } else {
                 userId = user.uid;
-                window.userId = user.uid; // Copia para a variável global
+                // window.userId = user.uid; // TEMPORARIAMENTE REMOVIDO: Copia para a variável global (questões)
                 console.log("Usuário autenticado:", userId);
                 loadCourses(); // Carrega cursos
                 applySavedPreferences(); // Aplica tema e cor de fundo salvos
@@ -1220,10 +1230,11 @@
                 lessonContentDiv.innerHTML = htmlContent;
                 console.log("Conteúdo da aula carregado com sucesso.");
                 
-                // Atualiza a variável global com o ID da aula atual
-                window.currentLessonId = lessonId;
+                // TEMPORARIAMENTE REMOVIDO: Atualiza a variável global com o ID da aula atual (questões)
+                // window.currentLessonId = lessonId;
 
-                // Comunica o lessonId para o iframe de questões, se estiver aberto (mantém subtopicId para compatibilidade)
+                // TEMPORARIAMENTE REMOVIDO: Comunicação com iframe de questões
+                /*
                 const questoesIframe = document.getElementById('questoes-app-iframe'); // ID definido em questoes-injector.js
                 if (questoesIframe && questoesIframe.contentWindow) {
                     // Envia o lessonId (como subtopicId para compatibilidade) e o userId para o iframe de questões
@@ -1235,6 +1246,7 @@
                 const lessonLoadedEvent = new Event('lessonContentLoaded');
                 window.dispatchEvent(lessonLoadedEvent);
                 console.log('Evento lessonContentLoaded disparado.');
+                */
 
             } catch (error) {
                 console.error('Erro ao carregar conteúdo da aula:', error);
