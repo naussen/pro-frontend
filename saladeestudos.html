@@ -459,31 +459,6 @@
             color: var(--text-muted);
         }
 
-        .content-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem;
-            background: var(--main-content-bg);
-            position: relative;
-        }
-
-        .content-body::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .content-body::-webkit-scrollbar-track {
-            background: var(--light-highlight-bg);
-        }
-
-        .content-body::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        .content-body::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
         /* === ESTADOS DE CARREGAMENTO === */
         .loading-container {
             display: flex;
@@ -611,6 +586,8 @@
         .lesson-content {
             line-height: 1.7;
             max-width: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .lesson-content h1, .lesson-content h2, .lesson-content h3 {
@@ -652,6 +629,72 @@
             border-radius: 0.5rem;
             overflow-x: auto;
             margin: 1rem 0;
+        }
+
+        /* === GARANTIR EXPANSÃO COMPLETA DO CONTEÚDO === */
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            background: var(--main-content-bg);
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .content-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-body::-webkit-scrollbar-track {
+            background: var(--light-highlight-bg);
+        }
+
+        .content-body::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .content-body::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .content-body > * {
+            width: 100%;
+            max-width: none;
+            box-sizing: border-box;
+        }
+
+        /* Garantir que qualquer div ou container interno ocupe toda a largura */
+        .lesson-content > *,
+        .lesson-content div,
+        .lesson-content section,
+        .lesson-content article {
+            width: 100%;
+            max-width: none;
+            box-sizing: border-box;
+        }
+
+        /* Específico para conteúdo com lista ou índice */
+        .lesson-content .indice,
+        .lesson-content .index,
+        .lesson-content [class*="indice"],
+        .lesson-content [class*="index"],
+        .lesson-content [class*="lista"],
+        .lesson-content [class*="sumario"] {
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Estados vazios e de carregamento também ocupam toda largura */
+        .empty-state,
+        .loading-container {
+            width: 100%;
+            max-width: none;
+            box-sizing: border-box;
         }
 
         /* === CACHE STATUS === */
