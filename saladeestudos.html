@@ -1361,6 +1361,7 @@
 
             async fetchHTMLContent(contentUrl) {
                 try {
+                    console.log('🔗 Carregando conteúdo de:', contentUrl);
                     let url = contentUrl;
                     
                     // Se é referência do Firebase Storage
@@ -1368,13 +1369,19 @@
                         try {
                             const storageRef = this.storage.refFromURL(url);
                             url = await storageRef.getDownloadURL();
-                            console.log('🔗 URL do Firebase Storage obtida:', url);
+                            console.log('✅ URL do Firebase Storage obtida:', url);
                         } catch (storageError) {
-                            console.warn('⚠️ Erro ao obter URL do Storage, tentando URL pública:', storageError);
-                            // Fallback para URL pública
-                            const publicUrl = url.replace('gs://', 'https://firebasestorage.googleapis.com/v0/b/')
-                                               .replace('/o/', '/o/') + '?alt=media';
-                            url = publicUrl;
+                            console.warn('⚠️ Erro ao obter URL do Storage:', storageError.message);
+                            console.warn('🔄 Tentando construir URL pública...');
+                            
+                            // Fallback mais robusto para URL pública
+                            const gsPath = url.replace('gs://', '').split('/');
+                            const bucketName = gsPath[0];
+                            const filePath = gsPath.slice(1).join('/');
+                            const encodedPath = encodeURIComponent(filePath);
+                            
+                            url = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodedPath}?alt=media`;
+                            console.log('🔄 URL pública construída:', url);
                         }
                     }
                     
@@ -1383,11 +1390,12 @@
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     
+                    console.log('✅ Conteúdo carregado com sucesso');
                     return await response.text();
                     
                 } catch (error) {
                     console.error('❌ Erro ao buscar conteúdo HTML:', error);
-                    throw new Error('Falha ao carregar conteúdo');
+                    throw new Error('Falha ao carregar conteúdo: ' + error.message);
                 }
             }
 
@@ -1580,6 +1588,70 @@
 
         function debugLoadAllCourses() {
             studyApp?.loadAllCourses();
+        }
+
+        function debugShowUserData() {
+            if (studyApp?.userId) {
+                studyApp.db.collection('users').doc(studyApp.userId).get()
+                    .then(doc => {
+                        console.log('👤 Dados do usuário:', doc.data());
+                    });
+            }
+        }
+
+        function debugInspectFirestore() {
+            if (studyApp?.db) {
+                studyApp.db.collection('courses').get()
+                    .then(snapshot => {
+                        console.log('📚 Cursos no Firestore:', snapshot.size);
+                        snapshot.forEach(doc => {
+                            console.log(`   - ${doc.id}:`, doc.data());
+                        });
+                    });
+            }
+        }
+
+        function debugDiagnoseContent() {
+            if (studyApp?.loadedCourses) {
+                console.log('🔍 DIAGNÓSTICO DE CONTEÚDO:');
+                console.log('Cursos carregados:', studyApp.loadedCourses.length);
+                
+                studyApp.loadedCourses.forEach(course => {
+                    console.log(`📚 ${course.name}:`);
+                    course.modules.forEach(module => {
+                        console.log(`   📖 ${module.name}: ${module.aulas?.length || 0} aulas`);
+                        if (module.aulas) {
+                            module.aulas.forEach(aula => {
+                                console.log(`      📄 ${aula.name}: ${aula.content_url}`);
+                            });
+                        }
+                    });
+                });
+            }
+        }
+
+        function debugTestStorage() {
+            const testUrl = 'gs://nvp-concursos.firebasestorage.app/content/direito-administrativo/modules/da-introducao/aulas/aula-01.html';
+            console.log('🧪 Testando URL:', testUrl);
+            
+            if (studyApp?.storage) {
+                studyApp.storage.refFromURL(testUrl)
+                    .getDownloadURL()
+                    .then(url => {
+                        console.log('✅ URL obtida:', url);
+                        return fetch(url);
+                    })
+                    .then(response => {
+                        console.log('✅ Fetch response:', response.status, response.statusText);
+                        return response.text();
+                    })
+                    .then(text => {
+                        console.log('✅ Conteúdo carregado:', text.length, 'caracteres');
+                    })
+                    .catch(error => {
+                        console.error('❌ Erro no teste:', error);
+                    });
+            }
         }
 
         // Service Worker para cache offline (futuro)
