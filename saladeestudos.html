@@ -659,17 +659,17 @@
             background: var(--text-muted);
         }
 
-        .content-body > * {
+        /* Garantir que o conteúdo da lição ocupe toda a largura disponível sem afetar o layout pai */
+        .lesson-content {
             width: 100%;
             max-width: none;
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Garantir que qualquer div ou container interno ocupe toda a largura */
-        .lesson-content > *,
-        .lesson-content div,
-        .lesson-content section,
-        .lesson-content article {
+        /* Garantir que elementos internos do conteúdo se expandam adequadamente */
+        .lesson-content > * {
             width: 100%;
             max-width: none;
             box-sizing: border-box;
@@ -684,8 +684,6 @@
         .lesson-content [class*="sumario"] {
             width: 100% !important;
             max-width: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
             box-sizing: border-box !important;
         }
 
@@ -694,6 +692,32 @@
         .loading-container {
             width: 100%;
             max-width: none;
+            box-sizing: border-box;
+        }
+
+        /* Evitar que qualquer conteúdo interno afete o posicionamento do layout principal */
+        .lesson-content,
+        .lesson-content * {
+            position: static !important;
+        }
+
+        /* Garantir que listas, divs e outros elementos não quebrem o layout */
+        .lesson-content div,
+        .lesson-content section,
+        .lesson-content article,
+        .lesson-content ul,
+        .lesson-content ol,
+        .lesson-content li {
+            position: static;
+            float: none;
+            clear: none;
+            display: block;
+        }
+
+        .lesson-content ul,
+        .lesson-content ol {
+            display: block;
+            width: 100%;
             box-sizing: border-box;
         }
 
