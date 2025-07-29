@@ -4,1598 +4,1523 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Estudos - PRO Concursos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- :ROOT Variables --- */
+        /* === VARIÁVEIS CSS === */
         :root {
             --header-height: 55px;
-            --sidebar-width: 240px;
-            --main-color: #4e4d4a;
-            --light-highlight-bg: #f5f5f4;
-            --accent-1: #94ba65;
-            --accent-1-darker: #7da052;
-            --accent-2: #2790b0;
-            --dark-bg: #353432;
-            --subnav-bg: #ddd;
-            --text-dark: #4e4d4a;
-            --text-light: #f8f9fa;
-            --text-muted: #6c757d;
-            --border-color: #ccc;
-            --light-grey-bg: #f1f1f1;
-            --header-bg: #ffffff;
-            --header-border: #e7e7e7;
+            --sidebar-width: 320px;
+            --sidebar-collapsed-width: 60px;
+            --animation-speed: 0.3s;
+            --main-color: #2c5aa0;
+            --light-highlight-bg: #bfc9df;
+            --accent-1: #ff6b35;
+            --accent-1-darker: #e55a2b;
+            --accent-2: #4ecdc4;
+            --accent-3: #ffe66d;
+            --dark-bg: #1a365d;
+            --text-dark: #2d3748;
+            --text-light: #ffffff;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --light-grey-bg: #f7fbff;
+            --header-bg: rgba(240, 247, 255, 0.95);
+            --header-border: #e2e8f0;
             --main-content-bg: #ffffff;
-            --code-bg: #f1f1f1;
-            --button-text-dark: #353432;
-            --footer-text-muted: #ccc;
-            --footer-link-color: #ccc;
-            --footer-link-hover: var(--accent-1);
-            --footer-separator: #555;
-            --footer-h4: #f1f1f1;
-            --dark-blue-hover: #2b4e72;
-            --error-color: #D32F2F;
-            --sidebar-bg: #f1f1f1;
-            --sidebar-border: #d4d4d4;
-            --sidebar-link-color: #4e4d4a;
-            --sidebar-link-hover-bg: #ddd;
-            --sidebar-link-active-bg: #94ba65; /* Cor de destaque para links ativos na sidebar */
-            --sidebar-link-active-color: #fff;
-            --floating-panel-bg: #fdfdfd;
-            --floating-panel-border: #ccc;
-            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            --floating-panel-width: 350px;
-            --top-nav-bg: #ffffff;
-            --top-nav-link-color: #4e4d4a;
-            --top-nav-link-hover-bg: #f1f1f1;
-            --top-nav-link-active-bg: #ddd;
-            --mega-menu-bg: #f8f9fa;
-            --mega-menu-border: #dee2e6;
-            --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            --mega-menu-link-color: #4e4d4a;
-            --mega-menu-link-hover-color: #2790b0;
-            --mega-menu-heading-color: #4e4d4a;
-            --modern-green-button-bg: #94ba65; /* Cor de destaque para o botão moderno */
-            --modern-green-button-hover-bg: #7da052;
-            --modern-green-button-active-bg: #6a8a46;
+            --sidebar-bg: #f8fafc;
+            --sidebar-border: #e2e8f0;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --card-hover-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            --gradient-primary: linear-gradient(135deg, #2c5aa0 0%, #4ecdc4 100%);
+            --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #ffe66d 100%);
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --error-color: #dc3545;
+            --info-color: #17a2b8;
         }
 
-        /* --- Dark Mode Variables --- */
+        /* === MODO ESCURO === */
         body.dark-mode {
-            --main-color: #94ba65;
-            --light-highlight-bg: #2d333b;
-            --accent-1: #2790b0;
-            --accent-1-darker: #1e7a96;
-            --accent-2: #2b4e72;
-            --dark-bg: #353432;
-            --subnav-bg: #4e4d4a;
-            --text-dark: #e6edf3;
-            --text-light: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #444c56;
-            --light-grey-bg: #353432;
-            --header-bg: #4e4d4a;
-            --header-border: #5a5955;
-            --main-content-bg: #353432;
-            --code-bg: #4e4d4a;
-            --button-text-dark: #353432; /* Ajuste para texto do botão em modo escuro */
-            --footer-text-muted: #8b949e;
-            --footer-link-color: #8b949e;
-            --footer-link-hover: var(--accent-1);
-            --footer-separator: #5a5955;
-            --footer-h4: var(--text-light);
-            --dark-blue-hover: #2b4e72;
-            --error-color: #FF5252;
-            --sidebar-bg: #4e4d4a;
-            --sidebar-border: #5a5955;
-            --sidebar-link-color: var(--text-light);
-            --sidebar-link-hover-bg: #5a5955;
-            --sidebar-link-active-bg: var(--modern-green-button-bg); /* Usar a mesma cor de destaque */
-            --sidebar-link-active-color: #fff;
-            --floating-panel-bg: #4e4d4a;
-            --floating-panel-border: #5a5955;
-            --floating-panel-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            --top-nav-bg: #4e4d4a;
-            --top-nav-link-color: var(--text-light);
-            --top-nav-link-hover-bg: #5a5955;
-            --top-nav-link-active-bg: #353432;
-            --mega-menu-bg: #353432;
-            --mega-menu-border: #343a40;
-            --mega-menu-shadow: 0 8px 16px rgba(0,0,0,0.4);
-            --mega-menu-link-color: #adb5bd;
-            --mega-menu-link-hover-color: #dee2e6;
-            --mega-menu-heading-color: #ced4da;
-            --modern-green-button-bg: #28a745;
-            --modern-green-button-hover-bg: #218838;
-            --modern-green-button-active-bg: #1e7e34;
+            --main-color: #63b3ed;
+            --light-highlight-bg: #1a202c;
+            --accent-1: #ff8a65;
+            --accent-1-darker: #ff7043;
+            --accent-2: #4fd1c7;
+            --accent-3: #ffd93d;
+            --dark-bg: #0f1419;
+            --text-dark: #e2e8f0;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --light-grey-bg: #1a202c;
+            --header-bg: rgba(26, 32, 44, 0.95);
+            --header-border: #2d3748;
+            --main-content-bg: #1a202c;
+            --sidebar-bg: #1a202c;
+            --sidebar-border: #2d3748;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --card-hover-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            --gradient-primary: linear-gradient(135deg, #63b3ed 0%, #4fd1c7 100%);
+            --gradient-accent: linear-gradient(135deg, #ff8a65 0%, #ffd93d 100%);
         }
 
-        /* --- Reset e Base --- */
-        html { height: 100%; box-sizing: border-box; }
-        *, *:before, *:after { box-sizing: inherit; }
+        /* === RESET E BASE === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { height: 100%; font-size: 16px; }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            background: var(--light-grey-bg);
+            color: var(--text-dark);
+            overflow: hidden;
+            transition: all var(--animation-speed) ease;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            background-color: var(--light-grey-bg);
-            color: var(--text-dark);
-            padding-top: var(--header-height);
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* --- Header --- */
-        .w3s-header {
-            background-color: var(--header-bg);
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            padding: 0 10px 0 0;
+        /* === HEADER === */
+        .study-header {
             height: var(--header-height);
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 105;
+            background: var(--header-bg);
             border-bottom: 1px solid var(--header-border);
-            gap: 5px;
-        }
-        .w3s-sidebar-toggle {
-            background-color: transparent;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 0 15px;
-            color: var(--text-dark);
-            line-height: var(--header-height);
-            margin-right: 5px;
-        }
-        .w3s-sidebar-toggle:hover { background-color: var(--light-grey-bg); }
-        .w3s-logo-area { display: flex; align-items: center; flex-shrink: 0; padding-left: 10px; }
-        .w3s-logo-placeholder { width: 35px; height: 35px; margin-right: 8px; }
-        .w3s-logo-placeholder text { font-size: 35px; fill: var(--main-color); font-weight: bold; font-family: sans-serif; }
-        .w3s-logo-placeholder circle { fill: transparent; stroke: var(--main-color); stroke-width: 5; }
-
-        /* --- Top Navigation (Esquerda com Dropdowns) --- */
-        .w3s-top-nav { display: flex; align-items: center; height: 100%; margin-left: 10px; position: relative; }
-        .w3s-top-nav button.nav-button {
             display: flex;
             align-items: center;
-            padding: 0 12px;
-            height: 100%;
-            color: var(--top-nav-link-color);
-            font-size: 15px;
-            background-color: transparent;
-            border: none;
-            border-right: 1px solid var(--header-border);
-            cursor: pointer;
-            transition: background-color 0.2s;
+            padding: 0 1rem;
+            gap: 1rem;
+            position: relative;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
         }
-        .w3s-top-nav button.nav-button:first-child { border-left: 1px solid var(--header-border); }
-        .w3s-top-nav button.nav-button:hover { background-color: var(--top-nav-link-hover-bg); }
-        .w3s-top-nav button.nav-button.active { background-color: var(--top-nav-link-active-bg); }
 
-        /* --- Mega Menu Panel --- */
-        .mega-menu-panel {
-            display: none;
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            width: 100%;
-            max-height: calc(100vh - var(--header-height));
-            overflow-y: auto;
-            background-color: var(--mega-menu-bg);
-            border-top: 1px solid var(--mega-menu-border);
-            box-shadow: var(--mega-menu-shadow);
-            z-index: 104;
-            padding: 25px 30px;
-        }
-        .mega-menu-panel.active {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .mega-menu-column { flex: 1; min-width: 200px; padding: 0 15px; }
-        .mega-menu-column:not(:last-child) { border-right: 1px solid var(--mega-menu-border); }
-        .mega-menu-column h4 { font-size: 1.1em; color: var(--mega-menu-heading-color); margin: 0 0 15px; padding-bottom: 8px; border-bottom: 1px solid var(--mega-menu-border); }
-        .mega-menu-column a { display: block; color: var(--mega-menu-link-color); text-decoration: none; padding: 6px 0; font-size: 0.95em; transition: color 0.2s; }
-        .mega-menu-column a:hover { color: var(--mega-menu-link-hover-color); }
-
-        /* --- Header Actions (Direita) --- */
-        .w3s-header-right-group { display: flex; align-items: center; margin-left: auto; gap: 10px; padding-right: 15px; }
-        .w3s-header-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-        .w3s-header-actions a, .w3s-header-actions button {
-            color: var(--text-dark);
-            text-decoration: none;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 10px;
-            border-radius: 4px;
+        .toggle-sidebar-btn {
             background: none;
             border: none;
+            color: var(--text-dark);
+            font-size: 1.25rem;
             cursor: pointer;
-        }
-        .w3s-header-actions a .icon, .w3s-header-actions button .icon { font-size: 1.1em; color: #666; }
-        body.dark-mode .w3s-header-actions a .icon, body.dark-mode .w3s-header-actions button .icon { color: var(--text-muted); }
-        .w3s-header-actions a:hover, .w3s-header-actions button:hover { color: var(--main-color); background-color: rgba(0, 0, 0, 0.03); }
-        body.dark-mode .w3s-header-actions a:hover, body.dark-mode .w3s-header-actions button:hover { background-color: rgba(255, 255, 255, 0.05); }
-        .w3s-header-actions a:hover .icon, .w3s-header-actions button:hover .icon { color: var(--main-color); }
-        .w3s-header-actions a[title="Meu Cadastro"] .icon { color: #58a6ff; }
-        .w3s-header-actions a[title="Guia do Método"] .icon { color: #3fb950; }
-        .w3s-header-actions button[title="Logout"] .icon { color: #f78166; }
-        .w3s-header-actions button[title="Mudar Cor de Fundo"] .icon { color: #e91e63; }
-        #theme-toggle .icon { font-size: 1.3em; }
-
-        /* --- Content Wrapper --- */
-        .content-wrapper { display: flex; flex-grow: 1; }
-
-        /* --- Sidebar --- */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--sidebar-border);
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            bottom: 0;
-            overflow-y: auto;
-            transition: transform 0.3s ease, width 0.3s ease;
-            z-index: 102;
-            transform: translateX(0);
-        }
-        .sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-width))); }
-        .sidebar h2 { 
-            font-size: 1.3em; 
-            color: var(--text-dark); 
-            margin: 0; 
-            padding: 15px 20px; 
-            font-weight: 600; 
-            border-bottom: 1px solid var(--sidebar-border);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all var(--animation-speed) ease;
             display: flex;
-            justify-content: flex-start;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
         }
-        /* .w3s-sidebar-toggle já definido no Header */
-        .sidebar-nav { list-style: none; padding: 0; margin: 0; }
-        .course-item { margin-bottom: 10px; }
+
+        .toggle-sidebar-btn:hover {
+            background: var(--light-highlight-bg);
+            transform: scale(1.05);
+        }
+
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--main-color);
+            margin-left: 0.5rem;
+        }
+
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all var(--animation-speed) ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-btn:hover {
+            background: var(--light-highlight-bg);
+            border-color: var(--main-color);
+            color: var(--main-color);
+        }
+
+        .header-btn.primary {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+        }
+
+        .header-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        /* === LAYOUT PRINCIPAL === */
+        .study-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - var(--header-height));
+            overflow: hidden;
+        }
+
+        /* === SIDEBAR === */
+        .study-sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            transition: all var(--animation-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 999;
+            box-shadow: var(--card-shadow);
+        }
+
+        .study-sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--sidebar-border);
+            background: var(--gradient-primary);
+            color: white;
+            position: relative;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            opacity: 1;
+            transition: opacity var(--animation-speed) ease;
+        }
+
+        .collapsed .sidebar-title {
+            opacity: 0;
+        }
+
+        .sidebar-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity var(--animation-speed) ease;
+        }
+
+        .collapsed .sidebar-icon {
+            opacity: 1;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        /* === MENU DE NAVEGAÇÃO === */
+        .course-item {
+            margin-bottom: 0.5rem;
+        }
+
         .course-header {
             display: flex;
             align-items: center;
-            padding: 10px 20px;
+            padding: 0.75rem 1rem;
             cursor: pointer;
-            color: var(--sidebar-link-color);
-            font-size: 0.95em;
-            font-weight: bold;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all var(--animation-speed) ease;
+            position: relative;
         }
-        .course-header:hover { background-color: var(--sidebar-link-hover-bg); }
-        .course-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
-        .course-header .toggle-icon.expanded { transform: rotate(90deg); }
-        .module-list { list-style: none; padding: 0; margin: 0; display: none; }
-        .module-list.visible { display: block; }
-        .module-item { margin-bottom: 5px; }
-        .module-header {
+
+        .course-header:hover {
+            background: var(--light-highlight-bg);
+        }
+
+        .course-header.active {
+            background: var(--main-color);
+            color: white;
+        }
+
+        .course-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.75rem;
             display: flex;
             align-items: center;
-            padding: 8px 30px;
+            justify-content: center;
+            background: var(--accent-2);
+            border-radius: 0.375rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .course-name {
+            flex: 1;
+            opacity: 1;
+            transition: opacity var(--animation-speed) ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .collapsed .course-name {
+            opacity: 0;
+            width: 0;
+        }
+
+        .toggle-icon {
+            margin-left: auto;
+            font-size: 0.875rem;
+            transition: transform var(--animation-speed) ease;
+            opacity: 1;
+        }
+
+        .collapsed .toggle-icon {
+            opacity: 0;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .module-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--animation-speed) ease;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .module-list.visible {
+            max-height: 500px;
+        }
+
+        .module-item {
+            padding: 0.5rem 1rem 0.5rem 3rem;
             cursor: pointer;
-            color: var(--sidebar-link-color);
-            font-size: 0.95em;
-        }
-        .module-header:hover { background-color: var(--sidebar-link-hover-bg); }
-        .module-header .toggle-icon { margin-left: auto; font-size: 0.8em; transition: transform 0.2s ease; }
-        .module-header .toggle-icon.expanded { transform: rotate(90deg); }
-        .module-header.active { background-color: var(--sidebar-link-active-bg); color: var(--sidebar-link-active-color); }
-
-        /* --- Main Content Area --- */
-        main {
-            flex-grow: 1;
-            background-color: var(--main-content-bg);
-            color: var(--text-dark);
-            margin-left: var(--sidebar-width);
-            padding: 30px 25px;
-            transition: margin-left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            transition: all var(--animation-speed) ease;
             position: relative;
-            z-index: 1;
+            opacity: 1;
         }
-        main.sidebar-hidden { margin-left: 0; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .study-room-header { text-align: center; margin-bottom: 30px; }
-        .study-room-header h1 { font-size: 2em; color: var(--main-color); margin-bottom: 10px; }
-        .study-room-header p { color: var(--text-muted); font-size: 1.1em; }
-        #lessonContent { min-height: 300px; }
 
-        /* --- Floating Tools Panel --- */
-        #floatingToolsPanel {
-            display: none;
+        .collapsed .module-item {
+            opacity: 0;
         }
-        
-        /* --- Estilos do Conteúdo Carregado --- */
-        .module-content { padding: 1rem; color: var(--text-dark); }
-        body.dark-mode .module-content { color: var(--text-light); }
-        .module-title { color: var(--main-color); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; font-size: 1.5em; }
-        .section-title { color: var(--main-color); margin: 2rem 0 1rem; font-size: 1.2em; }
-        .module-content p { margin-bottom: 1rem; line-height: 1.6; }
-        .content-list, .content-list-disc, .content-list-circle { margin-left: 1.5rem; margin-bottom: 1rem; line-height: 1.6; }
-        .content-list li, .content-list-disc li, .content-list-circle li { margin-bottom: 0.5rem; }
-        .content-list-disc { list-style-type: disc; }
-        .content-list-circle { list-style-type: circle; }
-        .content-note { background-color: var(--light-highlight-bg); padding: 0.8rem; border-radius: 4px; margin-bottom: 1rem; }
-        body.dark-mode .content-note { background-color: var(--dark-bg); }
-        .highlight-yellow { color: var(--accent-1); }
-        .highlight-red { color: var(--error-color); }
-        .highlight-blue { color: var(--main-color); }
-        .italic { font-style: italic; }
 
-        /* --- Responsividade --- */
-        @media screen and (max-width: 992px) {
-            :root { --sidebar-width: 200px; }
-            .w3s-top-nav button.nav-button { font-size: 14px; padding: 0 8px; }
-            .w3s-header-actions .link-text { display: none; }
-            .w3s-header-actions a, .w3s-header-actions button { padding: 6px 8px; }
-            #floatingToolsPanel { width: 300px; }
-            .mega-menu-column { min-width: 180px; }
+        .module-item:hover {
+            background: var(--light-highlight-bg);
+            color: var(--text-dark);
         }
-        @media screen and (max-width: 768px) {
-            :root { --sidebar-width: 240px; }
-            .sidebar { 
-                transform: translateX(calc(-1 * var(--sidebar-width))); 
-                width: var(--sidebar-width);
+
+        .module-item.active {
+            background: var(--accent-1);
+            color: white;
+            font-weight: 500;
+        }
+
+        .module-item::before {
+            content: '•';
+            position: absolute;
+            left: 2rem;
+            color: var(--accent-2);
+        }
+
+        /* === CONTEÚDO PRINCIPAL === */
+        .study-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all var(--animation-speed) ease;
+        }
+
+        .content-header {
+            padding: 1.5rem 2rem;
+            background: var(--main-content-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--main-color);
+        }
+
+        .content-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            background: var(--main-content-bg);
+            position: relative;
+        }
+
+        .content-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-body::-webkit-scrollbar-track {
+            background: var(--light-highlight-bg);
+        }
+
+        .content-body::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .content-body::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* === ESTADOS DE CARREGAMENTO === */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--main-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        /* === NOTIFICAÇÕES === */
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform var(--animation-speed) ease;
+            max-width: 400px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: var(--success-color); }
+        .notification.error { background: var(--error-color); }
+        .notification.warning { background: var(--warning-color); }
+        .notification.info { background: var(--info-color); }
+
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 280px;
+                --sidebar-collapsed-width: 0;
             }
-            .sidebar.visible { transform: translateX(0); }
-            main { margin-left: 0; }
-            #floatingToolsPanel { width: calc(100% - 40px); max-width: 350px; }
-            .mega-menu-panel { padding: 15px; }
-            .mega-menu-column { min-width: calc(50% - 20px); }
-            .mega-menu-column:not(:last-child) { border-right: none; }
+
+            .study-sidebar {
+                position: fixed;
+                left: 0;
+                top: var(--header-height);
+                height: calc(100vh - var(--header-height));
+                z-index: 1001;
+                transform: translateX(-100%);
+            }
+
+            .study-sidebar.visible {
+                transform: translateX(0);
+            }
+
+            .study-sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .study-content {
+                width: 100%;
+            }
+
+            .content-header {
+                padding: 1rem;
+            }
+
+            .content-body {
+                padding: 1rem;
+            }
         }
-        @media screen and (max-width: 480px) {
-            #floatingToolsPanel { bottom: 10px; right: 10px; width: calc(100% - 20px); }
-            .mega-menu-column { min-width: 100%; padding: 0; }
+
+        /* === OVERLAY MOBILE === */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--animation-speed) ease;
+        }
+
+        .sidebar-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* === CONTENT STYLING === */
+        .lesson-content {
+            line-height: 1.7;
+            max-width: none;
+        }
+
+        .lesson-content h1, .lesson-content h2, .lesson-content h3 {
+            color: var(--main-color);
+            margin: 1.5rem 0 1rem;
+        }
+
+        .lesson-content h1 { font-size: 2rem; }
+        .lesson-content h2 { font-size: 1.5rem; }
+        .lesson-content h3 { font-size: 1.25rem; }
+
+        .lesson-content p {
+            margin-bottom: 1rem;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lesson-content blockquote {
+            border-left: 4px solid var(--accent-1);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .lesson-content code {
+            background: var(--light-highlight-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .lesson-content pre {
+            background: var(--light-highlight-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        /* === CACHE STATUS === */
+        .cache-status {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            background: var(--dark-bg);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
+    <!-- Header placeholder que será carregado dinamicamente -->
     <div id="header-placeholder"></div>
 
-    <div id="megaMenuContainer">
-        <div class="mega-menu-panel" id="cursos-menu">
-            <div class="mega-menu-column">
-                <h4>Direito</h4>
-                <a href="#">Direito Constitucional</a>
-                <a href="#">Direito Administrativo</a>
-                <a href="#">Direito Penal</a>
-                <a href="#">Direito Civil</a>
-            </div>
-            <div class="mega-menu-column">
-                <h4>Matemática</h4>
-                <a href="#">Matemática Básica</a>
-                <a href="#">Raciocínio Lógico</a>
-                <a href="#">Estatística</a>
-                <a href="#">Matemática Financeira</a>
-            </div>
-            <div class="mega-menu-column">
-                <h4>Português</h4>
-                <a href="#">Gramática</a>
-                <a href="#">Interpretação de Texto</a>
-                <a href="#">Redação Oficial</a>
-                <a href="#">Literatura</a>
-            </div>
-            <div class="mega-menu-column">
-                <h4>Informática</h4>
-                <a href="#">Informática Básica</a>
-                <a href="#">Sistemas Operacionais</a>
-                <a href="#">Redes de Computadores</a>
-                <a href="#">Segurança da Informação</a>
-            </div>
-        </div>
-        <div class="mega-menu-panel" id="flashcards-menu">
-            <div class="mega-menu-column">
-                <h4>Por Disciplina</h4>
-                <a href="#">Direito Constitucional</a>
-                <a href="#">Matemática Básica</a>
-                <a href="#">Português</a>
-                <a href="#">Informática</a>
-            </div>
-            <div class="mega-menu-column">
-                <h4>Por Concurso</h4>
-                <a href="#">Polícia Federal</a>
-                <a href="#">INSS</a>
-                <a href="#">Receita Federal</a>
-                <a href="#">Tribunais</a>
-            </div>
-        </div>
-    </div>
+    <!-- Layout principal da sala de estudos -->
+    <div class="study-layout">
+        <!-- Overlay para mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <div class="content-wrapper">
-        <nav class="sidebar" id="sidebar">
-            <h2>
-                Meus Cursos
-            </h2>
-            <div class="sidebar-nav" id="courseMenu">
-                <p>Carregando cursos...</p>
+        <!-- Sidebar de navegação -->
+        <aside class="study-sidebar" id="studySidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Meus Cursos</div>
+                <div class="sidebar-icon">📚</div>
             </div>
-        </nav>
-
-        <main id="mainContent">
-            <div class="container">
-                <div class="study-room-header">
-                    <h1>Sala de Estudos</h1>
-                    <p>Acesse os conteúdos que você selecionou para estudar de forma organizada.</p>
-                    <!-- DEBUG: Botões temporários para teste -->
-                    <div style="margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 5px;">
-                        <button onclick="debugClearPersonalization()" style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Limpar Personalização</button>
-                        <button onclick="debugLoadAllCourses()" style="background: #4ecdc4; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Carregar Todos os Cursos</button>
-                        <button onclick="debugShowUserData()" style="background: #45b7d1; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Mostrar Dados do Usuário</button>
-                        <button onclick="debugInspectFirestore()" style="background: #f39c12; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">Inspecionar Firestore</button>
-                        <button onclick="debugDiagnoseContent()" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 3px; cursor: pointer;">🔍 Diagnosticar Problema</button>
+            <div class="sidebar-content">
+                <nav class="sidebar-nav" id="courseNavigation">
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando cursos...</p>
                     </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Área de conteúdo principal -->
+        <main class="study-content">
+            <header class="study-header">
+                <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Alternar menu lateral">
+                    <span id="toggleIcon">☰</span>
+                </button>
+                <h1 class="header-title">Sala de Estudos</h1>
+                <div class="header-actions">
+                    <button class="header-btn" id="showAllCoursesBtn" title="Exibir todos os cursos">
+                        <span>📚</span>
+                        <span>Todos os Cursos</span>
+                    </button>
+                    <button class="header-btn" id="personalizeBtn" title="Personalizar conteúdo">
+                        <span>⚙️</span>
+                        <span>Personalizar</span>
+                    </button>
+                    <button class="header-btn primary" id="themeToggleBtn" title="Alternar tema">
+                        <span id="themeIcon">🌙</span>
+                    </button>
                 </div>
-                <div id="lessonContent">
-                    <p>Selecione uma aula no menu à esquerda para começar.</p>
+            </header>
+
+            <div class="content-header" id="contentHeader" style="display: none;">
+                <div>
+                    <h2 class="content-title" id="contentTitle">Selecione um conteúdo</h2>
+                    <div class="content-meta" id="contentMeta"></div>
+                </div>
+            </div>
+
+            <div class="content-body" id="contentBody">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📖</div>
+                    <h3>Bem-vindo à Sala de Estudos!</h3>
+                    <p>Selecione um curso no menu lateral para começar seus estudos.</p>
+                    <p style="margin-top: 1rem; font-size: 0.9em; opacity: 0.8;">
+                        💡 Use o botão "Todos os Cursos" para ver todo o conteúdo disponível.
+                    </p>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="floatingToolsPanel" style="display:none;">
+    <!-- Cache status indicator -->
+    <div class="cache-status" id="cacheStatus" style="display: none;">
+        Cache: <span id="cacheCount">0</span> itens
     </div>
 
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    
+
     <script>
-        // --- Carrega o Cabeçalho Dinamicamente ---
-        fetch('header_saladeestudos.html')
-            .then(response => {
-                if (!response.ok) throw new Error(`Erro ao carregar header_saladeestudos.html: ${response.status}`);
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-                initializeHeaderEvents(); // Inicializa eventos APÓS o header ser carregado
+        'use strict';
 
-                if (window.PomodoroTimerApp && typeof window.PomodoroTimerApp.init === 'function') {
-                    console.log('saladeestudos.html: Attempting to explicitly initialize PomodoroTimerApp...');
-                    window.PomodoroTimerApp.init();
+        // === CONFIGURAÇÃO E INICIALIZAÇÃO ===
+        class StudyRoomApp {
+            constructor() {
+                this.isInitialized = false;
+                this.userId = null;
+                this.db = null;
+                this.storage = null;
+                this.auth = null;
+                
+                // Cache para otimização
+                this.contentCache = new Map();
+                this.coursesCache = null;
+                this.cacheTTL = 5 * 60 * 1000; // 5 minutos
+                
+                // Estado da aplicação
+                this.sidebarCollapsed = false;
+                this.currentContent = null;
+                this.loadedCourses = [];
+                
+                // Elementos DOM
+                this.elements = {};
+                
+                // Configuração do Firebase
+                this.firebaseConfig = {
+                    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+                    authDomain: "nvp-concursos.firebaseapp.com",
+                    projectId: "nvp-concursos",
+                    storageBucket: "nvp-concursos.firebasestorage.app",
+                    messagingSenderId: "397960760271",
+                    appId: "1:397960760271:web:1243b04141178453d860ba",
+                    measurementId: "G-T6RVBM12BQ"
+                };
+
+                this.init();
+            }
+
+            async init() {
+                try {
+                    // Carrega header dinamicamente
+                    await this.loadHeader();
+                    
+                    // Inicializa Firebase
+                    this.initFirebase();
+                    
+                    // Inicializa elementos DOM
+                    this.initializeElements();
+                    
+                    // Configura event listeners
+                    this.setupEventListeners();
+                    
+                    // Aplica tema salvo
+                    this.applyTheme();
+                    
+                    // Configura autenticação
+                    this.setupAuth();
+                    
+                    this.isInitialized = true;
+                    console.log('✅ StudyRoomApp inicializado com sucesso');
+                } catch (error) {
+                    console.error('❌ Erro na inicialização:', error);
+                    this.showNotification('Erro na inicialização da aplicação', 'error');
+                }
+            }
+
+            async loadHeader() {
+                try {
+                    const response = await fetch('header_saladeestudos.html');
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const headerHTML = await response.text();
+                    document.getElementById('header-placeholder').innerHTML = headerHTML;
+                    
+                    console.log('✅ Header carregado com sucesso');
+                } catch (error) {
+                    console.warn('⚠️ Falha ao carregar header:', error);
+                    // Continua sem o header se houver falha
+                }
+            }
+
+            initFirebase() {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(this.firebaseConfig);
+                }
+                
+                this.auth = firebase.auth();
+                this.db = firebase.firestore();
+                this.storage = firebase.storage();
+                
+                // Configurações de performance
+                this.db.enablePersistence({ synchronizeTabs: true }).catch(err => {
+                    console.warn('Persistência offline não disponível:', err);
+                });
+                
+                console.log('✅ Firebase inicializado');
+            }
+
+            initializeElements() {
+                this.elements = {
+                    sidebar: document.getElementById('studySidebar'),
+                    toggleBtn: document.getElementById('toggleSidebarBtn'),
+                    toggleIcon: document.getElementById('toggleIcon'),
+                    courseNav: document.getElementById('courseNavigation'),
+                    contentHeader: document.getElementById('contentHeader'),
+                    contentTitle: document.getElementById('contentTitle'),
+                    contentMeta: document.getElementById('contentMeta'),
+                    contentBody: document.getElementById('contentBody'),
+                    showAllBtn: document.getElementById('showAllCoursesBtn'),
+                    personalizeBtn: document.getElementById('personalizeBtn'),
+                    themeToggleBtn: document.getElementById('themeToggleBtn'),
+                    themeIcon: document.getElementById('themeIcon'),
+                    overlay: document.getElementById('sidebarOverlay'),
+                    cacheStatus: document.getElementById('cacheStatus'),
+                    cacheCount: document.getElementById('cacheCount')
+                };
+            }
+
+            setupEventListeners() {
+                // Toggle sidebar
+                this.elements.toggleBtn?.addEventListener('click', () => this.toggleSidebar());
+                
+                // Overlay click (mobile)
+                this.elements.overlay?.addEventListener('click', () => this.closeSidebar());
+                
+                // Header buttons
+                this.elements.showAllBtn?.addEventListener('click', () => this.loadAllCourses());
+                this.elements.personalizeBtn?.addEventListener('click', () => window.location.href = 'personalizar.html');
+                this.elements.themeToggleBtn?.addEventListener('click', () => this.toggleTheme());
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                        switch(e.key) {
+                            case 'b':
+                                e.preventDefault();
+                                this.toggleSidebar();
+                                break;
+                            case 'k':
+                                e.preventDefault();
+                                // Implementar busca rápida no futuro
+                                break;
+                        }
+                    }
+                });
+
+                // Resize handler
+                window.addEventListener('resize', () => this.handleResize());
+                
+                console.log('✅ Event listeners configurados');
+            }
+
+            setupAuth() {
+                this.auth.onAuthStateChanged(user => {
+                    if (!user) {
+                        console.log('❌ Usuário não autenticado, redirecionando...');
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    
+                    this.userId = user.uid;
+                    console.log('✅ Usuário autenticado:', this.userId);
+                    
+                    // Carrega cursos após autenticação
+                    this.loadUserCourses();
+                });
+            }
+
+            // === GERENCIAMENTO DE SIDEBAR ===
+            toggleSidebar() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    this.elements.sidebar.classList.toggle('visible');
+                    this.elements.overlay.classList.toggle('visible');
                 } else {
-                    console.warn('saladeestudos.html: PomodoroTimerApp not found or init function is missing. Pomodoro might not start correctly.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao carregar o header:', error);
-                document.getElementById('header-placeholder').innerHTML = '<p>Erro ao carregar o cabeçalho.</p>';
-            });
-
-        // --- Configuração Firebase ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-			authDomain: "nvp-concursos.firebaseapp.com",
-			projectId: "nvp-concursos",
-			storageBucket: "nvp-concursos.firebasestorage.app",
-			messagingSenderId: "397960760271",
-			appId: "1:397960760271:web:1243b04141178453d860ba",
-			measurementId: "G-T6RVBM12BQ"
-        };
-        // Inicializa o Firebase APENAS se ainda não foi inicializado
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-
-        // --- Variáveis Globais ---
-        let userId = null;
-        let sidebarToggleBtn = null; // Será definido em initializeHeaderEvents
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        // const floatingToolsPanel = document.getElementById('floatingToolsPanel'); // Se você usar este painel
-        const courseMenuContainer = document.getElementById('courseMenu');
-        const lessonContentDiv = document.getElementById('lessonContent'); // Renomeado para evitar conflito
-        // const audioPlayer = document.getElementById('audioPlayer'); // Se você usar
-        const bodyElement = document.body;
-        let loadedCoursesData = [];
-
-        // --- Inicializar Eventos do Header (e outros elementos dependentes do header) ---
-        function initializeHeaderEvents() {
-            sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); // Agora o header está carregado
-
-            const logoutBtn = document.getElementById('logout-btn'); // Already had ID from previous task
-            const topNav = document.getElementById('topNav');
-            const megaMenuContainer = document.getElementById('megaMenuContainer');
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            
-            if (sidebarToggleBtn) {
-                sidebarToggleBtn.addEventListener('click', toggleSidebar);
-            } else {
-                console.warn('Botão sidebarToggleBtn não encontrado em header_saladeestudos.html carregado.');
-            }
-
-            if (themeToggleBtn) {
-                themeToggleBtn.addEventListener('click', () => {
-                    const newTheme = bodyElement.classList.contains('dark-mode') ? 'light' : 'dark';
-                    applyTheme(newTheme); // Salva no localStorage dentro desta função
-                });
-            } else {
-                console.warn('Botão theme-toggle não encontrado em header_saladeestudos.html carregado.');
-            }
-
-
-
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    auth.signOut()
-                        .then(() => {
-                            console.log('Logout bem-sucedido');
-                            window.location.href = 'index.html'; // Ou sua página de login
-                        })
-                        .catch(error => {
-                            console.error('Erro ao fazer logout:', error);
-                            alert('Erro ao sair: ' + error.message);
-                        });
-                });
-            } else {
-                console.warn('Botão logout-btn não encontrado em header_saladeestudos.html carregado.');
-            }
-
-            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
-            megaMenuButtons.forEach(button => {
-                button.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const targetId = button.getAttribute('data-target');
-                    const targetPanel = document.getElementById(targetId);
-                    if (!targetPanel) return;
+                    this.sidebarCollapsed = !this.sidebarCollapsed;
+                    this.elements.sidebar.classList.toggle('collapsed', this.sidebarCollapsed);
                     
-                    const isCurrentlyActive = targetPanel.classList.contains('active');
-                    closeAllMegaMenus(); // Fecha todos os outros
-                    
-                    if (!isCurrentlyActive) { // Abre o clicado se não estava ativo
-                        targetPanel.classList.add('active');
-                        button.classList.add('active');
-                    }
-                });
-            });
-
-            document.addEventListener('click', (event) => { // Fecha mega menus ao clicar fora
-                const clickedInsideMenu = megaMenuContainer?.contains(event.target);
-                const clickedInsideNav = topNav?.contains(event.target);
-                if (!clickedInsideMenu && !clickedInsideNav) {
-                    closeAllMegaMenus();
-                }
-            });
-            
-            // Chama updateLayout após header e seus botões estarem prontos
-            updateLayout(); 
-        }
-
-        function closeAllMegaMenus() {
-            const megaMenuContainer = document.getElementById('megaMenuContainer');
-            const allMegaPanels = megaMenuContainer?.querySelectorAll('.mega-menu-panel') || [];
-            const topNav = document.getElementById('topNav');
-            const megaMenuButtons = topNav?.querySelectorAll('button.nav-button') || [];
-            
-            allMegaPanels.forEach(panel => panel.classList.remove('active'));
-            megaMenuButtons.forEach(btn => btn.classList.remove('active'));
-        }
-
-        // --- Autenticação ---
-        auth.onAuthStateChanged(user => {
-            if (!user) {
-                console.log("Usuário não logado, redirecionando para index.html.");
-                window.location.href = 'index.html';
-            } else {
-                userId = user.uid;
-                console.log("Usuário autenticado:", userId);
-                loadCourses(); // Carrega cursos
-                applySavedPreferences(); // Aplica tema e cor de fundo salvos
-            }
-        });
-
-        function applySavedPreferences() {
-            // Aplica tema salvo
-            const savedTheme = localStorage.getItem('theme'); // Tema é global ou por usuário? Assumindo global.
-            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const themeToApply = savedTheme || (prefersDarkScheme ? 'dark' : 'light');
-            applyTheme(themeToApply);
-        }
-
-        function applyTheme(theme) {
-            console.log("Aplicando tema:", theme);
-            bodyElement.classList.toggle('dark-mode', theme === 'dark');
-            
-            // Tenta encontrar os ícones de tema APÓS o header ser carregado
-            const sunIcon = document.querySelector('#header-placeholder .theme-icon-light');
-            const moonIcon = document.querySelector('#header-placeholder .theme-icon-dark');
-
-            if (sunIcon && moonIcon) {
-                sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
-                moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
-            } else {
-                // Este log pode aparecer antes do header carregar, o que é normal.
-                // console.warn('Ícones de tema (.theme-icon-light ou .theme-icon-dark) não encontrados AINDA.');
-            }
-            localStorage.setItem('theme', theme);
-        }
-
-
-
-        // --- Carregar Cursos para o Menu Lateral ---
-        async function loadCourses() {
-            if (!userId || !courseMenuContainer) {
-                console.error("userId ou courseMenuContainer não definidos:", { userId, courseMenuContainer });
-                if(courseMenuContainer) courseMenuContainer.innerHTML = '<p>Erro: Usuário não identificado.</p>';
-                return;
-            }
-            courseMenuContainer.innerHTML = '<p>Carregando seus cursos...</p>';
-            try {
-                console.log("Iniciando carregamento de cursos para o usuário:", userId);
-                const userDocRef = db.collection('users').doc(userId);
-                const userDoc = await userDocRef.get();
-                
-                console.log("DEBUG: Documento do usuário existe?", userDoc.exists);
-                console.log("DEBUG: Dados do usuário:", userDoc.exists ? userDoc.data() : null);
-                
-                // DEBUG: Verificação detalhada do estado de personalização
-                if (userDoc.exists) {
-                    const userData = userDoc.data();
-                    console.log("DEBUG: hasPersonalized?", userData.hasPersonalized);
-                    console.log("DEBUG: selectedModules?", userData.selectedModules);
-                    console.log("DEBUG: selectedLessons (estrutura antiga)?", userData.selectedLessons);
-                    console.log("DEBUG: Tamanho selectedModules:", userData.selectedModules?.length);
-                    console.log("DEBUG: Tamanho selectedLessons (estrutura antiga):", userData.selectedLessons?.length);
+                    // Atualiza ícone
+                    this.elements.toggleIcon.textContent = this.sidebarCollapsed ? '📚' : '☰';
                 }
                 
-                let coursesToDisplay = [];
+                // Salva estado
+                localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed.toString());
+            }
 
-                if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedModules?.length > 0) {
-                    console.log("Usuário tem módulos personalizados. Carregando...");
-                    const selectedModulesInfo = userDoc.data().selectedModules; // Array de {courseId, moduleId}
-                    
-                    console.log("DEBUG: selectedModules encontrados:", selectedModulesInfo);
-                    
-                    // Agrupa módulos por curso para reconstruir a estrutura
-                    const structuredSelections = {};
-                    for (const selection of selectedModulesInfo) {
-                        if (!structuredSelections[selection.courseId]) {
-                            structuredSelections[selection.courseId] = [];
-                        }
-                        structuredSelections[selection.courseId].push(selection.moduleId);
+            closeSidebar() {
+                if (window.innerWidth <= 768) {
+                    this.elements.sidebar.classList.remove('visible');
+                    this.elements.overlay.classList.remove('visible');
+                }
+            }
+
+            handleResize() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (!isMobile && this.elements.sidebar.classList.contains('visible')) {
+                    this.elements.sidebar.classList.remove('visible');
+                    this.elements.overlay.classList.remove('visible');
+                }
+            }
+
+            // === GERENCIAMENTO DE TEMA ===
+            toggleTheme() {
+                const isDark = document.body.classList.toggle('dark-mode');
+                this.elements.themeIcon.textContent = isDark ? '☀️' : '🌙';
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                
+                this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+            }
+
+            applyTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+                
+                document.body.classList.toggle('dark-mode', isDark);
+                if (this.elements.themeIcon) {
+                    this.elements.themeIcon.textContent = isDark ? '☀️' : '🌙';
+                }
+                
+                // Restaura estado da sidebar
+                const sidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
+                if (sidebarState && window.innerWidth > 768) {
+                    this.sidebarCollapsed = true;
+                    this.elements.sidebar.classList.add('collapsed');
+                    this.elements.toggleIcon.textContent = '📚';
+                }
+            }
+
+            // === CARREGAMENTO DE CURSOS ===
+            async loadUserCourses() {
+                if (!this.userId) return;
+                
+                this.showLoading('Carregando seus cursos...');
+                
+                try {
+                    // Verifica cache primeiro
+                    if (this.coursesCache && this.isCacheValid(this.coursesCache.timestamp)) {
+                        console.log('📋 Usando cursos do cache');
+                        this.renderCourses(this.coursesCache.data);
+                        return;
                     }
                     
-                    console.log("DEBUG: Estrutura de seleções agrupadas:", structuredSelections);
-
-                    for (const courseId in structuredSelections) {
-                        console.log(`DEBUG: Processando curso ${courseId}...`);
-                        const courseRef = db.collection('courses').doc(courseId);
-                        const courseDoc = await courseRef.get();
+                    const userDoc = await this.db.collection('users').doc(this.userId).get();
+                    
+                    if (userDoc.exists && userDoc.data().hasPersonalized) {
+                        const userData = userDoc.data();
+                        console.log('👤 Carregando cursos personalizados');
                         
-                        if (!courseDoc.exists) { 
-                            console.warn(`Curso ${courseId} (personalizado) não encontrado.`); 
-                            continue; 
-                        }
-                        
-                        const courseData = courseDoc.data();
-                        console.log(`DEBUG: Dados do curso ${courseId}:`, courseData);
-                        
-                        const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
-
-                        for (const moduleId of structuredSelections[courseId]) {
-                            console.log(`DEBUG: Processando módulo ${moduleId} do curso ${courseId}...`);
-                            const moduleRef = courseRef.collection('modules').doc(moduleId);
-                            const moduleDoc = await moduleRef.get();
-                            
-                            if (!moduleDoc.exists) { 
-                                console.warn(`Módulo ${moduleId} (personalizado) não encontrado.`); 
-                                continue; 
-                            }
-                            
-                            const moduleData = moduleDoc.data();
-                            console.log(`DEBUG: Dados do módulo ${moduleId}:`, moduleData);
-                            
-                            // ===== NOVA LÓGICA - SEM ARRAY LESSONS =====
-                            // Na nova estrutura, criar lesson baseada nos dados diretos do módulo
-                            const processedLessons = [];
-                            
-                            if (moduleData.content_url && moduleData.file_name) {
-                                processedLessons.push({
-                                    id: moduleData.id || moduleDoc.id,
-                                    name: moduleData.name || 'Conteúdo sem nome',
-                                    order: moduleData.order || 0,
-                                    content_url: moduleData.content_url || '',
-                                    file_name: moduleData.file_name || ''
-                                });
-                            }
-                            
-                            console.log(`DEBUG: ModuleEntry criado:`, {
-                                id: moduleId, 
-                                name: moduleData.name || 'Módulo s/ Nome', 
-                                order: moduleData.order || 0, 
-                                lessons: processedLessons
-                            });
-                            
-                            if(processedLessons.length > 0) {
-                                courseEntry.modules.push({
-                                    id: moduleId, 
-                                    name: moduleData.name || 'Módulo s/ Nome', 
-                                    order: moduleData.order || 0, 
-                                    lessons: processedLessons
-                                });
-                                console.log(`DEBUG: Módulo ${moduleId} adicionado ao curso (${processedLessons.length} conteúdos)`);
-                            } else {
-                                console.warn(`DEBUG: Módulo ${moduleId} não tem conteúdo, pulando...`);
-                            }
-                        }
-                        
-                        console.log(`DEBUG: CourseEntry final:`, courseEntry);
-                        
-                        if(courseEntry.modules.length > 0) {
-                           courseEntry.modules.sort((a, b) => a.order - b.order);
-                           coursesToDisplay.push(courseEntry);
-                           console.log(`DEBUG: Curso ${courseId} adicionado (${courseEntry.modules.length} módulos)`);
+                        // Nova estrutura com selectedModules
+                        if (userData.selectedModules?.length > 0) {
+                            const courses = await this.loadSelectedModules(userData.selectedModules);
+                            this.cacheCourses(courses);
+                            this.renderCourses(courses);
+                        } 
+                        // Compatibilidade com estrutura antiga
+                        else if (userData.selectedLessons?.length > 0) {
+                            const courses = await this.loadSelectedLessons(userData.selectedLessons);
+                            this.cacheCourses(courses);
+                            this.renderCourses(courses);
                         } else {
-                           console.warn(`DEBUG: Curso ${courseId} não tem módulos válidos, pulando...`);
+                            this.showEmptyPersonalization();
                         }
+                    } else {
+                        console.log('📚 Carregando todos os cursos');
+                        await this.loadAllCourses();
                     }
-                    coursesToDisplay.sort((a,b) => a.order - b.order);
-                    console.log("DEBUG: coursesToDisplay final (personalizado):", coursesToDisplay);
-
-                } else if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedLessons?.length > 0) {
-                    // COMPATIBILIDADE: Tenta carregar com estrutura antiga (selectedLessons)
-                    console.log("COMPATIBILIDADE: Usuário tem conteúdo personalizado (estrutura antiga). Carregando...");
-                    const selectedLessonsInfo = userDoc.data().selectedLessons; // Array de {courseId, moduleId, lessonId}
-                    console.log("DEBUG: selectedLessons encontrados:", selectedLessonsInfo);
                     
-                    // Agrupa conteúdos por curso e módulo para reconstruir a estrutura
-                    const structuredSelections = {};
-                    for (const selection of selectedLessonsInfo) {
-                        if (!structuredSelections[selection.courseId]) {
-                            structuredSelections[selection.courseId] = {};
-                        }
-                        if (!structuredSelections[selection.courseId][selection.moduleId]) {
-                            structuredSelections[selection.courseId][selection.moduleId] = [];
-                        }
-                        structuredSelections[selection.courseId][selection.moduleId].push(selection.lessonId);
-                    }
+                } catch (error) {
+                    console.error('❌ Erro ao carregar cursos:', error);
+                    this.showError('Falha ao carregar cursos. Tente novamente.');
+                }
+            }
 
-                    for (const courseId in structuredSelections) {
-                        const courseRef = db.collection('courses').doc(courseId);
-                        const courseDoc = await courseRef.get();
-                        if (!courseDoc.exists) { console.warn(`Curso ${courseId} (estrutura antiga) não encontrado.`); continue; }
-                        const courseData = courseDoc.data();
-                        const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
-
-                        for (const moduleId in structuredSelections[courseId]) {
-                            const moduleRef = courseRef.collection('modules').doc(moduleId);
-                            const moduleDoc = await moduleRef.get();
-                            if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} (estrutura antiga) não encontrado.`); continue; }
-                            const moduleData = moduleDoc.data();
-                            const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, lessons: [] };
-
-                            // Processa os conteúdos selecionados do array lessons dentro do documento do módulo
-                            const allLessons = moduleData.lessons || [];
-                            const selectedLessonIds = structuredSelections[courseId][moduleId];
-                            
-                            for (const lessonId of selectedLessonIds) {
-                                const lessonData = allLessons.find(l => l.id === lessonId);
-                                if (!lessonData) { console.warn(`Conteúdo ${lessonId} (estrutura antiga) não encontrado no módulo ${moduleId}.`); continue; }
-                                moduleEntry.lessons.push({
-                                    id: lessonId,
-                                    name: lessonData.name || 'Aula s/ Nome',
-                                    order: lessonData.order || 0,
-                                    content_url: lessonData.content_url || '',
-                                    file_name: lessonData.file_name || ''
+            async loadSelectedModules(selectedModules) {
+                const coursesMap = new Map();
+                
+                for (const { courseId, moduleId } of selectedModules) {
+                    try {
+                        if (!coursesMap.has(courseId)) {
+                            const courseDoc = await this.db.collection('courses').doc(courseId).get();
+                            if (courseDoc.exists) {
+                                coursesMap.set(courseId, {
+                                    id: courseId,
+                                    name: courseDoc.data().name,
+                                    order: courseDoc.data().order || 0,
+                                    modules: []
                                 });
                             }
+                        }
+                        
+                        const moduleDoc = await this.db.collection('courses')
+                            .doc(courseId).collection('modules').doc(moduleId).get();
                             
-                            if(moduleEntry.lessons.length > 0) {
-                                moduleEntry.lessons.sort((a, b) => a.order - b.order);
-                                courseEntry.modules.push(moduleEntry);
+                        if (moduleDoc.exists) {
+                            const moduleData = moduleDoc.data();
+                            const course = coursesMap.get(courseId);
+                            
+                            // Suporte para nova estrutura (conteúdo direto no módulo)
+                            if (moduleData.content_url && moduleData.file_name) {
+                                course.modules.push({
+                                    id: moduleId,
+                                    name: moduleData.name,
+                                    order: moduleData.order || 0,
+                                    content_url: moduleData.content_url,
+                                    file_name: moduleData.file_name,
+                                    type: 'direct'
+                                });
+                            }
+                            // Suporte para estrutura antiga (array de aulas)
+                            else if (moduleData.lessons?.length > 0) {
+                                course.modules.push({
+                                    id: moduleId,
+                                    name: moduleData.name,
+                                    order: moduleData.order || 0,
+                                    lessons: moduleData.lessons,
+                                    type: 'lessons'
+                                });
                             }
                         }
-                        if(courseEntry.modules.length > 0) {
-                           courseEntry.modules.sort((a, b) => a.order - b.order);
-                           coursesToDisplay.push(courseEntry);
-                        }
+                    } catch (error) {
+                        console.warn(`⚠️ Erro ao carregar módulo ${moduleId}:`, error);
                     }
-                    coursesToDisplay.sort((a,b) => a.order - b.order);
-                    console.log("DEBUG: coursesToDisplay final (estrutura antiga):", coursesToDisplay);
+                }
+                
+                return Array.from(coursesMap.values())
+                    .filter(course => course.modules.length > 0)
+                    .sort((a, b) => a.order - b.order);
+            }
 
-                } else { // Carrega todos os cursos se não houver personalização ou se a personalização estiver vazia
-                    console.log("Carregando todos os cursos (sem personalização ou personalização vazia).");
-                    const coursesSnapshot = await db.collection('courses').orderBy('order').get();
-                    if (coursesSnapshot.empty) {
-                        courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>'; return;
+            async loadSelectedLessons(selectedLessons) {
+                // Implementação para compatibilidade com estrutura antiga
+                const coursesMap = new Map();
+                
+                for (const { courseId, moduleId, lessonId } of selectedLessons) {
+                    try {
+                        if (!coursesMap.has(courseId)) {
+                            const courseDoc = await this.db.collection('courses').doc(courseId).get();
+                            if (courseDoc.exists) {
+                                coursesMap.set(courseId, {
+                                    id: courseId,
+                                    name: courseDoc.data().name,
+                                    order: courseDoc.data().order || 0,
+                                    modules: new Map()
+                                });
+                            }
+                        }
+                        
+                        const course = coursesMap.get(courseId);
+                        if (!course.modules.has(moduleId)) {
+                            const moduleDoc = await this.db.collection('courses')
+                                .doc(courseId).collection('modules').doc(moduleId).get();
+                                
+                            if (moduleDoc.exists) {
+                                course.modules.set(moduleId, {
+                                    id: moduleId,
+                                    name: moduleDoc.data().name,
+                                    order: moduleDoc.data().order || 0,
+                                    lessons: [],
+                                    type: 'lessons'
+                                });
+                            }
+                        }
+                        
+                        const module = course.modules.get(moduleId);
+                        const moduleDoc = await this.db.collection('courses')
+                            .doc(courseId).collection('modules').doc(moduleId).get();
+                            
+                        if (moduleDoc.exists) {
+                            const lesson = moduleDoc.data().lessons?.find(l => l.id === lessonId);
+                            if (lesson) {
+                                module.lessons.push(lesson);
+                            }
+                        }
+                    } catch (error) {
+                        console.warn(`⚠️ Erro ao carregar aula ${lessonId}:`, error);
                     }
+                }
+                
+                return Array.from(coursesMap.values())
+                    .map(course => ({
+                        ...course,
+                        modules: Array.from(course.modules.values())
+                            .filter(module => module.lessons.length > 0)
+                            .sort((a, b) => a.order - b.order)
+                    }))
+                    .filter(course => course.modules.length > 0)
+                    .sort((a, b) => a.order - b.order);
+            }
+
+            async loadAllCourses() {
+                this.showLoading('Carregando todos os cursos...');
+                
+                try {
+                    const coursesSnapshot = await this.db.collection('courses')
+                        .orderBy('order').get();
+                    
+                    const courses = [];
+                    
                     for (const courseDoc of coursesSnapshot.docs) {
                         const courseData = courseDoc.data();
-                        const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
+                        const modulesSnapshot = await courseDoc.ref
+                            .collection('modules').orderBy('order').get();
+                        
                         const modules = [];
+                        
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
-                            const lessons = moduleData.lessons || [];  // Conteúdos estão no array lessons
                             
-                            // Processa cada conteúdo para garantir que tenha todos os campos necessários
-                            const processedLessons = lessons.map((lesson, index) => ({
-                                id: lesson.id || `content-${index}`,
-                                name: lesson.name || 'Conteúdo sem nome',
-                                order: typeof lesson.order === 'number' ? lesson.order : index,
-                                content_url: lesson.content_url || '',
-                                file_name: lesson.file_name || ''
-                            }));
-                            
-                            if (processedLessons.length > 0) {
-                                modules.push({ 
-                                    id: moduleDoc.id, 
-                                    name: moduleData.name || 'Módulo sem nome',
+                            // Nova estrutura - conteúdo direto no módulo
+                            if (moduleData.content_url && moduleData.file_name) {
+                                modules.push({
+                                    id: moduleDoc.id,
+                                    name: moduleData.name,
                                     order: moduleData.order || 0,
-                                    lessons: processedLessons
+                                    content_url: moduleData.content_url,
+                                    file_name: moduleData.file_name,
+                                    type: 'direct'
+                                });
+                            }
+                            // Estrutura antiga - array de aulas
+                            else if (moduleData.lessons?.length > 0) {
+                                modules.push({
+                                    id: moduleDoc.id,
+                                    name: moduleData.name,
+                                    order: moduleData.order || 0,
+                                    lessons: moduleData.lessons,
+                                    type: 'lessons'
                                 });
                             }
                         }
+                        
                         if (modules.length > 0) {
-                            coursesToDisplay.push({ 
-                                id: courseDoc.id, 
-                                name: courseData.name || 'Curso sem nome',
+                            courses.push({
+                                id: courseDoc.id,
+                                name: courseData.name,
                                 order: courseData.order || 0,
-                                modules 
+                                modules
                             });
                         }
                     }
-                    console.log("DEBUG: coursesToDisplay final (todos os cursos):", coursesToDisplay);
+                    
+                    this.cacheCourses(courses);
+                    this.renderCourses(courses);
+                    this.showNotification('Todos os cursos carregados', 'success');
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar todos os cursos:', error);
+                    this.showError('Falha ao carregar cursos');
                 }
+            }
 
-                if (coursesToDisplay.length === 0) {
-                    console.warn("DEBUG: Nenhum curso para exibir!");
-                    let errorMessage = `
-                        <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 10px 0;">
-                            <h3 style="color: #856404; margin-top: 0;">⚠️ Nenhum curso disponível</h3>
-                            <p style="color: #856404; margin-bottom: 10px;">
-                                Você tem personalização ativa, mas os módulos selecionados não contêm conteúdo.
-                            </p>
-                            <p style="color: #856404; margin-bottom: 15px;">
-                                <strong>Causa provável:</strong> Os dados ainda não foram sincronizados após a refatoração.
-                            </p>
-                            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                <p style="color: #495057; margin: 5px 0;"><strong>🛠️ Soluções:</strong></p>
-                                <p style="color: #495057; margin: 5px 0;">1. Use o botão "🔍 Diagnosticar Problema" acima</p>
-                                <p style="color: #495057; margin: 5px 0;">2. Execute: <code>python sync_sheets_to_firestore.py</code></p>
-                                <p style="color: #495057; margin: 5px 0;">3. Ou use "Carregar Todos os Cursos" para testar</p>
-                            </div>
-                        </div>
-                    `;
-                    courseMenuContainer.innerHTML = errorMessage; 
+            // === RENDERIZAÇÃO ===
+            renderCourses(courses) {
+                if (!courses || courses.length === 0) {
+                    this.showEmptyState();
                     return;
                 }
-
-                loadedCoursesData = coursesToDisplay; // Armazena os dados carregados
-                console.log("DEBUG: loadedCoursesData definido:", loadedCoursesData);
-                renderCourseMenu(loadedCoursesData); // Renderiza o menu
-
-                // Tenta carregar o primeiro módulo do primeiro curso automaticamente
-                if (loadedCoursesData[0]?.modules[0]) {
-                    const firstCourse = loadedCoursesData[0];
-                    const firstModule = firstCourse.modules[0];
-                    
-                    console.log("Carregando automaticamente o primeiro módulo:", {
-                        course: firstCourse.name,
-                        module: firstModule.name,
-                        courseId: firstCourse.id,
-                        moduleId: firstModule.id
-                    });
-                    
-                    // Expande o curso automaticamente e marca o módulo como ativo
-                    setTimeout(() => {
-                        const courseHeader = document.querySelector(`[data-course-id="${firstCourse.id}"]`);
-                        const moduleHeader = document.querySelector(`[data-module-id="${firstModule.id}"]`);
-                        
-                        if (courseHeader) {
-                            const moduleList = courseHeader.nextElementSibling;
-                            const toggleIcon = courseHeader.querySelector('.toggle-icon');
-                            moduleList.classList.add('visible');
-                            toggleIcon.classList.add('expanded');
-                            toggleIcon.textContent = '▼';
-                        }
-                        
-                        if (moduleHeader) {
-                            moduleHeader.classList.add('active');
-                        }
-                    }, 100);
-                    
-                    loadFirstLessonFromModule(firstCourse.id, firstModule.id);
-                } else {
-                    console.log("DEBUG: Não há módulos para carregar automaticamente");
-                    lessonContentDiv.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                            <h3>👋 Bem-vindo à Sala de Estudos!</h3>
-                            <p>Selecione um módulo no menu à esquerda para começar seus estudos.</p>
-                            <p style="font-size: 0.9em;">💡 Dica: Clique nos cursos para expandir e ver os módulos disponíveis.</p>
-                        </div>
-                    `;
-                }
-
-            } catch (error) {
-                console.error('Erro ao carregar cursos:', error);
-                courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos. Tente recarregar a página. Detalhes: ${error.message}</p>`;
-            }
-        }
-        
-        function renderCourseMenu(courses) { // courses já deve estar ordenado
-            if (!courseMenuContainer) return;
-            let htmlContent = '';
-            courses.forEach(course => {
-                htmlContent += `
+                
+                this.loadedCourses = courses;
+                
+                const html = courses.map(course => `
                     <div class="course-item">
                         <div class="course-header" data-course-id="${course.id}">
-                            <span>${course.name || 'Curso Sem Nome'}</span>
+                            <div class="course-icon">${this.getCourseIcon(course.name)}</div>
+                            <span class="course-name">${course.name}</span>
                             <span class="toggle-icon">▶</span>
                         </div>
-                        <ul class="module-list" id="modules-${course.id}">
-                            ${(course.modules || []).map(module => `
-                                <li class="module-item">
-                                    <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                        <span>${module.name || 'Módulo Sem Nome'}</span>
-                                    </div>
-                                </li>
+                        <div class="module-list" id="modules-${course.id}">
+                            ${course.modules.map(module => `
+                                <div class="module-item" 
+                                     data-course-id="${course.id}" 
+                                     data-module-id="${module.id}"
+                                     data-type="${module.type}">
+                                    ${module.name}
+                                </div>
                             `).join('')}
-                        </ul>
-                    </div>
-                `;
-            });
-            courseMenuContainer.innerHTML = htmlContent || '<p>Nenhum curso para exibir.</p>';
-            addMenuEventListeners();
-        }
-
-        function addMenuEventListeners() {
-            document.querySelectorAll('.course-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    const moduleList = header.nextElementSibling; // O UL de módulos
-                    const toggleIcon = header.querySelector('.toggle-icon');
-                    moduleList.classList.toggle('visible');
-                    toggleIcon.classList.toggle('expanded');
-                    toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
-                });
-            });
-
-            document.querySelectorAll('.module-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    const { moduleId, courseId } = header.dataset;
-                    
-                    // Remove seleção anterior
-                    document.querySelectorAll('.module-header.active').forEach(h => h.classList.remove('active'));
-                    
-                    // Marca o módulo atual como ativo
-                    header.classList.add('active');
-                    
-                    console.log(`Carregando módulo: Curso=${courseId}, Módulo=${moduleId}`);
-                    
-                    // Carrega a primeira aula do módulo automaticamente
-                    loadFirstLessonFromModule(courseId, moduleId);
-                });
-            });
-        }
-
-        async function loadFirstLessonFromModule(courseId, moduleId) {
-            try {
-                // Encontra o módulo nos dados carregados
-                const course = loadedCoursesData.find(c => c.id === courseId);
-                const module = course?.modules.find(m => m.id === moduleId);
-                
-                if (!module) {
-                    lessonContentDiv.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                            <h3>📚 Módulo não encontrado</h3>
-                            <p>O módulo solicitado não foi encontrado nos dados carregados.</p>
-                            <p style="font-size: 0.9em;">💡 Debug: Curso=${courseId}, Módulo=${moduleId}</p>
                         </div>
-                    `;
-                    return;
-                }
-
-                // ===== NOVA LÓGICA - COMPATÍVEL COM AMBAS ESTRUTURAS =====
-                let contentToLoad = null;
-
-                // Verifica se o módulo tem conteúdo direto (nova estrutura)
-                if (module.content_url && module.file_name) {
-                    contentToLoad = {
-                        id: module.id,
-                        name: module.name || 'Conteúdo do Módulo',
-                        content_url: module.content_url,
-                        file_name: module.file_name
-                    };
-                    console.log(`Módulo ${moduleId} tem conteúdo direto (nova estrutura):`, contentToLoad);
-                }
-                // Senão, verifica se tem array lessons (estrutura antiga)
-                else if (module.lessons && module.lessons.length > 0) {
-                    const sortedLessons = [...module.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
-                    contentToLoad = sortedLessons[0];
-                    console.log(`Módulo ${moduleId} tem array lessons (estrutura antiga), primeiro conteúdo:`, contentToLoad);
-                }
-
-                if (!contentToLoad) {
-                    lessonContentDiv.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                            <h3>📚 Módulo: ${module.name || 'Módulo sem nome'}</h3>
-                            <p>Este módulo ainda não possui conteúdo disponível.</p>
-                            <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; text-align: left;">
-                                <h4 style="color: #856404; margin-top: 0;">🔧 Possíveis Soluções:</h4>
-                                <p style="color: #856404; margin: 5px 0;">1. Execute o script de sincronização de dados</p>
-                                <p style="color: #856404; margin: 5px 0;">2. Verifique se os dados foram migrados corretamente</p>
-                                <p style="color: #856404; margin: 5px 0;">3. Use o botão "🔍 Diagnosticar" para mais detalhes</p>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                console.log(`Carregando conteúdo do módulo ${moduleId}:`, contentToLoad);
-                
-                // Carrega o conteúdo usando a função existente
-                await loadLessonContent(courseId, moduleId, contentToLoad.id);
-                
-            } catch (error) {
-                console.error('Erro ao carregar primeira aula do módulo:', error);
-                lessonContentDiv.innerHTML = `
-                    <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107;">
-                        <h3 style="color: #856404; margin-top: 0;">⚠️ Erro ao carregar módulo</h3>
-                        <p style="color: #856404;">Não foi possível carregar o conteúdo do módulo.</p>
-                        <p style="color: #856404; font-size: 0.9em;">Detalhes: ${error.message}</p>
-                        <p style="color: #856404; font-size: 0.9em;">Debug: Curso=${courseId}, Módulo=${moduleId}</p>
                     </div>
-                `;
+                `).join('');
+                
+                this.elements.courseNav.innerHTML = html;
+                this.attachCourseEvents();
+                
+                // Auto-seleciona primeiro conteúdo
+                this.autoSelectFirstContent();
+                
+                console.log(`✅ ${courses.length} cursos renderizados`);
             }
-        }
 
-        async function loadLessonContent(courseId, moduleId, lessonId) {
-            if (!lessonContentDiv) return;
-            lessonContentDiv.innerHTML = '<p>Carregando conteúdo...</p>';
-            try {
-                // Encontra o conteúdo nos dados já carregados para obter a content_url
-                const course = loadedCoursesData.find(c => c.id === courseId);
-                const module = course?.modules.find(m => m.id === moduleId);
-                
-                let lesson = null;
-
-                // ===== BUSCA COMPATÍVEL COM AMBAS ESTRUTURAS =====
-                // Primeira tentativa: conteúdo direto no módulo (nova estrutura)
-                if (module?.content_url && module.file_name && (lessonId === module.id || lessonId === moduleId)) {
-                    lesson = {
-                        id: module.id,
-                        name: module.name || 'Conteúdo do Módulo',
-                        content_url: module.content_url,
-                        file_name: module.file_name
-                    };
-                    console.log(`DEBUG loadLessonContent: Usando conteúdo direto do módulo:`, lesson);
-                }
-                // Segunda tentativa: busca no array lessons (estrutura antiga)
-                else if (module?.lessons) {
-                    lesson = module.lessons.find(s => s.id === lessonId);
-                    console.log(`DEBUG loadLessonContent: Encontrado no array lessons:`, lesson);
-                }
-
-                console.log(`DEBUG loadLessonContent: Procurando conteúdo ${lessonId} no módulo ${moduleId} do curso ${courseId}`);
-                console.log(`DEBUG loadLessonContent: Course encontrado:`, course);
-                console.log(`DEBUG loadLessonContent: Module encontrado:`, module);
-                console.log(`DEBUG loadLessonContent: Content encontrado:`, lesson);
-
-                if (!lesson || !lesson.content_url) {
-                    const errorMsg = `Conteúdo não disponível (ID: ${lessonId}).`;
-                    lessonContentDiv.innerHTML = `
-                        <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 10px 0;">
-                            <h3 style="color: #856404; margin-top: 0;">⚠️ Conteúdo não encontrado</h3>
-                            <p style="color: #856404;">${errorMsg}</p>
-                            <p style="color: #856404; font-size: 0.9em;">
-                                <strong>Debug:</strong> Curso=${courseId}, Módulo=${moduleId}, Conteúdo=${lessonId}
-                            </p>
-                            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                <p style="color: #495057; margin: 5px 0;"><strong>🛠️ Verificações:</strong></p>
-                                <p style="color: #495057; margin: 5px 0;">• Módulo tem content_url? ${!!module?.content_url}</p>
-                                <p style="color: #495057; margin: 5px 0;">• Módulo tem lessons array? ${!!module?.lessons?.length}</p>
-                                <p style="color: #495057; margin: 5px 0;">• LessonId procurado: ${lessonId}</p>
-                            </div>
-                        </div>
-                    `;
-                    console.warn("URL do conteúdo não encontrada:", lessonId, lesson);
-                    return;
-                }
-                
-                console.log("Carregando conteúdo de:", lesson.content_url);
-                
-                // Verifica se a URL é uma referência do Firebase Storage ou uma URL direta
-                let contentUrl = lesson.content_url;
-                
-                // Se a URL começar with 'gs://' ou não começar com 'http', é uma referência do Storage
-                if (contentUrl.startsWith('gs://') || (!contentUrl.startsWith('http://') && !contentUrl.startsWith('https://'))) {
-                    try {
-                        console.log("Detectada referência do Firebase Storage, obtendo URL de download...");
-                        // Cria uma referência para o arquivo no Storage
-                        const storageRef = storage.refFromURL(contentUrl);
-                        // Obtém a URL de download
-                        contentUrl = await storageRef.getDownloadURL();
-                        console.log("URL de download obtida:", contentUrl);
-                    } catch (storageError) {
-                        console.error("Erro ao obter URL do Firebase Storage:", storageError);
+            attachCourseEvents() {
+                // Course headers (toggle)
+                this.elements.courseNav.querySelectorAll('.course-header').forEach(header => {
+                    header.addEventListener('click', () => {
+                        const moduleList = header.nextElementSibling;
+                        const toggleIcon = header.querySelector('.toggle-icon');
+                        const isVisible = moduleList.classList.contains('visible');
                         
-                        // FALLBACK: Tentar construir URL pública direta
-                        if (storageError.code === 'storage/unauthorized') {
-                            console.warn("⚠️ PROBLEMA DE PERMISSÃO DO STORAGE DETECTADO!");
-                            console.warn("🔧 Tentando URL pública direta como fallback...");
+                        // Fechar outros cursos (opcional)
+                        // this.elements.courseNav.querySelectorAll('.module-list').forEach(list => {
+                        //     list.classList.remove('visible');
+                        // });
+                        
+                        moduleList.classList.toggle('visible', !isVisible);
+                        toggleIcon.classList.toggle('expanded', !isVisible);
+                        toggleIcon.textContent = isVisible ? '▶' : '▼';
+                    });
+                });
+                
+                // Module items (load content)
+                this.elements.courseNav.querySelectorAll('.module-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        // Remove seleção anterior
+                        this.elements.courseNav.querySelectorAll('.module-item.active')
+                            .forEach(el => el.classList.remove('active'));
+                        
+                        // Marca como ativo
+                        item.classList.add('active');
+                        
+                        // Carrega conteúdo
+                        const { courseId, moduleId, type } = item.dataset;
+                        this.loadModuleContent(courseId, moduleId, type);
+                    });
+                });
+            }
+
+            autoSelectFirstContent() {
+                if (this.loadedCourses.length > 0 && this.loadedCourses[0].modules.length > 0) {
+                    const firstCourse = this.loadedCourses[0];
+                    const firstModule = firstCourse.modules[0];
+                    
+                    // Expande primeiro curso
+                    setTimeout(() => {
+                        const firstCourseHeader = this.elements.courseNav.querySelector('.course-header');
+                        const firstModuleList = this.elements.courseNav.querySelector('.module-list');
+                        const firstModuleItem = this.elements.courseNav.querySelector('.module-item');
+                        
+                        if (firstCourseHeader && firstModuleList && firstModuleItem) {
+                            firstModuleList.classList.add('visible');
+                            firstCourseHeader.querySelector('.toggle-icon').classList.add('expanded');
+                            firstCourseHeader.querySelector('.toggle-icon').textContent = '▼';
                             
-                            // Extrai o path do arquivo da URL gs://
-                            const gsMatch = contentUrl.match(/gs:\/\/([^\/]+)\/(.+)/);
-                            if (gsMatch) {
-                                const [, bucket, filePath] = gsMatch;
-                                const publicUrl = `https://storage.googleapis.com/${bucket}/${filePath}`;
-                                console.log("🔄 Tentando URL pública:", publicUrl);
-                                
-                                try {
-                                    const testResponse = await fetch(publicUrl, { method: 'HEAD' });
-                                    if (testResponse.ok) {
-                                        contentUrl = publicUrl;
-                                        console.log("✅ URL pública funcionou!");
-                                    } else {
-                                        throw new Error("URL pública também falhou");
-                                    }
-                                } catch (publicError) {
-                                    console.error("❌ URL pública também falhou:", publicError);
-                                    showStorageConfigError();
-                                    return;
-                                }
-                            } else {
-                                showStorageConfigError();
-                                return;
-                            }
-                        } else {
-                            throw new Error(`Falha ao obter URL do Firebase Storage: ${storageError.message}`);
+                            firstModuleItem.classList.add('active');
+                            this.loadModuleContent(firstCourse.id, firstModule.id, firstModule.type);
+                        }
+                    }, 100);
+                }
+            }
+
+            // === CARREGAMENTO DE CONTEÚDO ===
+            async loadModuleContent(courseId, moduleId, type) {
+                try {
+                    const cacheKey = `${courseId}-${moduleId}`;
+                    
+                    // Verifica cache primeiro
+                    if (this.contentCache.has(cacheKey)) {
+                        const cached = this.contentCache.get(cacheKey);
+                        if (this.isCacheValid(cached.timestamp)) {
+                            console.log('📋 Usando conteúdo do cache');
+                            this.displayContent(cached.data);
+                            return;
                         }
                     }
+                    
+                    this.showContentLoading();
+                    
+                    const course = this.loadedCourses.find(c => c.id === courseId);
+                    const module = course?.modules.find(m => m.id === moduleId);
+                    
+                    if (!module) {
+                        throw new Error('Módulo não encontrado');
+                    }
+                    
+                    let contentData;
+                    
+                    if (type === 'direct' && module.content_url) {
+                        // Nova estrutura - conteúdo direto
+                        contentData = {
+                            title: module.name,
+                            content: await this.fetchHTMLContent(module.content_url),
+                            meta: {
+                                course: course.name,
+                                module: module.name,
+                                type: 'Conteúdo do Módulo'
+                            }
+                        };
+                    } else if (type === 'lessons' && module.lessons?.length > 0) {
+                        // Estrutura antiga - primeira aula do módulo
+                        const firstLesson = module.lessons.sort((a, b) => (a.order || 0) - (b.order || 0))[0];
+                        contentData = {
+                            title: firstLesson.name,
+                            content: await this.fetchHTMLContent(firstLesson.content_url),
+                            meta: {
+                                course: course.name,
+                                module: module.name,
+                                lesson: firstLesson.name
+                            }
+                        };
+                    } else {
+                        throw new Error('Conteúdo não disponível');
+                    }
+                    
+                    // Cache do conteúdo
+                    this.contentCache.set(cacheKey, {
+                        data: contentData,
+                        timestamp: Date.now()
+                    });
+                    
+                    this.displayContent(contentData);
+                    this.updateCacheStatus();
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar conteúdo:', error);
+                    this.showContentError(error.message);
                 }
-                
-                // Agora usa a URL (seja a original ou a obtida do Storage) para fazer o fetch
-                const response = await fetch(contentUrl);
-                if (!response.ok) throw new Error(`Falha ao carregar conteúdo: ${response.status} ${response.statusText}`);
-                const htmlContent = await response.text();
-                lessonContentDiv.innerHTML = htmlContent;
-                console.log("Conteúdo carregado com sucesso.");
+            }
 
-            } catch (error) {
-                console.error('Erro ao carregar conteúdo:', error);
-                lessonContentDiv.innerHTML = `
-                    <div style="padding: 20px; background: #f8d7da; border-left: 4px solid #dc3545;">
-                        <h3 style="color: #721c24; margin-top: 0;">❌ Erro ao carregar conteúdo</h3>
-                        <p style="color: #721c24;">Não foi possível carregar o conteúdo solicitado.</p>
-                        <p style="color: #721c24; font-size: 0.9em;">Detalhes: ${error.message}</p>
-                        <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                            <p style="color: #495057; margin: 5px 0;"><strong>🔧 Possíveis causas:</strong></p>
-                            <p style="color: #495057; margin: 5px 0;">• Arquivo não existe no Firebase Storage</p>
-                            <p style="color: #495057; margin: 5px 0;">• Regras do Storage restritivas</p>
-                            <p style="color: #495057; margin: 5px 0;">• Problemas de conectividade</p>
-                        </div>
-                        <button onclick="location.reload()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">
-                            🔄 Recarregar Página
+            async fetchHTMLContent(contentUrl) {
+                try {
+                    let url = contentUrl;
+                    
+                    // Se é referência do Firebase Storage
+                    if (url.startsWith('gs://')) {
+                        const storageRef = this.storage.refFromURL(url);
+                        url = await storageRef.getDownloadURL();
+                    }
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    return await response.text();
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao buscar conteúdo HTML:', error);
+                    throw new Error('Falha ao carregar conteúdo');
+                }
+            }
+
+            displayContent(contentData) {
+                this.currentContent = contentData;
+                
+                // Atualiza header do conteúdo
+                this.elements.contentHeader.style.display = 'flex';
+                this.elements.contentTitle.textContent = contentData.title;
+                
+                const metaText = [
+                    contentData.meta.course,
+                    contentData.meta.module,
+                    contentData.meta.lesson
+                ].filter(Boolean).join(' • ');
+                
+                this.elements.contentMeta.textContent = metaText;
+                
+                // Atualiza corpo do conteúdo
+                this.elements.contentBody.innerHTML = `
+                    <div class="lesson-content">
+                        ${contentData.content}
+                    </div>
+                `;
+                
+                // Scroll para o topo
+                this.elements.contentBody.scrollTop = 0;
+                
+                console.log('✅ Conteúdo exibido:', contentData.title);
+            }
+
+            // === ESTADOS DE UI ===
+            showLoading(message = 'Carregando...') {
+                this.elements.courseNav.innerHTML = `
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+
+            showContentLoading() {
+                this.elements.contentBody.innerHTML = `
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando conteúdo...</p>
+                    </div>
+                `;
+            }
+
+            showEmptyState() {
+                this.elements.courseNav.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>Nenhum curso encontrado</h3>
+                        <p>Configure sua personalização ou use "Todos os Cursos".</p>
+                    </div>
+                `;
+            }
+
+            showEmptyPersonalization() {
+                this.elements.courseNav.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚙️</div>
+                        <h3>Personalização vazia</h3>
+                        <p>Você não selecionou nenhum conteúdo ainda.</p>
+                        <button onclick="window.location.href='personalizar.html'" 
+                                style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+                            Personalizar Agora
                         </button>
                     </div>
                 `;
             }
-        }
 
-        // --- Sidebar Toggle ---
-        function toggleSidebar() {
-            if (!sidebar || !mainContent || !sidebarToggleBtn) {
-                console.warn("Elementos da sidebar ou botão de toggle não encontrados.");
-                return;
+            showError(message) {
+                this.elements.courseNav.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <h3>Erro</h3>
+                        <p>${message}</p>
+                        <button onclick="location.reload()" 
+                                style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--error-color); color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+                            Tentar Novamente
+                        </button>
+                    </div>
+                `;
             }
-            if (window.innerWidth <= 768) { // Comportamento mobile
-                const isVisible = sidebar.classList.toggle('visible'); // 'visible' controla a exibição
-                sidebarToggleBtn.innerHTML = isVisible ? '✖' : '☰'; 
-            } else { // Comportamento desktop
-                const isHidden = sidebar.classList.toggle('hidden'); // 'hidden' controla a margem do mainContent
-                mainContent.classList.toggle('sidebar-hidden', isHidden);
-                // sidebarToggleBtn.innerHTML = '☰'; // Ícone geralmente não muda no desktop ao esconder
-            }
-            closeAllMegaMenus(); // Fecha mega menus ao interagir com a sidebar
-        }
 
-        function updateLayout() { // Ajusta o layout inicial e em redimensionamento
-            if (!sidebar || !mainContent || !sidebarToggleBtn) {
-                // console.warn("Tentando atualizar layout, mas elementos da sidebar não estão prontos.");
-                return; // Não faz nada se os elementos não estiverem prontos
+            showContentError(message) {
+                this.elements.contentBody.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Erro ao carregar conteúdo</h3>
+                        <p>${message}</p>
+                        <p style="font-size: 0.9em; margin-top: 1rem; opacity: 0.8;">
+                            Verifique sua conexão e tente novamente.
+                        </p>
+                    </div>
+                `;
             }
-            if (window.innerWidth <= 768) { // Mobile
-                sidebar.classList.remove('hidden'); // Remove classe de desktop
-                if (!sidebar.classList.contains('visible')) { // Se não estiver explicitamente visível
-                    mainContent.classList.add('sidebar-hidden'); // Garante que o conteúdo principal ocupe tudo
-                    sidebarToggleBtn.innerHTML = '☰';
-                } else {
-                     mainContent.classList.remove('sidebar-hidden'); // Se visível, conteúdo principal não ocupa tudo
-                     sidebarToggleBtn.innerHTML = '✖';
+
+            // === NOTIFICAÇÕES ===
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Anima entrada
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // Remove após 3 segundos
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+
+            // === UTILITÁRIOS ===
+            getCourseIcon(courseName) {
+                const name = courseName.toLowerCase();
+                if (name.includes('direito')) return '⚖️';
+                if (name.includes('matemática') || name.includes('matematica')) return '🔢';
+                if (name.includes('português') || name.includes('portugues')) return '📝';
+                if (name.includes('informática') || name.includes('informatica')) return '💻';
+                if (name.includes('contabilidade')) return '📊';
+                if (name.includes('administração') || name.includes('administracao')) return '🏛️';
+                return '📚';
+            }
+
+            cacheCourses(courses) {
+                this.coursesCache = {
+                    data: courses,
+                    timestamp: Date.now()
+                };
+            }
+
+            isCacheValid(timestamp) {
+                return (Date.now() - timestamp) < this.cacheTTL;
+            }
+
+            updateCacheStatus() {
+                const count = this.contentCache.size;
+                if (this.elements.cacheCount) {
+                    this.elements.cacheCount.textContent = count;
+                    this.elements.cacheStatus.style.display = count > 0 ? 'block' : 'none';
                 }
-            } else { // Desktop
-                sidebar.classList.remove('visible'); // Remove classe de mobile
-                if (sidebar.classList.contains('hidden')) {
-                    mainContent.classList.add('sidebar-hidden');
-                } else {
-                    mainContent.classList.remove('sidebar-hidden');
-                }
-                sidebarToggleBtn.innerHTML = '☰'; 
+            }
+
+            // === API PÚBLICA ===
+            clearCache() {
+                this.contentCache.clear();
+                this.coursesCache = null;
+                this.updateCacheStatus();
+                this.showNotification('Cache limpo', 'success');
+            }
+
+            refresh() {
+                this.clearCache();
+                this.loadUserCourses();
             }
         }
-        
-        window.addEventListener('resize', updateLayout);
 
-        // --- Inicialização após DOM carregado ---
+        // === INICIALIZAÇÃO GLOBAL ===
+        let studyApp;
+
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("Página HTML carregada (DOMContentLoaded). Aguardando header e autenticação...");
-            // A inicialização de eventos do header e `updateLayout` agora ocorrem dentro de `initializeHeaderEvents`,
-            // que é chamada após o fetch do header.html.
-            // A chamada `applySavedPreferences` é feita após a autenticação.
+            studyApp = new StudyRoomApp();
+            
+            // Expor para debug
+            window.studyApp = studyApp;
         });
 
-        // Funções de debug para testar a personalização
-        async function debugClearPersonalization() {
-            if (!userId) {
-                alert('Usuário não logado. Por favor, faça login.');
-                return;
-            }
-            try {
-                await db.collection('users').doc(userId).update({
+        // === FUNÇÕES GLOBAIS PARA COMPATIBILIDADE ===
+        function debugClearPersonalization() {
+            if (studyApp?.userId) {
+                studyApp.db.collection('users').doc(studyApp.userId).update({
                     hasPersonalized: false,
                     selectedModules: [],
                     selectedLessons: []
+                }).then(() => {
+                    studyApp.showNotification('Personalização limpa', 'success');
+                    studyApp.refresh();
                 });
-                console.log('Personalização do usuário limpa com sucesso.');
-                alert('Personalização do usuário limpa com sucesso!');
-                loadCourses(); // Recarrega os cursos para mostrar a lista completa
-            } catch (error) {
-                console.error('Erro ao limpar personalização:', error);
-                alert('Erro ao limpar personalização: ' + error.message);
             }
         }
 
-        async function debugLoadAllCourses() {
-            if (!userId) {
-                alert('Usuário não logado. Por favor, faça login.');
-                return;
-            }
-            try {
-                const userDocRef = db.collection('users').doc(userId);
-                await userDocRef.update({
-                    hasPersonalized: false,
-                    selectedModules: [],
-                    selectedLessons: []
-                });
-                console.log('Personalização do usuário removida com sucesso.');
-                alert('Personalização do usuário removida com sucesso!');
-                loadCourses(); // Recarrega os cursos para mostrar a lista completa
-            } catch (error) {
-                console.error('Erro ao remover personalização:', error);
-                alert('Erro ao remover personalização: ' + error.message);
-            }
+        function debugLoadAllCourses() {
+            studyApp?.loadAllCourses();
         }
 
-        async function debugShowUserData() {
-            if (!userId) {
-                alert('Usuário não logado. Por favor, faça login.');
-                return;
-            }
-            try {
-                const userDoc = await db.collection('users').doc(userId).get();
-                console.log('Dados do Usuário:', userDoc.data());
-                alert('Dados do Usuário:\n' + JSON.stringify(userDoc.data(), null, 2));
-            } catch (error) {
-                console.error('Erro ao mostrar dados do usuário:', error);
-                alert('Erro ao mostrar dados do usuário: ' + error.message);
-            }
+        // Service Worker para cache offline (futuro)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registrado'))
+                    .catch(error => console.log('SW falhou'));
+            });
         }
-
-                 async function debugInspectFirestore() {
-             try {
-                 console.log('=== INSPEÇÃO DO FIRESTORE ===');
-                 
-                 // Inspeciona usuário atual
-                 if (userId) {
-                     const userDoc = await db.collection('users').doc(userId).get();
-                     console.log('Dados do usuário atual:', userDoc.data());
-                 }
-
-                 // Inspeciona cursos
-                 const coursesRef = db.collection('courses');
-                 const coursesSnapshot = await coursesRef.get();
-                 console.log('=== CURSOS NO FIRESTORE ===');
-                 for (const courseDoc of coursesSnapshot.docs) {
-                     const courseData = courseDoc.data();
-                     console.log(`Curso: ${courseDoc.id}`, courseData);
-                     
-                     // Inspeciona módulos do curso
-                     const modulesSnapshot = await courseDoc.ref.collection('modules').get();
-                     console.log(`  Módulos do curso ${courseDoc.id}:`);
-                     for (const moduleDoc of modulesSnapshot.docs) {
-                         const moduleData = moduleDoc.data();
-                         console.log(`    Módulo: ${moduleDoc.id}`, moduleData);
-                         console.log(`    Conteúdos no módulo: ${moduleData.content_url ? 1 : 0} (nova estrutura)`);
-                         if (moduleData.content_url && moduleData.file_name) {
-                             console.log(`    Conteúdo:`, {
-                                 id: moduleData.id,
-                                 name: moduleData.name,
-                                 content_url: moduleData.content_url,
-                                 file_name: moduleData.file_name
-                             });
-                         }
-                         console.log(`    Conteúdos no módulo: ${moduleData.lessons ? moduleData.lessons.length : 0}`);
-                         if (moduleData.lessons && moduleData.lessons.length > 0) {
-                             console.log(`    Primeiro conteúdo:`, moduleData.lessons[0]);
-                         }
-                     }
-                 }
-
-                 alert('Firestore inspecionado! Verifique o console do navegador para detalhes completos.');
-             } catch (error) {
-                 console.error('Erro ao inspecionar Firestore:', error);
-                 alert('Erro ao inspecionar Firestore: ' + error.message);
-             }
-         }
-
-         async function debugDiagnoseContent() {
-             if (!userId) {
-                 alert('Usuário não logado. Por favor, faça login.');
-                 return;
-             }
-             try {
-                 console.log('=== DIAGNÓSTICO ESPECÍFICO DE CONTEÚDO ===');
-                 
-                 const userDocRef = db.collection('users').doc(userId);
-                 const userDoc = await userDocRef.get();
-                 if (!userDoc.exists) {
-                     alert('Usuário não encontrado no Firestore.');
-                     return;
-                 }
-                 
-                 const userData = userDoc.data();
-                 console.log('Dados do usuário:', userData);
-                 
-                 if (!userData.hasPersonalized || !userData.selectedModules?.length) {
-                     alert('DIAGNÓSTICO: Usuário não tem personalização ativa.\nUse o botão "Carregar Todos os Cursos" para testar.');
-                     return;
-                 }
-
-                 let modulesWithoutContent = 0;
-                 let modulesWithContent = 0;
-                 let modulesWithNewStructure = 0;
-                 let modulesWithOldStructure = 0;
-                 let totalModules = 0;
-                 let detailedReport = [];
-
-                 // Verifica cada módulo selecionado
-                 for (const selection of userData.selectedModules) {
-                     totalModules++;
-                     const courseRef = db.collection('courses').doc(selection.courseId);
-                     const moduleRef = courseRef.collection('modules').doc(selection.moduleId);
-                     const moduleDoc = await moduleRef.get();
-                     
-                     if (moduleDoc.exists) {
-                         const moduleData = moduleDoc.data();
-                         
-                         // ===== VERIFICAÇÃO COM NOVA ESTRUTURA =====
-                         const hasNewStructure = moduleData.content_url && moduleData.file_name;
-                         const hasOldStructure = moduleData.lessons && moduleData.lessons.length > 0;
-                         
-                         if (hasNewStructure) {
-                             modulesWithNewStructure++;
-                             modulesWithContent++;
-                             detailedReport.push({
-                                 courseId: selection.courseId,
-                                 moduleId: selection.moduleId,
-                                 name: moduleData.name || 'Sem nome',
-                                 structure: 'NOVA (content_url)',
-                                 status: '✅ OK',
-                                 contentUrl: moduleData.content_url,
-                                 fileName: moduleData.file_name
-                             });
-                         } else if (hasOldStructure) {
-                             modulesWithOldStructure++;
-                             modulesWithContent++;
-                             detailedReport.push({
-                                 courseId: selection.courseId,
-                                 moduleId: selection.moduleId,
-                                 name: moduleData.name || 'Sem nome',
-                                 structure: 'ANTIGA (lessons array)',
-                                 status: '✅ OK',
-                                 lessonsCount: moduleData.lessons.length
-                             });
-                         } else {
-                             modulesWithoutContent++;
-                             detailedReport.push({
-                                 courseId: selection.courseId,
-                                 moduleId: selection.moduleId,
-                                 name: moduleData.name || 'Sem nome',
-                                 structure: 'NENHUMA',
-                                 status: '❌ SEM CONTEÚDO',
-                                 data: moduleData
-                             });
-                         }
-                     } else {
-                         modulesWithoutContent++;
-                         detailedReport.push({
-                             courseId: selection.courseId,
-                             moduleId: selection.moduleId,
-                             name: 'Módulo não encontrado',
-                             structure: 'N/A',
-                             status: '❌ NÃO EXISTE'
-                         });
-                     }
-                 }
-
-                 // Gera relatório detalhado
-                 let diagMessage = `🔍 DIAGNÓSTICO COMPLETO:\n\n`;
-                 diagMessage += `📊 RESUMO:\n`;
-                 diagMessage += `• Total de módulos selecionados: ${totalModules}\n`;
-                 diagMessage += `• Módulos com conteúdo: ${modulesWithContent}\n`;
-                 diagMessage += `• Módulos sem conteúdo: ${modulesWithoutContent}\n\n`;
-                 
-                 diagMessage += `🏗️ ESTRUTURA DE DADOS:\n`;
-                 diagMessage += `• Nova estrutura (content_url): ${modulesWithNewStructure}\n`;
-                 diagMessage += `• Estrutura antiga (lessons): ${modulesWithOldStructure}\n\n`;
-
-                 // Adiciona detalhes por módulo
-                 diagMessage += `📝 DETALHES POR MÓDULO:\n`;
-                 detailedReport.forEach((module, index) => {
-                     diagMessage += `${index + 1}. ${module.name}\n`;
-                     diagMessage += `   Curso: ${module.courseId}\n`;
-                     diagMessage += `   Status: ${module.status}\n`;
-                     diagMessage += `   Estrutura: ${module.structure}\n`;
-                     if (module.contentUrl) {
-                         diagMessage += `   URL: ${module.contentUrl}\n`;
-                     }
-                     if (module.lessonsCount) {
-                         diagMessage += `   Conteúdos: ${module.lessonsCount}\n`;
-                     }
-                     diagMessage += `\n`;
-                 });
-
-                 // Determina o problema e solução
-                 if (modulesWithoutContent === totalModules) {
-                     diagMessage += `🚨 PROBLEMA IDENTIFICADO:\n`;
-                     diagMessage += `Todos os módulos estão vazios (sem conteúdo).\n\n`;
-                     diagMessage += `🛠️ SOLUÇÃO RECOMENDADA:\n`;
-                     diagMessage += `1. Execute o script de sincronização:\n`;
-                     diagMessage += `   python PRO_Import_System/sync_sheets_to_firestore.py\n\n`;
-                     diagMessage += `2. Ou configure os módulos manualmente no Firebase Console\n`;
-                     diagMessage += `3. Certifique-se de que os arquivos existem no Storage\n\n`;
-                 } else if (modulesWithoutContent > 0) {
-                     diagMessage += `⚠️ PROBLEMA PARCIAL:\n`;
-                     diagMessage += `${modulesWithoutContent} módulos não têm conteúdo.\n\n`;
-                     diagMessage += `🛠️ AÇÕES RECOMENDADAS:\n`;
-                     diagMessage += `1. Execute o script de sincronização\n`;
-                     diagMessage += `2. Verifique os módulos sem conteúdo listados acima\n\n`;
-                 } else {
-                     diagMessage += `✅ ESTRUTURA OK!\n`;
-                     diagMessage += `Todos os módulos têm conteúdo.\n\n`;
-                     if (modulesWithNewStructure > 0 && modulesWithOldStructure > 0) {
-                         diagMessage += `ℹ️ OBSERVAÇÃO:\n`;
-                         diagMessage += `Você tem módulos em ambas estruturas (nova e antiga).\n`;
-                         diagMessage += `Isso é normal durante a migração.\n\n`;
-                     }
-                     diagMessage += `🔍 Se ainda há problemas, verifique:\n`;
-                     diagMessage += `• Regras do Firebase Storage\n`;
-                     diagMessage += `• Conectividade de rede\n`;
-                     diagMessage += `• Console do navegador para erros\n`;
-                 }
-
-                 console.log(diagMessage);
-                 
-                 // Exibe resultado em uma janela melhor formatada
-                 const diagWindow = window.open('', 'Diagnóstico', 'width=800,height=600,scrollbars=yes');
-                 diagWindow.document.write(`
-                     <html>
-                     <head>
-                         <title>Diagnóstico Detalhado - Sala de Estudos</title>
-                         <style>
-                             body { font-family: monospace; padding: 20px; background: #f5f5f5; }
-                             .container { background: white; padding: 20px; border-radius: 8px; }
-                             .status-ok { color: #28a745; }
-                             .status-error { color: #dc3545; }
-                             .status-warning { color: #ffc107; }
-                             pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
-                         </style>
-                     </head>
-                     <body>
-                         <div class="container">
-                             <h1>🔍 Diagnóstico Detalhado</h1>
-                             <pre>${diagMessage}</pre>
-                             <button onclick="window.close()" style="padding: 10px 20px; margin-top: 20px;">Fechar</button>
-                         </div>
-                     </body>
-                     </html>
-                 `);
-
-             } catch (error) {
-                 console.error('Erro ao diagnosticar:', error);
-                 alert('Erro ao diagnosticar: ' + error.message);
-             }
-         }
-
-         function showStorageConfigError() {
-             if (!lessonContentDiv) return;
-             
-             lessonContentDiv.innerHTML = `
-                 <div style="padding: 30px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 8px;">
-                     <h2 style="color: #856404; margin-top: 0;">⚠️ Problema de Configuração do Firebase Storage</h2>
-                     
-                     <div style="background: #f8d7da; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 3px solid #dc3545;">
-                         <h3 style="color: #721c24; margin-top: 0;">🚨 Erro Detectado:</h3>
-                         <p style="color: #721c24; margin: 5px 0;">
-                             <strong>Firebase Storage: User does not have permission to access content/</strong>
-                         </p>
-                         <p style="color: #721c24; margin: 5px 0;">
-                             As regras do Firebase Storage estão bloqueando o acesso aos arquivos das aulas.
-                         </p>
-                     </div>
-
-                     <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 3px solid #0c5460;">
-                         <h3 style="color: #0c5460; margin-top: 0;">🛠️ Solução Rápida:</h3>
-                         <ol style="color: #0c5460; margin: 10px 0;">
-                             <li><strong>Acesse:</strong> <a href="https://console.firebase.google.com/project/nvp-concursos" target="_blank" style="color: #0c5460;">Firebase Console</a></li>
-                             <li><strong>Clique em:</strong> Storage (menu lateral)</li>
-                             <li><strong>Clique na aba:</strong> Rules</li>
-                             <li><strong>Substitua o código</strong> pelas regras corretas</li>
-                             <li><strong>Clique em:</strong> Publish</li>
-                         </ol>
-                     </div>
-
-                     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                         <h4 style="color: #495057; margin-top: 0;">📋 Código das Regras (copie e cole):</h4>
-                         <pre style="background: #343a40; color: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 14px;">rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    // Permite leitura para arquivos de conteúdo (aulas)
-    match /content/{allPaths=**} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
-    }
-    
-    // Regras padrão para outros caminhos
-    match /{allPaths=**} {
-      allow read: if false;
-      allow write: if request.auth != null;
-    }
-  }
-}</pre>
-                     </div>
-
-                     <div style="background: #d4edda; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 3px solid #155724;">
-                         <h4 style="color: #155724; margin-top: 0;">✅ Após aplicar as regras:</h4>
-                         <p style="color: #155724; margin: 5px 0;">
-                             1. Recarregue esta página (F5)<br/>
-                             2. Clique novamente na aula<br/>
-                             3. O conteúdo deve carregar normalmente
-                         </p>
-                     </div>
-
-                     <div style="text-align: center; margin: 20px 0;">
-                         <button onclick="location.reload()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">
-                             🔄 Recarregar Página
-                         </button>
-                                                 <button onclick="debugDiagnoseContent()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px;">
-                            🔍 Diagnosticar
-                        </button>
-                     </div>
-
-                     <div style="font-size: 12px; color: #6c757d; text-align: center; margin-top: 15px;">
-                         <p>💡 <strong>Dica:</strong> Este erro só aparece quando as regras do Firebase Storage não foram aplicadas corretamente.</p>
-                         <p>Após seguir os passos acima, este problema será resolvido definitivamente.</p>
-                     </div>
-                 </div>
-             `;
-         }
-
-         // Função para detectar automaticamente problemas de Storage
-         function detectStorageIssues() {
-             // Esta função pode ser expandida para detectar outros problemas
-             console.log("🔍 Sistema de detecção automática de problemas ativo...");
-         }
     </script>
 </body>
 </html>
