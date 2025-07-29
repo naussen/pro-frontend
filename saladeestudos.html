@@ -359,6 +359,72 @@
             color: var(--accent-2);
         }
 
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .module-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .module-meta {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+
+        .module-toggle {
+            font-size: 0.8em;
+            transition: transform var(--animation-speed) ease;
+        }
+
+        .module-toggle.expanded {
+            transform: rotate(90deg);
+        }
+
+        .aulas-list {
+            margin-top: 0.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .aula-item {
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: all var(--animation-speed) ease;
+            background: rgba(0, 0, 0, 0.02);
+            font-size: 0.85em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .aula-item:hover {
+            background: var(--light-highlight-bg);
+            transform: translateX(2px);
+        }
+
+        .aula-item.active {
+            background: var(--accent-1);
+            color: white;
+        }
+
+        .aula-meta {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            opacity: 0.8;
+        }
+
+        .aula-item.active .aula-meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
         /* === CONTEÚDO PRINCIPAL === */
         .study-content {
             flex: 1;
@@ -623,7 +689,7 @@
                     <div class="loading-container">
                         <div class="loading-spinner"></div>
                         <p>Carregando cursos...</p>
-                    </div>
+            </div>
                 </nav>
             </div>
         </aside>
@@ -647,15 +713,15 @@
                     <button class="header-btn primary" id="themeToggleBtn" title="Alternar tema">
                         <span id="themeIcon">🌙</span>
                     </button>
-                </div>
+            </div>
             </header>
 
             <div class="content-header" id="contentHeader" style="display: none;">
                 <div>
                     <h2 class="content-title" id="contentTitle">Selecione um conteúdo</h2>
                     <div class="content-meta" id="contentMeta"></div>
+                    </div>
                 </div>
-            </div>
 
             <div class="content-body" id="contentBody">
                 <div class="empty-state">
@@ -680,7 +746,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-
+    
     <script>
         'use strict';
 
@@ -708,14 +774,14 @@
                 
                 // Configuração do Firebase
                 this.firebaseConfig = {
-                    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-                    authDomain: "nvp-concursos.firebaseapp.com",
-                    projectId: "nvp-concursos",
-                    storageBucket: "nvp-concursos.firebasestorage.app",
-                    messagingSenderId: "397960760271",
-                    appId: "1:397960760271:web:1243b04141178453d860ba",
-                    measurementId: "G-T6RVBM12BQ"
-                };
+            apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+			authDomain: "nvp-concursos.firebaseapp.com",
+			projectId: "nvp-concursos",
+			storageBucket: "nvp-concursos.firebasestorage.app",
+			messagingSenderId: "397960760271",
+			appId: "1:397960760271:web:1243b04141178453d860ba",
+			measurementId: "G-T6RVBM12BQ"
+        };
 
                 this.init();
             }
@@ -836,9 +902,9 @@
 
             setupAuth() {
                 this.auth.onAuthStateChanged(user => {
-                    if (!user) {
+            if (!user) {
                         console.log('❌ Usuário não autenticado, redirecionando...');
-                        window.location.href = 'index.html';
+                window.location.href = 'index.html';
                         return;
                     }
                     
@@ -857,7 +923,7 @@
                 if (isMobile) {
                     this.elements.sidebar.classList.toggle('visible');
                     this.elements.overlay.classList.toggle('visible');
-                } else {
+            } else {
                     this.sidebarCollapsed = !this.sidebarCollapsed;
                     this.elements.sidebar.classList.toggle('collapsed', this.sidebarCollapsed);
                     
@@ -939,13 +1005,10 @@
                             this.cacheCourses(courses);
                             this.renderCourses(courses);
                         } 
-                        // Compatibilidade com estrutura antiga
-                        else if (userData.selectedLessons?.length > 0) {
-                            const courses = await this.loadSelectedLessons(userData.selectedLessons);
-                            this.cacheCourses(courses);
-                            this.renderCourses(courses);
-                        } else {
-                            this.showEmptyPersonalization();
+                        // Para usuários antigos, carrega todos os cursos
+                        else {
+                            console.log('📚 Usuário sem personalização - carregando todos os cursos');
+                            await this.loadAllCourses();
                         }
                     } else {
                         console.log('📚 Carregando todos os cursos');
@@ -963,6 +1026,7 @@
                 
                 for (const { courseId, moduleId } of selectedModules) {
                     try {
+                        // Carregar dados do curso
                         if (!coursesMap.has(courseId)) {
                             const courseDoc = await this.db.collection('courses').doc(courseId).get();
                             if (courseDoc.exists) {
@@ -975,6 +1039,7 @@
                             }
                         }
                         
+                        // Carregar dados do módulo
                         const moduleDoc = await this.db.collection('courses')
                             .doc(courseId).collection('modules').doc(moduleId).get();
                             
@@ -982,25 +1047,33 @@
                             const moduleData = moduleDoc.data();
                             const course = coursesMap.get(courseId);
                             
-                            // Suporte para nova estrutura (conteúdo direto no módulo)
-                            if (moduleData.content_url && moduleData.file_name) {
-                                course.modules.push({
-                                    id: moduleId,
-                                    name: moduleData.name,
-                                    order: moduleData.order || 0,
-                                    content_url: moduleData.content_url,
-                                    file_name: moduleData.file_name,
-                                    type: 'direct'
+                            // Carregar todas as aulas do módulo
+                            const aulasSnapshot = await this.db.collection('courses')
+                                .doc(courseId).collection('modules').doc(moduleId)
+                                .collection('aulas').orderBy('order').get();
+                                
+                            const aulas = [];
+                            aulasSnapshot.forEach(aulaDoc => {
+                                const aulaData = aulaDoc.data();
+                                aulas.push({
+                                    id: aulaDoc.id,
+                                    name: aulaData.name,
+                                    order: aulaData.order || 0,
+                                    content_url: aulaData.content_url,
+                                    file_name: aulaData.file_name,
+                                    estimated_time: aulaData.estimated_time,
+                                    difficulty: aulaData.difficulty
                                 });
-                            }
-                            // Suporte para estrutura antiga (array de aulas)
-                            else if (moduleData.lessons?.length > 0) {
+                            });
+                            
+                            // Adiciona módulo com suas aulas
+                            if (aulas.length > 0) {
                                 course.modules.push({
                                     id: moduleId,
                                     name: moduleData.name,
                                     order: moduleData.order || 0,
-                                    lessons: moduleData.lessons,
-                                    type: 'lessons'
+                                    aulas: aulas,
+                                    type: 'aulas' // Nova estrutura sempre tem aulas separadas
                                 });
                             }
                         }
@@ -1014,65 +1087,8 @@
                     .sort((a, b) => a.order - b.order);
             }
 
-            async loadSelectedLessons(selectedLessons) {
-                // Implementação para compatibilidade com estrutura antiga
-                const coursesMap = new Map();
-                
-                for (const { courseId, moduleId, lessonId } of selectedLessons) {
-                    try {
-                        if (!coursesMap.has(courseId)) {
-                            const courseDoc = await this.db.collection('courses').doc(courseId).get();
-                            if (courseDoc.exists) {
-                                coursesMap.set(courseId, {
-                                    id: courseId,
-                                    name: courseDoc.data().name,
-                                    order: courseDoc.data().order || 0,
-                                    modules: new Map()
-                                });
-                            }
-                        }
-                        
-                        const course = coursesMap.get(courseId);
-                        if (!course.modules.has(moduleId)) {
-                            const moduleDoc = await this.db.collection('courses')
-                                .doc(courseId).collection('modules').doc(moduleId).get();
-                                
-                            if (moduleDoc.exists) {
-                                course.modules.set(moduleId, {
-                                    id: moduleId,
-                                    name: moduleDoc.data().name,
-                                    order: moduleDoc.data().order || 0,
-                                    lessons: [],
-                                    type: 'lessons'
-                                });
-                            }
-                        }
-                        
-                        const module = course.modules.get(moduleId);
-                        const moduleDoc = await this.db.collection('courses')
-                            .doc(courseId).collection('modules').doc(moduleId).get();
-                            
-                        if (moduleDoc.exists) {
-                            const lesson = moduleDoc.data().lessons?.find(l => l.id === lessonId);
-                            if (lesson) {
-                                module.lessons.push(lesson);
-                            }
-                        }
-                    } catch (error) {
-                        console.warn(`⚠️ Erro ao carregar aula ${lessonId}:`, error);
-                    }
-                }
-                
-                return Array.from(coursesMap.values())
-                    .map(course => ({
-                        ...course,
-                        modules: Array.from(course.modules.values())
-                            .filter(module => module.lessons.length > 0)
-                            .sort((a, b) => a.order - b.order)
-                    }))
-                    .filter(course => course.modules.length > 0)
-                    .sort((a, b) => a.order - b.order);
-            }
+            // Função removida - não é mais necessária com a nova estrutura
+            // A personalização agora funciona apenas com módulos completos
 
             async loadAllCourses() {
                 this.showLoading('Carregando todos os cursos...');
@@ -1093,35 +1109,42 @@
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
                             
-                            // Nova estrutura - conteúdo direto no módulo
-                            if (moduleData.content_url && moduleData.file_name) {
-                                modules.push({
-                                    id: moduleDoc.id,
-                                    name: moduleData.name,
-                                    order: moduleData.order || 0,
-                                    content_url: moduleData.content_url,
-                                    file_name: moduleData.file_name,
-                                    type: 'direct'
+                            // Carregar todas as aulas do módulo
+                            const aulasSnapshot = await moduleDoc.ref
+                                .collection('aulas').orderBy('order').get();
+                                
+                            const aulas = [];
+                            aulasSnapshot.forEach(aulaDoc => {
+                                const aulaData = aulaDoc.data();
+                                aulas.push({
+                                    id: aulaDoc.id,
+                                    name: aulaData.name,
+                                    order: aulaData.order || 0,
+                                    content_url: aulaData.content_url,
+                                    file_name: aulaData.file_name,
+                                    estimated_time: aulaData.estimated_time,
+                                    difficulty: aulaData.difficulty
                                 });
-                            }
-                            // Estrutura antiga - array de aulas
-                            else if (moduleData.lessons?.length > 0) {
+                            });
+                            
+                            // Adiciona módulo com suas aulas
+                            if (aulas.length > 0) {
                                 modules.push({
                                     id: moduleDoc.id,
                                     name: moduleData.name,
                                     order: moduleData.order || 0,
-                                    lessons: moduleData.lessons,
-                                    type: 'lessons'
+                                    aulas: aulas,
+                                    type: 'aulas'
                                 });
                             }
                         }
                         
                         if (modules.length > 0) {
                             courses.push({
-                                id: courseDoc.id,
+                                id: courseDoc.id, 
                                 name: courseData.name,
                                 order: courseData.order || 0,
-                                modules
+                                modules 
                             });
                         }
                     }
@@ -1158,7 +1181,22 @@
                                      data-course-id="${course.id}" 
                                      data-module-id="${module.id}"
                                      data-type="${module.type}">
-                                    ${module.name}
+                                    <div class="module-header">
+                                        <span class="module-name">${module.name}</span>
+                                        <span class="module-meta">(${module.aulas ? module.aulas.length : 0} aulas)</span>
+                                        <span class="module-toggle">▶</span>
+                                    </div>
+                                    <div class="aulas-list" style="display: none;">
+                                        ${module.aulas ? module.aulas.map(aula => `
+                                            <div class="aula-item" 
+                                                 data-course-id="${course.id}"
+                                                 data-module-id="${module.id}"
+                                                 data-aula-id="${aula.id}">
+                                                ${aula.name}
+                                                <span class="aula-meta">${aula.difficulty || ''} ${aula.estimated_time ? '• ' + aula.estimated_time + 'min' : ''}</span>
+                                            </div>
+                                        `).join('') : ''}
+                                    </div>
                                 </div>
                             `).join('')}
                         </div>
@@ -1177,9 +1215,9 @@
             attachCourseEvents() {
                 // Course headers (toggle)
                 this.elements.courseNav.querySelectorAll('.course-header').forEach(header => {
-                    header.addEventListener('click', () => {
+                header.addEventListener('click', () => {
                         const moduleList = header.nextElementSibling;
-                        const toggleIcon = header.querySelector('.toggle-icon');
+                    const toggleIcon = header.querySelector('.toggle-icon');
                         const isVisible = moduleList.classList.contains('visible');
                         
                         // Fechar outros cursos (opcional)
@@ -1190,22 +1228,46 @@
                         moduleList.classList.toggle('visible', !isVisible);
                         toggleIcon.classList.toggle('expanded', !isVisible);
                         toggleIcon.textContent = isVisible ? '▶' : '▼';
+                });
+            });
+
+                // Module items (toggle aulas)
+                this.elements.courseNav.querySelectorAll('.module-item').forEach(item => {
+                    const moduleHeader = item.querySelector('.module-header');
+                    const aulasList = item.querySelector('.aulas-list');
+                    const toggleIcon = item.querySelector('.module-toggle');
+                    
+                    moduleHeader.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        
+                        // Toggle lista de aulas
+                        const isVisible = aulasList.style.display !== 'none';
+                        aulasList.style.display = isVisible ? 'none' : 'block';
+                        toggleIcon.classList.toggle('expanded', !isVisible);
+                        
+                        // Se abrindo, carrega primeira aula automaticamente
+                        if (!isVisible) {
+                            const firstAulaItem = aulasList.querySelector('.aula-item');
+                            if (firstAulaItem) {
+                                setTimeout(() => firstAulaItem.click(), 100);
+                            }
+                        }
                     });
                 });
-                
-                // Module items (load content)
-                this.elements.courseNav.querySelectorAll('.module-item').forEach(item => {
+
+                // Aula items (load content)
+                this.elements.courseNav.querySelectorAll('.aula-item').forEach(item => {
                     item.addEventListener('click', () => {
                         // Remove seleção anterior
-                        this.elements.courseNav.querySelectorAll('.module-item.active')
+                        this.elements.courseNav.querySelectorAll('.aula-item.active')
                             .forEach(el => el.classList.remove('active'));
                         
                         // Marca como ativo
                         item.classList.add('active');
                         
-                        // Carrega conteúdo
-                        const { courseId, moduleId, type } = item.dataset;
-                        this.loadModuleContent(courseId, moduleId, type);
+                        // Carrega conteúdo da aula
+                        const { courseId, moduleId, aulaId } = item.dataset;
+                        this.loadAulaContent(courseId, moduleId, aulaId);
                     });
                 });
             }
@@ -1214,29 +1276,41 @@
                 if (this.loadedCourses.length > 0 && this.loadedCourses[0].modules.length > 0) {
                     const firstCourse = this.loadedCourses[0];
                     const firstModule = firstCourse.modules[0];
+                    const firstAula = firstModule.aulas?.[0];
                     
-                    // Expande primeiro curso
+                    // Expande primeiro curso e módulo
                     setTimeout(() => {
                         const firstCourseHeader = this.elements.courseNav.querySelector('.course-header');
                         const firstModuleList = this.elements.courseNav.querySelector('.module-list');
                         const firstModuleItem = this.elements.courseNav.querySelector('.module-item');
+                        const firstAulasList = this.elements.courseNav.querySelector('.aulas-list');
+                        const firstAulaItem = this.elements.courseNav.querySelector('.aula-item');
                         
-                        if (firstCourseHeader && firstModuleList && firstModuleItem) {
+                        if (firstCourseHeader && firstModuleList && firstModuleItem && firstAulaItem && firstAula) {
+                            // Expande curso
                             firstModuleList.classList.add('visible');
                             firstCourseHeader.querySelector('.toggle-icon').classList.add('expanded');
                             firstCourseHeader.querySelector('.toggle-icon').textContent = '▼';
                             
-                            firstModuleItem.classList.add('active');
-                            this.loadModuleContent(firstCourse.id, firstModule.id, firstModule.type);
+                            // Expande módulo
+                            firstAulasList.style.display = 'block';
+                            firstModuleItem.querySelector('.module-toggle').classList.add('expanded');
+                            
+                            // Seleciona primeira aula
+                            firstAulaItem.classList.add('active');
+                            this.loadAulaContent(firstCourse.id, firstModule.id, firstAula.id);
                         }
                     }, 100);
                 }
             }
 
-            // === CARREGAMENTO DE CONTEÚDO ===
-            async loadModuleContent(courseId, moduleId, type) {
+            // === CARREGAMENTO DE CONTEÚDO DE AULAS ===
+            // A função loadModuleContent foi substituída pela loadAulaContent
+            // que trabalha diretamente com aulas individuais
+
+            async loadAulaContent(courseId, moduleId, aulaId) {
                 try {
-                    const cacheKey = `${courseId}-${moduleId}`;
+                    const cacheKey = `${courseId}-${moduleId}-${aulaId}`;
                     
                     // Verifica cache primeiro
                     if (this.contentCache.has(cacheKey)) {
@@ -1252,51 +1326,35 @@
                     
                     const course = this.loadedCourses.find(c => c.id === courseId);
                     const module = course?.modules.find(m => m.id === moduleId);
-                    
-                    if (!module) {
-                        throw new Error('Módulo não encontrado');
+                    const aula = module?.aulas.find(a => a.id === aulaId);
+
+                    if (!aula) {
+                        throw new Error('Aula não encontrada');
                     }
-                    
-                    let contentData;
-                    
-                    if (type === 'direct' && module.content_url) {
-                        // Nova estrutura - conteúdo direto
-                        contentData = {
-                            title: module.name,
-                            content: await this.fetchHTMLContent(module.content_url),
-                            meta: {
-                                course: course.name,
-                                module: module.name,
-                                type: 'Conteúdo do Módulo'
-                            }
-                        };
-                    } else if (type === 'lessons' && module.lessons?.length > 0) {
-                        // Estrutura antiga - primeira aula do módulo
-                        const firstLesson = module.lessons.sort((a, b) => (a.order || 0) - (b.order || 0))[0];
-                        contentData = {
-                            title: firstLesson.name,
-                            content: await this.fetchHTMLContent(firstLesson.content_url),
-                            meta: {
-                                course: course.name,
-                                module: module.name,
-                                lesson: firstLesson.name
-                            }
-                        };
-                    } else {
-                        throw new Error('Conteúdo não disponível');
-                    }
-                    
+
+                    const contentData = {
+                        title: aula.name,
+                        content: await this.fetchHTMLContent(aula.content_url),
+                        meta: {
+                            course: course.name,
+                            module: module.name,
+                            aula: aula.name,
+                            difficulty: aula.difficulty,
+                            estimatedTime: aula.estimated_time
+                        }
+                    };
+
                     // Cache do conteúdo
                     this.contentCache.set(cacheKey, {
                         data: contentData,
                         timestamp: Date.now()
                     });
-                    
+
                     this.displayContent(contentData);
                     this.updateCacheStatus();
-                    
+
                 } catch (error) {
-                    console.error('❌ Erro ao carregar conteúdo:', error);
+                    console.error('❌ Erro ao carregar conteúdo da aula:', error);
                     this.showContentError(error.message);
                 }
             }
@@ -1307,8 +1365,17 @@
                     
                     // Se é referência do Firebase Storage
                     if (url.startsWith('gs://')) {
-                        const storageRef = this.storage.refFromURL(url);
-                        url = await storageRef.getDownloadURL();
+                        try {
+                            const storageRef = this.storage.refFromURL(url);
+                            url = await storageRef.getDownloadURL();
+                            console.log('🔗 URL do Firebase Storage obtida:', url);
+                        } catch (storageError) {
+                            console.warn('⚠️ Erro ao obter URL do Storage, tentando URL pública:', storageError);
+                            // Fallback para URL pública
+                            const publicUrl = url.replace('gs://', 'https://firebasestorage.googleapis.com/v0/b/')
+                                               .replace('/o/', '/o/') + '?alt=media';
+                            url = publicUrl;
+                        }
                     }
                     
                     const response = await fetch(url);
@@ -1334,7 +1401,9 @@
                 const metaText = [
                     contentData.meta.course,
                     contentData.meta.module,
-                    contentData.meta.lesson
+                    contentData.meta.aula,
+                    contentData.meta.difficulty ? `Dificuldade: ${contentData.meta.difficulty}` : null,
+                    contentData.meta.estimatedTime ? `⏱️ ${contentData.meta.estimatedTime} min` : null
                 ].filter(Boolean).join(' • ');
                 
                 this.elements.contentMeta.textContent = metaText;
@@ -1520,7 +1589,7 @@
                     .then(registration => console.log('SW registrado'))
                     .catch(error => console.log('SW falhou'));
             });
-        }
+         }
     </script>
 </body>
 </html>
