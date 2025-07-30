@@ -216,6 +216,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-size: 1.15em; /* Aumentado 15% */
         }
 
         .collapsed .course-name {
@@ -312,6 +313,7 @@
             margin-top: 0.5rem;
             padding-left: 1rem;
             border-left: 2px solid var(--border-color);
+            font-size: 1.3em; /* Aumentado 30% */
         }
 
         .aula-item {
@@ -1077,7 +1079,6 @@
                                                 ${module.aulas ? module.aulas.map(aula => {
                                                     const aulaName = this.escapeHtml(aula.name);
                                                     const aulaId = this.escapeHtml(aula.id);
-                                                    const difficulty = this.escapeHtml(aula.difficulty || '');
                                                     const estimatedTime = aula.estimated_time ? 
                                                         this.escapeHtml(aula.estimated_time.toString()) : '';
                                                     
@@ -1087,7 +1088,7 @@
                                                              data-module-id="${moduleId}"
                                                              data-aula-id="${aulaId}">
                                                             ${aulaName}
-                                                            <span class="aula-meta">${difficulty} ${estimatedTime ? '• ' + estimatedTime + 'min' : ''}</span>
+                                                            <span class="aula-meta">${estimatedTime ? estimatedTime + 'min' : ''}</span>
                                                         </div>
                                                     `;
                                                 }).join('') : ''}
@@ -1368,7 +1369,6 @@
                     contentData.meta.course,
                     contentData.meta.module,
                     contentData.meta.aula,
-                    contentData.meta.difficulty ? `Dificuldade: ${contentData.meta.difficulty}` : null,
                     contentData.meta.estimatedTime ? `⏱️ ${contentData.meta.estimatedTime} min` : null
                 ].filter(Boolean).join(' • ');
                 
