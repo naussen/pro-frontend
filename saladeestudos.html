@@ -1555,10 +1555,41 @@
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
-                    
-                    console.log('✅ Conteúdo carregado com sucesso');
-                    return await response.text();
-                    
+                    let rawHtml = await response.text();
+
+                    // === SANITIZAÇÃO DO CONTEÚDO HTML ===
+                    // Remove <html>, <body>, <style>, <script> e estilos inline perigosos
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = rawHtml;
+
+                    // Remove tags <style> e <script>
+                    tempDiv.querySelectorAll('style, script').forEach(el => el.remove());
+                    // Remove tags <html> e <body> (caso existam)
+                    tempDiv.querySelectorAll('html, body').forEach(el => {
+                        // Move filhos para o tempDiv
+                        while (el.firstChild) tempDiv.appendChild(el.firstChild);
+                        el.remove();
+                    });
+                    // Remove estilos inline perigosos (position, width, margin, left, right, top, bottom, transform, z-index)
+                    tempDiv.querySelectorAll('[style]').forEach(el => {
+                        el.style.position = '';
+                        el.style.width = '';
+                        el.style.margin = '';
+                        el.style.left = '';
+                        el.style.right = '';
+                        el.style.top = '';
+                        el.style.bottom = '';
+                        el.style.transform = '';
+                        el.style.zIndex = '';
+                        // Remove 100vw/100vh
+                        if (el.style.height && el.style.height.includes('100vh')) el.style.height = '';
+                        if (el.style.width && el.style.width.includes('100vw')) el.style.width = '';
+                    });
+
+                    // Retorna HTML sanitizado
+                    const sanitizedHtml = tempDiv.innerHTML;
+                    console.log('✅ Conteúdo sanitizado carregado com sucesso');
+                    return sanitizedHtml;
                 } catch (error) {
                     console.error('❌ Erro ao buscar conteúdo HTML:', error);
                     throw new Error('Falha ao carregar conteúdo: ' + error.message);
