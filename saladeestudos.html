@@ -718,6 +718,17 @@
                     document.getElementById('header-placeholder').innerHTML = headerHTML;
                     
                     console.log('✅ Header carregado com sucesso');
+                    
+                    // Inicializar eventos do header após carregamento dinâmico
+                    setTimeout(() => {
+                        if (typeof window.initializeHeaderEvents === 'function') {
+                            console.log('🔧 Chamando inicialização dos eventos do header...');
+                            window.initializeHeaderEvents();
+                        } else {
+                            console.warn('⚠️ window.initializeHeaderEvents não disponível');
+                        }
+                    }, 100);
+                    
                 } catch (error) {
                     console.warn('⚠️ Falha ao carregar header:', error);
                 }
