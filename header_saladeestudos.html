@@ -37,13 +37,24 @@
                 <button type="submit" aria-label="Buscar">🔍</button>
             </div>
             <div class="w3s-header-actions">
-                <button id="pomodoro-btn" title="Timer Pomodoro" aria-label="Abrir Timer Pomodoro"><span class="icon">🍅</span></button> 
-                <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
-                    <span class="icon theme-icon-light">☀️</span>
-                    <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+                <button id="showAllCoursesBtn" class="header-btn" title="Exibir todos os cursos">
+                    <span class="icon">📚</span>
+                    <span class="link-text">Todos os Cursos</span>
                 </button>
-                <a href="personalizar.html" title="Personalizar Sala de Estudos"><span class="icon">⚙️</span> <span class="link-text">Personalizar Sala de Estudos</span></a>
-                <a id="logout-btn" href="index.html" title="Logout"><span class="icon">🚪</span> <span class="link-text">Logout</span></a>
+                <button id="pomodoro-btn" title="Timer Pomodoro" aria-label="Abrir Timer Pomodoro">
+                    <span class="icon">🍅</span>
+                </button> 
+                <button id="themeToggleBtn" class="header-btn primary" title="Alternar tema">
+                    <span class="icon" id="themeIcon">🌙</span>
+                </button>
+                <a href="personalizar.html" title="Personalizar Sala de Estudos">
+                    <span class="icon">⚙️</span> 
+                    <span class="link-text">Personalizar Sala de Estudos</span>
+                </a>
+                <a id="logout-btn" href="index.html" title="Logout">
+                    <span class="icon">🚪</span> 
+                    <span class="link-text">Logout</span>
+                </a>
             </div>
         </div>
     </header>
@@ -87,6 +98,26 @@
             --accent-2: #2790b0;
             --light-highlight-bg: #f5f5f4;
             --dark-blue-hover: #2b4e72;
+        }
+
+        /* Modo escuro */
+        body.dark-mode {
+            --header-bg: rgba(26, 32, 44, 0.95);
+            --text-dark: #e2e8f0;
+            --header-border: #2d3748;
+            --main-color: #63b3ed;
+            --border-color: #2d3748;
+            --main-content-bg: #1a202c;
+            --light-grey-bg: #1a202c;
+            --text-muted: #a0aec0;
+            --top-nav-link-color: #e2e8f0;
+            --top-nav-link-hover-bg: #2d3748;
+            --top-nav-link-active-bg: #4a5568;
+            --text-light: #ffffff;
+            --accent-1: #68d391;
+            --accent-2: #4fd1c7;
+            --light-highlight-bg: #2d3748;
+            --dark-blue-hover: #4299e1;
         }
 
         body {
@@ -258,6 +289,28 @@
             border: none;
             cursor: pointer;
             white-space: nowrap;
+        }
+
+        .w3s-header-actions .header-btn {
+            background-color: var(--light-grey-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .w3s-header-actions .header-btn:hover {
+            background-color: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .w3s-header-actions .header-btn.primary {
+            background-color: var(--main-color);
+            color: var(--text-light);
+            border-color: var(--main-color);
+        }
+
+        .w3s-header-actions .header-btn.primary:hover {
+            background-color: var(--dark-blue-hover);
+            border-color: var(--dark-blue-hover);
         }
 
         .w3s-header-actions a .icon, 
@@ -725,7 +778,51 @@
             if (e.target.id === 'sidebarToggleBtn' && window.studyApp) {
                 window.studyApp.toggleSidebar();
             }
+            
+            // Botão "Todos os Cursos"
+            if (e.target.id === 'showAllCoursesBtn' || e.target.closest('#showAllCoursesBtn')) {
+                if (window.studyApp) {
+                    window.studyApp.loadAllCourses();
+                }
+            }
+            
+            // Botão de alternância de tema
+            if (e.target.id === 'themeToggleBtn' || e.target.closest('#themeToggleBtn')) {
+                toggleTheme();
+            }
         });
+
+        // Função para alternar tema
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.textContent = isDark ? '☀️' : '🌙';
+            }
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Notificar o app principal se disponível
+            if (window.studyApp) {
+                window.studyApp.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+            }
+        }
+
+        // Aplicar tema salvo na inicialização
+        function applyTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+            
+            document.body.classList.toggle('dark-mode', isDark);
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.textContent = isDark ? '☀️' : '🌙';
+            }
+        }
+
+        // Aplicar tema quando o header for carregado
+        document.addEventListener('DOMContentLoaded', applyTheme);
+        window.addEventListener('load', applyTheme);
     </script>
 </body>
 </html>
