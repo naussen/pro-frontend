@@ -324,6 +324,17 @@
             background-color: rgba(0, 0, 0, 0.03);
         }
         
+        /* Garantir que os botões sejam clicáveis */
+        #showAllCoursesBtn, #themeToggleBtn {
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 1000 !important;
+        }
+        
+        #showAllCoursesBtn *, #themeToggleBtn * {
+            pointer-events: none !important;
+        }
+        
         @media (max-width: 992px) {
             .w3s-header-actions .link-text {
                 display: none;
@@ -775,81 +786,127 @@
 
         // Integração com sidebar toggle (se existir no contexto pai)
         document.addEventListener('click', function(e) {
+            console.log('🖱️ Clique detectado em:', e.target.id, e.target.className);
+            
             // Sidebar toggle
             if (e.target.id === 'sidebarToggleBtn' && window.studyApp) {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log('🔧 Sidebar toggle clicado via delegação');
                 window.studyApp.toggleSidebar();
+                return;
             }
             
             // Botão "Todos os Cursos" - melhor detecção
-            if (e.target.id === 'showAllCoursesBtn' || 
-                e.target.closest('#showAllCoursesBtn') || 
-                e.target.parentElement?.id === 'showAllCoursesBtn') {
+            const isShowAllCoursesBtn = e.target.id === 'showAllCoursesBtn' || 
+                                      e.target.closest('#showAllCoursesBtn') || 
+                                      e.target.parentElement?.id === 'showAllCoursesBtn' ||
+                                      (e.target.tagName === 'SPAN' && e.target.parentElement?.id === 'showAllCoursesBtn');
+            
+            if (isShowAllCoursesBtn) {
                 e.preventDefault();
-                console.log('Botão "Todos os Cursos" clicado');
+                e.stopPropagation();
+                console.log('🔧 Botão "Todos os Cursos" clicado via delegação');
                 if (window.studyApp && window.studyApp.loadAllCourses) {
                     window.studyApp.loadAllCourses();
                 } else {
-                    console.warn('studyApp.loadAllCourses não disponível');
+                    console.warn('⚠️ studyApp.loadAllCourses não disponível');
+                    // Retry após delay
+                    setTimeout(() => {
+                        if (window.studyApp && window.studyApp.loadAllCourses) {
+                            console.log('🔄 Retry: Chamando loadAllCourses após delay');
+                            window.studyApp.loadAllCourses();
+                        }
+                    }, 1000);
                 }
+                return;
             }
             
             // Botão de alternância de tema - melhor detecção
-            if (e.target.id === 'themeToggleBtn' || 
-                e.target.closest('#themeToggleBtn') || 
-                e.target.parentElement?.id === 'themeToggleBtn' ||
-                e.target.id === 'themeIcon') {
+            const isThemeToggleBtn = e.target.id === 'themeToggleBtn' || 
+                                   e.target.closest('#themeToggleBtn') || 
+                                   e.target.parentElement?.id === 'themeToggleBtn' ||
+                                   e.target.id === 'themeIcon' ||
+                                   (e.target.tagName === 'SPAN' && e.target.parentElement?.id === 'themeToggleBtn');
+            
+            if (isThemeToggleBtn) {
                 e.preventDefault();
-                console.log('Botão de tema clicado');
+                e.stopPropagation();
+                console.log('🔧 Botão de tema clicado via delegação');
                 toggleTheme();
+                return;
             }
         });
 
         // Event listeners diretos para garantir funcionamento
         function setupDirectEventListeners() {
+            console.log('🔧 Configurando event listeners diretos...');
+            
             // Theme toggle button
             const themeBtn = document.getElementById('themeToggleBtn');
             if (themeBtn) {
-                themeBtn.addEventListener('click', function(e) {
+                // Remove listeners existentes para evitar duplicação
+                themeBtn.replaceWith(themeBtn.cloneNode(true));
+                const newThemeBtn = document.getElementById('themeToggleBtn');
+                
+                newThemeBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Theme button clicked directly');
+                    console.log('🔧 Theme button clicked directly');
                     toggleTheme();
                 });
+                console.log('✅ Event listener direto configurado para themeToggleBtn');
+            } else {
+                console.warn('❌ themeToggleBtn não encontrado para event listener direto');
             }
 
             // Show all courses button
             const showAllBtn = document.getElementById('showAllCoursesBtn');
             if (showAllBtn) {
-                showAllBtn.addEventListener('click', function(e) {
+                // Remove listeners existentes para evitar duplicação
+                showAllBtn.replaceWith(showAllBtn.cloneNode(true));
+                const newShowAllBtn = document.getElementById('showAllCoursesBtn');
+                
+                newShowAllBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Show all courses button clicked directly');
+                    console.log('🔧 Show all courses button clicked directly');
                     if (window.studyApp && window.studyApp.loadAllCourses) {
                         window.studyApp.loadAllCourses();
                     } else {
-                        console.warn('studyApp.loadAllCourses não disponível');
+                        console.warn('⚠️ studyApp.loadAllCourses não disponível');
                         // Fallback: tentar chamar depois de um delay
                         setTimeout(() => {
                             if (window.studyApp && window.studyApp.loadAllCourses) {
+                                console.log('🔄 Retry: Chamando loadAllCourses após delay');
                                 window.studyApp.loadAllCourses();
                             }
                         }, 1000);
                     }
                 });
+                console.log('✅ Event listener direto configurado para showAllCoursesBtn');
+            } else {
+                console.warn('❌ showAllCoursesBtn não encontrado para event listener direto');
             }
 
             // Sidebar toggle button
             const sidebarBtn = document.getElementById('sidebarToggleBtn');
             if (sidebarBtn) {
-                sidebarBtn.addEventListener('click', function(e) {
+                // Remove listeners existentes para evitar duplicação
+                sidebarBtn.replaceWith(sidebarBtn.cloneNode(true));
+                const newSidebarBtn = document.getElementById('sidebarToggleBtn');
+                
+                newSidebarBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Sidebar toggle clicked directly');
+                    console.log('🔧 Sidebar toggle clicked directly');
                     if (window.studyApp && window.studyApp.toggleSidebar) {
                         window.studyApp.toggleSidebar();
                     }
                 });
+                console.log('✅ Event listener direto configurado para sidebarToggleBtn');
+            } else {
+                console.warn('❌ sidebarToggleBtn não encontrado para event listener direto');
             }
         }
 
@@ -929,8 +986,51 @@
             }, 500);
         }
 
+        // Função global para inicialização após carregamento dinâmico
+        window.initializeHeaderEvents = function() {
+            console.log('🔧 Inicializando eventos do header dinamicamente...');
+            
+            // Diagnóstico dos elementos
+            const themeBtn = document.getElementById('themeToggleBtn');
+            const showAllBtn = document.getElementById('showAllCoursesBtn');
+            const sidebarBtn = document.getElementById('sidebarToggleBtn');
+            
+            console.log('🔍 Diagnóstico dos elementos:');
+            console.log('  - themeToggleBtn:', themeBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - showAllCoursesBtn:', showAllBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - sidebarToggleBtn:', sidebarBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            
+            applyTheme();
+            setupDirectEventListeners();
+            
+            // Configurar event listeners com retry
+            setTimeout(() => {
+                if (!document.getElementById('themeToggleBtn') || !document.getElementById('showAllCoursesBtn')) {
+                    console.log('🔄 Elementos não encontrados, tentando novamente...');
+                    trySetupEventListeners();
+                }
+            }, 100);
+            
+            // Verificar se window.studyApp está disponível
+            console.log('🔍 window.studyApp:', window.studyApp ? '✅ Disponível' : '❌ Não disponível');
+            if (window.studyApp) {
+                console.log('  - toggleSidebar:', typeof window.studyApp.toggleSidebar);
+                console.log('  - loadAllCourses:', typeof window.studyApp.loadAllCourses);
+                console.log('  - showNotification:', typeof window.studyApp.showNotification);
+            }
+        };
+
         // Tentar configurar imediatamente e com delay
         trySetupEventListeners();
+        
+        // Executar inicialização se carregado dinamicamente
+        if (window.location.pathname.includes('saladeestudos.html')) {
+            setTimeout(() => {
+                if (typeof window.initializeHeaderEvents === 'function') {
+                    window.initializeHeaderEvents();
+                }
+            }, 500);
+        }
     </script>
 </body>
 </html>
