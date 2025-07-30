@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sala de Estudos - PRO Concursos</title>
+    
+    <!-- Favicon inline para evitar erro 404 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDdiZmYiLz4KPHRleHQgeD0iNTAlIiB5PSI1MyUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+UDwvdGV4dD4KPC9zdmc+">
+    <link rel="alternate icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIiSURBVFhH7ZY9SwNBEIafgIWNhYWFhYWNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2N/QHbWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWP/">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -727,12 +732,38 @@
                 this.db = firebase.firestore();
                 this.storage = firebase.storage();
                 
-                // Configurações de performance
-                this.db.enablePersistence({ synchronizeTabs: true }).catch(err => {
-                    console.warn('Persistência offline não disponível:', err);
-                });
+                // Configurações de performance com nova API
+                try {
+                    // Nova API recomendada (Firebase v9+)
+                    this.db.settings({
+                        cache: {
+                            kind: 'persistent',
+                            synchronizeTabs: true
+                        }
+                    });
+                    console.log('✅ Firebase inicializado com persistência moderna');
+                } catch (error) {
+                    // Fallback para API antiga se a nova não estiver disponível
+                    try {
+                        this.db.enablePersistence({ synchronizeTabs: true });
+                        console.log('✅ Firebase inicializado com persistência legada');
+                    } catch (persistenceError) {
+                        // Modo silencioso - não mostrar warning desnecessário
+                        if (this.isDevelopment()) {
+                            console.warn('Persistência offline não disponível:', persistenceError);
+                        }
+                        console.log('✅ Firebase inicializado sem persistência');
+                    }
+                }
                 
                 console.log('✅ Firebase inicializado');
+            }
+
+            // Função auxiliar para detectar ambiente de desenvolvimento
+            isDevelopment() {
+                return window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.includes('localhost');
             }
 
             initializeElements() {
