@@ -287,6 +287,7 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
+            font-size: 1.3em; /* Aumentado 30% */
         }
 
         .module-name {
@@ -356,31 +357,6 @@
             flex-direction: column;
             overflow: hidden;
             transition: all var(--animation-speed) ease;
-        }
-
-        .content-header {
-            padding: 1.5rem 2rem;
-            background: var(--main-content-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .content-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--main-color);
-        }
-
-        .content-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-size: 0.875rem;
-            color: var(--text-muted);
         }
 
         /* === ESTADOS DE CARREGAMENTO === */
@@ -476,10 +452,6 @@
 
             .study-content {
                 width: 100%;
-            }
-
-            .content-header {
-                padding: 1rem;
             }
 
             .content-body {
@@ -646,13 +618,6 @@
 
         <!-- Área de conteúdo principal -->
         <main class="study-content">
-            <div class="content-header" id="contentHeader" style="display: none;">
-                <div>
-                    <h2 class="content-title" id="contentTitle">Selecione um conteúdo</h2>
-                    <div class="content-meta" id="contentMeta"></div>
-                </div>
-            </div>
-
             <div class="content-body" id="contentBody">
                 <div class="empty-state">
                     <div class="empty-state-icon">📖</div>
@@ -774,9 +739,6 @@
                 this.elements = {
                     sidebar: document.getElementById('studySidebar'),
                     courseNav: document.getElementById('courseNavigation'),
-                    contentHeader: document.getElementById('contentHeader'),
-                    contentTitle: document.getElementById('contentTitle'),
-                    contentMeta: document.getElementById('contentMeta'),
                     contentBody: document.getElementById('contentBody'),
                     overlay: document.getElementById('sidebarOverlay')
                 };
@@ -1361,20 +1323,7 @@
             displayContent(contentData) {
                 this.currentContent = contentData;
                 
-                // Atualiza header do conteúdo
-                this.elements.contentHeader.style.display = 'flex';
-                this.elements.contentTitle.textContent = contentData.title;
-                
-                const metaText = [
-                    contentData.meta.course,
-                    contentData.meta.module,
-                    contentData.meta.aula,
-                    contentData.meta.estimatedTime ? `⏱️ ${contentData.meta.estimatedTime} min` : null
-                ].filter(Boolean).join(' • ');
-                
-                this.elements.contentMeta.textContent = metaText;
-                
-                // Atualiza corpo do conteúdo usando textContent para segurança adicional
+                // Atualiza corpo do conteúdo
                 const lessonContentDiv = document.createElement('div');
                 lessonContentDiv.className = 'lesson-content';
                 lessonContentDiv.innerHTML = contentData.content; // Já sanitizado
