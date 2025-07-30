@@ -663,42 +663,6 @@
             background: var(--text-muted);
         }
 
-        /* Garantir que o conteúdo da lição ocupe toda a largura disponível sem afetar o layout pai */
-        .lesson-content {
-            width: 100%;
-            max-width: none;
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Garantir que elementos internos do conteúdo se expandam adequadamente */
-        .lesson-content > * {
-            width: 100%;
-            max-width: none;
-            box-sizing: border-box;
-        }
-
-        /* Específico para conteúdo com lista ou índice */
-        .lesson-content .indice,
-        .lesson-content .index,
-        .lesson-content [class*="indice"],
-        .lesson-content [class*="index"],
-        .lesson-content [class*="lista"],
-        .lesson-content [class*="sumario"] {
-            width: 100% !important;
-            max-width: none !important;
-            box-sizing: border-box !important;
-        }
-
-        /* Estados vazios e de carregamento também ocupam toda largura */
-        .empty-state,
-        .loading-container {
-            width: 100%;
-            max-width: none;
-            box-sizing: border-box;
-        }
-
         /* Evitar que qualquer conteúdo interno afete o posicionamento do layout principal */
         .lesson-content,
         .lesson-content * {
@@ -706,29 +670,6 @@
             float: none !important;
             clear: none !important;
             transform: none !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-        }
-
-        /* Garantir que listas, divs e outros elementos não quebrem o layout */
-        .lesson-content div,
-        .lesson-content section,
-        .lesson-content article,
-        .lesson-content ul,
-        .lesson-content ol,
-        .lesson-content li {
-            position: static;
-            float: none;
-            clear: none;
-            display: block;
-            transform: none;
-        }
-
-        .lesson-content ul,
-        .lesson-content ol {
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
         }
 
         /* Garantir que o layout principal não seja afetado por conteúdo externo */
@@ -753,19 +694,72 @@
             float: none !important;
             clear: none !important;
             transform: none !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
             top: auto !important;
             left: auto !important;
             right: auto !important;
             bottom: auto !important;
             z-index: auto !important;
-            width: auto !important;
             height: auto !important;
-            max-width: 100% !important;
             max-height: none !important;
-            min-width: 0 !important;
             min-height: 0 !important;
+        }
+
+        /* Permitir que elementos de conteúdo se expandam horizontalmente */
+        .lesson-content > *,
+        .lesson-content div,
+        .lesson-content section,
+        .lesson-content article {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Elementos inline e de texto mantêm comportamento natural */
+        .lesson-content span,
+        .lesson-content em,
+        .lesson-content strong,
+        .lesson-content a,
+        .lesson-content code {
+            width: auto !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        /* Listas e itens de lista ocupam largura total */
+        .lesson-content ul,
+        .lesson-content ol,
+        .lesson-content li {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Títulos ocupam largura total */
+        .lesson-content h1,
+        .lesson-content h2,
+        .lesson-content h3,
+        .lesson-content h4,
+        .lesson-content h5,
+        .lesson-content h6 {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Parágrafos ocupam largura total */
+        .lesson-content p {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
         }
 
         /* Bloquear posicionamento absoluto/fixo em conteúdo carregado */
@@ -778,10 +772,17 @@
 
         /* Bloquear larguras e alturas viewport em conteúdo carregado */
         .lesson-content [style*="100vw"],
-        .lesson-content [style*="100vh"],
-        .lesson-content [style*="100%"] {
-            width: auto !important;
+        .lesson-content [style*="100vh"] {
+            width: 100% !important;
             height: auto !important;
+        }
+
+        /* Bloquear elementos com largura 100% inline que possam quebrar layout */
+        .lesson-content [style*="width: 100%"],
+        .lesson-content [style*="width:100%"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
         }
 
         /* === CACHE STATUS === */
@@ -796,6 +797,40 @@
             font-size: 0.75rem;
             opacity: 0.7;
             z-index: 1000;
+        }
+
+        /* Garantir expansão completa do container de conteúdo */
+        .lesson-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
+        }
+
+        /* Garantir que elementos de bloco ocupem largura total */
+        .lesson-content > * {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Elementos específicos para índices e listas */
+        .lesson-content .indice,
+        .lesson-content .index,
+        .lesson-content [class*="indice"],
+        .lesson-content [class*="index"],
+        .lesson-content [class*="lista"],
+        .lesson-content [class*="sumario"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 1rem 0 !important;
+            box-sizing: border-box !important;
+            display: block !important;
         }
     </style>
 </head>
@@ -1840,6 +1875,81 @@
                     console.log('✅ Layout estável!');
                 } else {
                     console.log('❌ Layout foi afetado!');
+                }
+            }, 100);
+        }
+
+        // === TESTE DE LAYOUT CORRIGIDO ===
+        function debugTestLayoutFix() {
+            console.log('🧪 TESTE DO LAYOUT CORRIGIDO');
+            
+            if (!studyApp?.elements?.contentBody) {
+                console.error('❌ Elementos não encontrados');
+                return;
+            }
+
+            // Conteúdo de teste com índice
+            const testContent = `
+                <h1>ÍNDICE</h1>
+                <p>Este é um teste do layout corrigido. O conteúdo deve se expandir para ocupar toda a largura disponível.</p>
+                <ul>
+                    <li>Item 1 - Este item deve ocupar toda a largura</li>
+                    <li>Item 2 - Sem espaços excessivos nas laterais</li>
+                    <li>Item 3 - Alinhado corretamente à esquerda</li>
+                    <li>Item 4 - Sem centralização indevida</li>
+                </ul>
+                <div class="indice">
+                    <h2>Seção de Índice</h2>
+                    <p>Esta seção deve ocupar 100% da largura disponível.</p>
+                </div>
+                <p>Este parágrafo final deve preencher todo o espaço horizontal disponível na área de conteúdo, respeitando apenas o padding do container.</p>
+            `;
+
+            // Inserir conteúdo de teste
+            studyApp.elements.contentBody.innerHTML = `
+                <div class="lesson-content">
+                    ${testContent}
+                </div>
+            `;
+
+            // Verificar dimensões
+            setTimeout(() => {
+                const lessonContent = document.querySelector('.lesson-content');
+                const contentBody = document.querySelector('.content-body');
+                
+                if (lessonContent && contentBody) {
+                    const lessonRect = lessonContent.getBoundingClientRect();
+                    const bodyRect = contentBody.getBoundingClientRect();
+                    
+                    console.log('📊 RESULTADOS DO TESTE DE LAYOUT:');
+                    console.log('Content Body largura:', bodyRect.width);
+                    console.log('Lesson Content largura:', lessonRect.width);
+                    console.log('Utilização da largura:', Math.round((lessonRect.width / bodyRect.width) * 100) + '%');
+                    
+                    // Calcular largura efetiva (descontando padding de 2rem de cada lado = 4rem total)
+                    const expectedWidth = bodyRect.width - (2 * 32); // 2rem = 32px
+                    const utilizationEffective = Math.round((lessonRect.width / expectedWidth) * 100);
+                    
+                    console.log('Largura esperada (com padding):', expectedWidth);
+                    console.log('Utilização efetiva:', utilizationEffective + '%');
+                    
+                    if (utilizationEffective >= 95) {
+                        console.log('✅ Layout corrigido com sucesso!');
+                        studyApp.showNotification('Layout corrigido! Conteúdo expandindo corretamente.', 'success');
+                    } else {
+                        console.log('❌ Layout ainda precisa de ajustes');
+                        studyApp.showNotification('Layout ainda não está totalmente corrigido', 'warning');
+                    }
+                    
+                    // Verificar elementos filhos
+                    const childElements = lessonContent.children;
+                    console.log('📋 Verificação dos elementos filhos:');
+                    for (let i = 0; i < childElements.length; i++) {
+                        const child = childElements[i];
+                        const childRect = child.getBoundingClientRect();
+                        const childUtilization = Math.round((childRect.width / lessonRect.width) * 100);
+                        console.log(`   ${child.tagName}: ${childUtilization}% da largura do container`);
+                    }
                 }
             }, 100);
         }
