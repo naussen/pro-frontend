@@ -842,12 +842,6 @@
 
             // === GERENCIAMENTO DE TEMA ===
             applyTheme() {
-                const savedTheme = localStorage.getItem('theme');
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-                
-                document.body.classList.toggle('dark-mode', isDark);
-                
                 // Restaura estado da sidebar
                 const sidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
                 if (sidebarState && window.innerWidth > 768) {
@@ -1492,9 +1486,16 @@
         document.addEventListener('DOMContentLoaded', () => {
             studyApp = new StudyRoomApp();
             
-            // Expor apenas para debug em desenvolvimento
+            // Expor métodos necessários para o header
+            window.studyApp = {
+                toggleSidebar: () => studyApp.toggleSidebar(),
+                loadAllCourses: () => studyApp.loadAllCourses(),
+                showNotification: (message, type) => studyApp.showNotification(message, type)
+            };
+            
+            // Expor para debug em desenvolvimento
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                window.studyApp = studyApp;
+                window.studyApp.debug = studyApp;
             }
         });
 
