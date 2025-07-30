@@ -80,6 +80,8 @@
             transition: all var(--animation-speed) ease;
             display: flex;
             flex-direction: column;
+            margin: 0;
+            padding: 0;
         }
 
         /* === HEADER === */
@@ -95,6 +97,7 @@
             z-index: 1000;
             backdrop-filter: blur(10px);
             box-shadow: var(--card-shadow);
+            flex-shrink: 0;
         }
 
         .toggle-sidebar-btn {
@@ -169,6 +172,7 @@
             flex: 1;
             height: calc(100vh - var(--header-height));
             overflow: hidden;
+            min-height: 0;
         }
 
         /* === SIDEBAR === */
@@ -699,6 +703,11 @@
         .lesson-content,
         .lesson-content * {
             position: static !important;
+            float: none !important;
+            clear: none !important;
+            transform: none !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
 
         /* Garantir que listas, divs e outros elementos não quebrem o layout */
@@ -712,6 +721,7 @@
             float: none;
             clear: none;
             display: block;
+            transform: none;
         }
 
         .lesson-content ul,
@@ -719,6 +729,59 @@
             display: block;
             width: 100%;
             box-sizing: border-box;
+        }
+
+        /* Garantir que o layout principal não seja afetado por conteúdo externo */
+        .study-layout,
+        .study-sidebar,
+        .study-content,
+        .study-header {
+            position: relative !important;
+            transform: none !important;
+            margin: 0 !important;
+        }
+
+        /* Isolamento do conteúdo carregado */
+        .content-body {
+            contain: layout style;
+            isolation: isolate;
+        }
+
+        /* PROTEÇÃO MÁXIMA CONTRA INTERFERÊNCIA DE CONTEÚDO EXTERNO */
+        .lesson-content * {
+            position: static !important;
+            float: none !important;
+            clear: none !important;
+            transform: none !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            z-index: auto !important;
+            width: auto !important;
+            height: auto !important;
+            max-width: 100% !important;
+            max-height: none !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+        }
+
+        /* Bloquear posicionamento absoluto/fixo em conteúdo carregado */
+        .lesson-content [style*="position: absolute"],
+        .lesson-content [style*="position: fixed"],
+        .lesson-content [style*="position:absolute"],
+        .lesson-content [style*="position:fixed"] {
+            position: static !important;
+        }
+
+        /* Bloquear larguras e alturas viewport em conteúdo carregado */
+        .lesson-content [style*="100vw"],
+        .lesson-content [style*="100vh"],
+        .lesson-content [style*="100%"] {
+            width: auto !important;
+            height: auto !important;
         }
 
         /* === CACHE STATUS === */
@@ -739,6 +802,27 @@
 <body>
     <!-- Header placeholder que será carregado dinamicamente -->
     <div id="header-placeholder"></div>
+
+    <!-- Header da aplicação -->
+    <header class="study-header">
+        <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Alternar menu lateral">
+            <span id="toggleIcon">☰</span>
+        </button>
+        <h1 class="header-title">Sala de Estudos</h1>
+        <div class="header-actions">
+            <button class="header-btn" id="showAllCoursesBtn" title="Exibir todos os cursos">
+                <span>📚</span>
+                <span>Todos os Cursos</span>
+            </button>
+            <button class="header-btn" id="personalizeBtn" title="Personalizar conteúdo">
+                <span>⚙️</span>
+                <span>Personalizar</span>
+            </button>
+            <button class="header-btn primary" id="themeToggleBtn" title="Alternar tema">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </header>
 
     <!-- Layout principal da sala de estudos -->
     <div class="study-layout">
@@ -763,26 +847,6 @@
 
         <!-- Área de conteúdo principal -->
         <main class="study-content">
-            <header class="study-header">
-                <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Alternar menu lateral">
-                    <span id="toggleIcon">☰</span>
-                </button>
-                <h1 class="header-title">Sala de Estudos</h1>
-                <div class="header-actions">
-                    <button class="header-btn" id="showAllCoursesBtn" title="Exibir todos os cursos">
-                        <span>📚</span>
-                        <span>Todos os Cursos</span>
-                    </button>
-                    <button class="header-btn" id="personalizeBtn" title="Personalizar conteúdo">
-                        <span>⚙️</span>
-                        <span>Personalizar</span>
-                    </button>
-                    <button class="header-btn primary" id="themeToggleBtn" title="Alternar tema">
-                        <span id="themeIcon">🌙</span>
-                    </button>
-            </div>
-            </header>
-
             <div class="content-header" id="contentHeader" style="display: none;">
                 <div>
                     <h2 class="content-title" id="contentTitle">Selecione um conteúdo</h2>
@@ -1719,6 +1783,65 @@
                         console.error('❌ Erro no teste:', error);
                     });
             }
+        }
+
+        // === TESTE DE LAYOUT ===
+        function debugTestLayout() {
+            console.log('🧪 TESTE DE ESTABILIDADE DO LAYOUT');
+            
+            if (!studyApp?.elements?.contentBody) {
+                console.error('❌ Elementos não encontrados');
+                return;
+            }
+
+            // Simular conteúdo problemático
+            const problematicContent = `
+                <div style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: red; z-index: 9999;">
+                    CONTEÚDO PROBLEMÁTICO
+                </div>
+                <div style="float: left; width: 50%; margin: -100px;">
+                    <h1>ÍNDICE</h1>
+                    <ul>
+                        <li>Item 1</li>
+                        <li>Item 2</li>
+                        <li>Item 3</li>
+                    </ul>
+                </div>
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    ELEMENTO CENTRALIZADO
+                </div>
+            `;
+
+            // Inserir conteúdo problemático
+            studyApp.elements.contentBody.innerHTML = `
+                <div class="lesson-content">
+                    ${problematicContent}
+                </div>
+            `;
+
+            // Verificar se o layout permanece intacto
+            setTimeout(() => {
+                const sidebar = document.querySelector('.study-sidebar');
+                const header = document.querySelector('.study-header');
+                const content = document.querySelector('.study-content');
+
+                console.log('📊 RESULTADOS DO TESTE:');
+                console.log('Sidebar position:', window.getComputedStyle(sidebar).position);
+                console.log('Header position:', window.getComputedStyle(header).position);
+                console.log('Content position:', window.getComputedStyle(content).position);
+                
+                const sidebarRect = sidebar.getBoundingClientRect();
+                const headerRect = header.getBoundingClientRect();
+                
+                console.log('Sidebar left:', sidebarRect.left);
+                console.log('Header top:', headerRect.top);
+                
+                if (sidebarRect.left === 0 && headerRect.top === 0) {
+                    console.log('✅ Layout estável!');
+                } else {
+                    console.log('❌ Layout foi afetado!');
+                }
+            }, 100);
         }
 
         // Service Worker para cache offline (futuro)
