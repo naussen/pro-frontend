@@ -775,35 +775,111 @@
 
         // Integração com sidebar toggle (se existir no contexto pai)
         document.addEventListener('click', function(e) {
+            // Sidebar toggle
             if (e.target.id === 'sidebarToggleBtn' && window.studyApp) {
+                e.preventDefault();
                 window.studyApp.toggleSidebar();
             }
             
-            // Botão "Todos os Cursos"
-            if (e.target.id === 'showAllCoursesBtn' || e.target.closest('#showAllCoursesBtn')) {
-                if (window.studyApp) {
+            // Botão "Todos os Cursos" - melhor detecção
+            if (e.target.id === 'showAllCoursesBtn' || 
+                e.target.closest('#showAllCoursesBtn') || 
+                e.target.parentElement?.id === 'showAllCoursesBtn') {
+                e.preventDefault();
+                console.log('Botão "Todos os Cursos" clicado');
+                if (window.studyApp && window.studyApp.loadAllCourses) {
                     window.studyApp.loadAllCourses();
+                } else {
+                    console.warn('studyApp.loadAllCourses não disponível');
                 }
             }
             
-            // Botão de alternância de tema
-            if (e.target.id === 'themeToggleBtn' || e.target.closest('#themeToggleBtn')) {
+            // Botão de alternância de tema - melhor detecção
+            if (e.target.id === 'themeToggleBtn' || 
+                e.target.closest('#themeToggleBtn') || 
+                e.target.parentElement?.id === 'themeToggleBtn' ||
+                e.target.id === 'themeIcon') {
+                e.preventDefault();
+                console.log('Botão de tema clicado');
                 toggleTheme();
             }
         });
 
+        // Event listeners diretos para garantir funcionamento
+        function setupDirectEventListeners() {
+            // Theme toggle button
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Theme button clicked directly');
+                    toggleTheme();
+                });
+            }
+
+            // Show all courses button
+            const showAllBtn = document.getElementById('showAllCoursesBtn');
+            if (showAllBtn) {
+                showAllBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Show all courses button clicked directly');
+                    if (window.studyApp && window.studyApp.loadAllCourses) {
+                        window.studyApp.loadAllCourses();
+                    } else {
+                        console.warn('studyApp.loadAllCourses não disponível');
+                        // Fallback: tentar chamar depois de um delay
+                        setTimeout(() => {
+                            if (window.studyApp && window.studyApp.loadAllCourses) {
+                                window.studyApp.loadAllCourses();
+                            }
+                        }, 1000);
+                    }
+                });
+            }
+
+            // Sidebar toggle button
+            const sidebarBtn = document.getElementById('sidebarToggleBtn');
+            if (sidebarBtn) {
+                sidebarBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Sidebar toggle clicked directly');
+                    if (window.studyApp && window.studyApp.toggleSidebar) {
+                        window.studyApp.toggleSidebar();
+                    }
+                });
+            }
+        }
+
         // Função para alternar tema
         function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            const themeIcon = document.getElementById('themeIcon');
-            if (themeIcon) {
-                themeIcon.textContent = isDark ? '☀️' : '🌙';
-            }
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            
-            // Notificar o app principal se disponível
-            if (window.studyApp) {
-                window.studyApp.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+            console.log('toggleTheme chamada');
+            try {
+                const body = document.body;
+                const isDark = body.classList.toggle('dark-mode');
+                console.log('Modo escuro:', isDark);
+                
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) {
+                    themeIcon.textContent = isDark ? '☀️' : '🌙';
+                    console.log('Ícone atualizado para:', themeIcon.textContent);
+                } else {
+                    console.warn('Elemento themeIcon não encontrado');
+                }
+                
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                console.log('Tema salvo no localStorage:', isDark ? 'dark' : 'light');
+                
+                // Notificar o app principal se disponível
+                if (window.studyApp && window.studyApp.showNotification) {
+                    window.studyApp.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+                } else {
+                    console.log(`Tema ${isDark ? 'escuro' : 'claro'} ativado (sem notificação)`);
+                }
+            } catch (error) {
+                console.error('Erro ao alternar tema:', error);
             }
         }
 
@@ -821,8 +897,40 @@
         }
 
         // Aplicar tema quando o header for carregado
-        document.addEventListener('DOMContentLoaded', applyTheme);
-        window.addEventListener('load', applyTheme);
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Header DOM carregado');
+            applyTheme();
+            setupDirectEventListeners();
+        });
+        
+        window.addEventListener('load', function() {
+            console.log('Header window load');
+            applyTheme();
+            setupDirectEventListeners();
+        });
+
+        // Configurar event listeners quando elementos estiverem disponíveis
+        function trySetupEventListeners() {
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            const interval = setInterval(() => {
+                attempts++;
+                console.log(`Tentativa ${attempts} de configurar event listeners`);
+                
+                if (document.getElementById('themeToggleBtn') && document.getElementById('showAllCoursesBtn')) {
+                    setupDirectEventListeners();
+                    clearInterval(interval);
+                    console.log('Event listeners configurados com sucesso');
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    console.warn('Falha ao configurar event listeners após múltiplas tentativas');
+                }
+            }, 500);
+        }
+
+        // Tentar configurar imediatamente e com delay
+        trySetupEventListeners();
     </script>
 </body>
 </html>

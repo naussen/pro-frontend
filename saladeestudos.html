@@ -1483,15 +1483,53 @@
         // === INICIALIZAÇÃO GLOBAL ===
         let studyApp;
 
+        // Configurar API básica imediatamente para o header
+        window.studyApp = {
+            toggleSidebar: () => {
+                console.log('toggleSidebar chamado via header (early)');
+                if (studyApp && studyApp.toggleSidebar) {
+                    return studyApp.toggleSidebar();
+                } else {
+                    console.warn('studyApp.toggleSidebar não disponível ainda');
+                }
+            },
+            loadAllCourses: () => {
+                console.log('loadAllCourses chamado via header (early)');
+                if (studyApp && studyApp.loadAllCourses) {
+                    return studyApp.loadAllCourses();
+                } else {
+                    console.warn('studyApp.loadAllCourses não disponível ainda');
+                }
+            },
+            showNotification: (message, type) => {
+                console.log('showNotification chamado via header (early):', message, type);
+                if (studyApp && studyApp.showNotification) {
+                    return studyApp.showNotification(message, type);
+                } else {
+                    console.log('Notificação (fallback):', message);
+                }
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('StudyApp DOM carregado');
             studyApp = new StudyRoomApp();
             
-            // Expor métodos necessários para o header
-            window.studyApp = {
-                toggleSidebar: () => studyApp.toggleSidebar(),
-                loadAllCourses: () => studyApp.loadAllCourses(),
-                showNotification: (message, type) => studyApp.showNotification(message, type)
+            // Atualizar métodos com referência real
+            window.studyApp.toggleSidebar = () => {
+                console.log('toggleSidebar chamado via header');
+                return studyApp.toggleSidebar();
             };
+            window.studyApp.loadAllCourses = () => {
+                console.log('loadAllCourses chamado via header');
+                return studyApp.loadAllCourses();
+            };
+            window.studyApp.showNotification = (message, type) => {
+                console.log('showNotification chamado via header:', message, type);
+                return studyApp.showNotification(message, type);
+            };
+            
+            console.log('window.studyApp atualizado com referências reais');
             
             // Expor para debug em desenvolvimento
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
