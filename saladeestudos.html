@@ -1015,17 +1015,17 @@
             initializeElements() {
                 this.elements = {
                     sidebar: document.getElementById('studySidebar'),
-                    toggleBtn: document.getElementById('toggleSidebarBtn'),
-                    toggleIcon: document.getElementById('toggleIcon'),
+                    toggleBtn: null, // Removido: document.getElementById('toggleSidebarBtn'),
+                    toggleIcon: null, // Removido: document.getElementById('toggleIcon'),
                     courseNav: document.getElementById('courseNavigation'),
                     contentHeader: document.getElementById('contentHeader'),
                     contentTitle: document.getElementById('contentTitle'),
                     contentMeta: document.getElementById('contentMeta'),
                     contentBody: document.getElementById('contentBody'),
-                    showAllBtn: document.getElementById('showAllCoursesBtn'),
-                    personalizeBtn: document.getElementById('personalizeBtn'),
-                    themeToggleBtn: document.getElementById('themeToggleBtn'),
-                    themeIcon: document.getElementById('themeIcon'),
+                    showAllBtn: null, // Removido: document.getElementById('showAllCoursesBtn'),
+                    personalizeBtn: null, // Removido: document.getElementById('personalizeBtn'),
+                    themeToggleBtn: null, // Removido: document.getElementById('themeToggleBtn'),
+                    themeIcon: null, // Removido: document.getElementById('themeIcon'),
                     overlay: document.getElementById('sidebarOverlay'),
                     cacheStatus: document.getElementById('cacheStatus'),
                     cacheCount: document.getElementById('cacheCount')
@@ -1034,16 +1034,13 @@
 
             setupEventListeners() {
                 // Toggle sidebar
-                this.elements.toggleBtn?.addEventListener('click', () => this.toggleSidebar());
-                
+                // this.elements.toggleBtn?.addEventListener('click', () => this.toggleSidebar());
                 // Overlay click (mobile)
                 this.elements.overlay?.addEventListener('click', () => this.closeSidebar());
-                
                 // Header buttons
-                this.elements.showAllBtn?.addEventListener('click', () => this.loadAllCourses());
-                this.elements.personalizeBtn?.addEventListener('click', () => window.location.href = 'personalizar.html');
-                this.elements.themeToggleBtn?.addEventListener('click', () => this.toggleTheme());
-                
+                // this.elements.showAllBtn?.addEventListener('click', () => this.loadAllCourses());
+                // this.elements.personalizeBtn?.addEventListener('click', () => window.location.href = 'personalizar.html');
+                // this.elements.themeToggleBtn?.addEventListener('click', () => this.toggleTheme());
                 // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => {
                     if (e.ctrlKey || e.metaKey) {
@@ -1059,10 +1056,8 @@
                         }
                     }
                 });
-
                 // Resize handler
                 window.addEventListener('resize', () => this.handleResize());
-                
                 console.log('✅ Event listeners configurados');
             }
 
