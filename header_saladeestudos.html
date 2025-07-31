@@ -560,8 +560,19 @@
 
                 let allElementsFound = true;
                 
+                // Buscar elementos primeiro no header-placeholder, depois globalmente
+                const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document;
+                
                 for (let key in elementIds) {
-                    elements[key] = document.getElementById(elementIds[key]);
+                    elements[key] = headerContainer.querySelector ? 
+                        headerContainer.querySelector('#' + elementIds[key]) : 
+                        document.getElementById(elementIds[key]);
+                    
+                    if (!elements[key]) {
+                        console.warn(`Elemento ${elementIds[key]} não encontrado no header, buscando globalmente...`);
+                        elements[key] = document.getElementById(elementIds[key]);
+                    }
+                    
                     if (!elements[key]) {
                         console.error(`Elemento ${elementIds[key]} não encontrado`);
                         allElementsFound = false;
@@ -928,6 +939,31 @@
             } else {
                 console.warn('❌ sidebarToggleBtn não encontrado para event listener direto');
             }
+
+            // Pomodoro button
+            const pomodoroBtn = header.querySelector('#pomodoro-btn');
+            if (pomodoroBtn) {
+                pomodoroBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Pomodoro button clicked directly');
+                    if (window.PomodoroTimerApp && window.PomodoroTimerApp.togglePanel) {
+                        window.PomodoroTimerApp.togglePanel();
+                    } else {
+                        console.warn('⚠️ PomodoroTimerApp.togglePanel não disponível');
+                        // Retry após delay
+                        setTimeout(() => {
+                            if (window.PomodoroTimerApp && window.PomodoroTimerApp.togglePanel) {
+                                console.log('🔄 Retry: Chamando togglePanel após delay');
+                                window.PomodoroTimerApp.togglePanel();
+                            }
+                        }, 500);
+                    }
+                };
+                console.log('✅ Event listener direto configurado para pomodoro-btn');
+            } else {
+                console.warn('❌ pomodoro-btn não encontrado para event listener direto');
+            }
         }
 
         // Função para alternar tema
@@ -967,9 +1003,20 @@
             const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
             
             document.body.classList.toggle('dark-mode', isDark);
-            const themeIcon = document.getElementById('themeIcon');
+            
+            // Buscar themeIcon no header primeiro, depois globalmente
+            const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document;
+            let themeIcon = headerContainer.querySelector ? headerContainer.querySelector('#themeIcon') : null;
+            
+            if (!themeIcon) {
+                themeIcon = document.getElementById('themeIcon');
+            }
+            
             if (themeIcon) {
                 themeIcon.textContent = isDark ? '☀️' : '🌙';
+                console.log('✅ Ícone do tema atualizado:', themeIcon.textContent);
+            } else {
+                console.warn('⚠️ themeIcon não encontrado');
             }
         }
 
@@ -1021,18 +1068,28 @@
             const themeBtn = headerContainer.querySelector('#themeToggleBtn');
             const showAllBtn = headerContainer.querySelector('#showAllCoursesBtn');
             const sidebarBtn = headerContainer.querySelector('#sidebarToggleBtn');
+            const pomodoroBtn = headerContainer.querySelector('#pomodoro-btn');
             
             console.log('🔍 Diagnóstico dos elementos no header:');
             console.log('  - themeToggleBtn:', themeBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - showAllCoursesBtn:', showAllBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - sidebarToggleBtn:', sidebarBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - pomodoro-btn:', pomodoroBtn ? '✅ Encontrado' : '❌ Não encontrado');
             
             applyTheme();
             setupDirectEventListeners();
             
+            // Inicializar Pomodoro Timer após carregamento dinâmico
+            if (window.PomodoroTimerApp) {
+                setTimeout(() => {
+                    console.log('🍅 Inicializando Pomodoro Timer...');
+                    window.PomodoroTimerApp.init();
+                }, 100);
+            }
+            
             // Configurar event listeners com retry
             setTimeout(() => {
-                if (!document.getElementById('themeToggleBtn') || !document.getElementById('showAllCoursesBtn')) {
+                if (!headerContainer.querySelector('#themeToggleBtn') || !headerContainer.querySelector('#showAllCoursesBtn')) {
                     console.log('🔄 Elementos não encontrados, tentando novamente...');
                     trySetupEventListeners();
                 }
