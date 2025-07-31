@@ -1010,12 +1010,19 @@
         window.initializeHeaderEvents = function() {
             console.log('🔧 Inicializando eventos do header dinamicamente...');
             
-            // Diagnóstico dos elementos
-            const themeBtn = document.getElementById('themeToggleBtn');
-            const showAllBtn = document.getElementById('showAllCoursesBtn');
-            const sidebarBtn = document.getElementById('sidebarToggleBtn');
+            // Sempre buscar elementos apenas dentro do header-placeholder ou mainHeader
+            const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document.querySelector('.w3s-header');
+            if (!headerContainer) {
+                console.error('❌ Container do header não encontrado');
+                return;
+            }
             
-            console.log('🔍 Diagnóstico dos elementos:');
+            // Diagnóstico dos elementos dentro do header
+            const themeBtn = headerContainer.querySelector('#themeToggleBtn');
+            const showAllBtn = headerContainer.querySelector('#showAllCoursesBtn');
+            const sidebarBtn = headerContainer.querySelector('#sidebarToggleBtn');
+            
+            console.log('🔍 Diagnóstico dos elementos no header:');
             console.log('  - themeToggleBtn:', themeBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - showAllCoursesBtn:', showAllBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - sidebarToggleBtn:', sidebarBtn ? '✅ Encontrado' : '❌ Não encontrado');

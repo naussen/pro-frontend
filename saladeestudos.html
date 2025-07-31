@@ -715,21 +715,65 @@
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     
                     const headerHTML = await response.text();
-                    const headerPlaceholder = document.getElementById('header-placeholder');
-                    headerPlaceholder.innerHTML = headerHTML;
                     
-                    // Executar scripts do header manualmente
-                    const scripts = headerPlaceholder.querySelectorAll('script');
+                    // Criar um documento temporário para extrair apenas o header e estilos
+                    const tempDoc = document.createElement('div');
+                    tempDoc.innerHTML = headerHTML;
+                    
+                    // Extrair apenas o header principal e o painel pomodoro
+                    const mainHeader = tempDoc.querySelector('#mainHeader');
+                    const pomodoroPanel = tempDoc.querySelector('#pomodoroTimerPanel');
+                    const headerStyles = tempDoc.querySelector('style');
+                    
+                    if (!mainHeader) {
+                        throw new Error('Header principal não encontrado no arquivo');
+                    }
+                    
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    
+                    // Limpar placeholder
+                    headerPlaceholder.innerHTML = '';
+                    
+                    // Adicionar estilos ao head se não existirem
+                    if (headerStyles && !document.querySelector('style[data-header-styles]')) {
+                        const styleElement = document.createElement('style');
+                        styleElement.setAttribute('data-header-styles', 'true');
+                        styleElement.textContent = headerStyles.textContent;
+                        document.head.appendChild(styleElement);
+                    }
+                    
+                    // Inserir header principal
+                    headerPlaceholder.appendChild(mainHeader.cloneNode(true));
+                    
+                    // Inserir painel pomodoro (se existir)
+                    if (pomodoroPanel) {
+                        headerPlaceholder.appendChild(pomodoroPanel.cloneNode(true));
+                    }
+                    
+                    // Executar scripts do header de forma segura, restritos ao header
+                    const scripts = tempDoc.querySelectorAll('script');
                     scripts.forEach(oldScript => {
                         const newScript = document.createElement('script');
                         if (oldScript.src) {
                             newScript.src = oldScript.src;
                         } else {
-                            newScript.textContent = oldScript.textContent;
+                            // Modificar o script para garantir que opere apenas no header
+                            let scriptContent = oldScript.textContent;
+                            
+                            // Garantir que todos os event listeners sejam configurados apenas no header
+                            scriptContent = scriptContent.replace(
+                                /document\.getElementById\(/g, 
+                                '(document.getElementById("header-placeholder") || document).querySelector("#'
+                            ).replace(
+                                /querySelector\("#/g,
+                                'querySelector("#'
+                            );
+                            
+                            newScript.textContent = scriptContent;
                         }
                         // Copiar atributos importantes
                         if (oldScript.type) newScript.type = oldScript.type;
-                        document.body.appendChild(newScript);
+                        document.head.appendChild(newScript);
                     });
                     
                     console.log('✅ Header carregado com sucesso');
@@ -742,11 +786,49 @@
                         } else {
                             console.warn('⚠️ window.initializeHeaderEvents não disponível');
                         }
-                    }, 100);
+                    }, 200);
                     
                 } catch (error) {
                     console.warn('⚠️ Falha ao carregar header:', error);
+                    // Fallback: criar header mínimo
+                    this.createFallbackHeader();
                 }
+            }
+
+            createFallbackHeader() {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                headerPlaceholder.innerHTML = `
+                    <header style="height: var(--header-height); background: var(--header-bg); border-bottom: 1px solid var(--header-border); display: flex; align-items: center; padding: 0 1rem; position: fixed; top: 0; left: 0; right: 0; z-index: 105;">
+                        <button id="sidebarToggleBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-right: 1rem;">☰</button>
+                        <h1 style="margin: 0; font-size: 1.2rem; color: var(--text-dark);">PRO Concursos - Sala de Estudos</h1>
+                        <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                            <button id="showAllCoursesBtn" style="padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 4px; cursor: pointer;">📚 Todos os Cursos</button>
+                            <button id="themeToggleBtn" style="padding: 0.5rem; background: var(--border-color); border: none; border-radius: 4px; cursor: pointer;">🌙</button>
+                        </div>
+                    </header>
+                `;
+                
+                // Configurar event listeners para header fallback
+                const sidebarBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
+                const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
+                const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
+                
+                if (sidebarBtn) {
+                    sidebarBtn.onclick = () => this.toggleSidebar();
+                }
+                if (showAllBtn) {
+                    showAllBtn.onclick = () => this.loadAllCourses();
+                }
+                if (themeBtn) {
+                    themeBtn.onclick = () => {
+                        document.body.classList.toggle('dark-mode');
+                        const isDark = document.body.classList.contains('dark-mode');
+                        themeBtn.textContent = isDark ? '☀️' : '🌙';
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    };
+                }
+                
+                console.log('✅ Header fallback criado');
             }
 
             initFirebase() {
