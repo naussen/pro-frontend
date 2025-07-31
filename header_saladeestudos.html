@@ -542,6 +542,7 @@
 
             let elements = {};
             let isInitialized = false;
+            let lastListeners = {};
 
             // Função para buscar elementos DOM de forma segura
             function initializeElements() {
@@ -568,6 +569,25 @@
                 }
 
                 return allElementsFound;
+            }
+
+            // Remove listeners antigos para evitar duplicação
+            function removeOldListeners() {
+                if (lastListeners.pomodoroBtn && elements.pomodoroBtn) {
+                    elements.pomodoroBtn.removeEventListener('click', lastListeners.pomodoroBtn);
+                }
+                if (lastListeners.pomodoroCloseBtn && elements.pomodoroCloseBtn) {
+                    elements.pomodoroCloseBtn.removeEventListener('click', lastListeners.pomodoroCloseBtn);
+                }
+                if (lastListeners.pomodoroStartBtn && elements.pomodoroStartBtn) {
+                    elements.pomodoroStartBtn.removeEventListener('click', lastListeners.pomodoroStartBtn);
+                }
+                if (lastListeners.pomodoroPauseBtn && elements.pomodoroPauseBtn) {
+                    elements.pomodoroPauseBtn.removeEventListener('click', lastListeners.pomodoroPauseBtn);
+                }
+                if (lastListeners.pomodoroResetBtn && elements.pomodoroResetBtn) {
+                    elements.pomodoroResetBtn.removeEventListener('click', lastListeners.pomodoroResetBtn);
+                }
             }
 
             // Função para atualizar o display
@@ -664,11 +684,16 @@
             }
 
             // Função para mostrar/esconder painel
-            function togglePanel() {
+            function togglePanel(forceOpen) {
                 if (!elements.pomodoroPanel) return;
-                
                 const isVisible = elements.pomodoroPanel.style.display === 'flex';
-                elements.pomodoroPanel.style.display = isVisible ? 'none' : 'flex';
+                if (forceOpen === true) {
+                    elements.pomodoroPanel.style.display = 'flex';
+                } else if (forceOpen === false) {
+                    elements.pomodoroPanel.style.display = 'none';
+                } else {
+                    elements.pomodoroPanel.style.display = isVisible ? 'none' : 'flex';
+                }
             }
 
             // Função para fechar painel
@@ -681,23 +706,27 @@
             // Função para configurar event listeners
             function setupEventListeners() {
                 if (!isInitialized) return;
+                removeOldListeners();
 
                 // Botão principal do pomodoro
-                elements.pomodoroBtn.addEventListener('click', function(e) {
+                lastListeners.pomodoroBtn = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     togglePanel();
-                });
+                };
+                elements.pomodoroBtn.addEventListener('click', lastListeners.pomodoroBtn);
 
                 // Botão fechar
-                elements.pomodoroCloseBtn.addEventListener('click', closePanel);
+                lastListeners.pomodoroCloseBtn = closePanel;
+                elements.pomodoroCloseBtn.addEventListener('click', lastListeners.pomodoroCloseBtn);
 
                 // Controles do timer
-                elements.pomodoroStartBtn.addEventListener('click', startTimer);
-                elements.pomodoroPauseBtn.addEventListener('click', pauseTimer);
-                elements.pomodoroResetBtn.addEventListener('click', function() {
-                    resetTimer(true);
-                });
+                lastListeners.pomodoroStartBtn = startTimer;
+                elements.pomodoroStartBtn.addEventListener('click', lastListeners.pomodoroStartBtn);
+                lastListeners.pomodoroPauseBtn = pauseTimer;
+                elements.pomodoroPauseBtn.addEventListener('click', lastListeners.pomodoroPauseBtn);
+                lastListeners.pomodoroResetBtn = function() { resetTimer(true); };
+                elements.pomodoroResetBtn.addEventListener('click', lastListeners.pomodoroResetBtn);
 
                 // Fechar ao clicar fora
                 document.addEventListener('click', function(e) {
@@ -721,21 +750,22 @@
 
             // Função de inicialização principal
             function init() {
-                if (isInitialized) return;
+                if (isInitialized) {
+                    // Permite reinicializar se header for recarregado
+                    removeOldListeners();
+                }
 
-                console.log('🍅 Inicializando Pomodoro Timer...');
-                
                 if (!initializeElements()) {
                     console.error('❌ Falha ao inicializar elementos do Pomodoro');
                     return;
                 }
 
                 setupEventListeners();
-                
+
                 // Estado inicial
                 updateDisplay();
                 elements.pomodoroPauseBtn.style.display = 'none';
-                
+
                 isInitialized = true;
                 console.log('✅ Pomodoro Timer inicializado com sucesso!');
             }
@@ -746,7 +776,6 @@
                 const maxAttempts = 10;
                 const interval = setInterval(function() {
                     attempts++;
-                    
                     if (document.readyState === 'complete' || document.readyState === 'interactive') {
                         init();
                         if (isInitialized) {
@@ -754,7 +783,6 @@
                             return;
                         }
                     }
-                    
                     if (attempts >= maxAttempts) {
                         clearInterval(interval);
                         console.error('❌ Falha ao inicializar Pomodoro após múltiplas tentativas');
@@ -766,7 +794,10 @@
             return {
                 init: init,
                 tryInitialize: tryInitialize,
-                isInitialized: function() { return isInitialized; }
+                isInitialized: function() { return isInitialized; },
+                openPanel: function() { togglePanel(true); },
+                closePanel: function() { togglePanel(false); },
+                togglePanel: togglePanel
             };
         })();
 
