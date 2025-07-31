@@ -872,33 +872,27 @@
         // Event listeners diretos para garantir funcionamento
         function setupDirectEventListeners() {
             console.log('🔧 Configurando event listeners diretos...');
-            
+            const header = document.getElementById('mainHeader') || document.querySelector('.w3s-header');
+            if (!header) return;
+
             // Theme toggle button
-            const themeBtn = document.getElementById('themeToggleBtn');
+            const themeBtn = header.querySelector('#themeToggleBtn');
             if (themeBtn) {
-                // Remove listeners existentes para evitar duplicação
-                themeBtn.replaceWith(themeBtn.cloneNode(true));
-                const newThemeBtn = document.getElementById('themeToggleBtn');
-                
-                newThemeBtn.addEventListener('click', function(e) {
+                themeBtn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('🔧 Theme button clicked directly');
                     toggleTheme();
-                });
+                };
                 console.log('✅ Event listener direto configurado para themeToggleBtn');
             } else {
                 console.warn('❌ themeToggleBtn não encontrado para event listener direto');
             }
 
             // Show all courses button
-            const showAllBtn = document.getElementById('showAllCoursesBtn');
+            const showAllBtn = header.querySelector('#showAllCoursesBtn');
             if (showAllBtn) {
-                // Remove listeners existentes para evitar duplicação
-                showAllBtn.replaceWith(showAllBtn.cloneNode(true));
-                const newShowAllBtn = document.getElementById('showAllCoursesBtn');
-                
-                newShowAllBtn.addEventListener('click', function(e) {
+                showAllBtn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('🔧 Show all courses button clicked directly');
@@ -906,7 +900,6 @@
                         window.studyApp.loadAllCourses();
                     } else {
                         console.warn('⚠️ studyApp.loadAllCourses não disponível');
-                        // Fallback: tentar chamar depois de um delay
                         setTimeout(() => {
                             if (window.studyApp && window.studyApp.loadAllCourses) {
                                 console.log('🔄 Retry: Chamando loadAllCourses após delay');
@@ -914,27 +907,23 @@
                             }
                         }, 1000);
                     }
-                });
+                };
                 console.log('✅ Event listener direto configurado para showAllCoursesBtn');
             } else {
                 console.warn('❌ showAllCoursesBtn não encontrado para event listener direto');
             }
 
             // Sidebar toggle button
-            const sidebarBtn = document.getElementById('sidebarToggleBtn');
+            const sidebarBtn = header.querySelector('#sidebarToggleBtn');
             if (sidebarBtn) {
-                // Remove listeners existentes para evitar duplicação
-                sidebarBtn.replaceWith(sidebarBtn.cloneNode(true));
-                const newSidebarBtn = document.getElementById('sidebarToggleBtn');
-                
-                newSidebarBtn.addEventListener('click', function(e) {
+                sidebarBtn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('🔧 Sidebar toggle clicked directly');
                     if (window.studyApp && window.studyApp.toggleSidebar) {
                         window.studyApp.toggleSidebar();
                     }
-                });
+                };
                 console.log('✅ Event listener direto configurado para sidebarToggleBtn');
             } else {
                 console.warn('❌ sidebarToggleBtn não encontrado para event listener direto');
