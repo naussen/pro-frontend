@@ -715,7 +715,22 @@
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     
                     const headerHTML = await response.text();
-                    document.getElementById('header-placeholder').innerHTML = headerHTML;
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    headerPlaceholder.innerHTML = headerHTML;
+                    
+                    // Executar scripts do header manualmente
+                    const scripts = headerPlaceholder.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        if (oldScript.src) {
+                            newScript.src = oldScript.src;
+                        } else {
+                            newScript.textContent = oldScript.textContent;
+                        }
+                        // Copiar atributos importantes
+                        if (oldScript.type) newScript.type = oldScript.type;
+                        document.body.appendChild(newScript);
+                    });
                     
                     console.log('✅ Header carregado com sucesso');
                     
