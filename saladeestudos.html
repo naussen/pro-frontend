@@ -750,43 +750,20 @@
                         headerPlaceholder.appendChild(pomodoroPanel.cloneNode(true));
                     }
                     
-                    // Executar scripts do header de forma segura, restritos ao header
-                    const scripts = tempDoc.querySelectorAll('script');
-                    scripts.forEach(oldScript => {
-                        const newScript = document.createElement('script');
-                        if (oldScript.src) {
-                            newScript.src = oldScript.src;
-                        } else {
-                            // Modificar o script para garantir que opere apenas no header
-                            let scriptContent = oldScript.textContent;
-                            
-                            // Garantir que todos os event listeners sejam configurados apenas no header
-                            scriptContent = scriptContent.replace(
-                                /document\.getElementById\(/g, 
-                                '(document.getElementById("header-placeholder") || document).querySelector("#'
-                            ).replace(
-                                /querySelector\("#/g,
-                                'querySelector("#'
-                            );
-                            
-                            newScript.textContent = scriptContent;
-                        }
-                        // Copiar atributos importantes
-                        if (oldScript.type) newScript.type = oldScript.type;
-                        document.head.appendChild(newScript);
-                    });
+                    // Scripts do header são ignorados - botões configurados manualmente
+                    console.log('📋 Scripts do header ignorados para evitar conflitos');
                     
                     console.log('✅ Header carregado com sucesso');
                     
+                    // Aplicar tema imediatamente
+                    this.applyThemeToHeader();
+                    
                     // Inicializar eventos do header após carregamento dinâmico
                     setTimeout(() => {
-                        if (typeof window.initializeHeaderEvents === 'function') {
-                            console.log('🔧 Chamando inicialização dos eventos do header...');
-                            window.initializeHeaderEvents();
-                        } else {
-                            console.warn('⚠️ window.initializeHeaderEvents não disponível');
-                        }
-                    }, 200);
+                        console.log('🔧 Configurando botões do header manualmente...');
+                        this.setupHeaderButtons();
+                        console.log('✅ Botões do header configurados com sucesso');
+                    }, 300);
                     
                 } catch (error) {
                     console.warn('⚠️ Falha ao carregar header:', error);
@@ -831,6 +808,103 @@
                 console.log('✅ Header fallback criado');
             }
 
+            setupHeaderButtons() {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (!headerPlaceholder) return;
+
+                // Botão showAllCoursesBtn
+                const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
+                if (showAllBtn) {
+                    showAllBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Show All Courses clicked');
+                        this.loadAllCourses();
+                    };
+                    console.log('✅ showAllCoursesBtn configurado');
+                } else {
+                    console.warn('❌ showAllCoursesBtn não encontrado');
+                }
+
+                // Botão themeToggleBtn
+                const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
+                if (themeBtn) {
+                    themeBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Theme Toggle clicked');
+                        const body = document.body;
+                        const isDark = body.classList.toggle('dark-mode');
+                        
+                        const themeIcon = headerPlaceholder.querySelector('#themeIcon');
+                        if (themeIcon) {
+                            themeIcon.textContent = isDark ? '☀️' : '🌙';
+                        }
+                        
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                        this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+                    };
+                    console.log('✅ themeToggleBtn configurado');
+                } else {
+                    console.warn('❌ themeToggleBtn não encontrado');
+                }
+
+                // Botão pomodoro-btn
+                const pomodoroBtn = headerPlaceholder.querySelector('#pomodoro-btn');
+                if (pomodoroBtn) {
+                    pomodoroBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Pomodoro clicked');
+                        
+                        const pomodoroPanel = headerPlaceholder.querySelector('#pomodoroTimerPanel');
+                        if (pomodoroPanel) {
+                            const isVisible = pomodoroPanel.style.display === 'flex';
+                            pomodoroPanel.style.display = isVisible ? 'none' : 'flex';
+                            console.log('🍅 Painel pomodoro', isVisible ? 'fechado' : 'aberto');
+                        } else {
+                            console.warn('❌ Painel pomodoro não encontrado');
+                        }
+                    };
+                    console.log('✅ pomodoro-btn configurado');
+                } else {
+                    console.warn('❌ pomodoro-btn não encontrado');
+                }
+
+                // Botão sidebarToggleBtn
+                const sidebarBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
+                if (sidebarBtn) {
+                    sidebarBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Sidebar Toggle clicked');
+                        this.toggleSidebar();
+                    };
+                    console.log('✅ sidebarToggleBtn configurado');
+                } else {
+                    console.warn('❌ sidebarToggleBtn não encontrado');
+                }
+            }
+
+            applyThemeToHeader() {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+                
+                // Aplicar tema ao body
+                document.body.classList.toggle('dark-mode', isDark);
+                
+                // Atualizar ícone do tema no header
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (headerPlaceholder) {
+                    const themeIcon = headerPlaceholder.querySelector('#themeIcon');
+                    if (themeIcon) {
+                        themeIcon.textContent = isDark ? '☀️' : '🌙';
+                        console.log('✅ Tema aplicado ao header:', isDark ? 'escuro' : 'claro');
+                    }
+                }
+            }
+
             initFirebase() {
                 if (!firebase.apps.length) {
                     firebase.initializeApp(this.firebaseConfig);
@@ -842,13 +916,13 @@
                 
                 // Configurações de performance com nova API
                 try {
-                    // Nova API recomendada (Firebase v9+)
+                    // Nova API recomendada (Firebase v9+) com merge para evitar override warning
                     this.db.settings({
                         cache: {
                             kind: 'persistent',
                             synchronizeTabs: true
                         }
-                    });
+                    }, { merge: true });
                     console.log('✅ Firebase inicializado com persistência moderna');
                 } catch (error) {
                     // Fallback para API antiga se a nova não estiver disponível
@@ -1649,10 +1723,22 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
-                    .then(registration => console.log('SW registrado'))
-                    .catch(error => console.log('SW falhou'));
+                    .then(registration => console.log('✅ Service Worker registrado'))
+                    .catch(error => {
+                        // Service Worker não crítico - aplicação funciona sem ele
+                        if (console.debug) console.debug('Service Worker não disponível:', error.message);
+                    });
             });
         }
+
+        // Suprimir erros comuns de extensões do navegador
+        window.addEventListener('error', (e) => {
+            if (e.message.includes('message channel closed') || 
+                e.message.includes('asynchronous response')) {
+                e.preventDefault();
+                return false;
+            }
+        });
     </script>
 </body>
 </html>
