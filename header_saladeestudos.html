@@ -325,13 +325,13 @@
         }
         
         /* Garantir que os botões sejam clicáveis */
-        #showAllCoursesBtn, #themeToggleBtn, #pomodoro-btn {
+        #showAllCoursesBtn, #themeToggleBtn {
             pointer-events: auto !important;
             position: relative !important;
             z-index: 1000 !important;
         }
         
-        #showAllCoursesBtn *, #themeToggleBtn *, #pomodoro-btn * {
+        #showAllCoursesBtn *, #themeToggleBtn * {
             pointer-events: none !important;
         }
         
@@ -871,77 +871,22 @@
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('🔧 Show all courses button clicked directly');
-                    
-                    // Tentar diferentes estratégias para carregar todos os cursos
                     if (window.studyApp && window.studyApp.loadAllCourses) {
                         window.studyApp.loadAllCourses();
                     } else {
-                        console.warn('⚠️ studyApp.loadAllCourses não disponível, tentando fallbacks...');
-                        
-                        // Fallback 1: Aguardar um pouco e tentar novamente
+                        console.warn('⚠️ studyApp.loadAllCourses não disponível');
+                        // Fallback: tentar chamar depois de um delay
                         setTimeout(() => {
                             if (window.studyApp && window.studyApp.loadAllCourses) {
-                                console.log('🔄 Fallback 1: Chamando loadAllCourses após delay');
+                                console.log('🔄 Retry: Chamando loadAllCourses após delay');
                                 window.studyApp.loadAllCourses();
-                                return;
                             }
-                            
-                            // Fallback 2: Tentar recarregar a página se nada funcionar
-                            console.warn('⚠️ Todos os fallbacks falharam, mostrando alerta para o usuário');
-                            alert('Sistema ainda carregando. Aguarde alguns segundos e tente novamente.');
                         }, 1000);
-                        
-                        // Fallback 3: Retry com intervalos maiores
-                        let retryCount = 0;
-                        const retryInterval = setInterval(() => {
-                            retryCount++;
-                            if (window.studyApp && window.studyApp.loadAllCourses) {
-                                console.log(`🔄 Fallback 3: Sucesso após ${retryCount} tentativas`);
-                                window.studyApp.loadAllCourses();
-                                clearInterval(retryInterval);
-                            } else if (retryCount >= 5) {
-                                console.warn('❌ Fallback 3: Falha após múltiplas tentativas');
-                                clearInterval(retryInterval);
-                            }
-                        }, 2000);
                     }
                 });
                 console.log('✅ Event listener direto configurado para showAllCoursesBtn');
             } else {
                 console.warn('❌ showAllCoursesBtn não encontrado para event listener direto');
-            }
-
-            // Pomodoro button - ADICIONADO PARA CORRIGIR O PROBLEMA
-            const pomodoroBtn = document.getElementById('pomodoro-btn');
-            if (pomodoroBtn) {
-                // NÃO usar replaceWith aqui para não interferir com PomodoroTimerApp
-                // Apenas adicionar listener se não existir
-                if (!pomodoroBtn.hasAttribute('data-listener-added')) {
-                    pomodoroBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('🔧 Pomodoro button clicked directly');
-                        
-                        // Tentar usar o PomodoroTimerApp primeiro
-                        if (window.PomodoroTimerApp && window.PomodoroTimerApp.isInitialized()) {
-                            const panel = document.getElementById('pomodoroTimerPanel');
-                            if (panel) {
-                                const isVisible = panel.style.display === 'flex';
-                                panel.style.display = isVisible ? 'none' : 'flex';
-                            }
-                        } else {
-                            console.warn('⚠️ PomodoroTimerApp não disponível, tentando inicializar...');
-                            // Tentar inicializar o PomodoroTimerApp
-                            if (window.PomodoroTimerApp) {
-                                window.PomodoroTimerApp.tryInitialize();
-                            }
-                        }
-                    });
-                    pomodoroBtn.setAttribute('data-listener-added', 'true');
-                    console.log('✅ Event listener direto configurado para pomodoro-btn');
-                }
-            } else {
-                console.warn('❌ pomodoro-btn não encontrado para event listener direto');
             }
 
             // Sidebar toggle button
@@ -1049,35 +994,22 @@
             const themeBtn = document.getElementById('themeToggleBtn');
             const showAllBtn = document.getElementById('showAllCoursesBtn');
             const sidebarBtn = document.getElementById('sidebarToggleBtn');
-            const pomodoroBtn = document.getElementById('pomodoro-btn');
             
             console.log('🔍 Diagnóstico dos elementos:');
             console.log('  - themeToggleBtn:', themeBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - showAllCoursesBtn:', showAllBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - sidebarToggleBtn:', sidebarBtn ? '✅ Encontrado' : '❌ Não encontrado');
-            console.log('  - pomodoro-btn:', pomodoroBtn ? '✅ Encontrado' : '❌ Não encontrado');
             
-            // Aplicar tema primeiro
             applyTheme();
+            setupDirectEventListeners();
             
-            // Dar prioridade para inicialização do PomodoroTimerApp
-            if (window.PomodoroTimerApp && !window.PomodoroTimerApp.isInitialized()) {
-                console.log('🍅 Inicializando PomodoroTimerApp primeiro...');
-                window.PomodoroTimerApp.tryInitialize();
-            }
-            
-            // Aguardar um pouco para PomodoroTimerApp inicializar, então configurar outros listeners
+            // Configurar event listeners com retry
             setTimeout(() => {
-                setupDirectEventListeners();
-                
-                // Configurar event listeners com retry
-                setTimeout(() => {
-                    if (!document.getElementById('themeToggleBtn') || !document.getElementById('showAllCoursesBtn')) {
-                        console.log('🔄 Elementos não encontrados, tentando novamente...');
-                        trySetupEventListeners();
-                    }
-                }, 100);
-            }, 200);
+                if (!document.getElementById('themeToggleBtn') || !document.getElementById('showAllCoursesBtn')) {
+                    console.log('🔄 Elementos não encontrados, tentando novamente...');
+                    trySetupEventListeners();
+                }
+            }, 100);
             
             // Verificar se window.studyApp está disponível
             console.log('🔍 window.studyApp:', window.studyApp ? '✅ Disponível' : '❌ Não disponível');
