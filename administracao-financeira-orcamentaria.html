@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administracao Financeira Orcamentaria - PRO Concursos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Usando o mesmo sistema de CSS das outras páginas */
+        :root {
+            --header-height: 55px;
+            --sidebar-width: 280px;
+            --main-color: #2c5aa0;
+            --light-highlight-bg: #bfc9df;
+            --accent-1: #ff6b35;
+            --accent-2: #4ecdc4;
+            --dark-bg: #1a365d;
+            --text-dark: #2d3748;
+            --text-light: #ffffff;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --light-grey-bg: #f7fbff;
+            --header-bg: rgba(240, 247, 255, 0.95);
+            --header-border: #e2e8f0;
+            --main-content-bg: #ffffff;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --card-hover-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        body.dark-mode {
+            --main-color: #63b3ed;
+            --light-highlight-bg: #1a202c;
+            --accent-1: #ff8a65;
+            --accent-2: #4fd1c7;
+            --dark-bg: #0f1419;
+            --text-dark: #e2e8f0;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --light-grey-bg: #1a202c;
+            --header-bg: rgba(26, 32, 44, 0.95);
+            --header-border: #2d3748;
+            --main-content-bg: #1a202c;
+        }
+
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-grey-bg);
+            color: var(--text-dark);
+            padding-top: var(--header-height);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--header-border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+
+        .nav-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-actions a {
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-actions a:hover {
+            background-color: var(--light-highlight-bg);
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--main-content-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - var(--header-height));
+            position: sticky;
+            top: var(--header-height);
+        }
+
+        .course-title {
+            font-size: 1.4em;
+            color: var(--main-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-1);
+        }
+
+        .module-item {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .module-header {
+            background-color: var(--light-highlight-bg);
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .module-header:hover {
+            background-color: var(--accent-2);
+            color: var(--text-light);
+        }
+
+        .module-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .lessons-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: none;
+        }
+
+        .lessons-list.visible {
+            display: block;
+        }
+
+        .lesson-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lesson-item:last-child {
+            border-bottom: none;
+        }
+
+        .lesson-link {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .lesson-link:hover {
+            background-color: var(--light-highlight-bg);
+            padding-left: 20px;
+        }
+
+        .lesson-link.active {
+            background-color: var(--accent-1);
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background-color: var(--main-content-bg);
+        }
+
+        .lesson-viewer {
+            background-color: var(--main-content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            min-height: 60vh;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 50px;
+        }
+
+        .welcome-message h2 {
+            color: var(--main-color);
+            margin-bottom: 15px;
+        }
+
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-muted);
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--main-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+                max-height: none;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            :root {
+                --sidebar-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">PRO Concursos</div>
+        <nav class="nav-actions">
+            <a href="index.html">🏠 Início</a>
+            <a href="personalizar.html">⚙️ Personalizar</a>
+            <a href="saladeestudos.html">📚 Sala de Estudos</a>
+        </nav>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar">
+            <h2 class="course-title">Administracao Financeira Orcamentaria</h2>
+            <div class="modules-container">
+                
+                <div class="module-item">
+                    <div class="module-header">
+                        <h3>Administracao Financeira Orcamentaria</h3>
+                        <span class="toggle-icon">▶</span>
+                    </div>
+                    <ul class="lessons-list">
+                        
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-03.html">
+                            Aula 03
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-04.html">
+                            Aula 04
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-03.html">
+                            Aula 03
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-04.html">
+                            Aula 04
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-03.html">
+                            Aula 03
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-03.html">
+                            Aula 03
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-03.html">
+                            Aula 03
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-04.html">
+                            Aula 04
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-05.html">
+                            Aula 05
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-06.html">
+                            Aula 06
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-07.html">
+                            Aula 07
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-08.html">
+                            Aula 08
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-09.html">
+                            Aula 09
+                        </a>
+                    </li>
+                    </ul>
+                </div>
+                <div class="module-item">
+                    <div class="module-header">
+                        <h3>Aulas</h3>
+                        <span class="toggle-icon">▶</span>
+                    </div>
+                    <ul class="lessons-list">
+                        
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-01.html">
+                            Aula 01
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-02.html">
+                            Aula 02
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-03.html">
+                            Aula 03
+                        </a>
+                    </li>
+                    <li class="lesson-item">
+                        <a href="#" class="lesson-link" data-file="aula-04.html">
+                            Aula 04
+                        </a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="lesson-viewer" id="lessonViewer">
+                <div class="welcome-message">
+                    <h2>Bem-vindo ao curso Administracao Financeira Orcamentaria</h2>
+                    <p>Selecione uma aula no menu à esquerda para começar a estudar.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    
+    <script>
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+            authDomain: "nvp-concursos.firebaseapp.com",
+            projectId: "nvp-concursos",
+            storageBucket: "nvp-concursos.firebasestorage.app",
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1243b04141178453d860ba",
+            measurementId: "G-T6RVBM12BQ"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const storage = firebase.storage();
+
+        // Elementos DOM
+        const moduleHeaders = document.querySelectorAll('.module-header');
+        const lessonLinks = document.querySelectorAll('.lesson-link');
+        const lessonViewer = document.getElementById('lessonViewer');
+
+        // Toggle módulos
+        moduleHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const moduleItem = header.parentElement;
+                const lessonsList = moduleItem.querySelector('.lessons-list');
+                const toggleIcon = header.querySelector('.toggle-icon');
+                
+                lessonsList.classList.toggle('visible');
+                toggleIcon.classList.toggle('expanded');
+                toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
+            });
+        });
+
+        // Carregar aulas
+        lessonLinks.forEach(link => {
+            link.addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                // Remover classe active de todos os links
+                lessonLinks.forEach(l => l.classList.remove('active'));
+                
+                // Adicionar classe active ao link clicado
+                link.classList.add('active');
+                
+                const fileName = link.dataset.file;
+                await loadLessonContent(fileName);
+            });
+        });
+
+        async function loadLessonContent(fileName) {
+            try {
+                lessonViewer.innerHTML = '<div class="loading">Carregando aula...</div>';
+                
+                // Construir referência do Firebase Storage
+                const fileRef = storage.ref(`content/aulas/${fileName}`);
+                
+                // Obter URL de download
+                const downloadURL = await fileRef.getDownloadURL();
+                
+                // Buscar conteúdo
+                const response = await fetch(downloadURL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const htmlContent = await response.text();
+                lessonViewer.innerHTML = htmlContent;
+                
+                // Scroll para o topo do conteúdo
+                lessonViewer.scrollTop = 0;
+                
+            } catch (error) {
+                console.error('Erro ao carregar aula:', error);
+                lessonViewer.innerHTML = `
+                    <div class="error-message" style="text-align: center; padding: 50px; color: var(--accent-1);">
+                        <h3>Erro ao carregar a aula</h3>
+                        <p>Não foi possível carregar o conteúdo. Tente novamente.</p>
+                        <p><small>Erro: ${error.message}</small></p>
+                    </div>
+                `;
+            }
+        }
+
+        // Tema escuro (opcional)
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        if (prefersDarkScheme.matches) {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>
