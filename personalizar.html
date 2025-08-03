@@ -815,50 +815,87 @@
 
         // === NOVA FUNÇÃO: Carregar cursos, módulos e aulas do Firestore ===
         async function loadCoursesFromFirestore() {
-            if (!db) throw new Error('Firestore não inicializado');
-            const coursesSnapshot = await db.collection('courses').orderBy('order').get();
-            const courses = [];
-            for (const courseDoc of coursesSnapshot.docs) {
-                const courseData = courseDoc.data();
-                const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
-                const modules = [];
-                for (const moduleDoc of modulesSnapshot.docs) {
-                    const moduleData = moduleDoc.data();
-                    // Carregar todas as aulas do módulo (opcional para exibir na personalização)
-                    const aulasSnapshot = await moduleDoc.ref.collection('aulas').orderBy('order').get();
-                    const aulas = [];
-                    aulasSnapshot.forEach(aulaDoc => {
-                        const aulaData = aulaDoc.data();
-                        aulas.push({
-                            id: aulaDoc.id,
-                            name: aulaData.name,
-                            order: aulaData.order || 0,
-                            content_url: aulaData.content_url,
-                            file_name: aulaData.file_name,
-                            estimated_time: aulaData.estimated_time,
-                            difficulty: aulaData.difficulty
-                        });
-                    });
-                    modules.push({
-                        id: moduleDoc.id,
-                        name: moduleData.name,
-                        order: moduleData.order || 0,
-                        aulas: aulas,
-                        type: 'aulas'
-                    });
-                }
-                courses.push({
-                    id: courseDoc.id,
-                    name: courseData.name,
-                    order: courseData.order || 0,
-                    modules: modules
-                });
+            if (!db) {
+                console.error("Firestore DB não inicializado para carregar cursos.");
+                courseListContainer.innerHTML = '<h2 style="color:var(--error-color)">Erro</h2><p>Firestore não inicializado. Verifique o console (F12).</p>';
+                return;
             }
-            // Ordena cursos e módulos
-            courses.sort((a, b) => a.order - b.order);
-            courses.forEach(c => c.modules.sort((a, b) => a.order - b.order));
-            loadedCoursesData = courses;
-            return courses;
+            console.log("Personalizar: Iniciando busca de cursos...");
+            const collectionName = 'courses';
+            const coursesRef = db.collection(collectionName).orderBy('order');
+            try {
+                console.log("Buscando cursos na coleção 'courses'...");
+                const coursesSnapshot = await coursesRef.get();
+                if (coursesSnapshot.empty) {
+                    console.warn(`Nenhum curso encontrado na coleção '${collectionName}'.`);
+                    loadedCoursesData = [];
+                    if (courseListContainer) {
+                        courseListContainer.innerHTML = '<h2>Nenhum curso disponível.</h2><p>Entre em contato com o suporte para adicionar cursos.</p>';
+                    }
+                    return;
+                }
+                console.log(`Personalizar: Encontrados ${coursesSnapshot.size} cursos.`);
+                const coursePromises = coursesSnapshot.docs.map(async (courseDoc) => {
+                    const courseData = courseDoc.data();
+                    const courseId = courseDoc.id;
+                    console.log(`Carregando módulos para o curso ${courseId} (${courseData.name || 'Sem nome'})...`);
+                    const modulesRef = courseDoc.ref.collection('modules').orderBy('order');
+                    const modulesSnapshot = await modulesRef.get();
+                    const modules = [];
+                    if (!modulesSnapshot.empty) {
+                        modulesSnapshot.docs.forEach(moduleDoc => {
+                            const moduleData = moduleDoc.data();
+                            const moduleId = moduleDoc.id;
+                            console.log(`Carregando aulas para o módulo ${moduleId} (${moduleData.name || 'Sem nome'})...`);
+                            
+                            // ===== NOVA LÓGICA - SEM ARRAY LESSONS =====
+                            // Na nova estrutura, criar lesson baseada nos dados diretos do módulo
+                            const processedLessons = [];
+                            
+                            if (moduleData.content_url && moduleData.file_name) {
+                                processedLessons.push({
+                                    id: moduleData.id || moduleId,
+                                    name: moduleData.name || 'Aula s/ Nome',
+                                    order: moduleData.order || 0,
+                                    content_url: moduleData.content_url || '',
+                                    file_name: moduleData.file_name || ''
+                                });
+                                console.log(`Conteúdo encontrado para o módulo ${moduleId}: ${moduleData.name}`);
+                            } else {
+                                console.log(`Nenhum conteúdo encontrado para o módulo ${moduleId}.`);
+                            }
+                            
+                            modules.push({
+                                id: moduleId,
+                                name: moduleData.name || 'Módulo s/ Nome',
+                                order: typeof moduleData.order === 'number' ? moduleData.order : Infinity,
+                                lessons: processedLessons  // Mudou de 'subtopics' para 'lessons'
+                            });
+                        });
+                    } else {
+                        console.log(`Nenhum módulo encontrado para o curso ${courseId}.`);
+                    }
+                    return {
+                        id: courseId,
+                        name: courseData.name || 'Curso s/ Nome',
+                        order: typeof courseData.order === 'number' ? courseData.order : Infinity,
+                        modules: modules
+                    };
+                });
+                loadedCoursesData = await Promise.all(coursePromises);
+                loadedCoursesData.sort((a, b) => a.order - b.order);
+                loadedCoursesData.forEach(course => {
+                    course.modules.sort((a, b) => a.order - b.order);
+                    course.modules.forEach(module => {
+                        module.lessons.sort((a, b) => a.order - b.order);  // Mudou de 'subtopics' para 'lessons'
+                    });
+                });
+                console.log("Personalizar: Estrutura final carregada:", JSON.stringify(loadedCoursesData, null, 2));
+            } catch (error) {
+                console.error(`Erro ao buscar da coleção '${collectionName}' ou subcoleções:`, error);
+                if (courseListContainer) courseListContainer.innerHTML = `<h2 style="color:var(--error-color)">Erro ao Carregar Cursos</h2><p>${error.message || 'Erro desconhecido.'} Verifique o console (F12) para mais detalhes.</p>`;
+                loadedCoursesData = [];
+            }
         }
 
         function renderCourseList(courses) {
