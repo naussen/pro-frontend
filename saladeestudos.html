@@ -161,7 +161,8 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding: 1rem 0;
-            max-height: calc(100vh - var(--header-height) - 120px);
+            /* Removido max-height que estava causando conflito */
+            height: 0; /* Força o flex: 1 a funcionar corretamente */
         }
 
         .sidebar-nav::-webkit-scrollbar {
@@ -255,7 +256,8 @@
         }
 
         .module-list.visible {
-            max-height: 500px;
+            max-height: 800px; /* Aumentado de 500px para 800px */
+            overflow-y: auto; /* Adiciona rolagem se necessário */
         }
 
         .module-item {
