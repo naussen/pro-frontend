@@ -276,15 +276,20 @@
             border-radius: 0 0 8px 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             min-width: 220px;
-            z-index: 1000;
+            z-index: 9999;
             display: none;
             flex-direction: column;
             max-height: 400px;
             overflow-y: auto;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
         }
 
         .dropdown-menu.show {
             display: flex;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .dropdown-item {
@@ -1197,16 +1202,28 @@
             const showAllBtn = headerContainer.querySelector('#showAllCoursesBtn');
             const sidebarBtn = headerContainer.querySelector('#sidebarToggleBtn');
             const pomodoroBtn = headerContainer.querySelector('#pomodoro-btn');
+            const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
+            const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
             
             console.log('🔍 Diagnóstico dos elementos no header:');
             console.log('  - themeToggleBtn:', themeBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - showAllCoursesBtn:', showAllBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - sidebarToggleBtn:', sidebarBtn ? '✅ Encontrado' : '❌ Não encontrado');
             console.log('  - pomodoro-btn:', pomodoroBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - cursosMenuBtn:', cursosBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - flashcardsMenuBtn:', flashcardsBtn ? '✅ Encontrado' : '❌ Não encontrado');
             
             applyTheme();
             setupDirectEventListeners();
-            setupDropdownMenus(); // Adicionar configuração dos menus dropdown
+            
+            // Configurar menus dropdown com retry
+            const dropdownSuccess = setupDropdownMenus();
+            if (!dropdownSuccess) {
+                console.log('🔄 Tentando configurar dropdowns novamente em 500ms...');
+                setTimeout(() => {
+                    setupDropdownMenus();
+                }, 500);
+            }
             
             // Inicializar Pomodoro Timer após carregamento dinâmico
             if (window.PomodoroTimerApp) {
@@ -1215,14 +1232,6 @@
                     window.PomodoroTimerApp.init();
                 }, 100);
             }
-            
-            // Configurar event listeners com retry
-            setTimeout(() => {
-                if (!headerContainer.querySelector('#themeToggleBtn') || !headerContainer.querySelector('#showAllCoursesBtn')) {
-                    console.log('🔄 Elementos não encontrados, tentando novamente...');
-                    trySetupEventListeners();
-                }
-            }, 100);
             
             // Verificar se window.studyApp está disponível
             console.log('🔍 window.studyApp:', window.studyApp ? '✅ Disponível' : '❌ Não disponível');
@@ -1238,21 +1247,30 @@
             console.log('🔧 Configurando menus dropdown...');
             
             const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document.querySelector('.w3s-header');
-            if (!headerContainer) return;
+            if (!headerContainer) {
+                console.warn('❌ Container do header não encontrado');
+                return false;
+            }
 
             // Configurar botão CURSOS
             const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
             const cursosMenu = headerContainer.querySelector('#cursos-menu');
             
             if (cursosBtn && cursosMenu) {
-                cursosBtn.addEventListener('click', function(e) {
+                // Remove listeners anteriores se existirem
+                const newCursosBtn = cursosBtn.cloneNode(true);
+                cursosBtn.parentNode.replaceChild(newCursosBtn, cursosBtn);
+                
+                newCursosBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    toggleDropdownMenu(cursosMenu, cursosBtn);
+                    console.log('🔧 Botão CURSOS clicado');
+                    toggleDropdownMenu(cursosMenu, newCursosBtn);
                 });
                 console.log('✅ Menu CURSOS configurado');
             } else {
                 console.warn('❌ Elementos do menu CURSOS não encontrados');
+                return false;
             }
 
             // Configurar botão FLASHCARDS
@@ -1260,47 +1278,53 @@
             const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
             
             if (flashcardsBtn && flashcardsMenu) {
-                flashcardsBtn.addEventListener('click', function(e) {
+                // Remove listeners anteriores se existirem
+                const newFlashcardsBtn = flashcardsBtn.cloneNode(true);
+                flashcardsBtn.parentNode.replaceChild(newFlashcardsBtn, flashcardsBtn);
+                
+                newFlashcardsBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
+                    console.log('🔧 Botão FLASHCARDS clicado');
+                    toggleDropdownMenu(flashcardsMenu, newFlashcardsBtn);
                 });
                 console.log('✅ Menu FLASHCARDS configurado');
             } else {
                 console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
+                return false;
             }
 
-            // Fechar menus ao clicar fora
-            document.addEventListener('click', function(e) {
-                const dropdowns = headerContainer.querySelectorAll('.dropdown-menu.show');
-                const buttons = headerContainer.querySelectorAll('.nav-button');
-                
-                dropdowns.forEach(dropdown => {
-                    const isClickInsideDropdown = dropdown.contains(e.target);
-                    const isClickOnButton = Array.from(buttons).some(btn => btn.contains(e.target));
+            // Configurar fechamento ao clicar fora (apenas uma vez)
+            if (!window.dropdownClickHandlerAdded) {
+                document.addEventListener('click', function(e) {
+                    const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+                    const isClickOnNavButton = e.target.closest('.nav-button');
                     
-                    if (!isClickInsideDropdown && !isClickOnButton) {
-                        closeDropdownMenu(dropdown);
+                    if (!isClickOnNavButton) {
+                        dropdowns.forEach(dropdown => {
+                            closeDropdownMenu(dropdown);
+                        });
                     }
                 });
-            });
+                window.dropdownClickHandlerAdded = true;
+                console.log('✅ Handler de fechamento global configurado');
+            }
 
-            // Fechar outros menus ao abrir um novo
-            headerContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('nav-button')) {
-                    const allDropdowns = headerContainer.querySelectorAll('.dropdown-menu');
-                    const targetMenu = headerContainer.querySelector('#' + e.target.getAttribute('data-target'));
-                    
-                    allDropdowns.forEach(dropdown => {
-                        if (dropdown !== targetMenu) {
-                            closeDropdownMenu(dropdown);
-                        }
-                    });
-                }
-            });
+            return true;
         }
 
         function toggleDropdownMenu(menu, button) {
+            console.log('🔄 Toggle menu:', menu.id);
+            
+            // Fechar outros menus primeiro
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+            allDropdowns.forEach(dropdown => {
+                if (dropdown !== menu && dropdown.classList.contains('show')) {
+                    closeDropdownMenu(dropdown);
+                }
+            });
+            
+            // Toggle do menu atual
             const isOpen = menu.classList.contains('show');
             
             if (isOpen) {
@@ -1312,8 +1336,10 @@
 
         function openDropdownMenu(menu, button) {
             menu.classList.add('show');
-            button.setAttribute('aria-expanded', 'true');
-            console.log('📂 Menu dropdown aberto:', menu.id);
+            if (button) {
+                button.setAttribute('aria-expanded', 'true');
+            }
+            console.log('📂 Menu aberto:', menu.id);
         }
 
         function closeDropdownMenu(menu) {
@@ -1322,7 +1348,7 @@
             if (button) {
                 button.setAttribute('aria-expanded', 'false');
             }
-            console.log('📁 Menu dropdown fechado:', menu.id);
+            console.log('📁 Menu fechado:', menu.id);
         }
 
         // === FUNÇÕES DOS ITENS DO MENU ===
@@ -1363,6 +1389,43 @@
                 }
             }, 500);
         }
+
+        // Função adicional para garantir inicialização dos dropdowns
+        function ensureDropdownsWork() {
+            const cursosBtn = document.querySelector('#cursosMenuBtn');
+            const flashcardsBtn = document.querySelector('#flashcardsMenuBtn');
+            
+            if (cursosBtn && flashcardsBtn) {
+                console.log('✅ Elementos dropdown encontrados, configurando...');
+                setupDropdownMenus();
+                return true;
+            } else {
+                console.log('⚠️ Elementos dropdown não encontrados ainda');
+                return false;
+            }
+        }
+
+        // Retry mechanism para garantir que os dropdowns funcionem
+        let retryCount = 0;
+        const maxRetries = 10;
+        
+        function retryDropdownSetup() {
+            if (retryCount >= maxRetries) {
+                console.error('❌ Falha ao configurar dropdowns após múltiplas tentativas');
+                return;
+            }
+            
+            if (!ensureDropdownsWork()) {
+                retryCount++;
+                console.log(`🔄 Tentativa ${retryCount}/${maxRetries} de configurar dropdowns...`);
+                setTimeout(retryDropdownSetup, 200);
+            } else {
+                console.log('✅ Dropdowns configurados com sucesso!');
+            }
+        }
+
+        // Iniciar retry se necessário
+        setTimeout(retryDropdownSetup, 100);
     </script>
 </body>
 </html>
