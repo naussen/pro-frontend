@@ -85,7 +85,7 @@
                 <button id="themeToggleBtn" class="header-btn primary" title="Alternar tema">
                     <span class="icon" id="themeIcon">🌙</span>
                 </button>
-                <a href="personalizar.html" title="Personalizar Sala de Estudos">
+                <a href="personalizar.html" title="Personalizar Sala de Estudos" class="personalizar-btn">
                     <span class="icon">⚙️</span> 
                     <span class="link-text">Personalizar Sala de Estudos</span>
                 </a>
@@ -228,10 +228,11 @@
             display: flex;
             align-items: center;
             height: 100%;
-            margin-left: 15px;
+            margin-left: 35px; /* Movido 2cm (20mm = ~35px) para a direita */
         }
 
         .nav-item {
+            position: relative;
             height: 100%;
         }
 
@@ -241,7 +242,7 @@
             padding: 0 15px;
             height: 100%;
             color: var(--top-nav-link-color);
-            font-size: 15px;
+            font-size: 17.25px; /* Aumentado 15% de 15px */
             background-color: transparent;
             border: none;
             border-right: 1px solid var(--header-border);
@@ -424,6 +425,40 @@
             border-color: var(--dark-blue-hover);
         }
 
+        /* === REALCE DO BOTÃO PERSONALIZAR === */
+        .w3s-header-actions .personalizar-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white !important;
+            border: 1px solid #28a745;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .w3s-header-actions .personalizar-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            transform: translateY(-1px);
+            border-color: #218838;
+        }
+
+        .w3s-header-actions .personalizar-btn .icon {
+            filter: brightness(1.2);
+        }
+
+        /* Modo escuro */
+        body.dark-mode .w3s-header-actions .personalizar-btn {
+            background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+            border-color: #20c997;
+            box-shadow: 0 2px 8px rgba(32, 201, 151, 0.2);
+        }
+
+        body.dark-mode .w3s-header-actions .personalizar-btn:hover {
+            background: linear-gradient(135deg, #1ea085 0%, #138496 100%);
+            box-shadow: 0 4px 12px rgba(32, 201, 151, 0.3);
+            border-color: #1ea085;
+        }
+
         .w3s-header-actions a .icon, 
         .w3s-header-actions button .icon {
             font-size: 1.1em;
@@ -455,13 +490,13 @@
         @media (max-width: 768px) {
             .w3s-nav-menu {
                 /* Não ocultar completamente, apenas ajustar */
-                margin-left: 5px;
+                margin-left: 20px; /* Reduzido em telas menores mas mantendo deslocamento */
                 gap: 2px;
             }
             
             .nav-button {
                 padding: 0 8px;
-                font-size: 13px;
+                font-size: 15px; /* Mantém proporção em telas menores */
             }
 
             /* === MOBILE DROPDOWN ADJUSTMENTS === */
