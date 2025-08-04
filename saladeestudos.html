@@ -889,6 +889,117 @@
                 } else {
                     console.warn('❌ sidebarToggleBtn não encontrado');
                 }
+
+                // === CONFIGURAÇÃO DOS MENUS DROPDOWN ===
+                this.setupDropdownMenus(headerPlaceholder);
+            }
+
+            setupDropdownMenus(headerContainer) {
+                console.log('🔧 Configurando menus dropdown...');
+                
+                if (!headerContainer) {
+                    console.warn('❌ Container do header não fornecido');
+                    return false;
+                }
+
+                // Configurar botão CURSOS
+                const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
+                const cursosMenu = headerContainer.querySelector('#cursos-menu');
+                
+                console.log('🔍 Elementos CURSOS:', {
+                    button: cursosBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: cursosMenu ? 'Encontrado' : 'Não encontrado'
+                });
+                
+                if (cursosBtn && cursosMenu) {
+                    cursosBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão CURSOS clicado - toggling menu');
+                        this.toggleDropdownMenu(cursosMenu, cursosBtn);
+                    };
+                    console.log('✅ Menu CURSOS configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu CURSOS não encontrados');
+                }
+
+                // Configurar botão FLASHCARDS
+                const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
+                const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
+                
+                console.log('🔍 Elementos FLASHCARDS:', {
+                    button: flashcardsBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: flashcardsMenu ? 'Encontrado' : 'Não encontrado'
+                });
+                
+                if (flashcardsBtn && flashcardsMenu) {
+                    flashcardsBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão FLASHCARDS clicado - toggling menu');
+                        this.toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
+                    };
+                    console.log('✅ Menu FLASHCARDS configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
+                }
+
+                // Configurar fechamento ao clicar fora
+                if (!window.dropdownClickHandlerAdded) {
+                    document.addEventListener('click', (e) => {
+                        const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+                        const isClickOnNavButton = e.target.closest('.nav-button');
+                        const isClickInsideDropdown = e.target.closest('.dropdown-menu');
+                        
+                        if (!isClickOnNavButton && !isClickInsideDropdown) {
+                            dropdowns.forEach(dropdown => {
+                                this.closeDropdownMenu(dropdown);
+                            });
+                        }
+                    });
+                    window.dropdownClickHandlerAdded = true;
+                    console.log('✅ Handler de fechamento global configurado');
+                }
+
+                return true;
+            }
+
+            toggleDropdownMenu(menu, button) {
+                console.log('🔄 Toggle menu:', menu.id);
+                
+                // Fechar outros menus primeiro
+                const allDropdowns = document.querySelectorAll('.dropdown-menu');
+                allDropdowns.forEach(dropdown => {
+                    if (dropdown !== menu && dropdown.classList.contains('show')) {
+                        this.closeDropdownMenu(dropdown);
+                    }
+                });
+                
+                // Toggle do menu atual
+                const isOpen = menu.classList.contains('show');
+                
+                if (isOpen) {
+                    this.closeDropdownMenu(menu);
+                } else {
+                    this.openDropdownMenu(menu, button);
+                }
+            }
+
+            openDropdownMenu(menu, button) {
+                menu.classList.add('show');
+                if (button) {
+                    button.setAttribute('aria-expanded', 'true');
+                }
+                console.log('📂 Menu aberto:', menu.id);
+            }
+
+            closeDropdownMenu(menu) {
+                menu.classList.remove('show');
+                const button = document.querySelector(`[data-target="${menu.id}"]`);
+                if (button) {
+                    button.setAttribute('aria-expanded', 'false');
+                }
+                console.log('📁 Menu fechado:', menu.id);
             }
 
             applyThemeToHeader() {
@@ -923,11 +1034,8 @@
                 try {
                     // Nova API recomendada (Firebase v9+) com merge para evitar override warning
                     this.db.settings({
-                        cache: {
-                            kind: 'persistent',
-                            synchronizeTabs: true
-                        }
-                    }, { merge: true });
+                        cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+                    });
                     console.log('✅ Firebase inicializado com persistência moderna');
                 } catch (error) {
                     // Fallback para API antiga se a nova não estiver disponível
