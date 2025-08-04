@@ -24,10 +24,48 @@
         
         <nav class="w3s-nav-menu" id="topNav">
             <div class="nav-item">
-                <button class="nav-button" data-target="cursos-menu">Cursos ▼</button>
+                <button class="nav-button" data-target="cursos-menu" id="cursosMenuBtn">Cursos ▼</button>
+                <div class="dropdown-menu" id="cursos-menu">
+                    <a href="saladeestudos.html" class="dropdown-item">
+                        <span class="dropdown-icon">📚</span>
+                        Sala de Estudos
+                    </a>
+                    <a href="administracao-financeira-orcamentaria.html" class="dropdown-item">
+                        <span class="dropdown-icon">🏛️</span>
+                        Administração Financeira Orçamentária
+                    </a>
+                    <a href="direito-administrativo.html" class="dropdown-item">
+                        <span class="dropdown-icon">⚖️</span>
+                        Direito Administrativo
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="showAllCoursesAction()">
+                        <span class="dropdown-icon">📖</span>
+                        Ver Todos os Cursos
+                    </button>
+                </div>
             </div>
             <div class="nav-item">
-                <button class="nav-button" data-target="flashcards-menu">Flashcards ▼</button>
+                <button class="nav-button" data-target="flashcards-menu" id="flashcardsMenuBtn">Flashcards ▼</button>
+                <div class="dropdown-menu" id="flashcards-menu">
+                    <a href="#" class="dropdown-item">
+                        <span class="dropdown-icon">🃏</span>
+                        Flashcards de Direito
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="dropdown-icon">📊</span>
+                        Flashcards de Matemática
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="dropdown-icon">📝</span>
+                        Flashcards de Português
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="createCustomFlashcards()">
+                        <span class="dropdown-icon">➕</span>
+                        Criar Flashcards Personalizados
+                    </button>
+                </div>
             </div>
         </nav>
         
@@ -222,6 +260,74 @@
         .nav-button.active {
             background-color: var(--top-nav-link-active-bg);
         }
+
+        /* === DROPDOWN MENUS === */
+        .nav-item {
+            position: relative;
+            height: 100%;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--main-content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 220px;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown-menu.show {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-highlight-bg);
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            background-color: var(--light-highlight-bg);
+        }
+
+        .dropdown-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 4px 0;
+        }
+
+        /* Indicador visual de menu ativo */
+        .nav-button[aria-expanded="true"] {
+            background-color: var(--top-nav-link-active-bg);
+        }
         
         .w3s-search-area {
             display: flex;
@@ -344,6 +450,28 @@
         @media (max-width: 768px) {
             .w3s-nav-menu {
                 display: none;
+            }
+
+            /* === MOBILE DROPDOWN ADJUSTMENTS === */
+            .dropdown-menu {
+                position: fixed;
+                top: var(--header-height);
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100vw - 20px);
+                max-width: 300px;
+                border-radius: 8px;
+                max-height: 60vh;
+            }
+
+            .dropdown-item {
+                padding: 14px 16px;
+                font-size: 16px;
+            }
+
+            .dropdown-icon {
+                font-size: 18px;
+                width: 24px;
             }
         }
 
@@ -1078,6 +1206,7 @@
             
             applyTheme();
             setupDirectEventListeners();
+            setupDropdownMenus(); // Adicionar configuração dos menus dropdown
             
             // Inicializar Pomodoro Timer após carregamento dinâmico
             if (window.PomodoroTimerApp) {
@@ -1103,6 +1232,125 @@
                 console.log('  - showNotification:', typeof window.studyApp.showNotification);
             }
         };
+
+        // === FUNCIONALIDADE DOS MENUS DROPDOWN ===
+        function setupDropdownMenus() {
+            console.log('🔧 Configurando menus dropdown...');
+            
+            const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document.querySelector('.w3s-header');
+            if (!headerContainer) return;
+
+            // Configurar botão CURSOS
+            const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
+            const cursosMenu = headerContainer.querySelector('#cursos-menu');
+            
+            if (cursosBtn && cursosMenu) {
+                cursosBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleDropdownMenu(cursosMenu, cursosBtn);
+                });
+                console.log('✅ Menu CURSOS configurado');
+            } else {
+                console.warn('❌ Elementos do menu CURSOS não encontrados');
+            }
+
+            // Configurar botão FLASHCARDS
+            const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
+            const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
+            
+            if (flashcardsBtn && flashcardsMenu) {
+                flashcardsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
+                });
+                console.log('✅ Menu FLASHCARDS configurado');
+            } else {
+                console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
+            }
+
+            // Fechar menus ao clicar fora
+            document.addEventListener('click', function(e) {
+                const dropdowns = headerContainer.querySelectorAll('.dropdown-menu.show');
+                const buttons = headerContainer.querySelectorAll('.nav-button');
+                
+                dropdowns.forEach(dropdown => {
+                    const isClickInsideDropdown = dropdown.contains(e.target);
+                    const isClickOnButton = Array.from(buttons).some(btn => btn.contains(e.target));
+                    
+                    if (!isClickInsideDropdown && !isClickOnButton) {
+                        closeDropdownMenu(dropdown);
+                    }
+                });
+            });
+
+            // Fechar outros menus ao abrir um novo
+            headerContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('nav-button')) {
+                    const allDropdowns = headerContainer.querySelectorAll('.dropdown-menu');
+                    const targetMenu = headerContainer.querySelector('#' + e.target.getAttribute('data-target'));
+                    
+                    allDropdowns.forEach(dropdown => {
+                        if (dropdown !== targetMenu) {
+                            closeDropdownMenu(dropdown);
+                        }
+                    });
+                }
+            });
+        }
+
+        function toggleDropdownMenu(menu, button) {
+            const isOpen = menu.classList.contains('show');
+            
+            if (isOpen) {
+                closeDropdownMenu(menu);
+            } else {
+                openDropdownMenu(menu, button);
+            }
+        }
+
+        function openDropdownMenu(menu, button) {
+            menu.classList.add('show');
+            button.setAttribute('aria-expanded', 'true');
+            console.log('📂 Menu dropdown aberto:', menu.id);
+        }
+
+        function closeDropdownMenu(menu) {
+            menu.classList.remove('show');
+            const button = document.querySelector(`[data-target="${menu.id}"]`);
+            if (button) {
+                button.setAttribute('aria-expanded', 'false');
+            }
+            console.log('📁 Menu dropdown fechado:', menu.id);
+        }
+
+        // === FUNÇÕES DOS ITENS DO MENU ===
+        function showAllCoursesAction() {
+            console.log('🔧 Ação "Ver Todos os Cursos" executada');
+            if (window.studyApp && window.studyApp.loadAllCourses) {
+                window.studyApp.loadAllCourses();
+                // Fechar menu
+                const cursosMenu = document.querySelector('#cursos-menu');
+                if (cursosMenu) closeDropdownMenu(cursosMenu);
+            } else {
+                console.warn('⚠️ studyApp.loadAllCourses não disponível');
+                alert('Funcionalidade será implementada em breve!');
+            }
+        }
+
+        function createCustomFlashcards() {
+            console.log('🔧 Ação "Criar Flashcards Personalizados" executada');
+            // Fechar menu
+            const flashcardsMenu = document.querySelector('#flashcards-menu');
+            if (flashcardsMenu) closeDropdownMenu(flashcardsMenu);
+            
+            if (window.studyApp && window.studyApp.showNotification) {
+                window.studyApp.showNotification('Funcionalidade de Flashcards em desenvolvimento!', 'info');
+            } else {
+                alert('Funcionalidade de Flashcards Personalizados será implementada em breve!');
+            }
+        }
 
         // Tentar configurar imediatamente e com delay
         trySetupEventListeners();
