@@ -454,7 +454,14 @@
 
         @media (max-width: 768px) {
             .w3s-nav-menu {
-                display: none;
+                /* Não ocultar completamente, apenas ajustar */
+                margin-left: 5px;
+                gap: 2px;
+            }
+            
+            .nav-button {
+                padding: 0 8px;
+                font-size: 13px;
             }
 
             /* === MOBILE DROPDOWN ADJUSTMENTS === */
@@ -477,6 +484,13 @@
             .dropdown-icon {
                 font-size: 18px;
                 width: 24px;
+            }
+        }
+
+        /* Para telas muito pequenas (menos de 480px), aí sim podemos ocultar */
+        @media (max-width: 480px) {
+            .w3s-nav-menu {
+                display: none;
             }
         }
 
@@ -1252,22 +1266,30 @@
                 return false;
             }
 
+            console.log('📍 Container encontrado:', headerContainer.id || headerContainer.className);
+
             // Configurar botão CURSOS
             const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
             const cursosMenu = headerContainer.querySelector('#cursos-menu');
             
+            console.log('🔍 Elementos CURSOS:', {
+                button: cursosBtn ? 'Encontrado' : 'Não encontrado',
+                menu: cursosMenu ? 'Encontrado' : 'Não encontrado'
+            });
+            
             if (cursosBtn && cursosMenu) {
-                // Remove listeners anteriores se existirem
-                const newCursosBtn = cursosBtn.cloneNode(true);
-                cursosBtn.parentNode.replaceChild(newCursosBtn, cursosBtn);
+                // Limpar event listeners anteriores
+                cursosBtn.onclick = null;
+                cursosBtn.removeAttribute('onclick');
                 
-                newCursosBtn.addEventListener('click', function(e) {
+                // Adicionar novo event listener
+                cursosBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('🔧 Botão CURSOS clicado');
-                    toggleDropdownMenu(cursosMenu, newCursosBtn);
+                    console.log('🔧 Botão CURSOS clicado - menu será toggleado');
+                    toggleDropdownMenu(cursosMenu, cursosBtn);
                 });
-                console.log('✅ Menu CURSOS configurado');
+                console.log('✅ Menu CURSOS configurado com sucesso');
             } else {
                 console.warn('❌ Elementos do menu CURSOS não encontrados');
                 return false;
@@ -1277,18 +1299,24 @@
             const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
             const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
             
+            console.log('🔍 Elementos FLASHCARDS:', {
+                button: flashcardsBtn ? 'Encontrado' : 'Não encontrado',
+                menu: flashcardsMenu ? 'Encontrado' : 'Não encontrado'
+            });
+            
             if (flashcardsBtn && flashcardsMenu) {
-                // Remove listeners anteriores se existirem
-                const newFlashcardsBtn = flashcardsBtn.cloneNode(true);
-                flashcardsBtn.parentNode.replaceChild(newFlashcardsBtn, flashcardsBtn);
+                // Limpar event listeners anteriores
+                flashcardsBtn.onclick = null;
+                flashcardsBtn.removeAttribute('onclick');
                 
-                newFlashcardsBtn.addEventListener('click', function(e) {
+                // Adicionar novo event listener
+                flashcardsBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('🔧 Botão FLASHCARDS clicado');
-                    toggleDropdownMenu(flashcardsMenu, newFlashcardsBtn);
+                    console.log('🔧 Botão FLASHCARDS clicado - menu será toggleado');
+                    toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
                 });
-                console.log('✅ Menu FLASHCARDS configurado');
+                console.log('✅ Menu FLASHCARDS configurado com sucesso');
             } else {
                 console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
                 return false;
@@ -1299,8 +1327,9 @@
                 document.addEventListener('click', function(e) {
                     const dropdowns = document.querySelectorAll('.dropdown-menu.show');
                     const isClickOnNavButton = e.target.closest('.nav-button');
+                    const isClickInsideDropdown = e.target.closest('.dropdown-menu');
                     
-                    if (!isClickOnNavButton) {
+                    if (!isClickOnNavButton && !isClickInsideDropdown) {
                         dropdowns.forEach(dropdown => {
                             closeDropdownMenu(dropdown);
                         });
@@ -1392,15 +1421,48 @@
 
         // Função adicional para garantir inicialização dos dropdowns
         function ensureDropdownsWork() {
+            console.log('🔧 Verificando elementos dropdown...');
+            
             const cursosBtn = document.querySelector('#cursosMenuBtn');
             const flashcardsBtn = document.querySelector('#flashcardsMenuBtn');
+            const cursosMenu = document.querySelector('#cursos-menu');
+            const flashcardsMenu = document.querySelector('#flashcards-menu');
             
-            if (cursosBtn && flashcardsBtn) {
-                console.log('✅ Elementos dropdown encontrados, configurando...');
-                setupDropdownMenus();
-                return true;
+            console.log('🔍 Debug dos elementos:', {
+                cursosBtn: cursosBtn ? `Encontrado (${cursosBtn.tagName})` : 'Não encontrado',
+                flashcardsBtn: flashcardsBtn ? `Encontrado (${flashcardsBtn.tagName})` : 'Não encontrado',
+                cursosMenu: cursosMenu ? `Encontrado (${cursosMenu.tagName})` : 'Não encontrado',
+                flashcardsMenu: flashcardsMenu ? `Encontrado (${flashcardsMenu.tagName})` : 'Não encontrado'
+            });
+            
+            // Verificar se os elementos estão visíveis
+            if (cursosBtn) {
+                const rect = cursosBtn.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
+                console.log('👁️ Botão CURSOS visível:', isVisible, rect);
+            }
+            
+            if (cursosBtn && flashcardsBtn && cursosMenu && flashcardsMenu) {
+                console.log('✅ Todos os elementos encontrados, configurando...');
+                const success = setupDropdownMenus();
+                
+                // Teste adicional: simular clique
+                if (success) {
+                    console.log('🧪 Testando funcionalidade dos botões...');
+                    
+                    // Adicionar indicador visual de que os botões estão funcionando
+                    cursosBtn.style.border = '2px solid green';
+                    flashcardsBtn.style.border = '2px solid green';
+                    
+                    setTimeout(() => {
+                        cursosBtn.style.border = '';
+                        flashcardsBtn.style.border = '';
+                    }, 2000);
+                }
+                
+                return success;
             } else {
-                console.log('⚠️ Elementos dropdown não encontrados ainda');
+                console.log('⚠️ Nem todos os elementos foram encontrados ainda');
                 return false;
             }
         }
