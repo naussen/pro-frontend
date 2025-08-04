@@ -843,26 +843,32 @@
                     const modulesSnapshot = await modulesRef.get();
                     const modules = [];
                     if (!modulesSnapshot.empty) {
-                        modulesSnapshot.docs.forEach(moduleDoc => {
+                        for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
                             const moduleId = moduleDoc.id;
                             console.log(`Carregando aulas para o módulo ${moduleId} (${moduleData.name || 'Sem nome'})...`);
                             
-                            // ===== NOVA LÓGICA - SEM ARRAY LESSONS =====
-                            // Na nova estrutura, criar lesson baseada nos dados diretos do módulo
+                            // ===== NOVA LÓGICA - USAR SUB-COLEÇÃO AULAS =====
+                            const aulasRef = moduleDoc.ref.collection('aulas').orderBy('order');
+                            const aulasSnapshot = await aulasRef.get();
                             const processedLessons = [];
                             
-                            if (moduleData.content_url && moduleData.file_name) {
-                                processedLessons.push({
-                                    id: moduleData.id || moduleId,
-                                    name: moduleData.name || 'Aula s/ Nome',
-                                    order: moduleData.order || 0,
-                                    content_url: moduleData.content_url || '',
-                                    file_name: moduleData.file_name || ''
+                            if (!aulasSnapshot.empty) {
+                                aulasSnapshot.forEach(aulaDoc => {
+                                    const aulaData = aulaDoc.data();
+                                    processedLessons.push({
+                                        id: aulaDoc.id,
+                                        name: aulaData.name || 'Aula s/ Nome',
+                                        order: aulaData.order || 0,
+                                        content_url: aulaData.content_url || '',
+                                        file_name: aulaData.file_name || '',
+                                        estimated_time: aulaData.estimated_time,
+                                        difficulty: aulaData.difficulty
+                                    });
                                 });
-                                console.log(`Conteúdo encontrado para o módulo ${moduleId}: ${moduleData.name}`);
+                                console.log(`${processedLessons.length} aulas encontradas para o módulo ${moduleId}`);
                             } else {
-                                console.log(`Nenhum conteúdo encontrado para o módulo ${moduleId}.`);
+                                console.log(`Nenhuma aula encontrada para o módulo ${moduleId}.`);
                             }
                             
                             modules.push({
@@ -871,7 +877,7 @@
                                 order: typeof moduleData.order === 'number' ? moduleData.order : Infinity,
                                 lessons: processedLessons  // Mudou de 'subtopics' para 'lessons'
                             });
-                        });
+                        }
                     } else {
                         console.log(`Nenhum módulo encontrado para o curso ${courseId}.`);
                     }

@@ -1092,7 +1092,7 @@
                             }
                         }
                         
-                        // Carregar dados do módulo
+                        // Carregar dados do módulo e suas aulas
                         const moduleDoc = await this.db.collection('courses')
                             .doc(courseId).collection('modules').doc(moduleId).get();
                             
@@ -1100,24 +1100,8 @@
                             const moduleData = moduleDoc.data();
                             const course = coursesMap.get(courseId);
                             
-                            // Carregar todas as aulas do módulo
-                            const aulasSnapshot = await this.db.collection('courses')
-                                .doc(courseId).collection('modules').doc(moduleId)
-                                .collection('aulas').orderBy('order').get();
-                                
-                            const aulas = [];
-                            aulasSnapshot.forEach(aulaDoc => {
-                                const aulaData = aulaDoc.data();
-                                aulas.push({
-                                    id: aulaDoc.id,
-                                    name: aulaData.name,
-                                    order: aulaData.order || 0,
-                                    content_url: aulaData.content_url,
-                                    file_name: aulaData.file_name,
-                                    estimated_time: aulaData.estimated_time,
-                                    difficulty: aulaData.difficulty
-                                });
-                            });
+                            // Carregar todas as aulas do módulo de forma unificada
+                            const aulas = await this.loadAulasFromModule(courseId, moduleId);
                             
                             // Adiciona módulo com suas aulas
                             if (aulas.length > 0) {
@@ -1159,23 +1143,8 @@
                         for (const moduleDoc of modulesSnapshot.docs) {
                             const moduleData = moduleDoc.data();
                             
-                            // Carregar todas as aulas do módulo
-                            const aulasSnapshot = await moduleDoc.ref
-                                .collection('aulas').orderBy('order').get();
-                                
-                            const aulas = [];
-                            aulasSnapshot.forEach(aulaDoc => {
-                                const aulaData = aulaDoc.data();
-                                aulas.push({
-                                    id: aulaDoc.id,
-                                    name: aulaData.name,
-                                    order: aulaData.order || 0,
-                                    content_url: aulaData.content_url,
-                                    file_name: aulaData.file_name,
-                                    estimated_time: aulaData.estimated_time,
-                                    difficulty: aulaData.difficulty
-                                });
-                            });
+                            // Carregar todas as aulas do módulo de forma unificada
+                            const aulas = await this.loadAulasFromModule(courseDoc.id, moduleDoc.id);
                             
                             // Adiciona módulo com suas aulas
                             if (aulas.length > 0) {
@@ -1206,6 +1175,34 @@
                 } catch (error) {
                     console.error('❌ Erro ao carregar todos os cursos:', error);
                     this.showError('Falha ao carregar cursos');
+                }
+            }
+
+            // === NOVA FUNÇÃO UNIFICADA PARA CARREGAR AULAS ===
+            async loadAulasFromModule(courseId, moduleId) {
+                try {
+                    const aulasSnapshot = await this.db.collection('courses')
+                        .doc(courseId).collection('modules').doc(moduleId)
+                        .collection('aulas').orderBy('order').get();
+                        
+                    const aulas = [];
+                    aulasSnapshot.forEach(aulaDoc => {
+                        const aulaData = aulaDoc.data();
+                        aulas.push({
+                            id: aulaDoc.id,
+                            name: aulaData.name,
+                            order: aulaData.order || 0,
+                            content_url: aulaData.content_url,
+                            file_name: aulaData.file_name,
+                            estimated_time: aulaData.estimated_time,
+                            difficulty: aulaData.difficulty
+                        });
+                    });
+                    
+                    return aulas.sort((a, b) => a.order - b.order);
+                } catch (error) {
+                    console.warn(`⚠️ Erro ao carregar aulas do módulo ${moduleId}:`, error);
+                    return [];
                 }
             }
 
