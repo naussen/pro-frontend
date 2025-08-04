@@ -109,9 +109,6 @@
             position: relative;
             z-index: 999;
             box-shadow: var(--card-shadow);
-            /* CORREÇÃO: Garante altura total disponível */
-            height: 100%;
-            max-height: calc(100vh - var(--header-height));
         }
 
         .study-sidebar.collapsed {
@@ -124,14 +121,12 @@
             background: var(--gradient-primary);
             color: white;
             position: relative;
-            /* CORREÇÃO: Header fixo para não rolar */
-            flex-shrink: 0;
         }
 
         .sidebar-title {
             font-size: 1.125rem;
             font-weight: 600;
-            opacity: 1;
+            opacity: 0.8;
             transition: opacity var(--animation-speed) ease;
         }
 
@@ -154,57 +149,37 @@
         }
 
         .sidebar-content {
-            /* CORREÇÃO: Ocupa todo espaço restante e permite rolagem */
             flex: 1;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 0; /* Importante para flex funcionar corretamente */
-            overflow: hidden;
+            min-height: 0;
         }
 
         .sidebar-nav {
-            /* CORREÇÃO: Sistema de rolagem robusto */
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 1rem 0;
-            /* Scroll behavior suave */
-            scroll-behavior: smooth;
-            /* Otimizações de performance */
-            -webkit-overflow-scrolling: touch;
-            will-change: scroll-position;
+            max-height: calc(100vh - var(--header-height) - 120px);
         }
 
-        /* CORREÇÃO: Scrollbar estilizada e responsiva */
         .sidebar-nav::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
 
         .sidebar-nav::-webkit-scrollbar-track {
             background: transparent;
-            border-radius: 3px;
         }
 
         .sidebar-nav::-webkit-scrollbar-thumb {
             background: var(--border-color);
-            border-radius: 3px;
-            transition: background-color 0.3s ease;
-        }
-
-        .sidebar-nav::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
-        /* Para Firefox */
-        .sidebar-nav {
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-color) transparent;
+            border-radius: 2px;
         }
 
         /* === MENU DE NAVEGAÇÃO === */
         .course-item {
             margin-bottom: 0.5rem;
-            /* CORREÇÃO: Remove limitações que impedem expansão */
         }
 
         .course-header {
@@ -216,8 +191,6 @@
             font-weight: 500;
             transition: all var(--animation-speed) ease;
             position: relative;
-            /* CORREÇÃO: Previne quebra de layout */
-            min-height: 44px; /* Garante área clicável mínima */
         }
 
         .course-header:hover {
@@ -264,9 +237,6 @@
             font-size: 0.875rem;
             transition: transform var(--animation-speed) ease;
             opacity: 1;
-            /* CORREÇÃO: Ícone mais visível */
-            color: var(--text-muted);
-            font-weight: bold;
         }
 
         .collapsed .toggle-icon {
@@ -275,31 +245,17 @@
 
         .toggle-icon.expanded {
             transform: rotate(90deg);
-            color: var(--main-color);
         }
 
-        /* CORREÇÃO PRINCIPAL: Remove limitação de altura dos módulos */
         .module-list {
-            /* Antes: max-height: 0; overflow: hidden; transition: max-height 0.3s ease; */
-            /* NOVA IMPLEMENTAÇÃO: Usa display para controle */
-            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--animation-speed) ease;
             background: rgba(0, 0, 0, 0.02);
-            /* IMPORTANTE: Remove qualquer limitação de altura */
-            max-height: none !important;
-            height: auto !important;
-            overflow: visible !important;
-            /* Transição suave apenas para opacidade */
-            opacity: 0;
-            transition: opacity var(--animation-speed) ease;
         }
 
         .module-list.visible {
-            /* CORREÇÃO: Sistema simples e eficaz */
-            display: block;
-            opacity: 1;
-            /* Remove limitação anterior de max-height: 500px */
-            max-height: none !important;
-            height: auto !important;
+            max-height: 500px;
         }
 
         .module-item {
@@ -310,10 +266,6 @@
             transition: all var(--animation-speed) ease;
             position: relative;
             opacity: 1;
-            /* CORREÇÃO: Garante espaçamento adequado */
-            min-height: 40px;
-            display: flex;
-            align-items: center;
         }
 
         .collapsed .module-item {
@@ -336,7 +288,6 @@
             position: absolute;
             left: 2rem;
             color: var(--accent-2);
-            font-weight: bold;
         }
 
         .module-header {
@@ -345,52 +296,33 @@
             justify-content: space-between;
             width: 100%;
             font-size: 1.3em; /* Aumentado 30% */
-            /* CORREÇÃO: Garante que ocupe todo espaço disponível */
-            flex: 1;
         }
 
         .module-name {
             flex: 1;
             font-weight: 500;
-            /* CORREÇÃO: Permite quebra de linha se necessário */
-            word-wrap: break-word;
-            hyphens: auto;
         }
 
         .module-meta {
             font-size: 0.8em;
             color: var(--text-muted);
             margin-right: 0.5rem;
-            /* CORREÇÃO: Previne encolhimento */
-            flex-shrink: 0;
         }
 
         .module-toggle {
             font-size: 0.8em;
             transition: transform var(--animation-speed) ease;
-            /* CORREÇÃO: Ícone mais visível */
-            color: var(--text-muted);
-            font-weight: bold;
-            flex-shrink: 0;
         }
 
         .module-toggle.expanded {
             transform: rotate(90deg);
-            color: var(--accent-1);
         }
 
-        /* CORREÇÃO: Lista de aulas otimizada */
         .aulas-list {
             margin-top: 0.5rem;
             padding-left: 1rem;
             border-left: 2px solid var(--border-color);
             font-size: 1.3em; /* Aumentado 30% */
-            /* CORREÇÃO: Remove limitações de altura */
-            max-height: none !important;
-            height: auto !important;
-            overflow: visible !important;
-            /* Transição suave */
-            transition: opacity var(--animation-speed) ease;
         }
 
         .aula-item {
@@ -404,86 +336,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            /* CORREÇÃO: Garante altura mínima clicável */
-            min-height: 36px;
-            /* CORREÇÃO: Quebra de linha se necessário */
-            word-wrap: break-word;
-            hyphens: auto;
         }
 
         .aula-item:hover {
             background: var(--light-highlight-bg);
             transform: translateX(2px);
-            /* CORREÇÃO: Efeito de elevação sutil */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .aula-item.active {
             background: var(--accent-1);
             color: white;
-            /* CORREÇÃO: Destaque visual melhorado */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            font-weight: 500;
         }
 
         .aula-meta {
             font-size: 0.75em;
             color: var(--text-muted);
             opacity: 0.8;
-            /* CORREÇÃO: Previne encolhimento */
-            flex-shrink: 0;
-            margin-left: 0.5rem;
         }
 
         .aula-item.active .aula-meta {
             color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* CORREÇÃO: Otimizações de performance para rolagem */
-        .course-item,
-        .module-item,
-        .aula-item {
-            /* Melhora performance de animações durante scroll */
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-
-        /* CORREÇÃO: Indicador visual de conteúdo rolável */
-        .sidebar-nav::before {
-            content: '';
-            position: sticky;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .sidebar-nav.scrollable::before {
-            opacity: 1;
-        }
-
-        /* CORREÇÃO: Indicador de final de conteúdo */
-        .sidebar-nav::after {
-            content: '';
-            position: sticky;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .sidebar-nav.scrollable::after {
-            opacity: 1;
         }
 
         /* === CONTEÚDO PRINCIPAL === */
@@ -576,9 +448,6 @@
                 height: calc(100vh - var(--header-height));
                 z-index: 1001;
                 transform: translateX(-100%);
-                /* CORREÇÃO: Garante rolagem otimizada em mobile */
-                max-height: calc(100vh - var(--header-height));
-                overflow: hidden;
             }
 
             .study-sidebar.visible {
@@ -587,58 +456,6 @@
 
             .study-sidebar.collapsed {
                 transform: translateX(-100%);
-            }
-
-            /* CORREÇÃO: Otimizações específicas para mobile */
-            .sidebar-nav {
-                /* Touch scrolling otimizado para iOS */
-                -webkit-overflow-scrolling: touch;
-                /* Padding extra para compensar área de toque */
-                padding: 1rem 0 2rem 0;
-            }
-            
-            /* CORREÇÃO: Scrollbar mobile-friendly */
-            .sidebar-nav::-webkit-scrollbar {
-                width: 3px; /* Mais fino em mobile */
-            }
-            
-            .sidebar-nav::-webkit-scrollbar-track {
-                background: rgba(0,0,0,0.05);
-            }
-            
-            .sidebar-nav::-webkit-scrollbar-thumb {
-                background: var(--text-muted);
-                border-radius: 2px;
-            }
-
-            /* CORREÇÃO: Áreas de toque maiores em mobile */
-            .course-header {
-                min-height: 48px; /* Área de toque recomendada */
-                padding: 0.75rem 1rem;
-            }
-            
-            .module-item {
-                min-height: 44px;
-                padding: 0.6rem 1rem 0.6rem 3rem;
-            }
-            
-            .aula-item {
-                min-height: 40px;
-                padding: 0.5rem 0.8rem;
-                margin-bottom: 0.4rem;
-            }
-
-            /* CORREÇÃO: Texto otimizado para mobile */
-            .course-name {
-                font-size: 1.1em;
-            }
-            
-            .module-header {
-                font-size: 1.2em;
-            }
-            
-            .aulas-list {
-                font-size: 1.2em;
             }
 
             .study-content {
@@ -667,57 +484,6 @@
         .sidebar-overlay.visible {
             opacity: 1;
             visibility: visible;
-        }
-
-        /* CORREÇÃO: Telas muito pequenas */
-        @media (max-width: 480px) {
-            :root {
-                --sidebar-width: 100vw;
-            }
-            
-            .study-sidebar {
-                width: 100vw;
-            }
-            
-            .sidebar-nav::-webkit-scrollbar {
-                width: 2px;
-            }
-            
-            .course-name {
-                font-size: 1em;
-                white-space: normal;
-                text-overflow: clip;
-            }
-            
-            .module-name {
-                font-size: 0.95em;
-                line-height: 1.3;
-            }
-            
-            .aula-item {
-                font-size: 0.9em;
-                line-height: 1.4;
-                white-space: normal;
-                word-break: break-word;
-            }
-        }
-
-        /* CORREÇÃO: Otimizações de acessibilidade */
-        @media (prefers-reduced-motion: reduce) {
-            .sidebar-nav,
-            .module-list,
-            .aulas-list,
-            .course-header,
-            .module-item,
-            .aula-item {
-                transition: none !important;
-                scroll-behavior: auto !important;
-            }
-            
-            .sidebar-nav::before,
-            .sidebar-nav::after {
-                transition: none !important;
-            }
         }
 
         /* === CONTENT STYLING === */
@@ -1524,9 +1290,6 @@
                         moduleList.classList.toggle('visible', !isVisible);
                         toggleIcon.classList.toggle('expanded', !isVisible);
                         toggleIcon.textContent = isVisible ? '▶' : '▼';
-                        
-                        // CORREÇÃO: Atualiza indicadores de rolagem após expansão
-                        setTimeout(() => this.updateScrollIndicators(), 100);
                     });
                 });
 
@@ -1543,9 +1306,6 @@
                         const isVisible = aulasList.style.display !== 'none';
                         aulasList.style.display = isVisible ? 'none' : 'block';
                         toggleIcon.classList.toggle('expanded', !isVisible);
-                        
-                        // CORREÇÃO: Atualiza indicadores de rolagem após expansão
-                        setTimeout(() => this.updateScrollIndicators(), 100);
                         
                         // Se abrindo, carrega primeira aula automaticamente
                         if (!isVisible) {
@@ -1567,98 +1327,11 @@
                         // Marca como ativo
                         item.classList.add('active');
                         
-                        // CORREÇÃO: Scroll suave para o item selecionado
-                        this.scrollToActiveItem(item);
-                        
                         // Carrega conteúdo da aula
                         const { courseId, moduleId, aulaId } = item.dataset;
                         this.loadAulaContent(courseId, moduleId, aulaId);
                     });
                 });
-                
-                // CORREÇÃO: Configura sistema de rolagem
-                this.setupScrollSystem();
-            }
-
-            // === NOVA FUNÇÃO: Sistema de rolagem otimizado ===
-            setupScrollSystem() {
-                if (!this.elements.courseNav) return;
-                
-                // Detecta mudanças de scroll
-                this.elements.courseNav.addEventListener('scroll', () => {
-                    this.updateScrollIndicators();
-                }, { passive: true });
-                
-                // Verifica inicialmente se é rolável
-                setTimeout(() => this.updateScrollIndicators(), 500);
-                
-                // Observador de mudanças no DOM
-                if (window.ResizeObserver) {
-                    const resizeObserver = new ResizeObserver(() => {
-                        this.updateScrollIndicators();
-                    });
-                    resizeObserver.observe(this.elements.courseNav);
-                }
-                
-                console.log('✅ Sistema de rolagem configurado');
-            }
-
-            // === NOVA FUNÇÃO: Atualiza indicadores de rolagem ===
-            updateScrollIndicators() {
-                if (!this.elements.courseNav) return;
-                
-                const nav = this.elements.courseNav;
-                const isScrollable = nav.scrollHeight > nav.clientHeight;
-                
-                nav.classList.toggle('scrollable', isScrollable);
-                
-                // Log apenas em desenvolvimento
-                if (this.isDevelopment()) {
-                    console.log('📏 Scroll status:', {
-                        scrollable: isScrollable,
-                        scrollHeight: nav.scrollHeight,
-                        clientHeight: nav.clientHeight,
-                        scrollTop: nav.scrollTop
-                    });
-                }
-            }
-
-            // === NOVA FUNÇÃO: Scroll suave para item ativo ===
-            scrollToActiveItem(item) {
-                if (!item || !this.elements.courseNav) return;
-                
-                const nav = this.elements.courseNav;
-                const itemRect = item.getBoundingClientRect();
-                const navRect = nav.getBoundingClientRect();
-                
-                // Calcula posição relativa
-                const itemTop = item.offsetTop;
-                const itemHeight = item.offsetHeight;
-                const navHeight = nav.clientHeight;
-                const scrollTop = nav.scrollTop;
-                
-                // Verifica se precisa rolar
-                const itemVisibleTop = itemTop - scrollTop;
-                const itemVisibleBottom = itemVisibleTop + itemHeight;
-                
-                let targetScroll = scrollTop;
-                
-                // Item está acima da área visível
-                if (itemVisibleTop < 0) {
-                    targetScroll = itemTop - 20; // 20px de margem
-                }
-                // Item está abaixo da área visível
-                else if (itemVisibleBottom > navHeight) {
-                    targetScroll = itemTop - navHeight + itemHeight + 20; // 20px de margem
-                }
-                
-                // Scroll suave apenas se necessário
-                if (targetScroll !== scrollTop) {
-                    nav.scrollTo({
-                        top: Math.max(0, targetScroll),
-                        behavior: 'smooth'
-                    });
-                }
             }
 
             autoSelectFirstContent() {
@@ -1688,13 +1361,6 @@
                             // Seleciona primeira aula
                             firstAulaItem.classList.add('active');
                             this.loadAulaContent(firstCourse.id, firstModule.id, firstAula.id);
-                            
-                            // CORREÇÃO: Configura sistema de rolagem após expansão
-                            setTimeout(() => {
-                                this.updateScrollIndicators();
-                                // Garantir que a primeira aula esteja visível
-                                this.scrollToActiveItem(firstAulaItem);
-                            }, 200);
                         }
                     }, 100);
                 }
