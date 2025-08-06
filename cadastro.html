@@ -365,12 +365,255 @@
       padding-left: 22px;
     }
   }
+
+  /* Estilos do Header */
+  .w3s-header {
+    background-color: var(--header-bg, #ffffff);
+    color: var(--text-dark, #333);
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    height: var(--header-height, 55px);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 105;
+    border-bottom: 1px solid var(--header-border, #e7e7e7);
+    gap: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Logo */
+  .w3s-logo-area {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding-left: 10px;
+    height: 100%;
+  }
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-dark, #4e4d4a);
+  }
+  .w3s-logo-placeholder {
+    width: 35px;
+    height: 35px;
+    margin-right: 8px;
+  }
+  .logo-text {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  /* Área de busca */
+  .w3s-search-area {
+    display: flex;
+    align-items: center;
+    max-width: 220px;
+  }
+  .w3s-search-area input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 25px 0 0 25px;
+    font-size: 14px;
+    width: 100%;
+    border-right: none;
+    height: 36px;
+    background-color: var(--main-content-bg, #f7fbff);
+    color: var(--text-dark, #4e4d4a);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  .w3s-search-area input[type="text"]:focus {
+    outline: none;
+    border-color: var(--main-color, #4e4d4a);
+  }
+  .w3s-search-area button {
+    padding: 0 12px;
+    height: 36px;
+    background-color: var(--light-grey-bg, #f1f1f1);
+    border: 1px solid var(--border-color, #ccc);
+    border-left: none;
+    cursor: pointer;
+    border-radius: 0 25px 25px 0;
+    transition: background-color 0.2s;
+    font-size: 16px;
+    color: var(--text-muted, #6c757d);
+  }
+  
+  /* Ações de cabeçalho */
+  .w3s-header-right-group {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 5px;
+    padding-right: 10px;
+  }
+  .w3s-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .w3s-header-actions a, 
+  .w3s-header-actions button {
+    color: var(--text-dark, #4e4d4a);
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .w3s-header-actions a .icon, 
+  .w3s-header-actions button .icon {
+    font-size: 1.1em;
+  }
+  .w3s-header-actions a:hover, 
+  .w3s-header-actions button:hover {
+    color: var(--main-color, #94ba65);
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+  
+  /* Login dropdown */
+  .login-container {
+    position: relative;
+  }
+  .login-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--main-content-bg, #f7fbff);
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+    padding: 15px;
+    z-index: 110;
+    width: 250px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  /* Estilos específicos para modo escuro */
+  .dark-mode .login-dropdown,
+  [data-theme="dark"] .login-dropdown {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  .login-dropdown label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  .login-dropdown input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+  }
+  .login-dropdown button[type="submit"] {
+    width: 100%;
+    background-color: var(--main-color, #94ba65);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .login-dropdown p {
+    font-size: 13px;
+    text-align: center;
+    margin: 10px 0 0;
+  }
+  
+  /* Responsivo */
+  @media (max-width: 992px) {
+    .w3s-header-actions .link-text {
+      display: none;
+    }
+  }
+  @media (max-width: 768px) {
+    .w3s-search-area {
+      display: none;
+    }
+  }
 </style>
 </head>
 <body>
 
-<!-- Header será carregado dinamicamente -->
-<div id="header-container"></div>
+<header class="w3s-header" id="mainHeader">
+    <div class="w3s-logo-area">
+        <a href="index.html" title="Página Inicial" class="logo-link">
+            <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="18" fill="#94ba65"/>
+                <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
+            </svg>
+            <span class="logo-text">PRO Concursos</span>
+        </a>
+    </div>
+    
+    <div class="w3s-header-right-group">
+        <div class="w3s-search-area">
+            <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
+            <button type="submit" aria-label="Buscar">🔍</button>
+        </div>
+        <div class="w3s-header-actions">
+            <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                <span class="icon theme-icon-light">☀️</span>
+                <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+            </button>
+            
+            <a href="faq.html" title="FAQ"><span class="icon">❓</span> <span class="link-text">FAQ</span></a>
+            <a href="suporte.html" title="Contato"><span class="icon">📞</span> <span class="link-text">CONTATO</span></a>
+            
+            <div class="login-container">
+                <button id="login-btn" title="Login/Cadastro"><span class="icon">👤</span> <span class="link-text">Login</span></button>
+                
+                <!-- Login Dropdown -->
+                <div id="login-dropdown" class="login-dropdown">
+                    <h3>Login</h3>
+                    <form id="login-form">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" required>
+                        
+                        <label for="login-password">Senha:</label>
+                        <input type="password" id="login-password" required>
+                        
+                        <button type="submit">Entrar</button>
+                    </form>
+                    <p>Não tem uma conta? <a href="#" id="show-signup">Cadastre-se</a></p>
+                </div>
+                
+                <!-- Signup Dropdown -->
+                <div id="signup-dropdown" class="login-dropdown" style="display: none;">
+                    <h3>Cadastro</h3>
+                    <form id="signup-form">
+                        <label for="signup-email">Email:</label>
+                        <input type="email" id="signup-email" required>
+                        
+                        <label for="signup-password">Senha:</label>
+                        <input type="password" id="signup-password" required>
+                        
+                        <label for="confirm-password">Confirmar Senha:</label>
+                        <input type="password" id="confirm-password" required>
+                        
+                        <button type="submit">Cadastrar</button>
+                    </form>
+                    <p>Já tem uma conta? <a href="#" id="show-login">Faça login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
 <main>
   <div class="container">
@@ -501,133 +744,98 @@
 </footer>
 
 <script>
-// Função para carregar o header dinamicamente
-async function loadHeader() {
-  try {
-    const response = await fetch('header.html');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const headerContent = await response.text();
-    document.getElementById('header-container').innerHTML = headerContent;
+// Inicialização do header quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicializar sistema de login
+  initLoginSystem();
+  
+  // Inicializar botão de tema
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  if (themeToggleBtn) {
+    const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
+    const moonIcon = themeToggleBtn.querySelector('.theme-icon-dark');
     
-    // Executar scripts do header após carregamento
-    const scripts = document.getElementById('header-container').querySelectorAll('script');
-    scripts.forEach(script => {
-      const newScript = document.createElement('script');
-      newScript.textContent = script.textContent;
-      document.head.appendChild(newScript);
+    // Verificar tema atual
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    
+    // Aplicar tema
+    document.body.classList.toggle('dark-mode', currentTheme === 'dark');
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    
+    // Atualizar ícones
+    if (sunIcon && moonIcon) {
+      sunIcon.style.display = currentTheme === 'dark' ? 'none' : 'inline';
+      moonIcon.style.display = currentTheme === 'dark' ? 'inline' : 'none';
+    }
+    
+    // Adicionar evento de clique
+    themeToggleBtn.addEventListener('click', function() {
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      const newTheme = isDarkMode ? 'light' : 'dark';
+      
+      // Alternar classe no body
+      document.body.classList.toggle('dark-mode');
+      document.documentElement.setAttribute('data-theme', newTheme);
+      
+      // Alternar ícones
+      if (sunIcon && moonIcon) {
+        sunIcon.style.display = newTheme === 'dark' ? 'none' : 'inline';
+        moonIcon.style.display = newTheme === 'dark' ? 'inline' : 'none';
+      }
+      
+      // Salvar preferência
+      localStorage.setItem('theme', newTheme);
+      console.log('Tema alterado para:', newTheme);
     });
-  } catch (error) {
-    console.error('Erro ao carregar header:', error);
-    // Fallback: criar um header básico se o carregamento falhar
-    document.getElementById('header-container').innerHTML = `
-      <header class="w3s-header" id="mainHeader">
-        <div class="w3s-logo-area">
-          <a href="index.html" title="Página Inicial">
-            <svg class="w3s-logo-placeholder" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="48"/>
-              <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">NVP</text>
-            </svg>
-          </a>
-        </div>
-        <div class="w3s-header-right-group">
-          <div class="w3s-search-area">
-            <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
-            <button type="submit" aria-label="Buscar">🔍</button>
-          </div>
-          <div class="w3s-header-actions">
-            <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
-              <span class="icon theme-icon-light">☀️</span>
-              <span class="icon theme-icon-dark" style="display: none;">🌙</span>
-            </button>
-            <a href="cadastro.html" title="Cadastro"><span class="icon">📝</span> <span class="link-text">Cadastro</span></a>
-            <div style="position: relative;">
-              <button id="login-btn" title="Login"><span class="icon">👤</span> <span class="link-text">Login</span></button>
-              <div id="login-dropdown" class="login-dropdown">
-                <form id="login-form">
-                  <label for="login-email">Email:</label>
-                  <input type="email" id="login-email" name="email" required>
-                  <label for="login-password">Senha:</label>
-                  <input type="password" id="login-password" name="password" autocomplete="current-password" required>
-                  <button type="submit">Entrar</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-    `;
   }
-}
+});
 
-// Carregar header quando a página carregar
-document.addEventListener('DOMContentLoaded', loadHeader);
-
-// Função para inicializar o sistema de login do header
-function initHeaderLogin() {
+// Função para inicializar sistema de login
+function initLoginSystem() {
   const loginBtn = document.getElementById('login-btn');
   const loginDropdown = document.getElementById('login-dropdown');
-  const loginForm = document.getElementById('login-form');
+  const signupDropdown = document.getElementById('signup-dropdown');
+  const showSignupLink = document.getElementById('show-signup');
+  const showLoginLink = document.getElementById('show-login');
 
-  if (loginBtn && loginDropdown && loginForm) {
-    loginBtn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      loginDropdown.classList.toggle('active');
+  // Toggle dropdowns
+  if (loginBtn && loginDropdown && signupDropdown) {
+    loginBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isVisible = loginDropdown.style.display === 'block';
+      
+      loginDropdown.style.display = isVisible ? 'none' : 'block';
+      signupDropdown.style.display = 'none';
     });
 
-    document.addEventListener('click', (event) => {
-      if (!loginDropdown.contains(event.target) && !loginBtn.contains(event.target)) {
-        loginDropdown.classList.remove('active');
+    // Alternar entre login e cadastro
+    if (showSignupLink) {
+      showSignupLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginDropdown.style.display = 'none';
+        signupDropdown.style.display = 'block';
+      });
+    }
+
+    if (showLoginLink) {
+      showLoginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        signupDropdown.style.display = 'none';
+        loginDropdown.style.display = 'block';
+      });
+    }
+
+    // Fechar ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.login-container')) {
+        loginDropdown.style.display = 'none';
+        signupDropdown.style.display = 'none';
       }
-    });
-
-    loginDropdown?.addEventListener('click', (event) => {
-      event.stopPropagation();
-    });
-
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const emailInput = document.getElementById('login-email');
-      const passwordInput = document.getElementById('login-password');
-      const email = emailInput?.value;
-      const password = passwordInput?.value;
-      const loginButton = loginForm.querySelector('button[type="submit"]');
-
-      if (!email || !password) {
-        alert('Preencha email e senha.');
-        return;
-      }
-
-      loginButton.disabled = true;
-      loginButton.textContent = '...';
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => db.collection('users').doc(userCredential.user.uid).get())
-        .then(doc => {
-          if (doc.exists && doc.data().role === 'admin') {
-            window.location.href = '/admin/dashboard.html';
-          } else if (doc.exists && doc.data().hasPersonalized === true) {
-            window.location.href = 'saladeestudos.html';
-          } else {
-            window.location.href = 'personalizar.html';
-          }
-        })
-        .catch(error => {
-          console.error("Erro no login:", error);
-          alert("Erro no login: Verifique suas credenciais.");
-          loginButton.disabled = false;
-          loginButton.textContent = 'Entrar';
-        });
     });
   }
 }
-
-// Inicializar login do header após carregamento
-document.addEventListener('DOMContentLoaded', () => {
-  // Aguardar um pouco para o header ser carregado
-  setTimeout(initHeaderLogin, 100);
-});
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
