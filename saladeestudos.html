@@ -134,26 +134,53 @@
             opacity: 0;
         }
 
-        .sidebar-icon {
+        .sidebar-icon-expanded {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            opacity: 1;
+            transition: all var(--animation-speed) ease;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-icon-expanded:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .sidebar-icon-collapsed {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 1.5rem;
             opacity: 0;
-            transition: opacity var(--animation-speed) ease;
+            transition: all var(--animation-speed) ease;
             cursor: pointer;
             padding: 8px;
             border-radius: 6px;
-            transition: all var(--animation-speed) ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .sidebar-icon:hover {
+        .sidebar-icon-collapsed:hover {
             background-color: rgba(255, 255, 255, 0.1);
             transform: translate(-50%, -50%) scale(1.1);
         }
 
-        .collapsed .sidebar-icon {
+        .collapsed .sidebar-icon-expanded {
+            opacity: 0;
+        }
+
+        .collapsed .sidebar-icon-collapsed {
             opacity: 1;
         }
 
@@ -623,7 +650,8 @@
         <aside class="study-sidebar" id="studySidebar">
             <div class="sidebar-header">
                 <div class="sidebar-title">Meus Cursos</div>
-                <div class="sidebar-icon">📚</div>
+                <div class="sidebar-icon-expanded">📚</div>
+                <div class="sidebar-icon-collapsed">📚</div>
             </div>
             <div class="sidebar-content">
                 <nav class="sidebar-nav" id="courseNavigation">
@@ -1083,16 +1111,26 @@
                 // Overlay click (mobile)
                 this.elements.overlay?.addEventListener('click', () => this.closeSidebar());
                 
-                // Sidebar icon click - expandir menu lateral
-                const sidebarIcon = document.querySelector('.sidebar-icon');
-                if (sidebarIcon) {
-                    sidebarIcon.addEventListener('click', () => {
-                        console.log('📚 Sidebar icon clicado - expandindo menu lateral');
+                // Sidebar icons click - expandir/recolher menu lateral
+                const sidebarIconExpanded = document.querySelector('.sidebar-icon-expanded');
+                const sidebarIconCollapsed = document.querySelector('.sidebar-icon-collapsed');
+                
+                // Event listener para ícone expandido (à direita)
+                if (sidebarIconExpanded) {
+                    sidebarIconExpanded.addEventListener('click', () => {
+                        console.log('📚 Sidebar icon expandido clicado - recolhendo menu lateral');
                         this.toggleSidebar();
                     });
-                    // Adicionar cursor pointer para indicar que é clicável
-                    sidebarIcon.style.cursor = 'pointer';
-                    sidebarIcon.title = 'Clique para expandir/recolher menu lateral';
+                    sidebarIconExpanded.title = 'Clique para recolher menu lateral';
+                }
+                
+                // Event listener para ícone recolhido (centralizado)
+                if (sidebarIconCollapsed) {
+                    sidebarIconCollapsed.addEventListener('click', () => {
+                        console.log('📚 Sidebar icon recolhido clicado - expandindo menu lateral');
+                        this.toggleSidebar();
+                    });
+                    sidebarIconCollapsed.title = 'Clique para expandir menu lateral';
                 }
                 
                 // Keyboard shortcuts
