@@ -408,53 +408,20 @@
     font-size: 18px;
   }
   
-  /* Área de busca */
-  .w3s-search-area {
-    display: flex;
-    align-items: center;
-    max-width: 220px;
-  }
-  .w3s-search-area input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid var(--border-color, #ccc);
-    border-radius: 25px 0 0 25px;
-    font-size: 14px;
-    width: 100%;
-    border-right: none;
-    height: 36px;
-    background-color: var(--main-content-bg, #f7fbff);
-    color: var(--text-dark, #4e4d4a);
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  }
-  .w3s-search-area input[type="text"]:focus {
-    outline: none;
-    border-color: var(--main-color, #4e4d4a);
-  }
-  .w3s-search-area button {
-    padding: 0 12px;
-    height: 36px;
-    background-color: var(--light-grey-bg, #f1f1f1);
-    border: 1px solid var(--border-color, #ccc);
-    border-left: none;
-    cursor: pointer;
-    border-radius: 0 25px 25px 0;
-    transition: background-color 0.2s;
-    font-size: 16px;
-    color: var(--text-muted, #6c757d);
-  }
+
   
   /* Ações de cabeçalho */
   .w3s-header-right-group {
     display: flex;
     align-items: center;
     margin-left: auto;
-    gap: 5px;
-    padding-right: 10px;
+    gap: 3px;
+    padding-right: 5px;
   }
   .w3s-header-actions {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
     flex-shrink: 0;
   }
   .w3s-header-actions a, 
@@ -464,8 +431,8 @@
     font-size: 14px;
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 6px 10px;
+    gap: 3px;
+    padding: 6px 8px;
     border-radius: 4px;
     background: none;
     border: none;
@@ -541,11 +508,7 @@
       display: none;
     }
   }
-  @media (max-width: 768px) {
-    .w3s-search-area {
-      display: none;
-    }
-  }
+
 </style>
 </head>
 <body>
@@ -562,10 +525,6 @@
     </div>
     
     <div class="w3s-header-right-group">
-        <div class="w3s-search-area">
-            <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
-            <button type="submit" aria-label="Buscar">🔍</button>
-        </div>
         <div class="w3s-header-actions">
             <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
                 <span class="icon theme-icon-light">☀️</span>
