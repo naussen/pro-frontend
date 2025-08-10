@@ -67,9 +67,32 @@
                     </button>
                 </div>
             </div>
-            <!-- Botão de destaque: QUESTÕES -->
+            <!-- Menu QUESTÕES com expansão por curso -->
             <div class="nav-item">
-                <button id="questoesOpenBtn" class="nav-button nav-questoes-button" title="Abrir Sistema de Questões">�� QUESTÕES</button>
+                <button class="nav-button" data-target="questoes-menu" id="questoesMenuBtn">Questões ▼</button>
+                <div class="dropdown-menu" id="questoes-menu">
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('administracao-financeira-orcamentaria')">
+                        <span class="dropdown-icon">🏛️</span>
+                        Administração Financeira Orçamentária
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-administrativo')">
+                        <span class="dropdown-icon">⚖️</span>
+                        Direito Administrativo
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-constitucional')">
+                        <span class="dropdown-icon">📜</span>
+                        Direito Constitucional
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-penal')">
+                        <span class="dropdown-icon">⚔️</span>
+                        Direito Penal
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="openAllQuestoes()">
+                        <span class="dropdown-icon">📖</span>
+                        Todas as Questões
+                    </button>
+                </div>
             </div>
         </nav>
         
@@ -265,35 +288,7 @@
             background-color: var(--top-nav-link-active-bg);
         }
 
-        /* Botão de destaque: QUESTÕES */
-        .nav-questoes-button {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #fff !important;
-            font-weight: 700;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            padding: 0 20px;
-            border-left: 1px solid rgba(255,255,255,0.2) !important;
-            border-right: 1px solid rgba(255,255,255,0.2) !important;
-            border-top: none !important;
-            border-bottom: none !important;
-            border-radius: 8px;
-            margin-left: 8px;
-            box-shadow: 0 6px 14px rgba(29, 78, 216, 0.35);
-            transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
-            text-transform: uppercase;
-        }
 
-        .nav-questoes-button:hover {
-            filter: brightness(1.05);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(29, 78, 216, 0.45);
-        }
-
-        .nav-questoes-button:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
-        }
 
         /* === DROPDOWN MENUS === */
         .nav-item {
@@ -1370,6 +1365,33 @@
                 return false;
             }
 
+            // Configurar botão QUESTÕES
+            const questoesBtn = headerContainer.querySelector('#questoesMenuBtn');
+            const questoesMenu = headerContainer.querySelector('#questoes-menu');
+            
+            console.log('🔍 Elementos QUESTÕES:', {
+                button: questoesBtn ? 'Encontrado' : 'Não encontrado',
+                menu: questoesMenu ? 'Encontrado' : 'Não encontrado'
+            });
+            
+            if (questoesBtn && questoesMenu) {
+                // Limpar event listeners anteriores
+                questoesBtn.onclick = null;
+                questoesBtn.removeAttribute('onclick');
+                
+                // Adicionar novo event listener
+                questoesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Botão QUESTÕES clicado - menu será toggleado');
+                    toggleDropdownMenu(questoesMenu, questoesBtn);
+                });
+                console.log('✅ Menu QUESTÕES configurado com sucesso');
+            } else {
+                console.warn('❌ Elementos do menu QUESTÕES não encontrados');
+                return false;
+            }
+
             // Configurar fechamento ao clicar fora (apenas uma vez)
             if (!window.dropdownClickHandlerAdded) {
                 document.addEventListener('click', function(e) {
@@ -1453,6 +1475,64 @@
             } else {
                 alert('Funcionalidade de Flashcards Personalizados será implementada em breve!');
             }
+        }
+
+        // === FUNÇÕES DO MENU QUESTÕES ===
+        function openQuestoesForCourse(courseName) {
+            console.log('🎯 Abrindo questões para curso:', courseName);
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) closeDropdownMenu(questoesMenu);
+            
+            try {
+                // Se a integração estiver presente, usar contexto específico
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration para curso específico');
+                    const url = `http://localhost:8001/index.html?curso=${courseName}`;
+                    window.open(url, '_blank');
+                    return;
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir com parâmetro de curso
+            let url = 'http://localhost:8001/index.html';
+            if (window.location.hostname !== 'localhost') {
+                url = '/pro-questoes/index.html';
+            }
+            url += `?curso=${courseName}`;
+            
+            console.log('🌐 Abrindo URL com curso específico:', url);
+            window.open(url, '_blank');
+        }
+
+        function openAllQuestoes() {
+            console.log('🎯 Abrindo todas as questões');
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) closeDropdownMenu(questoesMenu);
+            
+            try {
+                // Se a integração estiver presente, abrir em overlay
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration');
+                    return window.QuestoesIntegration.openQuestions('overlay');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir página estática
+            let url = 'http://localhost:8001/index.html';
+            if (window.location.hostname !== 'localhost') {
+                url = '/pro-questoes/index.html';
+            }
+            
+            console.log('🌐 Abrindo URL geral:', url);
+            window.open(url, '_blank');
         }
 
         // === Abrir Sistema de Questões ===
