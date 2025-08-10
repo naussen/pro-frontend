@@ -67,6 +67,10 @@
                     </button>
                 </div>
             </div>
+            <!-- Botão de destaque: QUESTÕES -->
+            <div class="nav-item">
+                <button id="questoesOpenBtn" class="nav-button nav-questoes-button" title="Abrir Sistema de Questões">�� QUESTÕES</button>
+            </div>
         </nav>
         
         <div class="w3s-header-right-group">
@@ -259,6 +263,36 @@
 
         .nav-button.active {
             background-color: var(--top-nav-link-active-bg);
+        }
+
+        /* Botão de destaque: QUESTÕES */
+        .nav-questoes-button {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+            border-left: 1px solid rgba(255,255,255,0.2) !important;
+            border-right: 1px solid rgba(255,255,255,0.2) !important;
+            border-top: none !important;
+            border-bottom: none !important;
+            border-radius: 8px;
+            margin-left: 8px;
+            box-shadow: 0 6px 14px rgba(29, 78, 216, 0.35);
+            transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .nav-questoes-button:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(29, 78, 216, 0.45);
+        }
+
+        .nav-questoes-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
         }
 
         /* === DROPDOWN MENUS === */
@@ -1047,6 +1081,20 @@
                 console.warn('❌ themeToggleBtn não encontrado para event listener direto');
             }
 
+            // Botão QUESTÕES
+            const questoesBtn = header.querySelector('#questoesOpenBtn');
+            if (questoesBtn) {
+                questoesBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🎯 Botão QUESTÕES clicado');
+                    tryOpenQuestoes();
+                };
+                console.log('✅ Event listener direto configurado para questoesOpenBtn');
+            } else {
+                console.warn('❌ questoesOpenBtn não encontrado para event listener direto');
+            }
+
             // Show all courses button
             const showAllBtn = header.querySelector('#showAllCoursesBtn');
             if (showAllBtn) {
@@ -1405,6 +1453,39 @@
             } else {
                 alert('Funcionalidade de Flashcards Personalizados será implementada em breve!');
             }
+        }
+
+        // === Abrir Sistema de Questões ===
+        function tryOpenQuestoes() {
+            // Se a integração estiver presente, abrir em overlay
+            try {
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    return window.QuestoesIntegration.openQuestions('overlay');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir página estática com contexto se possível
+            const url = buildQuestoesUrlWithContext();
+            window.open(url, '_blank');
+        }
+
+        function buildQuestoesUrlWithContext() {
+            let base = '/pro-questoes/index.html';
+            try {
+                const path = window.location.pathname;
+                // Suporta /content/{curso}/modules/{modulo}/aulas/{aula}.html
+                const m2 = path.match(/\/content\/([^\/]+)\/modules\/([^\/]+)\/aulas\/([^\/]+)\.html/);
+                // Suporta /content/{curso}/{modulo}/{aula}.html
+                const m1 = path.match(/\/content\/([^\/]+)\/([^\/]+)\/([^\/]+)\.html/);
+                const match = m2 || m1;
+                if (match) {
+                    const params = new URLSearchParams({ curso: match[1], modulo: match[2], aula: match[3] });
+                    return `${base}?${params.toString()}`;
+                }
+            } catch (_) { /* ignore */ }
+            return base;
         }
 
         // Tentar configurar imediatamente e com delay
