@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusão de Dados - PRO Concursos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .exclusao-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .exclusao-card h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .exclusao-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .warning-box h3 {
+            color: #856404;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-box ul {
+            color: #856404;
+            margin-left: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .warning-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .facebook-login-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .facebook-login-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .fb-login-button {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .fb-login-button:hover {
+            background: #166fe5;
+        }
+
+        .user-info {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .user-info h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info p {
+            color: #666;
+            margin: 0.25rem 0;
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer span {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .exclusao-card {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .exclusao-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Exclusão de Dados - PRO Concursos</h1>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="exclusao-card">
+                <h2>🗑️ Exclusão de Dados Pessoais</h2>
+                <p>Esta página permite que você exclua seus dados pessoais da plataforma PRO Concursos, especialmente se você se cadastrou através do Facebook.</p>
+
+                <div class="warning-box">
+                    <h3>⚠️ Atenção Importante</h3>
+                    <ul>
+                        <li>A exclusão de dados é <strong>irreversível</strong></li>
+                        <li>Todos os seus dados serão <strong>permanentemente removidos</strong></li>
+                        <li>Você perderá acesso a todos os cursos e conteúdo</li>
+                        <li>Se você tiver uma assinatura ativa, ela será cancelada</li>
+                        <li>Esta ação não pode ser desfeita</li>
+                    </ul>
+                </div>
+
+                <div id="login-section" class="facebook-login-section">
+                    <h3>🔐 Verificação de Identidade</h3>
+                    <p>Para prosseguir com a exclusão, você precisa fazer login com sua conta do Facebook:</p>
+                    <button id="fb-login-btn" class="fb-login-button" onclick="loginWithFacebook()">
+                        Entrar com Facebook
+                    </button>
+                </div>
+
+                <div id="user-section" style="display: none;">
+                    <div id="user-info" class="user-info">
+                        <h4>👤 Informações da Conta</h4>
+                        <div id="user-details"></div>
+                    </div>
+
+                    <div id="status-message" style="display: none;"></div>
+
+                    <div id="confirmation-section" style="display: none;">
+                        <div class="warning-box">
+                            <h3>🔒 Confirmação Final</h3>
+                            <p>Para confirmar a exclusão, digite <strong>"EXCLUIR"</strong> no campo abaixo:</p>
+                            <input type="text" id="confirmation-text" placeholder="Digite EXCLUIR" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; margin: 1rem 0;">
+                        </div>
+                        
+                        <button id="confirm-delete-btn" class="btn btn-danger" onclick="confirmDataDeletion()" disabled>
+                            🗑️ Confirmar Exclusão de Dados
+                        </button>
+                    </div>
+
+                    <button id="cancel-btn" class="btn btn-secondary" onclick="cancelDeletion()">
+                        ❌ Cancelar
+                    </button>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <a href="index.html" class="btn btn-secondary">🏠 Voltar ao Início</a>
+                    <a href="politica-privacidade.html" class="btn btn-secondary" target="_blank">📋 Política de Privacidade</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <span>© <span id="current-year"></span> PRO Concursos. Todos os direitos reservados.</span>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- Facebook SDK -->
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '1355548283243890',
+                xfbml      : true,
+                version    : 'v23.0'
+            });
+            FB.AppEvents.logPageView();
+        };
+
+        (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "https://connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+           }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <script>
+        // Configuração do Firebase (substitua pelos seus dados)
+        const firebaseConfig = {
+            apiKey: "sua-api-key",
+            authDomain: "seu-projeto.firebaseapp.com",
+            projectId: "seu-projeto",
+            storageBucket: "seu-projeto.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "seu-app-id"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Variáveis globais
+        let currentUser = null;
+        let facebookUser = null;
+
+        // Atualizar ano no footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Função para fazer login com Facebook
+        function loginWithFacebook() {
+            const loginBtn = document.getElementById('fb-login-btn');
+            loginBtn.innerHTML = '<span class="loading"></span>Conectando...';
+            loginBtn.disabled = true;
+
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    // Usuário logado com sucesso
+                    facebookUser = response.authResponse;
+                    getUserInfo();
+                } else {
+                    // Usuário cancelou o login
+                    showStatus('Login cancelado pelo usuário.', 'error');
+                    resetLoginButton();
+                }
+            }, {
+                scope: 'email,public_profile',
+                return_scopes: true
+            });
+        }
+
+        // Função para obter informações do usuário
+        function getUserInfo() {
+            FB.api('/me', {fields: 'id,name,email'}, function(response) {
+                if (response && !response.error) {
+                    facebookUser.info = response;
+                    showUserInfo(response);
+                    checkUserInDatabase(response);
+                } else {
+                    showStatus('Erro ao obter informações do usuário.', 'error');
+                    resetLoginButton();
+                }
+            });
+        }
+
+        // Função para mostrar informações do usuário
+        function showUserInfo(userInfo) {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('user-section').style.display = 'block';
+            
+            const userDetails = document.getElementById('user-details');
+            userDetails.innerHTML = `
+                <p><strong>Nome:</strong> ${userInfo.name}</p>
+                <p><strong>Email:</strong> ${userInfo.email}</p>
+                <p><strong>ID do Facebook:</strong> ${userInfo.id}</p>
+                <p><strong>Método de Cadastro:</strong> Facebook</p>
+            `;
+        }
+
+        // Função para verificar se o usuário existe no banco de dados
+        async function checkUserInDatabase(userInfo) {
+            try {
+                showStatus('Verificando dados na plataforma...', 'info');
+                
+                // Buscar usuário pelo email do Facebook
+                const usersRef = db.collection('users');
+                const query = await usersRef.where('email', '==', userInfo.email).get();
+                
+                if (!query.empty) {
+                    currentUser = query.docs[0];
+                    showStatus('Usuário encontrado na plataforma. Você pode prosseguir com a exclusão.', 'success');
+                    document.getElementById('confirmation-section').style.display = 'block';
+                    setupConfirmationValidation();
+                } else {
+                    showStatus('Usuário não encontrado na plataforma. Verifique se você se cadastrou com este email.', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar usuário:', error);
+                showStatus('Erro ao verificar dados na plataforma.', 'error');
+            }
+        }
+
+        // Função para configurar validação da confirmação
+        function setupConfirmationValidation() {
+            const confirmationText = document.getElementById('confirmation-text');
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            
+            confirmationText.addEventListener('input', function() {
+                confirmBtn.disabled = this.value !== 'EXCLUIR';
+            });
+        }
+
+        // Função para confirmar exclusão de dados
+        async function confirmDataDeletion() {
+            if (!currentUser || !facebookUser) {
+                showStatus('Erro: Dados do usuário não encontrados.', 'error');
+                return;
+            }
+
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            confirmBtn.innerHTML = '<span class="loading"></span>Excluindo dados...';
+            confirmBtn.disabled = true;
+
+            try {
+                showStatus('Iniciando processo de exclusão de dados...', 'info');
+
+                // 1. Excluir dados do Firestore
+                await deleteUserData();
+
+                // 2. Excluir conta do Firebase Auth (se existir)
+                await deleteFirebaseAccount();
+
+                // 3. Excluir dados do Facebook (se possível)
+                await deleteFacebookData();
+
+                // 4. Registrar log de exclusão
+                await logDataDeletion();
+
+                showStatus('✅ Dados excluídos com sucesso! Sua conta foi permanentemente removida da plataforma.', 'success');
+                
+                // Limpar interface
+                setTimeout(() => {
+                    document.getElementById('user-section').style.display = 'none';
+                    document.getElementById('login-section').style.display = 'block';
+                    resetLoginButton();
+                }, 5000);
+
+            } catch (error) {
+                console.error('Erro na exclusão:', error);
+                showStatus('Erro durante a exclusão de dados. Tente novamente ou entre em contato conosco.', 'error');
+                confirmBtn.innerHTML = '🗑️ Confirmar Exclusão de Dados';
+                confirmBtn.disabled = false;
+            }
+        }
+
+        // Função para excluir dados do Firestore
+        async function deleteUserData() {
+            const userId = currentUser.id;
+            
+            // Excluir dados do usuário
+            await db.collection('users').doc(userId).delete();
+            
+            // Excluir dados relacionados
+            const collections = [
+                'user_questoes_stats',
+                'user_rankings', 
+                'user_simulados',
+                'ai_recommendations',
+                'user_notes',
+                'subscriptions',
+                'payments'
+            ];
+
+            for (const collection of collections) {
+                const query = await db.collection(collection).where('userId', '==', userId).get();
+                const batch = db.batch();
+                query.docs.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+            }
+        }
+
+        // Função para excluir conta do Firebase Auth
+        async function deleteFirebaseAccount() {
+            try {
+                const currentFirebaseUser = auth.currentUser;
+                if (currentFirebaseUser) {
+                    await currentFirebaseUser.delete();
+                }
+            } catch (error) {
+                console.log('Usuário não estava logado no Firebase Auth');
+            }
+        }
+
+        // Função para excluir dados do Facebook
+        async function deleteFacebookData() {
+            try {
+                // Solicitar exclusão de dados do Facebook
+                FB.api('/me/permissions', 'DELETE', function(response) {
+                    console.log('Permissões do Facebook removidas:', response);
+                });
+            } catch (error) {
+                console.log('Erro ao remover dados do Facebook:', error);
+            }
+        }
+
+        // Função para registrar log de exclusão
+        async function logDataDeletion() {
+            try {
+                await db.collection('audit_logs').add({
+                    action: 'data_deletion',
+                    userId: currentUser.id,
+                    userEmail: facebookUser.info.email,
+                    facebookId: facebookUser.info.id,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reason: 'user_requested_deletion',
+                    method: 'facebook'
+                });
+            } catch (error) {
+                console.error('Erro ao registrar log:', error);
+            }
+        }
+
+        // Função para cancelar exclusão
+        function cancelDeletion() {
+            document.getElementById('user-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'block';
+            resetLoginButton();
+            
+            // Fazer logout do Facebook
+            FB.logout(function(response) {
+                console.log('Logout do Facebook realizado');
+            });
+        }
+
+        // Função para resetar botão de login
+        function resetLoginButton() {
+            const loginBtn = document.getElementById('fb-login-btn');
+            loginBtn.innerHTML = 'Entrar com Facebook';
+            loginBtn.disabled = false;
+        }
+
+        // Função para mostrar mensagens de status
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 10000);
+            }
+        }
+
+        // Verificar status do login do Facebook ao carregar a página
+        window.addEventListener('load', function() {
+            FB.getLoginStatus(function(response) {
+                if (response.status === 'connected') {
+                    facebookUser = response.authResponse;
+                    getUserInfo();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
