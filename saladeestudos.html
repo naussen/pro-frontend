@@ -635,6 +635,52 @@
             margin-left: auto !important;
             margin-right: auto !important;
         }
+
+        /* === BOTÃO DINÂMICO DE QUESTÕES === */
+        #dynamic-questoes-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #dynamic-questoes-btn.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #dynamic-questoes-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        #dynamic-questoes-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        /* Ajustar posição quando sidebar está recolhida */
+        .study-sidebar.collapsed ~ .study-content #dynamic-questoes-btn {
+            margin-left: calc(var(--sidebar-collapsed-width) + 1rem);
+        }
+
+        /* Responsividade mobile */
+        @media (max-width: 768px) {
+            #dynamic-questoes-btn {
+                left: 1rem;
+                margin-left: 0 !important;
+                top: auto;
+                bottom: 2rem;
+                transform: translateY(0);
+                position: fixed;
+            }
+            
+            #dynamic-questoes-btn:hover {
+                transform: scale(1.1);
+            }
+            
+            #dynamic-questoes-btn:active {
+                transform: scale(0.95);
+            }
+        }
     </style>
 </head>
 <body>
@@ -665,6 +711,12 @@
 
         <!-- Área de conteúdo principal -->
         <main class="study-content">
+            <!-- Botão dinâmico para questões do módulo atual -->
+            <button id="dynamic-questoes-btn" class="fixed z-50 top-1/2 left-4 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible" style="margin-left: calc(var(--sidebar-width) + 1rem);" title="Questões do módulo atual">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+            </button>
             <div class="content-body" id="contentBody">
                 <div class="empty-state">
                     <div class="empty-state-icon">📖</div>
@@ -1204,6 +1256,111 @@
                 }
             }
 
+            // === GERENCIAMENTO DO BOTÃO DINÂMICO DE QUESTÕES ===
+            updateDynamicQuestoesButton(meta) {
+                const button = document.getElementById('dynamic-questoes-btn');
+                if (!button) return;
+
+                if (meta && meta.course && meta.module) {
+                    // Exibir botão quando houver contexto de aula
+                    button.classList.add('visible');
+                    button.title = `Questões: ${meta.course} > ${meta.module}`;
+                    
+                    // Remover event listener anterior
+                    button.onclick = null;
+                    
+                    // Adicionar novo event listener
+                    button.onclick = () => {
+                        this.openQuestoesForCurrentModule(meta);
+                    };
+                    
+                    console.log('✅ Botão dinâmico ativado para:', meta.course, '>', meta.module);
+                } else {
+                    // Ocultar botão quando não há contexto
+                    button.classList.remove('visible');
+                    button.onclick = null;
+                    console.log('⚪ Botão dinâmico oculto - sem contexto');
+                }
+            }
+
+            openQuestoesForCurrentModule(meta) {
+                console.log('🎯 Abrindo questões para módulo atual:', meta);
+                
+                try {
+                    // Se a integração estiver presente, usar contexto específico
+                    if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                        console.log('🔗 Usando integração QuestoesIntegration com contexto específico');
+                        // Criar um contexto personalizado para a integração
+                        const originalContext = window.QuestoesIntegration.currentContext;
+                        
+                        // Temporariamente definir contexto baseado na aula atual
+                        window.QuestoesIntegration.currentContext = {
+                            type: 'content',
+                            curso: this.normalizeCourseId(meta.course),
+                            modulo: this.normalizeModuleId(meta.module),
+                            aula: meta.aula || null
+                        };
+                        
+                        // Aplicar filtros contextuais
+                        window.QuestoesIntegration.setContextualFilters();
+                        
+                        // Abrir em modo overlay
+                        window.QuestoesIntegration.openQuestions('overlay');
+                        
+                        // Restaurar contexto original
+                        setTimeout(() => {
+                            window.QuestoesIntegration.currentContext = originalContext;
+                        }, 1000);
+                        
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+                }
+
+                // Fallback: abrir com parâmetros específicos
+                let url = 'http://localhost:8001/index.html';
+                if (window.location.hostname !== 'localhost') {
+                    url = '/pro-questoes/index.html';
+                }
+                
+                const params = new URLSearchParams();
+                if (meta.course) params.append('curso', this.normalizeCourseId(meta.course));
+                if (meta.module) params.append('modulo', this.normalizeModuleId(meta.module));
+                if (meta.aula) params.append('aula', meta.aula);
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                console.log('🌐 Abrindo URL específica do módulo:', url);
+                window.open(url, '_blank');
+            }
+
+            normalizeCourseId(courseName) {
+                return courseName.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[áàâã]/g, 'a')
+                    .replace(/[éèê]/g, 'e')
+                    .replace(/[íìî]/g, 'i')
+                    .replace(/[óòôõ]/g, 'o')
+                    .replace(/[úùû]/g, 'u')
+                    .replace(/ç/g, 'c')
+                    .replace(/[^\w-]/g, '');
+            }
+
+            normalizeModuleId(moduleName) {
+                return moduleName.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[áàâã]/g, 'a')
+                    .replace(/[éèê]/g, 'e')
+                    .replace(/[íìî]/g, 'i')
+                    .replace(/[óòôõ]/g, 'o')
+                    .replace(/[úùû]/g, 'u')
+                    .replace(/ç/g, 'c')
+                    .replace(/[^\w-]/g, '');
+            }
+
             // === CARREGAMENTO DE CURSOS ===
             async loadUserCourses() {
                 if (!this.userId) return;
@@ -1709,6 +1866,9 @@
                 
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
+                
+                // Atualizar botão dinâmico de questões
+                this.updateDynamicQuestoesButton(contentData.meta);
                 
                 console.log('✅ Conteúdo exibido:', contentData.title);
             }
