@@ -1416,9 +1416,17 @@
                 }
                 
                 const params = new URLSearchParams();
-                if (meta.course) params.append('curso', this.normalizeCourseId(meta.course));
-                if (meta.module) params.append('modulo', this.normalizeModuleId(meta.module));
-                if (meta.aula) params.append('aula', meta.aula);
+                const slugify = (val) => typeof val === 'string' 
+                    ? val.toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-')
+                        .trim()
+                    : val;
+                if (meta.course) params.append('curso', slugify(meta.course));
+                if (meta.module) params.append('modulo', slugify(meta.module));
+                if (meta.aula) params.append('aula', slugify(meta.aula));
                 
                 if (params.toString()) {
                     url += '?' + params.toString();
