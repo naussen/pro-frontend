@@ -1120,6 +1120,27 @@
                     console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
                 }
 
+                // Configurar botão QUESTÕES
+                const questoesBtn = headerContainer.querySelector('#questoesMenuBtn');
+                const questoesMenu = headerContainer.querySelector('#questoes-menu');
+
+                console.log('🔍 Elementos QUESTÕES:', {
+                    button: questoesBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: questoesMenu ? 'Encontrado' : 'Não encontrado'
+                });
+
+                if (questoesBtn && questoesMenu) {
+                    questoesBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão QUESTÕES clicado - toggling menu');
+                        this.toggleDropdownMenu(questoesMenu, questoesBtn);
+                    };
+                    console.log('✅ Menu QUESTÕES configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu QUESTÕES não encontrados');
+                }
+
                 // Configurar fechamento ao clicar fora
                 if (!window.dropdownClickHandlerAdded) {
                     document.addEventListener('click', (e) => {
