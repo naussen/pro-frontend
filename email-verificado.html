@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Email - PRO Concursos</title>
+    <style>
+        :root {
+            --header-height: 55px;
+            --main-color: #4e4d4a;
+            --light-highlight-bg: #f5f5f4;
+            --accent-1: #94ba65;
+            --accent-1-darker: #7da052;
+            --accent-2: #2790b0;
+            --dark-bg: #353432;
+            --text-dark: #4e4d4a;
+            --text-light: #f8f9fa;
+            --text-muted: #6c757d;
+            --border-color: #ccc;
+            --light-grey-bg: #f1f1f1;
+            --header-bg: #ffffff;
+            --header-border: #e7e7e7;
+            --main-content-bg: #ffffff;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --error-color: #D32F2F;
+        }
+
+        body.dark-mode {
+            --main-color: #94ba65;
+            --light-highlight-bg: #2d333b;
+            --accent-1: #2790b0;
+            --accent-1-darker: #1e7a96;
+            --accent-2: #2b4e72;
+            --dark-bg: #353432;
+            --text-dark: #c9d1d9;
+            --text-light: #f0f6fc;
+            --text-muted: #8b949e;
+            --border-color: #444c56;
+            --light-grey-bg: #353432;
+            --header-bg: #4e4d4a;
+            --header-border: #5a5955;
+            --main-content-bg: #4e4d4a;
+        }
+
+        html { height: 100%; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--light-grey-bg);
+            color: var(--text-dark);
+            padding-top: 55px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        main {
+            flex-grow: 1;
+            background-color: var(--main-content-bg);
+            width: 100%;
+            box-sizing: border-box;
+            padding: 30px 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .email-verification-card {
+            background-color: var(--header-bg);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--header-border);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .email-verification-card h1 {
+            font-size: 2em;
+            color: var(--main-color);
+            margin-bottom: 20px;
+        }
+
+        .email-verification-card p {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .verification-status {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .verification-status.pending {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .verification-status.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .verification-status.error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--accent-1);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-1-darker);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--main-color);
+        }
+
+        .resend-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .resend-section p {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .countdown {
+            font-weight: bold;
+            color: var(--accent-1);
+        }
+
+        .footer {
+            background-color: var(--dark-bg);
+            color: var(--text-muted);
+            padding: 30px 20px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            margin-top: 40px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            .email-verification-card {
+                padding: 20px;
+            }
+            .email-verification-card h1 {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="email-verification-card">
+                <h1>Confirmação de Email</h1>
+                
+                <div id="verification-status" class="verification-status pending">
+                    <div id="status-message">Verificando status da confirmação...</div>
+                </div>
+
+                <div id="pending-content">
+                    <p>Enviamos um email de confirmação para o endereço cadastrado.</p>
+                    <p>Por favor, verifique sua caixa de entrada e clique no link de confirmação para ativar sua conta.</p>
+                    
+                    <div class="resend-section">
+                        <p>Não recebeu o email?</p>
+                        <button id="resend-btn" class="btn btn-secondary">Reenviar Email</button>
+                        <p>Você pode solicitar um novo email em <span id="countdown" class="countdown">60</span> segundos</p>
+                    </div>
+                </div>
+
+                <div id="success-content" style="display: none;">
+                    <p>✅ Seu email foi confirmado com sucesso!</p>
+                    <p>Agora você pode prosseguir com o pagamento e acessar todos os recursos da plataforma.</p>
+                    <a href="pagamento.html" class="btn">Ir para Pagamento</a>
+                </div>
+
+                <div id="error-content" style="display: none;">
+                    <p>❌ Ocorreu um erro na verificação do email.</p>
+                    <p>Por favor, tente novamente ou entre em contato conosco.</p>
+                    <button id="retry-btn" class="btn">Tentar Novamente</button>
+                    <a href="cadastro.html" class="btn btn-secondary">Voltar ao Cadastro</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <span>© <span id="current-year"></span> PRO Concursos. Todos os direitos reservados.</span>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+            authDomain: "nvp-concursos.firebaseapp.com",
+            projectId: "nvp-concursos",
+            storageBucket: "nvp-concursos.firebasestorage.app",
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1243b04141178453d860ba",
+            measurementId: "G-T6RVBM12BQ"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let countdownInterval;
+        let countdownValue = 60;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Atualizar ano no footer
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+            // Verificar status da autenticação
+            checkEmailVerification();
+
+            // Configurar botões
+            setupButtons();
+        });
+
+        function checkEmailVerification() {
+            const user = auth.currentUser;
+            
+            if (!user) {
+                showError('Usuário não autenticado');
+                return;
+            }
+
+            // Verificar se o email foi verificado
+            if (user.emailVerified) {
+                showSuccess();
+            } else {
+                showPending();
+                startCountdown();
+            }
+        }
+
+        function showPending() {
+            document.getElementById('verification-status').className = 'verification-status pending';
+            document.getElementById('status-message').textContent = 'Aguardando confirmação do email...';
+            document.getElementById('pending-content').style.display = 'block';
+            document.getElementById('success-content').style.display = 'none';
+            document.getElementById('error-content').style.display = 'none';
+        }
+
+        function showSuccess() {
+            document.getElementById('verification-status').className = 'verification-status success';
+            document.getElementById('status-message').textContent = 'Email confirmado com sucesso!';
+            document.getElementById('pending-content').style.display = 'none';
+            document.getElementById('success-content').style.display = 'block';
+            document.getElementById('error-content').style.display = 'none';
+
+            // Atualizar status no Firestore
+            updateUserVerificationStatus();
+        }
+
+        function showError(message) {
+            document.getElementById('verification-status').className = 'verification-status error';
+            document.getElementById('status-message').textContent = message;
+            document.getElementById('pending-content').style.display = 'none';
+            document.getElementById('success-content').style.display = 'none';
+            document.getElementById('error-content').style.display = 'block';
+        }
+
+        function updateUserVerificationStatus() {
+            const user = auth.currentUser;
+            if (user) {
+                db.collection('users').doc(user.uid).update({
+                    emailVerified: true,
+                    emailVerifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(error => {
+                    console.error('Erro ao atualizar status de verificação:', error);
+                });
+            }
+        }
+
+        function setupButtons() {
+            const resendBtn = document.getElementById('resend-btn');
+            const retryBtn = document.getElementById('retry-btn');
+
+            if (resendBtn) {
+                resendBtn.addEventListener('click', resendVerificationEmail);
+            }
+
+            if (retryBtn) {
+                retryBtn.addEventListener('click', () => {
+                    location.reload();
+                });
+            }
+        }
+
+        function resendVerificationEmail() {
+            const user = auth.currentUser;
+            
+            if (!user) {
+                showError('Usuário não autenticado');
+                return;
+            }
+
+            user.sendEmailVerification({
+                url: window.location.origin + '/email-verificado.html',
+                handleCodeInApp: false
+            }).then(() => {
+                alert('Email de confirmação reenviado com sucesso!');
+                startCountdown();
+            }).catch((error) => {
+                console.error('Erro ao reenviar email:', error);
+                showError('Erro ao reenviar email de confirmação');
+            });
+        }
+
+        function startCountdown() {
+            const resendBtn = document.getElementById('resend-btn');
+            const countdownSpan = document.getElementById('countdown');
+            
+            if (resendBtn && countdownSpan) {
+                resendBtn.disabled = true;
+                countdownValue = 60;
+                
+                countdownInterval = setInterval(() => {
+                    countdownValue--;
+                    countdownSpan.textContent = countdownValue;
+                    
+                    if (countdownValue <= 0) {
+                        clearInterval(countdownInterval);
+                        resendBtn.disabled = false;
+                        countdownSpan.textContent = '0';
+                    }
+                }, 1000);
+            }
+        }
+
+        // Listener para mudanças no estado de autenticação
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                if (user.emailVerified) {
+                    showSuccess();
+                } else {
+                    showPending();
+                }
+            } else {
+                showError('Usuário não autenticado');
+            }
+        });
+
+        // Verificar periodicamente se o email foi verificado
+        setInterval(() => {
+            const user = auth.currentUser;
+            if (user && user.emailVerified) {
+                showSuccess();
+            }
+        }, 5000); // Verificar a cada 5 segundos
+    </script>
+</body>
+</html>
