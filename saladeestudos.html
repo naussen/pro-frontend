@@ -87,6 +87,7 @@
             flex-direction: column;
             margin: 0;
             padding: 0;
+            padding-top: var(--header-height);
         }
 
         /* === LAYOUT PRINCIPAL === */
@@ -96,6 +97,7 @@
             height: calc(100vh - var(--header-height));
             overflow: hidden;
             min-height: 0;
+            position: relative;
         }
 
         /* === SIDEBAR === */
@@ -403,6 +405,7 @@
             flex-direction: column;
             overflow: hidden;
             transition: all var(--animation-speed) ease;
+            position: relative;
         }
 
         /* === ESTADOS DE CARREGAMENTO === */
@@ -584,6 +587,7 @@
             box-sizing: border-box;
             contain: layout style;
             isolation: isolate;
+            z-index: 1;
         }
 
         .content-body::-webkit-scrollbar {
@@ -638,47 +642,75 @@
 
         /* === BOTÃO DINÂMICO DE QUESTÕES === */
         #dynamic-questoes-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed !important;
+            top: 50% !important;
+            right: 2rem !important;
+            transform: translateY(-50%) !important;
+            z-index: 9999 !important;
+            background: var(--main-color) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 60px !important;
+            height: 60px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            pointer-events: none !important;
         }
 
         #dynamic-questoes-btn.visible {
-            opacity: 1;
-            visibility: visible;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
         }
 
         #dynamic-questoes-btn:hover {
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+            transform: translateY(-50%) scale(1.1) !important;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3) !important;
+            background: var(--accent-1) !important;
         }
 
         #dynamic-questoes-btn:active {
-            transform: translateY(-50%) scale(0.95);
+            transform: translateY(-50%) scale(0.95) !important;
+        }
+
+        #dynamic-questoes-btn svg {
+            width: 24px !important;
+            height: 24px !important;
+            fill: none !important;
+            stroke: currentColor !important;
         }
 
         /* Ajustar posição quando sidebar está recolhida */
         .study-sidebar.collapsed ~ .study-content #dynamic-questoes-btn {
-            margin-left: calc(var(--sidebar-collapsed-width) + 1rem);
+            right: 2rem !important;
         }
 
         /* Responsividade mobile */
         @media (max-width: 768px) {
             #dynamic-questoes-btn {
-                left: 1rem;
-                margin-left: 0 !important;
-                top: auto;
-                bottom: 2rem;
-                transform: translateY(0);
-                position: fixed;
+                right: 1rem !important;
+                bottom: 2rem !important;
+                top: auto !important;
+                transform: translateY(0) !important;
+                width: 50px !important;
+                height: 50px !important;
             }
             
             #dynamic-questoes-btn:hover {
-                transform: scale(1.1);
+                transform: scale(1.1) !important;
             }
             
             #dynamic-questoes-btn:active {
-                transform: scale(0.95);
+                transform: scale(0.95) !important;
             }
         }
     </style>
@@ -712,8 +744,8 @@
         <!-- Área de conteúdo principal -->
         <main class="study-content">
             <!-- Botão dinâmico para questões do módulo atual -->
-            <button id="dynamic-questoes-btn" class="fixed z-50 top-1/2 left-4 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible" style="margin-left: calc(var(--sidebar-width) + 1rem);" title="Questões do módulo atual">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button id="dynamic-questoes-btn" title="Questões do módulo atual">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                 </svg>
             </button>
