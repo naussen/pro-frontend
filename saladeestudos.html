@@ -912,8 +912,16 @@
                     
                     const headerPlaceholder = document.getElementById('header-placeholder');
                     
-                    // Limpar placeholder
+                    // Limpar placeholder e remover botões duplicados
                     headerPlaceholder.innerHTML = '';
+                    
+                    // Remover botões duplicados que possam existir
+                    const existingButtons = document.querySelectorAll('#showAllCoursesBtn, #themeToggleBtn, #pomodoro-btn');
+                    existingButtons.forEach(btn => {
+                        if (btn.parentNode) {
+                            btn.parentNode.removeChild(btn);
+                        }
+                    });
                     
                     // Adicionar estilos ao head se não existirem
                     if (headerStyles && !document.querySelector('style[data-header-styles]')) {
