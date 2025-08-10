@@ -1511,6 +1511,10 @@
             window.open(url, '_blank');
         }
 
+        // Função global para abrir questões (para compatibilidade)
+        window.openQuestoesForCourse = openQuestoesForCourse;
+        window.openAllQuestoes = openAllQuestoes;
+
         function openAllQuestoes() {
             console.log('🎯 Abrindo todas as questões');
             
@@ -1616,14 +1620,18 @@
             
             const cursosBtn = document.querySelector('#cursosMenuBtn');
             const flashcardsBtn = document.querySelector('#flashcardsMenuBtn');
+            const questoesBtn = document.querySelector('#questoesMenuBtn');
             const cursosMenu = document.querySelector('#cursos-menu');
             const flashcardsMenu = document.querySelector('#flashcards-menu');
+            const questoesMenu = document.querySelector('#questoes-menu');
             
             console.log('🔍 Debug dos elementos:', {
                 cursosBtn: cursosBtn ? `Encontrado (${cursosBtn.tagName})` : 'Não encontrado',
                 flashcardsBtn: flashcardsBtn ? `Encontrado (${flashcardsBtn.tagName})` : 'Não encontrado',
+                questoesBtn: questoesBtn ? `Encontrado (${questoesBtn.tagName})` : 'Não encontrado',
                 cursosMenu: cursosMenu ? `Encontrado (${cursosMenu.tagName})` : 'Não encontrado',
-                flashcardsMenu: flashcardsMenu ? `Encontrado (${flashcardsMenu.tagName})` : 'Não encontrado'
+                flashcardsMenu: flashcardsMenu ? `Encontrado (${flashcardsMenu.tagName})` : 'Não encontrado',
+                questoesMenu: questoesMenu ? `Encontrado (${questoesMenu.tagName})` : 'Não encontrado'
             });
             
             // Verificar se os elementos estão visíveis
@@ -1633,7 +1641,13 @@
                 console.log('👁️ Botão CURSOS visível:', isVisible, rect);
             }
             
-            if (cursosBtn && flashcardsBtn && cursosMenu && flashcardsMenu) {
+            if (questoesBtn) {
+                const rect = questoesBtn.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
+                console.log('👁️ Botão QUESTÕES visível:', isVisible, rect);
+            }
+            
+            if (cursosBtn && flashcardsBtn && questoesBtn && cursosMenu && flashcardsMenu && questoesMenu) {
                 console.log('✅ Todos os elementos encontrados, configurando...');
                 const success = setupDropdownMenus();
                 
@@ -1644,10 +1658,12 @@
                     // Adicionar indicador visual de que os botões estão funcionando
                     cursosBtn.style.border = '2px solid green';
                     flashcardsBtn.style.border = '2px solid green';
+                    questoesBtn.style.border = '2px solid green';
                     
                     setTimeout(() => {
                         cursosBtn.style.border = '';
                         flashcardsBtn.style.border = '';
+                        questoesBtn.style.border = '';
                     }, 2000);
                 }
                 
