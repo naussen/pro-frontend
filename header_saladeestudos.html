@@ -1457,9 +1457,12 @@
 
         // === Abrir Sistema de Questões ===
         function tryOpenQuestoes() {
+            console.log('🎯 tryOpenQuestoes chamada');
+            
             // Se a integração estiver presente, abrir em overlay
             try {
                 if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration');
                     return window.QuestoesIntegration.openQuestions('overlay');
                 }
             } catch (e) {
@@ -1468,23 +1471,43 @@
 
             // Fallback: abrir página estática com contexto se possível
             const url = buildQuestoesUrlWithContext();
+            console.log('🌐 Abrindo URL:', url);
             window.open(url, '_blank');
         }
 
         function buildQuestoesUrlWithContext() {
-            let base = '/pro-questoes/index.html';
+            // Usar caminho absoluto correto para o sistema de questões
+            let base = 'http://localhost:8001/index.html';
+            
+            // Se não estiver em localhost, usar caminho relativo
+            if (window.location.hostname !== 'localhost') {
+                base = '/pro-questoes/index.html';
+            }
+            
             try {
                 const path = window.location.pathname;
+                console.log('📍 Path atual:', path);
+                
                 // Suporta /content/{curso}/modules/{modulo}/aulas/{aula}.html
                 const m2 = path.match(/\/content\/([^\/]+)\/modules\/([^\/]+)\/aulas\/([^\/]+)\.html/);
                 // Suporta /content/{curso}/{modulo}/{aula}.html
                 const m1 = path.match(/\/content\/([^\/]+)\/([^\/]+)\/([^\/]+)\.html/);
                 const match = m2 || m1;
+                
                 if (match) {
+                    console.log('🎯 Contexto extraído:', { curso: match[1], modulo: match[2], aula: match[3] });
                     const params = new URLSearchParams({ curso: match[1], modulo: match[2], aula: match[3] });
-                    return `${base}?${params.toString()}`;
+                    const finalUrl = `${base}?${params.toString()}`;
+                    console.log('🔗 URL final com contexto:', finalUrl);
+                    return finalUrl;
+                } else {
+                    console.log('⚠️ Nenhum contexto encontrado no path');
                 }
-            } catch (_) { /* ignore */ }
+            } catch (error) {
+                console.error('❌ Erro ao extrair contexto:', error);
+            }
+            
+            console.log('🔗 URL final sem contexto:', base);
             return base;
         }
 
