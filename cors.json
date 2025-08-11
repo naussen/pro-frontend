@@ -1,0 +1,14 @@
+[
+  {
+    "origin": [
+      "https://proconcursos.com.br",
+      "https://www.proconcursos.com.br",
+      "http://localhost:3000",
+      "https://nvp-concursos.firebaseapp.com",
+      "https://proconcursos.netlify.app"
+    ],
+    "method": ["GET", "POST", "PUT", "DELETE"],
+    "responseHeader": ["Content-Type", "Authorization"],
+    "maxAgeSeconds": 3600
+  }
+] 
