@@ -1579,15 +1579,15 @@
                 const path = window.location.pathname;
                 console.log('📍 Path atual:', path);
                 
-                // Suporta /content/{curso}/modules/{modulo}/aulas/{aula}.html
+                // Suporta /content/{courses}/modules/{modules}/aulas/{aula}.html
                 const m2 = path.match(/\/content\/([^\/]+)\/modules\/([^\/]+)\/aulas\/([^\/]+)\.html/);
-                // Suporta /content/{curso}/{modulo}/{aula}.html
+                // Suporta /content/{courses}/{modules}/{aula}.html
                 const m1 = path.match(/\/content\/([^\/]+)\/([^\/]+)\/([^\/]+)\.html/);
                 const match = m2 || m1;
                 
                 if (match) {
-                    console.log('🎯 Contexto extraído:', { curso: match[1], modulo: match[2], aula: match[3] });
-                    const params = new URLSearchParams({ curso: match[1], modulo: match[2], aula: match[3] });
+                    console.log('🎯 Contexto extraído:', { courses: match[1], modules: match[2], aula: match[3] });
+                    const params = new URLSearchParams({ courses: match[1], modules: match[2], aula: match[3] });
                     const finalUrl = `${base}?${params.toString()}`;
                     console.log('🔗 URL final com contexto:', finalUrl);
                     return finalUrl;
