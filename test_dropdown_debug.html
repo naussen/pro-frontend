@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Menus Dropdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .debug-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        #header-container {
+            border: 2px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            min-height: 100px;
+        }
+        
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug - Menus Dropdown do Header</h1>
+    
+    <div class="debug-container">
+        <h2>1. Carregamento do Header</h2>
+        <button onclick="loadHeader()">Carregar Header</button>
+        <div id="header-status" class="status info">Aguardando carregamento...</div>
+        <div id="header-container"></div>
+    </div>
+    
+    <div class="debug-container">
+        <h2>2. Teste dos Elementos</h2>
+        <button onclick="testElements()">Verificar Elementos</button>
+        <div id="elements-status" class="status info">Aguardando verificação...</div>
+        <div id="elements-details"></div>
+    </div>
+    
+    <div class="debug-container">
+        <h2>3. Teste de Funcionalidade</h2>
+        <button onclick="testFunctionality()">Testar Dropdowns</button>
+        <div id="functionality-status" class="status info">Aguardando teste...</div>
+    </div>
+    
+    <div class="debug-container">
+        <h2>4. Console Log</h2>
+        <div id="console-log" class="log">Logs aparecerão aqui...</div>
+        <button onclick="clearLog()">Limpar Log</button>
+    </div>
+
+    <script>
+        // Interceptar console.log para mostrar na página
+        const originalLog = console.log;
+        const logContainer = document.getElementById('console-log');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            logContainer.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        };
+        
+        function clearLog() {
+            logContainer.innerHTML = 'Logs aparecerão aqui...';
+        }
+        
+        async function loadHeader() {
+            const statusDiv = document.getElementById('header-status');
+            const containerDiv = document.getElementById('header-container');
+            
+            statusDiv.innerHTML = '🔄 Carregando header...';
+            statusDiv.className = 'status info';
+            
+            try {
+                const response = await fetch('header_saladeestudos.html');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const headerHTML = await response.text();
+                const tempDoc = document.createElement('div');
+                tempDoc.innerHTML = headerHTML;
+                
+                const mainHeader = tempDoc.querySelector('#mainHeader');
+                const headerStyles = tempDoc.querySelector('style');
+                
+                if (headerStyles) {
+                    document.head.appendChild(headerStyles.cloneNode(true));
+                }
+                
+                if (mainHeader) {
+                    containerDiv.innerHTML = '';
+                    containerDiv.appendChild(mainHeader.cloneNode(true));
+                    
+                    statusDiv.innerHTML = '✅ Header carregado com sucesso!';
+                    statusDiv.className = 'status success';
+                    
+                    // Executar scripts do header
+                    const scripts = tempDoc.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        if (script.textContent.trim()) {
+                            try {
+                                eval(script.textContent);
+                                console.log('✅ Script do header executado');
+                            } catch (e) {
+                                console.error('❌ Erro ao executar script:', e);
+                            }
+                        }
+                    });
+                    
+                } else {
+                    throw new Error('Header principal não encontrado');
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `❌ Erro: ${error.message}`;
+                statusDiv.className = 'status error';
+                console.error('Erro ao carregar header:', error);
+            }
+        }
+        
+        function testElements() {
+            const statusDiv = document.getElementById('elements-status');
+            const detailsDiv = document.getElementById('elements-details');
+            
+            statusDiv.innerHTML = '🔄 Verificando elementos...';
+            
+            const cursosBtn = document.querySelector('#cursosMenuBtn');
+            const flashcardsBtn = document.querySelector('#flashcardsMenuBtn');
+            const cursosMenu = document.querySelector('#cursos-menu');
+            const flashcardsMenu = document.querySelector('#flashcards-menu');
+            
+            const results = {
+                'Botão Cursos': cursosBtn ? '✅ Encontrado' : '❌ Não encontrado',
+                'Botão Flashcards': flashcardsBtn ? '✅ Encontrado' : '❌ Não encontrado',
+                'Menu Cursos': cursosMenu ? '✅ Encontrado' : '❌ Não encontrado',
+                'Menu Flashcards': flashcardsMenu ? '✅ Encontrado' : '❌ Não encontrado'
+            };
+            
+            let allFound = true;
+            let detailsHTML = '<ul>';
+            
+            for (const [name, status] of Object.entries(results)) {
+                detailsHTML += `<li><strong>${name}:</strong> ${status}</li>`;
+                if (status.includes('❌')) allFound = false;
+            }
+            
+            detailsHTML += '</ul>';
+            
+            // Verificar visibilidade
+            if (cursosBtn) {
+                const rect = cursosBtn.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
+                detailsHTML += `<p><strong>Botão Cursos visível:</strong> ${isVisible ? '✅ Sim' : '❌ Não'} (${rect.width}x${rect.height})</p>`;
+            }
+            
+            detailsDiv.innerHTML = detailsHTML;
+            
+            if (allFound) {
+                statusDiv.innerHTML = '✅ Todos os elementos encontrados!';
+                statusDiv.className = 'status success';
+            } else {
+                statusDiv.innerHTML = '⚠️ Alguns elementos não foram encontrados';
+                statusDiv.className = 'status error';
+            }
+            
+            console.log('Elementos verificados:', results);
+        }
+        
+        function testFunctionality() {
+            const statusDiv = document.getElementById('functionality-status');
+            
+            statusDiv.innerHTML = '🔄 Testando funcionalidade...';
+            
+            try {
+                // Tentar configurar dropdowns
+                if (typeof setupDropdownMenus === 'function') {
+                    const success = setupDropdownMenus();
+                    if (success) {
+                        statusDiv.innerHTML = '✅ Dropdowns configurados! Teste clicando nos botões.';
+                        statusDiv.className = 'status success';
+                    } else {
+                        statusDiv.innerHTML = '⚠️ Falha na configuração dos dropdowns';
+                        statusDiv.className = 'status error';
+                    }
+                } else {
+                    statusDiv.innerHTML = '❌ Função setupDropdownMenus não encontrada';
+                    statusDiv.className = 'status error';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `❌ Erro: ${error.message}`;
+                statusDiv.className = 'status error';
+                console.error('Erro no teste:', error);
+            }
+        }
+        
+        // Auto-carregar header ao abrir a página
+        setTimeout(loadHeader, 500);
+    </script>
+</body>
+</html> 
