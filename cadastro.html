@@ -640,6 +640,120 @@
     }
   }
 
+  /* Estilos para Autenticação Social */
+  .social-auth-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: var(--light-highlight-bg);
+    border-radius: 8px;
+    border: 1px solid var(--header-border);
+  }
+  
+  .social-auth-section h3 {
+    font-size: 1.2em;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  
+  .social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+  }
+  
+  .social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  
+  .facebook-btn {
+    background-color: #1877F2;
+    border-color: #1877F2;
+  }
+  
+  .facebook-btn:hover {
+    background-color: #166fe5;
+    border-color: #166fe5;
+  }
+  
+  .google-btn {
+    background-color: #4285F4;
+    border-color: #4285F4;
+  }
+  
+  .google-btn:hover {
+    background-color: #3367d6;
+    border-color: #3367d6;
+  }
+  
+  .apple-btn {
+    background-color: #000000;
+    border-color: #000000;
+  }
+  
+  .apple-btn:hover {
+    background-color: #333333;
+    border-color: #333333;
+  }
+  
+  .social-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color);
+  }
+  
+  .divider span {
+    padding: 0 15px;
+    background-color: var(--light-highlight-bg);
+  }
+  
+  @media screen and (max-width: 768px) {
+    .social-buttons {
+      gap: 10px;
+    }
+    
+    .social-btn {
+      padding: 12px 16px;
+      font-size: 0.95em;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -675,6 +789,13 @@
                     <!-- Estado não autenticado -->
                     <div id="unauthenticated-state">
                         <div class="auth-buttons">
+                            <button id="facebook-login-btn" class="social-btn facebook-btn">
+                                <svg class="social-icon" viewBox="0 0 24 24">
+                                    <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                                Entrar com Facebook
+                            </button>
+                            
                             <button id="google-login-btn" class="google-login-btn">
                                 <svg class="google-logo" viewBox="0 0 24 24">
                                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -683,6 +804,13 @@
                                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                                 </svg>
                                 Entrar com Google
+                            </button>
+                            
+                            <button id="apple-login-btn" class="social-btn apple-btn">
+                                <svg class="social-icon" viewBox="0 0 24 24">
+                                    <path fill="#000000" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                                </svg>
+                                Entrar com Apple
                             </button>
                         </div>
                         
@@ -720,14 +848,28 @@
                     <div id="signup-message"></div>
                     
                     <div class="auth-buttons">
-                        <button id="google-signup-btn" class="google-login-btn">
-                            <svg class="google-logo" viewBox="0 0 24 24">
+                        <button id="facebook-signup-popup-btn" class="social-btn facebook-btn">
+                            <svg class="social-icon" viewBox="0 0 24 24">
+                                <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            Cadastrar com Facebook
+                        </button>
+                        
+                        <button id="google-signup-popup-btn" class="social-btn google-btn">
+                            <svg class="social-icon" viewBox="0 0 24 24">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                             </svg>
                             Cadastrar com Google
+                        </button>
+                        
+                        <button id="apple-signup-popup-btn" class="social-btn apple-btn">
+                            <svg class="social-icon" viewBox="0 0 24 24">
+                                <path fill="#000000" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                            </svg>
+                            Cadastrar com Apple
                         </button>
                     </div>
                     
@@ -777,6 +919,41 @@
 
     <section class="signup-form-section">
       <h2>CADASTRO</h2>
+      
+      <!-- Botões de Autenticação Social -->
+      <div class="social-auth-section">
+        <h3>Cadastre-se rapidamente com:</h3>
+        <div class="social-buttons">
+          <button id="facebook-signup-btn" class="social-btn facebook-btn">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            Cadastrar com Facebook
+          </button>
+          
+          <button id="google-signup-btn" class="social-btn google-btn">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Cadastrar com Gmail
+          </button>
+          
+          <button id="apple-signup-btn" class="social-btn apple-btn">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path fill="#000000" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            Cadastrar com Apple
+          </button>
+        </div>
+        
+        <div class="divider">
+          <span>ou</span>
+        </div>
+      </div>
+      
       <form id="cadastro-form" novalidate>
         <div class="form-grid">
           <div class="form-group full-width">
@@ -868,12 +1045,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Inicializar botão de tema
   initThemeToggle();
+  
+  // Inicializar botões de autenticação social da página principal
+  initSocialAuthButtons();
 });
 
 // Função para inicializar sistema de autenticação
 function initAuthSystem() {
   // Configurar listener de estado de autenticação
-  AppState.authListener = auth.onAuthStateChanged((user) => {
+  AppState.authListener = auth.onAuthStateChanged(async (user) => {
     if (user) {
       // Usuário está logado
       AppState.user = {
@@ -885,6 +1065,17 @@ function initAuthSystem() {
       AppState.isAuthenticated = true;
       updateAuthUI();
       console.log('Usuário autenticado:', AppState.user);
+      
+      // Verificar se é um novo usuário e redirecionar para pagamento
+      if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+        // É um novo usuário, salvar dados e redirecionar para pagamento
+        try {
+          await saveUserData(user, 'email');
+          window.location.href = 'pagamento.html';
+        } catch (error) {
+          console.error('Erro ao salvar dados do novo usuário:', error);
+        }
+      }
     } else {
       // Usuário não está logado
       AppState.user = null;
@@ -974,152 +1165,305 @@ function initLoginSystem() {
       signupDropdown.style.display = 'none';
     });
 
-    // Alternar entre login e cadastro
-    if (showSignupLink) {
-      showSignupLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginDropdown.style.display = 'none';
-        signupDropdown.style.display = 'block';
+      // Alternar entre login e cadastro
+      if (showSignupLink) {
+        showSignupLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          loginDropdown.style.display = 'none';
+          signupDropdown.style.display = 'block';
+        });
+      }
+
+      if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          signupDropdown.style.display = 'none';
+          loginDropdown.style.display = 'block';
+        });
+      }
+
+      // Fechar ao clicar fora
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.login-container')) {
+          loginDropdown.style.display = 'none';
+          signupDropdown.style.display = 'none';
+        }
       });
     }
 
-    if (showLoginLink) {
-      showLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        signupDropdown.style.display = 'none';
-        loginDropdown.style.display = 'block';
+    // Logout
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await auth.signOut();
+          showAuthMessage('Logout realizado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro no logout:', error);
+          showAuthMessage('Erro ao fazer logout', 'error');
+        }
       });
     }
 
-    // Fechar ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.login-container')) {
-        loginDropdown.style.display = 'none';
-        signupDropdown.style.display = 'none';
-      }
-    });
-  }
+    // Login com Facebook
+    const facebookLoginBtn = document.getElementById('facebook-login-btn');
+    if (facebookLoginBtn) {
+      facebookLoginBtn.addEventListener('click', async () => {
+        try {
+          await signInWithFacebook();
+          showAuthMessage('Login com Facebook realizado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro no login com Facebook:', error);
+          showAuthMessage('Erro ao fazer login com Facebook', 'error');
+        }
+      });
+    }
 
-  // Logout
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      try {
-        await auth.signOut();
-        showAuthMessage('Logout realizado com sucesso!', 'success');
-      } catch (error) {
-        console.error('Erro no logout:', error);
-        showAuthMessage('Erro ao fazer logout', 'error');
-      }
-    });
-  }
+    // Login com Google
+    const googleLoginBtn = document.getElementById('google-login-btn');
+    if (googleLoginBtn) {
+      googleLoginBtn.addEventListener('click', async () => {
+        try {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          await auth.signInWithPopup(provider);
+          showAuthMessage('Login com Google realizado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro no login com Google:', error);
+          showAuthMessage('Erro ao fazer login com Google', 'error');
+        }
+      });
+    }
 
-  // Login com Google
-  const googleLoginBtn = document.getElementById('google-login-btn');
-  if (googleLoginBtn) {
-    googleLoginBtn.addEventListener('click', async () => {
-      try {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        await auth.signInWithPopup(provider);
-        showAuthMessage('Login com Google realizado com sucesso!', 'success');
-      } catch (error) {
-        console.error('Erro no login com Google:', error);
-        showAuthMessage('Erro ao fazer login com Google', 'error');
-      }
-    });
-  }
+    // Login com Apple
+    const appleLoginBtn = document.getElementById('apple-login-btn');
+    if (appleLoginBtn) {
+      appleLoginBtn.addEventListener('click', async () => {
+        try {
+          await signInWithApple();
+          showAuthMessage('Login com Apple realizado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro no login com Apple:', error);
+          showAuthMessage('Erro ao fazer login com Apple', 'error');
+        }
+      });
+    }
 
-  // Cadastro com Google
-  const googleSignupBtn = document.getElementById('google-signup-btn');
-  if (googleSignupBtn) {
-    googleSignupBtn.addEventListener('click', async () => {
-      try {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        await auth.signInWithPopup(provider);
-        showAuthMessage('Cadastro com Google realizado com sucesso!', 'success');
-      } catch (error) {
-        console.error('Erro no cadastro com Google:', error);
-        showAuthMessage('Erro ao fazer cadastro com Google', 'error');
-      }
-    });
-  }
+    // Cadastro com Facebook
+    const facebookSignupPopupBtn = document.getElementById('facebook-signup-popup-btn');
+    if (facebookSignupPopupBtn) {
+      facebookSignupPopupBtn.addEventListener('click', async () => {
+        try {
+          await signInWithFacebook();
+          showAuthMessage('Cadastro com Facebook realizado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro no cadastro com Facebook:', error);
+          showAuthMessage('Erro ao fazer cadastro com Facebook', 'error');
+        }
+      });
+    }
 
-  // Login com email/senha
-  const loginForm = document.getElementById('login-form');
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-        showAuthMessage('Login realizado com sucesso!', 'success');
-        loginForm.reset();
-      } catch (error) {
-        console.error('Erro no login:', error);
-        let errorMessage = 'Erro ao fazer login';
+    // Cadastro com Google
+    const googleSignupPopupBtn = document.getElementById('google-signup-popup-btn');
+    if (googleSignupPopupBtn) {
+      googleSignupPopupBtn.addEventListener('click', async () => {
+        try {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          await auth.signInWithPopup(provider);
+          showAuthMessage('Cadastro com Google realizado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro no cadastro com Google:', error);
+          showAuthMessage('Erro ao fazer cadastro com Google', 'error');
+        }
+      });
+    }
+
+    // Cadastro com Apple
+    const appleSignupPopupBtn = document.getElementById('apple-signup-popup-btn');
+    if (appleSignupPopupBtn) {
+      appleSignupPopupBtn.addEventListener('click', async () => {
+        try {
+          await signInWithApple();
+          showAuthMessage('Cadastro com Apple realizado com sucesso!', 'success');
+        } catch (error) {
+          console.error('Erro no cadastro com Apple:', error);
+          showAuthMessage('Erro ao fazer cadastro com Apple', 'error');
+        }
+      });
+    }
+
+    // Login com email/senha
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        switch (error.code) {
-          case 'auth/user-not-found':
-            errorMessage = 'Usuário não encontrado';
-            break;
-          case 'auth/wrong-password':
-            errorMessage = 'Senha incorreta';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Email inválido';
-            break;
-          case 'auth/user-disabled':
-            errorMessage = 'Conta desabilitada';
-            break;
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        try {
+          await auth.signInWithEmailAndPassword(email, password);
+          showAuthMessage('Login realizado com sucesso!', 'success');
+          loginForm.reset();
+        } catch (error) {
+          console.error('Erro no login:', error);
+          let errorMessage = 'Erro ao fazer login';
+          
+          switch (error.code) {
+            case 'auth/user-not-found':
+              errorMessage = 'Usuário não encontrado';
+              break;
+            case 'auth/wrong-password':
+              errorMessage = 'Senha incorreta';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Email inválido';
+              break;
+            case 'auth/user-disabled':
+              errorMessage = 'Conta desabilitada';
+              break;
+          }
+          
+          showAuthMessage(errorMessage, 'error');
+        }
+      });
+    }
+
+    // Cadastro com email/senha
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        
+        if (password !== confirmPassword) {
+          showAuthMessage('As senhas não coincidem', 'error');
+          return;
         }
         
-        showAuthMessage(errorMessage, 'error');
+        try {
+          await auth.createUserWithEmailAndPassword(email, password);
+          showAuthMessage('Cadastro realizado com sucesso!', 'success');
+          signupForm.reset();
+        } catch (error) {
+          console.error('Erro no cadastro:', error);
+          let errorMessage = 'Erro ao fazer cadastro';
+          
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = 'Este email já está em uso';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Email inválido';
+              break;
+            case 'auth/weak-password':
+              errorMessage = 'Senha muito fraca (mínimo 6 caracteres)';
+              break;
+          }
+          
+          showAuthMessage(errorMessage, 'error');
+        }
+      });
+    }
+  }
+
+  // Função para login com Facebook
+  async function signInWithFacebook() {
+    return new Promise((resolve, reject) => {
+      FB.init({
+        appId: 'SEU_FACEBOOK_APP_ID', // Substitua pelo seu App ID do Facebook
+        cookie: true,
+        xfbml: true,
+        version: 'v18.0'
+      });
+
+      FB.login(async (response) => {
+        if (response.authResponse) {
+          try {
+            const accessToken = response.authResponse.accessToken;
+            const credential = firebase.auth.FacebookAuthProvider.credential(accessToken);
+            const result = await auth.signInWithCredential(credential);
+            
+            // Salvar dados do usuário no Firestore
+            if (result.user) {
+              await saveUserData(result.user, 'facebook');
+            }
+            
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        } else {
+          reject(new Error('Login com Facebook cancelado'));
+        }
+      }, { scope: 'email,public_profile' });
+    });
+  }
+
+  // Função para login com Apple
+  async function signInWithApple() {
+    return new Promise((resolve, reject) => {
+      try {
+        AppleID.auth.init({
+          clientId: 'SEU_APPLE_CLIENT_ID', // Substitua pelo seu Client ID da Apple
+          scope: 'email name',
+          redirectURI: window.location.origin + '/callback',
+          state: 'origin:web'
+        });
+
+        AppleID.auth.signIn().then(async (response) => {
+          try {
+            // Criar credencial personalizada para Apple
+            const credential = firebase.auth.OAuthProvider.credential(
+              'apple.com',
+              response.authorization.id_token
+            );
+            
+            const result = await auth.signInWithCredential(credential);
+            
+            // Salvar dados do usuário no Firestore
+            if (result.user) {
+              await saveUserData(result.user, 'apple');
+            }
+            
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        }).catch(reject);
+      } catch (error) {
+        reject(error);
       }
     });
   }
 
-  // Cadastro com email/senha
-  const signupForm = document.getElementById('signup-form');
-  if (signupForm) {
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  // Função para salvar dados do usuário no Firestore
+  async function saveUserData(user, provider) {
+    try {
+      const userData = {
+        user_id: user.uid,
+        nome: user.displayName || user.email.split('@')[0],
+        email: user.email,
+        emailVerified: user.emailVerified,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        hasPersonalized: false,
+        is_subscriber: false,
+        termsAccepted: true,
+        termsAcceptedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        authProvider: provider,
+        photoURL: user.photoURL || null
+      };
+
+      await db.collection('users').doc(user.uid).set(userData, { merge: true });
       
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-      
-      if (password !== confirmPassword) {
-        showAuthMessage('As senhas não coincidem', 'error');
-        return;
-      }
-      
-      try {
-        await auth.createUserWithEmailAndPassword(email, password);
-        showAuthMessage('Cadastro realizado com sucesso!', 'success');
-        signupForm.reset();
-      } catch (error) {
-        console.error('Erro no cadastro:', error);
-        let errorMessage = 'Erro ao fazer cadastro';
-        
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            errorMessage = 'Este email já está em uso';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Email inválido';
-            break;
-          case 'auth/weak-password':
-            errorMessage = 'Senha muito fraca (mínimo 6 caracteres)';
-            break;
-        }
-        
-        showAuthMessage(errorMessage, 'error');
-      }
-    });
+      // Redirecionar para página de pagamento após cadastro bem-sucedido
+      window.location.href = 'pagamento.html';
+    } catch (error) {
+      console.error('Erro ao salvar dados do usuário:', error);
+      throw error;
+    }
   }
-}
 
 // Função para inicializar botão de tema
 function initThemeToggle() {
@@ -1164,11 +1508,70 @@ function initThemeToggle() {
     });
   }
 }
+
+// Função para inicializar botões de autenticação social da página principal
+function initSocialAuthButtons() {
+  // Cadastro com Facebook
+  const facebookSignupBtn = document.getElementById('facebook-signup-btn');
+  if (facebookSignupBtn) {
+    facebookSignupBtn.addEventListener('click', async () => {
+      try {
+        await signInWithFacebook();
+        showAuthMessage('Cadastro com Facebook realizado com sucesso!', 'success');
+      } catch (error) {
+        console.error('Erro no cadastro com Facebook:', error);
+        showAuthMessage('Erro ao fazer cadastro com Facebook', 'error');
+      }
+    });
+  }
+
+  // Cadastro com Google
+  const googleSignupBtn = document.getElementById('google-signup-btn');
+  if (googleSignupBtn) {
+    googleSignupBtn.addEventListener('click', async () => {
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await auth.signInWithPopup(provider);
+        
+        // Salvar dados do usuário no Firestore
+        if (result.user) {
+          await saveUserData(result.user, 'google');
+        }
+        
+        showAuthMessage('Cadastro com Google realizado com sucesso!', 'success');
+      } catch (error) {
+        console.error('Erro no cadastro com Google:', error);
+        showAuthMessage('Erro ao fazer cadastro com Google', 'error');
+      }
+    });
+  }
+
+  // Cadastro com Apple
+  const appleSignupBtn = document.getElementById('apple-signup-btn');
+  if (appleSignupBtn) {
+    appleSignupBtn.addEventListener('click', async () => {
+      try {
+        await signInWithApple();
+        showAuthMessage('Cadastro com Apple realizado com sucesso!', 'success');
+      } catch (error) {
+        console.error('Erro no cadastro com Apple:', error);
+        showAuthMessage('Erro ao fazer cadastro com Apple', 'error');
+      }
+    });
+  }
+}
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- Facebook SDK -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js"></script>
+
+<!-- Apple Sign-In SDK -->
+<script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -1242,8 +1645,8 @@ function initThemeToggle() {
             });
           })
           .then(() => {
-            alert('Cadastro realizado com sucesso! Verifique seu email para confirmar sua conta antes de prosseguir com o pagamento.');
-            window.location.href = 'email-verificado.html'; // Redireciona para página de confirmação
+            alert('Cadastro realizado com sucesso! Redirecionando para página de pagamento...');
+            window.location.href = 'pagamento.html'; // Redireciona para página de pagamento
           })
           .catch((error) => {
             const errorCode = error.code;
@@ -1325,7 +1728,7 @@ function initThemeToggle() {
       errorMessage += '1 número. ';
       isValid = false;
     }
-    // Caracteres especiais específicos: @!`~#$%^&*;./\{}[]()
+    // Caracteres especiais específicos: @!`~#$%^&*;./\{}[]().
     if (!/[@!`~#$%^&*;./\\{}[\]()]/.test(value)) {
       errorMessage += '1 caractere especial (@!`~#$%^&*;./\\{}[]()).';
       isValid = false;
