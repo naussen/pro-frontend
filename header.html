@@ -24,14 +24,29 @@
             </div>
         </div>
         <div class="nav-item">
-                            <!-- TEMPORARIAMENTE REMOVIDO: Menu de questões causando erros Firebase
-                <button class="nav-button" data-target="questoes-menu">Questões ▼</button>
-                -->
-            <div class="dropdown-content">
-                <a href="#">Questões por Matéria</a>
-                <a href="#">Simulados</a>
-                <a href="#">Provas Anteriores</a>
-                <a href="#">Questões Comentadas</a>
+            <button class="nav-button" data-target="questoes-menu" id="questoesMenuBtn">Questões ▼</button>
+            <div class="dropdown-content" id="questoes-menu">
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('administracao-financeira-orcamentaria')">
+                    <span class="dropdown-icon">🏛️</span>
+                    Administração Financeira Orçamentária
+                </a>
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-administrativo')">
+                    <span class="dropdown-icon">⚖️</span>
+                    Direito Administrativo
+                </a>
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-constitucional')">
+                    <span class="dropdown-icon">📜</span>
+                    Direito Constitucional
+                </a>
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-penal')">
+                    <span class="dropdown-icon">⚔️</span>
+                    Direito Penal
+                </a>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" onclick="openAllQuestoes()">
+                    <span class="dropdown-icon">📖</span>
+                    Todas as Questões
+                </button>
             </div>
         </div>
         <div class="nav-item">
@@ -62,6 +77,29 @@
                 <!-- Login Dropdown -->
                 <div id="login-dropdown" class="login-dropdown">
                     <h3>Login</h3>
+                    
+                    <!-- Opções de Login Social -->
+                    <div class="social-login-options">
+                        <button type="button" class="social-login-btn google-login" onclick="loginWithGoogle()">
+                            <span class="social-icon">🔍</span>
+                            <span class="social-text">Continuar com Google</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn facebook-login" onclick="loginWithFacebook()">
+                            <span class="social-icon">📘</span>
+                            <span class="social-text">Continuar com Facebook</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn apple-login" onclick="loginWithApple()">
+                            <span class="social-icon">🍎</span>
+                            <span class="social-text">Continuar com Apple</span>
+                        </button>
+                    </div>
+                    
+                    <div class="login-divider">
+                        <span>ou</span>
+                    </div>
+                    
                     <form id="login-form">
                         <label for="login-email">Email:</label>
                         <input type="email" id="login-email" required>
@@ -71,12 +109,39 @@
                         
                         <button type="submit">Entrar</button>
                     </form>
-                    <p>Não tem uma conta? <a href="#" id="show-signup">Cadastre-se</a></p>
+                    
+                    <div class="login-footer">
+                        <p>Não tem uma conta? <a href="#" id="show-signup">Cadastre-se</a></p>
+                        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                    </div>
                 </div>
                 
                 <!-- Signup Dropdown -->
                 <div id="signup-dropdown" class="login-dropdown" style="display: none;">
                     <h3>Cadastro</h3>
+                    
+                    <!-- Opções de Cadastro Social -->
+                    <div class="social-login-options">
+                        <button type="button" class="social-login-btn google-login" onclick="signupWithGoogle()">
+                            <span class="social-icon">🔍</span>
+                            <span class="social-text">Cadastrar com Google</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn facebook-login" onclick="signupWithFacebook()">
+                            <span class="social-icon">📘</span>
+                            <span class="social-text">Cadastrar com Facebook</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn apple-login" onclick="signupWithApple()">
+                            <span class="social-icon">🍎</span>
+                            <span class="social-text">Cadastrar com Apple</span>
+                        </button>
+                    </div>
+                    
+                    <div class="login-divider">
+                        <span>ou</span>
+                    </div>
+                    
                     <form id="signup-form">
                         <label for="signup-email">Email:</label>
                         <input type="email" id="signup-email" required>
@@ -89,7 +154,10 @@
                         
                         <button type="submit">Cadastrar</button>
                     </form>
-                    <p>Já tem uma conta? <a href="#" id="show-login">Faça login</a></p>
+                    
+                    <div class="login-footer">
+                        <p>Já tem uma conta? <a href="#" id="show-login">Faça login</a></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -235,6 +303,41 @@
         background-color: var(--top-nav-link-hover-bg, #f0f7ff);
     }
     
+    /* Estilos específicos para o menu QUESTOES */
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        color: var(--text-dark);
+        text-decoration: none;
+        font-size: 14px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        gap: 8px;
+        white-space: nowrap;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .dropdown-item:hover {
+        background-color: var(--top-nav-link-hover-bg, #f0f7ff);
+    }
+    
+    .dropdown-icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background-color: var(--border-color, #ccc);
+        margin: 4px 0;
+    }
+    
     /* Área de busca */
     .w3s-search-area {
         display: flex;
@@ -320,11 +423,11 @@
         right: 0;
         background-color: var(--main-content-bg, #f7fbff);
         border: 1px solid var(--border-color, #ccc);
-        border-radius: 4px;
-        padding: 15px;
+        border-radius: 8px;
+        padding: 20px;
         z-index: 110;
-        width: 250px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        width: 320px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
     
@@ -360,6 +463,139 @@
         font-size: 13px;
         text-align: center;
         margin: 10px 0 0;
+    }
+    
+    /* Estilos para Login Social */
+    .social-login-options {
+        margin-bottom: 20px;
+    }
+    
+    .social-login-btn {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 8px;
+        background-color: var(--main-content-bg, #ffffff);
+        color: var(--text-dark, #333);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .social-login-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .social-login-btn:active {
+        transform: translateY(0);
+    }
+    
+    .social-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    .social-text {
+        font-weight: 500;
+    }
+    
+    /* Cores específicas para cada provedor */
+    .google-login {
+        border-color: #4285f4;
+        color: #4285f4;
+    }
+    
+    .google-login:hover {
+        background-color: #4285f4;
+        color: white;
+    }
+    
+    .facebook-login {
+        border-color: #1877f2;
+        color: #1877f2;
+    }
+    
+    .facebook-login:hover {
+        background-color: #1877f2;
+        color: white;
+    }
+    
+    .apple-login {
+        border-color: #000000;
+        color: #000000;
+    }
+    
+    .apple-login:hover {
+        background-color: #000000;
+        color: white;
+    }
+    
+    /* Modo escuro - ajustes para Apple */
+    .dark-mode .apple-login {
+        border-color: #ffffff;
+        color: #ffffff;
+    }
+    
+    .dark-mode .apple-login:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    
+    /* Separador "ou" */
+    .login-divider {
+        text-align: center;
+        margin: 20px 0;
+        position: relative;
+    }
+    
+    .login-divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--border-color, #ccc);
+    }
+    
+    .login-divider span {
+        background-color: var(--main-content-bg, #ffffff);
+        padding: 0 15px;
+        color: var(--text-muted, #6c757d);
+        font-size: 13px;
+        font-weight: 500;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Footer do login */
+    .login-footer {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .login-footer p {
+        margin-bottom: 10px;
+    }
+    
+    .forgot-password {
+        color: var(--main-color, #94ba65);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .forgot-password:hover {
+        text-decoration: underline;
     }
     
     /* Responsivo */
@@ -509,20 +745,217 @@
         }
     }
     
-    // Escutar eventos de mudança de tema de outros componentes
-    document.addEventListener('themeChanged', function(e) {
-        const theme = e.detail.theme;
-        document.body.classList.toggle('dark-mode', theme === 'dark');
-        document.documentElement.setAttribute('data-theme', theme);
-        
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        if (themeToggleBtn) {
-            const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
-            const moonIcon = themeToggleBtn.querySelector('.theme-icon-dark');
-            if (sunIcon && moonIcon) {
-                sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
-                moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+        // Escutar eventos de mudança de tema de outros componentes
+        document.addEventListener('themeChanged', function(e) {
+            const theme = e.detail.theme;
+            document.body.classList.toggle('dark-mode', theme === 'dark');
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            if (themeToggleBtn) {
+                const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
+                const moonIcon = themeToggleBtn.querySelector('.theme-icon-dark');
+                if (sunIcon && moonIcon) {
+                    sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+                    moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+                }
             }
+        });
+        
+        // === FUNÇÕES DO MENU QUESTÕES ===
+        function openQuestoesForCourse(courseName) {
+            console.log('🎯 Abrindo questões para curso:', courseName);
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) {
+                questoesMenu.style.display = 'none';
+            }
+            
+            try {
+                // Se a integração estiver presente, usar contexto específico
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration para curso específico');
+                    // Usar integração se disponível
+                    return window.QuestoesIntegration.openQuestions('static');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir com parâmetro de curso
+            let url;
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                // URL direta para servidor de desenvolvimento
+                url = 'http://localhost:8001/qindex.html';
+            } else {
+                // Subdomínio para produção
+                url = 'https://questoes.proconcursos.com.br/qindex.html';
+            }
+            url += `?curso=${courseName}`;
+            
+            console.log('🌐 Abrindo URL com curso específico:', url);
+            window.open(url, '_blank');
         }
-    });
-</script>
+
+        function openAllQuestoes() {
+            console.log('🎯 Abrindo todas as questões');
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) {
+                questoesMenu.style.display = 'none';
+            }
+            
+            try {
+                // Se a integração estiver presente, abrir em overlay
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration');
+                    return window.QuestoesIntegration.openQuestions('overlay');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir página estática
+            let url;
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                // URL direta para servidor de desenvolvimento
+                url = 'http://localhost:8001/qindex.html';
+            } else {
+                // Subdomínio para produção
+                url = 'https://questoes.proconcursos.com.br/qindex.html';
+            }
+            
+            console.log('🌐 Abrindo URL geral:', url);
+            window.open(url, '_blank');
+        }
+
+        // Funções globais para compatibilidade
+        window.openQuestoesForCourse = openQuestoesForCourse;
+        window.openAllQuestoes = openAllQuestoes;
+        
+        // === FUNÇÕES DE LOGIN SOCIAL ===
+        function loginWithGoogle() {
+            console.log('🔍 Tentando login com Google...');
+            // Implementar integração com Google OAuth
+            showNotification('Login com Google em desenvolvimento', 'info');
+        }
+        
+        function loginWithFacebook() {
+            console.log('📘 Tentando login com Facebook...');
+            // Implementar integração com Facebook OAuth
+            showNotification('Login com Facebook em desenvolvimento', 'info');
+        }
+        
+        function loginWithApple() {
+            console.log('🍎 Tentando login com Apple...');
+            // Implementar integração com Apple OAuth
+            showNotification('Login com Apple em desenvolvimento', 'info');
+        }
+        
+        function signupWithGoogle() {
+            console.log('🔍 Tentando cadastro com Google...');
+            // Implementar integração com Google OAuth
+            showNotification('Cadastro com Google em desenvolvimento', 'info');
+        }
+        
+        function signupWithFacebook() {
+            console.log('📘 Tentando cadastro com Facebook...');
+            // Implementar integração com Facebook OAuth
+            showNotification('Cadastro com Facebook em desenvolvimento', 'info');
+        }
+        
+        function signupWithApple() {
+            console.log('🍎 Tentando cadastro com Apple...');
+            // Implementar integração com Apple OAuth
+            showNotification('Cadastro com Apple em desenvolvimento', 'info');
+        }
+        
+        // Função auxiliar para mostrar notificações
+        function showNotification(message, type = 'info') {
+            console.log(`📢 ${type.toUpperCase()}: ${message}`);
+            
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            // Adicionar ao body
+            document.body.appendChild(notification);
+            
+            // Remover automaticamente após 5 segundos
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Adicionar estilos para notificações
+        const notificationStyles = document.createElement('style');
+        notificationStyles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                max-width: 350px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                animation: slideInRight 0.3s ease;
+            }
+            
+            .notification-info {
+                background-color: #2196F3;
+            }
+            
+            .notification-success {
+                background-color: #4CAF50;
+            }
+            
+            .notification-warning {
+                background-color: #FF9800;
+            }
+            
+            .notification-error {
+                background-color: #F44336;
+            }
+            
+            .notification-close {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 0;
+                margin-left: auto;
+                opacity: 0.8;
+            }
+            
+            .notification-close:hover {
+                opacity: 1;
+            }
+            
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(notificationStyles);
+    </script>
