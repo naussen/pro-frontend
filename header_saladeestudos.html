@@ -1500,10 +1500,10 @@
             let url;
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 // URL direta para servidor de desenvolvimento
-                url = 'http://localhost:8001/qindex.html';
+                url = 'http://localhost:8001/pro-questoes.html';
             } else {
                 // Subdomínio para produção
-                url = 'https://questoes.proconcursos.com.br/qindex.html';
+                url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
             }
             url += `?curso=${courseName}`;
             
@@ -1536,10 +1536,10 @@
             let url;
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 // URL direta para servidor de desenvolvimento
-                url = 'http://localhost:8001/qindex.html';
+                url = 'http://localhost:8001/pro-questoes.html';
             } else {
                 // Subdomínio para produção
-                url = 'https://questoes.proconcursos.com.br/qindex.html';
+                url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
             }
             
             console.log('🌐 Abrindo URL geral:', url);
@@ -1568,11 +1568,11 @@
 
         function buildQuestoesUrlWithContext() {
             // Usar caminho absoluto correto para o sistema de questões
-            let base = 'http://localhost:8001/index.html';
+            let base = 'http://localhost:8001/pro-questoes.html';
             
             // Se não estiver em localhost, usar caminho relativo
             if (window.location.hostname !== 'localhost') {
-                base = '/pro-questoes/index.html';
+                base = 'https://questoes.proconcursos.com.br/pro-questoes.html';
             }
             
             try {
