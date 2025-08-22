@@ -216,6 +216,52 @@
             border-radius: 2px;
         }
 
+        /* Indicador de scroll para mostrar que há mais conteúdo */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, var(--sidebar-bg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .scroll-indicator.visible {
+            opacity: 1;
+        }
+
+        .scroll-indicator-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
         /* === MENU DE NAVEGAÇÃO === */
         .course-item {
             margin-bottom: 0.5rem;
@@ -793,6 +839,10 @@
                         <p>Carregando cursos...</p>
                     </div>
                 </nav>
+                <!-- Indicador de scroll -->
+                <div class="scroll-indicator" id="scrollIndicator">
+                    <div class="scroll-indicator-icon">↓</div>
+                </div>
             </div>
         </aside>
 
@@ -825,6 +875,15 @@
     
     <script>
         'use strict';
+
+        // === COMPORTAMENTO DO MENU ===
+        // O menu de cursos, módulos e aulas SEMPRE é apresentado no estado RECOLHIDO
+        // Independentemente da última visualização do usuário, ele deve clicar para expandir:
+        // 1. Clique no curso para ver os módulos
+        // 2. Clique no módulo para ver as aulas
+        // 3. Clique na aula para carregar o conteúdo
+        // 
+        // O indicador de scroll (↓) aparece quando há mais conteúdo abaixo no menu
 
         // === CONFIGURAÇÃO E INICIALIZAÇÃO ===
         class StudyRoomApp {
@@ -875,6 +934,9 @@
                     
                     // Configura event listeners
                     this.setupEventListeners();
+                    
+                    // Configura indicador de scroll após elementos estarem prontos
+                    this.setupScrollIndicator();
                     
                     // Aplica tema salvo
                     this.applyTheme();
@@ -1271,7 +1333,8 @@
                     sidebar: document.getElementById('studySidebar'),
                     courseNav: document.getElementById('courseNavigation'),
                     contentBody: document.getElementById('contentBody'),
-                    overlay: document.getElementById('sidebarOverlay')
+                    overlay: document.getElementById('sidebarOverlay'),
+                    scrollIndicator: document.getElementById('scrollIndicator')
                 };
             }
 
@@ -1311,6 +1374,10 @@
                 
                 // Resize handler
                 window.addEventListener('resize', () => this.handleResize());
+                
+                // Configurar indicador de scroll para a sidebar (será chamado após inicialização)
+                // this.setupScrollIndicator();
+                
                 console.log('✅ Event listeners configurados');
             }
 
@@ -1360,6 +1427,58 @@
                     this.elements.sidebar.classList.remove('visible');
                     this.elements.overlay.classList.remove('visible');
                 }
+            }
+
+            updateScrollIndicator() {
+                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
+                
+                const nav = this.elements.courseNav;
+                const indicator = this.elements.scrollIndicator;
+                
+                if (nav.scrollHeight > nav.clientHeight) {
+                    // Há conteúdo para scroll
+                    if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
+                        // Próximo do final - oculta indicador
+                        indicator.classList.remove('visible');
+                    } else {
+                        // Mostra indicador
+                        indicator.classList.add('visible');
+                    }
+                } else {
+                    // Não há scroll necessário - oculta indicador
+                    indicator.classList.remove('visible');
+                }
+            }
+
+            setupScrollIndicator() {
+                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
+                
+                const checkScrollIndicator = () => {
+                    const nav = this.elements.courseNav;
+                    const indicator = this.elements.scrollIndicator;
+                    
+                    if (nav.scrollHeight > nav.clientHeight) {
+                        // Há conteúdo para scroll
+                        if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
+                            // Próximo do final - oculta indicador
+                            indicator.classList.remove('visible');
+                        } else {
+                            // Mostra indicador
+                            indicator.classList.add('visible');
+                        }
+                    } else {
+                        // Não há scroll necessário - oculta indicador
+                        indicator.classList.remove('visible');
+                    }
+                };
+                
+                // Verificar ao carregar conteúdo
+                this.elements.courseNav.addEventListener('scroll', checkScrollIndicator);
+                
+                // Verificar inicialmente
+                setTimeout(checkScrollIndicator, 100);
+                
+                console.log('✅ Indicador de scroll configurado');
             }
 
             // === GERENCIAMENTO DE TEMA ===
@@ -1514,6 +1633,7 @@
                             const courses = await this.loadSelectedModules(userData.selectedModules);
                             this.cacheCourses(courses);
                             this.renderCourses(courses);
+                            console.log('✅ Cursos personalizados carregados em modo recolhido');
                         } 
                         // Para usuários antigos, carrega todos os cursos
                         else {
@@ -1727,27 +1847,34 @@
                 this.elements.courseNav.innerHTML = html;
                 this.attachCourseEvents();
                 
-                // Auto-seleciona primeiro conteúdo
+                // Auto-seleciona primeiro conteúdo SEM expandir menu
                 this.autoSelectFirstContent();
                 
-                console.log(`✅ ${courses.length} cursos renderizados`);
+                // Atualizar indicador de scroll após renderizar
+                setTimeout(() => this.updateScrollIndicator(), 200);
+                
+                console.log(`✅ ${courses.length} cursos renderizados em modo recolhido`);
             }
 
             attachCourseEvents() {
-                // Course headers (toggle)
+                // Course headers (toggle) - SEMPRE começa recolhido
                 this.elements.courseNav.querySelectorAll('.course-header').forEach(header => {
                     header.addEventListener('click', () => {
                         const moduleList = header.nextElementSibling;
                         const toggleIcon = header.querySelector('.toggle-icon');
                         const isVisible = moduleList.classList.contains('visible');
                         
+                        // Toggle visibilidade dos módulos
                         moduleList.classList.toggle('visible', !isVisible);
                         toggleIcon.classList.toggle('expanded', !isVisible);
                         toggleIcon.textContent = isVisible ? '▶' : '▼';
+                        
+                        // Atualizar indicador de scroll após expandir/recolher
+                        setTimeout(() => this.updateScrollIndicator(), 100);
                     });
                 });
 
-                // Module items (toggle aulas)
+                // Module items (toggle aulas) - SEMPRE começa recolhido
                 this.elements.courseNav.querySelectorAll('.module-item').forEach(item => {
                     const moduleHeader = item.querySelector('.module-header');
                     const aulasList = item.querySelector('.aulas-list');
@@ -1760,14 +1887,10 @@
                         const isVisible = aulasList.style.display !== 'none';
                         aulasList.style.display = isVisible ? 'none' : 'block';
                         toggleIcon.classList.toggle('expanded', !isVisible);
+                        toggleIcon.textContent = isVisible ? '▶' : '▼';
                         
-                        // Se abrindo, carrega primeira aula automaticamente
-                        if (!isVisible) {
-                            const firstAulaItem = aulasList.querySelector('.aula-item');
-                            if (firstAulaItem) {
-                                setTimeout(() => firstAulaItem.click(), 100);
-                            }
-                        }
+                        // Atualizar indicador de scroll após expandir/recolher
+                        setTimeout(() => this.updateScrollIndicator(), 100);
                     });
                 });
 
@@ -1794,25 +1917,13 @@
                     const firstModule = firstCourse.modules[0];
                     const firstAula = firstModule.aulas?.[0];
                     
-                    // Expande primeiro curso e módulo
+                    // SEMPRE mantém menu recolhido - usuário deve clicar para expandir
+                    // Apenas seleciona primeira aula sem expandir nada
                     setTimeout(() => {
-                        const firstCourseHeader = this.elements.courseNav.querySelector('.course-header');
-                        const firstModuleList = this.elements.courseNav.querySelector('.module-list');
-                        const firstModuleItem = this.elements.courseNav.querySelector('.module-item');
-                        const firstAulasList = this.elements.courseNav.querySelector('.aulas-list');
                         const firstAulaItem = this.elements.courseNav.querySelector('.aula-item');
                         
-                        if (firstCourseHeader && firstModuleList && firstModuleItem && firstAulaItem && firstAula) {
-                            // Expande curso
-                            firstModuleList.classList.add('visible');
-                            firstCourseHeader.querySelector('.toggle-icon').classList.add('expanded');
-                            firstCourseHeader.querySelector('.toggle-icon').textContent = '▼';
-                            
-                            // Expande módulo
-                            firstAulasList.style.display = 'block';
-                            firstModuleItem.querySelector('.module-toggle').classList.add('expanded');
-                            
-                            // Seleciona primeira aula
+                        if (firstAulaItem && firstAula) {
+                            // Seleciona primeira aula sem expandir curso/módulo
                             firstAulaItem.classList.add('active');
                             this.loadAulaContent(firstCourse.id, firstModule.id, firstAula.id);
                         }
