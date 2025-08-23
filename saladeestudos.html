@@ -824,6 +824,138 @@
                 }
             }
         }
+
+        /* === ESTILOS PARA GRÁFICOS MERMAID INTERATIVOS === */
+        .mermaid-container {
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--main-content-bg);
+            box-shadow: var(--card-shadow);
+        }
+
+        .mermaid-header {
+            background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-2) 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mermaid-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mermaid-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .mermaid-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .mermaid-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .mermaid-graph {
+            padding: 2rem;
+            text-align: center;
+            background: var(--main-content-bg);
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid-graph svg {
+            max-width: 100%;
+            height: auto;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mermaid-source {
+            border-top: 1px solid var(--border-color);
+            background: var(--light-grey-bg);
+        }
+
+        .mermaid-source pre {
+            margin: 0;
+            padding: 1.5rem;
+            background: transparent;
+            border-radius: 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            overflow-x: auto;
+        }
+
+        .mermaid-error {
+            padding: 2rem;
+            text-align: center;
+            color: var(--error-color);
+        }
+
+        .mermaid-error details {
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .mermaid-error summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .mermaid-error pre {
+            margin-top: 0.5rem;
+            padding: 1rem;
+            background: var(--light-grey-bg);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        /* Responsividade dos gráficos Mermaid */
+        @media (max-width: 768px) {
+            .mermaid-container {
+                margin: 1rem 0;
+            }
+
+            .mermaid-header {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                gap: 0.8rem;
+                text-align: center;
+            }
+
+            .mermaid-controls {
+                justify-content: center;
+            }
+
+            .mermaid-graph {
+                padding: 1rem;
+            }
+
+            .mermaid-source pre {
+                padding: 1rem;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -882,6 +1014,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    
+    <!-- Mermaid.js para renderização de gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     
     <script>
         'use strict';
@@ -2121,6 +2256,9 @@
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
                 
+                // Processar gráficos Mermaid após carregar conteúdo
+                this.processMermaidGraphs();
+                
                 // Atualizar botão dinâmico de questões
                 this.updateDynamicQuestoesButton(contentData.meta);
                 
@@ -2242,6 +2380,149 @@
             refresh() {
                 this.clearCache();
                 this.loadUserCourses();
+            }
+
+            // === PROCESSAMENTO DE GRÁFICOS MERMAID ===
+            processMermaidGraphs() {
+                if (typeof mermaid === 'undefined') {
+                    console.warn('❌ Mermaid.js não carregado');
+                    return;
+                }
+                
+                // Configurar Mermaid
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: document.body.classList.contains('dark-mode') ? 'dark' : 'default',
+                    themeCSS: `
+                        .node rect, .node circle, .node ellipse, .node polygon {
+                            fill: var(--main-content-bg);
+                            stroke: var(--main-color);
+                            stroke-width: 2px;
+                        }
+                        .node .label {
+                            color: var(--text-dark);
+                        }
+                        .edgePath .path {
+                            stroke: var(--main-color);
+                            stroke-width: 2px;
+                        }
+                        .edgeLabel {
+                            background-color: var(--main-content-bg);
+                            color: var(--text-dark);
+                        }
+                    `,
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: 14,
+                    flowchart: {
+                        useMaxWidth: true,
+                        htmlLabels: true
+                    }
+                });
+                
+                // Detectar blocos de código com gráficos Mermaid
+                const codeBlocks = this.elements.contentBody.querySelectorAll('pre code, .codehilite pre code, .highlight pre code');
+                let mermaidCounter = 0;
+                
+                codeBlocks.forEach((codeElement, index) => {
+                    const codeText = this.extractTextFromCode(codeElement);
+                    
+                    // Verificar se é um gráfico Mermaid
+                    if (this.isMermaidGraph(codeText)) {
+                        mermaidCounter++;
+                        const mermaidId = `mermaid-graph-${mermaidCounter}`;
+                        
+                        console.log(`🎨 Renderizando gráfico Mermaid ${mermaidCounter}:`, codeText.substring(0, 50) + '...');
+                        
+                        // Criar container para o gráfico
+                        const graphContainer = document.createElement('div');
+                        graphContainer.className = 'mermaid-container';
+                        graphContainer.innerHTML = `
+                            <div class="mermaid-header">
+                                <h4>📊 Gráfico Interativo</h4>
+                                <div class="mermaid-controls">
+                                    <button class="mermaid-btn" onclick="this.closest('.mermaid-container').querySelector('.mermaid-source').style.display = 
+                                        this.closest('.mermaid-container').querySelector('.mermaid-source').style.display === 'none' ? 'block' : 'none'">
+                                        Ver Código
+                                    </button>
+                                    <a class="mermaid-btn" href="https://mermaid.live/edit#${btoa(codeText)}" target="_blank">Editar Online</a>
+                                </div>
+                            </div>
+                            <div class="mermaid-graph" id="${mermaidId}">${codeText}</div>
+                            <div class="mermaid-source" style="display: none;">
+                                <pre><code>${this.escapeHtml(codeText)}</code></pre>
+                            </div>
+                        `;
+                        
+                        // Substituir o bloco de código original
+                        const preElement = codeElement.closest('pre') || codeElement.closest('.codehilite') || codeElement.closest('.highlight');
+                        if (preElement) {
+                            preElement.parentNode.replaceChild(graphContainer, preElement);
+                            
+                            // Renderizar o gráfico Mermaid
+                            setTimeout(() => {
+                                mermaid.render(mermaidId + '-svg', codeText)
+                                    .then(({ svg }) => {
+                                        const graphElement = document.getElementById(mermaidId);
+                                        if (graphElement) {
+                                            graphElement.innerHTML = svg;
+                                            console.log(`✅ Gráfico Mermaid ${mermaidCounter} renderizado com sucesso`);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error(`❌ Erro ao renderizar gráfico Mermaid ${mermaidCounter}:`, error);
+                                        const graphElement = document.getElementById(mermaidId);
+                                        if (graphElement) {
+                                            graphElement.innerHTML = `
+                                                <div class="mermaid-error">
+                                                    <p>❌ Erro ao renderizar gráfico</p>
+                                                    <details>
+                                                        <summary>Ver detalhes</summary>
+                                                        <pre>${this.escapeHtml(error.toString())}</pre>
+                                                    </details>
+                                                </div>
+                                            `;
+                                        }
+                                    });
+                            }, 100 * mermaidCounter); // Delay escalonado para evitar conflitos
+                        }
+                    }
+                });
+                
+                if (mermaidCounter > 0) {
+                    console.log(`✅ ${mermaidCounter} gráfico(s) Mermaid processado(s)`);
+                } else {
+                    console.log('ℹ️ Nenhum gráfico Mermaid encontrado');
+                }
+            }
+            
+            extractTextFromCode(codeElement) {
+                // Extrair texto limpo removendo tags de syntax highlighting
+                const clone = codeElement.cloneNode(true);
+                // Remover todas as tags span de highlighting
+                clone.querySelectorAll('span').forEach(span => {
+                    span.replaceWith(span.textContent);
+                });
+                return clone.textContent.trim();
+            }
+            
+            isMermaidGraph(text) {
+                // Detectar diferentes tipos de gráficos Mermaid
+                const mermaidPatterns = [
+                    /graph\s+(TD|LR|BT|RL|TB)/i,
+                    /flowchart\s+(TD|LR|BT|RL|TB)/i,
+                    /sequenceDiagram/i,
+                    /classDiagram/i,
+                    /stateDiagram/i,
+                    /erDiagram/i,
+                    /journey/i,
+                    /gantt/i,
+                    /pie/i,
+                    /gitgraph/i,
+                    /mindmap/i,
+                    /timeline/i
+                ];
+                
+                return mermaidPatterns.some(pattern => pattern.test(text));
             }
         }
 
