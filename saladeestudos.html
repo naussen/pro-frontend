@@ -653,26 +653,36 @@
             background: var(--text-muted);
         }
 
-        /* PROTEÇÃO CONTRA INTERFERÊNCIA DE CONTEÚDO EXTERNO */
-        .lesson-content * {
-            position: static !important;
-            float: none !important;
-            clear: none !important;
-            transform: none !important;
-            top: auto !important;
-            left: auto !important;
-            right: auto !important;
-            bottom: auto !important;
-            z-index: auto !important;
-            height: auto !important;
-            max-height: none !important;
-            min-height: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            box-sizing: border-box !important;
+        /* ISOLAMENTO INTELIGENTE - PERMITE LAYOUTS ESPECÍFICOS DOS ARQUIVOS */
+        .lesson-content {
+            /* Reset básico apenas para elementos de layout do container */
+            position: relative;
+            z-index: 1;
+            isolation: isolate;
+        }
+
+        /* Proteção mínima apenas para elementos que podem quebrar o layout do container */
+        .lesson-content > * {
+            /* Apenas impede que elementos filhos diretos quebrem o container */
+            position: relative;
+        }
+
+        /* Permite que elementos específicos mantenham seus estilos originais */
+        .lesson-content table,
+        .lesson-content .table-container,
+        .lesson-content .content-cards,
+        .lesson-content .content-card,
+        .lesson-content .card-header,
+        .lesson-content .card-title,
+        .lesson-content .card-content,
+        .lesson-content .mermaid-graph,
+        .lesson-content div[class*="table"],
+        .lesson-content div[class*="card"],
+        .lesson-content div[class*="grid"],
+        .lesson-content div[class*="flex"] {
+            /* Permite comportamento original dos componentes específicos */
+            position: relative;
+            /* Remove restrições anteriores */
         }
 
         /* Elementos inline mantêm comportamento natural */
@@ -681,9 +691,9 @@
         .lesson-content strong,
         .lesson-content a,
         .lesson-content code {
-            width: auto !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
+            /* Comportamento inline natural */
+            display: inline;
+            position: static;
         }
 
         /* === BOTÃO DINÂMICO DE QUESTÕES === */
@@ -2067,25 +2077,30 @@
                     }
                 });
 
-                // Remove estilos inline perigosos
+                // Remove estilos inline perigosos (melhorado para permitir layouts específicos)
                 tempDiv.querySelectorAll('[style]').forEach(el => {
-                    const dangerousStyles = [
-                        'position', 'left', 'right', 'top', 'bottom', 
-                        'transform', 'z-index', 'width', 'height', 
-                        'margin', 'padding'
-                    ];
+                    // Estilos potencialmente perigosos que podem quebrar o layout do container
+                    const dangerousStyles = ['position', 'z-index'];
                     
+                    // Remove apenas estilos que podem quebrar o container principal
                     dangerousStyles.forEach(style => {
-                        el.style.removeProperty(style);
+                        const styleValue = el.style.getPropertyValue(style);
+                        if (styleValue === 'fixed' || styleValue === 'absolute' || 
+                            (style === 'z-index' && parseInt(styleValue) > 9998)) {
+                            el.style.removeProperty(style);
+                        }
                     });
                     
-                    // Remove viewport units
+                    // Remove viewport units perigosos
                     if (el.style.height && el.style.height.includes('vh')) {
                         el.style.removeProperty('height');
                     }
                     if (el.style.width && el.style.width.includes('vw')) {
                         el.style.removeProperty('width');
                     }
+                    
+                    // Preserva estilos necessários para tabelas, cards, grids, etc.
+                    // Não remove: width, height, margin, padding, display, flex, grid, etc.
                 });
 
                 console.log('✅ Conteúdo sanitizado carregado com sucesso');
