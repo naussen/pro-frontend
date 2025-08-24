@@ -728,6 +728,21 @@
             border-color: transparent;
         }
 
+        /* Correção para modo escuro - botões de filtro */
+        body.dark-mode .filter-btn:hover {
+            color: var(--text-dark) !important;
+            background: var(--gradient-accent);
+        }
+
+        body.dark-mode .filter-btn:hover::before {
+            background: linear-gradient(135deg, #ff8a65 0%, #ffd93d 100%);
+        }
+
+        body.dark-mode .filter-btn.active {
+            color: var(--text-light);
+            background: var(--gradient-primary);
+        }
+
         .filter-btn.active {
             background: var(--gradient-primary);
             color: var(--text-light);
