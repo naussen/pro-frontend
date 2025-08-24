@@ -2415,8 +2415,15 @@
                     fontSize: 14,
                     flowchart: {
                         useMaxWidth: true,
-                        htmlLabels: true
-                    }
+                        htmlLabels: true,
+                        curve: 'basis'
+                    },
+                    securityLevel: 'loose', // Permitir mais flexibilidade na sintaxe
+                    er: { useMaxWidth: true },
+                    sequence: { useMaxWidth: true },
+                    gantt: { useMaxWidth: true },
+                    journey: { useMaxWidth: true },
+                    pie: { useMaxWidth: true }
                 });
                 
                 // Detectar blocos de código com gráficos Mermaid
@@ -2460,7 +2467,39 @@
                             
                             // Renderizar o gráfico Mermaid
                             setTimeout(() => {
-                                mermaid.render(mermaidId + '-svg', codeText)
+                                // Preparar o código para renderização com limpeza rigorosa
+                                let preparedCode = codeText;
+                                
+                                // 1. Remover tags HTML residuais
+                                preparedCode = preparedCode.replace(/<[^>]*>/g, '');
+                                
+                                // 2. Decodificar entidades HTML
+                                preparedCode = preparedCode.replace(/&quot;/g, '"');
+                                preparedCode = preparedCode.replace(/&apos;/g, "'");
+                                preparedCode = preparedCode.replace(/&amp;/g, '&');
+                                preparedCode = preparedCode.replace(/&lt;/g, '<');
+                                preparedCode = preparedCode.replace(/&gt;/g, '>');
+                                preparedCode = preparedCode.replace(/&nbsp;/g, ' ');
+                                
+                                // 3. Normalizar quebras de linha
+                                preparedCode = preparedCode.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                                
+                                // 4. Limpar caracteres problemáticos que causam erro de parsing
+                                preparedCode = preparedCode.replace(/[^\x20-\x7E\n\t]/g, ''); // Remove caracteres não-ASCII
+                                
+                                // 5. Limpar espaços extras e normalizar
+                                preparedCode = preparedCode.split('\n')
+                                    .map(line => line.trimRight())
+                                    .filter(line => line.trim() !== '') // Remove linhas vazias
+                                    .join('\n');
+                                
+                                // 6. Garantir que termina com uma quebra de linha
+                                if (!preparedCode.endsWith('\n')) {
+                                    preparedCode += '\n';
+                                }
+                                
+                                console.log(`🔍 Processando gráfico Mermaid ${mermaidCounter}:`, preparedCode.substring(0, 200) + '...');
+                                mermaid.render(mermaidId + '-svg', preparedCode)
                                     .then(({ svg }) => {
                                         const graphElement = document.getElementById(mermaidId);
                                         if (graphElement) {
@@ -2498,11 +2537,29 @@
             extractTextFromCode(codeElement) {
                 // Extrair texto limpo removendo tags de syntax highlighting
                 const clone = codeElement.cloneNode(true);
-                // Remover todas as tags span de highlighting
-                clone.querySelectorAll('span').forEach(span => {
-                    span.replaceWith(span.textContent);
+                
+                // Remover todas as tags de highlighting e formatação
+                clone.querySelectorAll('span, strong, em, b, i, mark').forEach(element => {
+                    element.replaceWith(element.textContent);
                 });
-                return clone.textContent.trim();
+                
+                // Remover tags <br> e substituir por quebras de linha
+                clone.querySelectorAll('br').forEach(br => {
+                    br.replaceWith('\n');
+                });
+                
+                let text = clone.textContent || clone.innerText || '';
+                
+                // Normalizar espaços e quebras de linha
+                text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                
+                // Limpar espaços extras mas preservar indentação
+                text = text.split('\n')
+                    .map(line => line.trimRight())
+                    .join('\n')
+                    .trim();
+                
+                return text;
             }
             
             isMermaidGraph(text) {
