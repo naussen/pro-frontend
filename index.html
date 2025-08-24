@@ -780,6 +780,13 @@
             scroll-snap-align: start;
         }
 
+        /* Correção para modo escuro - cards de curso */
+        body.dark-mode .course-card {
+            background: rgba(26, 32, 44, 0.95); /* Fundo escuro */
+            border: 1px solid rgba(45, 55, 72, 0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
         @media (max-width: 1200px) {
             .course-card {
                 flex: 0 0 calc(33.33% - 20px); /* 3 cards */
@@ -850,6 +857,15 @@
             color: var(--text-muted); 
             flex-grow: 1; 
             margin-bottom: 25px; 
+        }
+
+        /* Ajuste de cores dos textos no modo escuro */
+        body.dark-mode .course-card h3 {
+            color: var(--accent-2); /* Verde-azulado suave mais visível */
+        }
+
+        body.dark-mode .course-card p {
+            color: var(--text-light); /* Texto claro para melhor legibilidade */
         }
         .course-card a.w3-btn {
             margin-top: auto;
