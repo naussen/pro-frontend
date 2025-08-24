@@ -671,14 +671,6 @@
             backdrop-filter: blur(5px);
         }
 
-        /* Correção para modo escuro - botões do carrossel */
-        body.dark-mode .carousel-btn {
-            background-color: rgba(26, 32, 44, 0.9);
-            border: 1px solid rgba(45, 55, 72, 0.5);
-            color: var(--text-light);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-
         .carousel-btn:hover {
             background-color: var(--main-color);
             color: var(--text-light);
@@ -1018,13 +1010,6 @@
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
-        /* Correção para modo escuro - step cards */
-        body.dark-mode .step-card {
-            background: rgba(26, 32, 44, 0.95);
-            border: 1px solid rgba(45, 55, 72, 0.5);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
         .step-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--card-hover-shadow);
@@ -1046,15 +1031,6 @@
             line-height: 1.6; 
             color: var(--text-muted); 
             flex-grow: 1; 
-        }
-
-        /* Ajuste de cores dos textos step-cards no modo escuro */
-        body.dark-mode .step-card h3 {
-            color: var(--accent-2); /* Verde-azulado para títulos */
-        }
-
-        body.dark-mode .step-card p {
-            color: var(--text-light); /* Texto claro para descrições */
         }
 
         /* --- Footer --- */
