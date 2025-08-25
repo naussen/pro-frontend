@@ -465,6 +465,7 @@
         margin-bottom: 12px;
         border: 1px solid var(--border-color, #ccc);
         border-radius: 4px;
+        box-sizing: border-box;
     }
     .login-dropdown button[type="submit"] {
         width: 100%;
@@ -739,6 +740,15 @@
         const signupDropdown = document.getElementById('signup-dropdown');
         const showSignupLink = document.getElementById('show-signup');
         const showLoginLink = document.getElementById('show-login');
+        
+        // Evitar que cliques dentro dos dropdowns fechem o popup
+        [loginDropdown, signupDropdown].forEach(dropdown => {
+            if (dropdown) {
+                dropdown.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+        });
 
         // Toggle dropdowns
         if (loginBtn && loginDropdown && signupDropdown) {
@@ -767,9 +777,10 @@
                 });
             }
 
-            // Fechar ao clicar fora
+            // Fechar ao clicar fora - mas não fechar quando clicar dentro dos dropdowns
             document.addEventListener('click', (e) => {
-                if (!e.target.closest('.login-container')) {
+                if (!e.target.closest('.login-container') && 
+                    !e.target.closest('.login-dropdown')) {
                     loginDropdown.style.display = 'none';
                     signupDropdown.style.display = 'none';
                 }

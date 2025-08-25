@@ -1642,6 +1642,15 @@
             setupLoginEventListeners(elements) {
                 const { loginBtn, loginDropdown, signupDropdown, showSignupLink, showLoginLink } = elements;
 
+                // Evitar que cliques dentro dos dropdowns fechem o popup
+                [loginDropdown, signupDropdown].forEach(dropdown => {
+                    if (dropdown) {
+                        dropdown.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                        });
+                    }
+                });
+
                 loginBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.toggleLoginDropdown(loginDropdown, signupDropdown);
@@ -1658,7 +1667,8 @@
                 });
 
                 document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.login-container')) {
+                    if (!e.target.closest('.login-container') && 
+                        !e.target.closest('.login-dropdown')) {
                         this.closeLoginDropdowns(loginDropdown, signupDropdown);
                     }
                 });
