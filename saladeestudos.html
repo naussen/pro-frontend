@@ -216,52 +216,6 @@
             border-radius: 2px;
         }
 
-        /* Indicador de scroll para mostrar que há mais conteúdo */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: linear-gradient(transparent, var(--sidebar-bg));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .scroll-indicator.visible {
-            opacity: 1;
-        }
-
-        .scroll-indicator-icon {
-            width: 20px;
-            height: 20px;
-            background: var(--accent-1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-5px);
-            }
-            60% {
-                transform: translateY(-3px);
-            }
-        }
-
         /* === MENU DE NAVEGAÇÃO === */
         .course-item {
             margin-bottom: 0.5rem;
@@ -550,7 +504,7 @@
             }
 
             .content-body {
-                padding: 1rem 1.5rem 1rem 1rem; /* Mantém margem direita maior também no mobile */
+                padding: 1rem;
             }
         }
 
@@ -626,7 +580,7 @@
         .content-body {
             flex: 1;
             overflow-y: auto;
-            padding: 2rem 2.5rem 2rem 2rem; /* Margem direita aumentada para 2.5rem */
+            padding: 2rem;
             background: var(--main-content-bg);
             position: relative;
             width: 100%;
@@ -653,36 +607,26 @@
             background: var(--text-muted);
         }
 
-        /* ISOLAMENTO INTELIGENTE - PERMITE LAYOUTS ESPECÍFICOS DOS ARQUIVOS */
-        .lesson-content {
-            /* Reset básico apenas para elementos de layout do container */
-            position: relative;
-            z-index: 1;
-            isolation: isolate;
-        }
-
-        /* Proteção mínima apenas para elementos que podem quebrar o layout do container */
-        .lesson-content > * {
-            /* Apenas impede que elementos filhos diretos quebrem o container */
-            position: relative;
-        }
-
-        /* Permite que elementos específicos mantenham seus estilos originais */
-        .lesson-content table,
-        .lesson-content .table-container,
-        .lesson-content .content-cards,
-        .lesson-content .content-card,
-        .lesson-content .card-header,
-        .lesson-content .card-title,
-        .lesson-content .card-content,
-        .lesson-content .mermaid-graph,
-        .lesson-content div[class*="table"],
-        .lesson-content div[class*="card"],
-        .lesson-content div[class*="grid"],
-        .lesson-content div[class*="flex"] {
-            /* Permite comportamento original dos componentes específicos */
-            position: relative;
-            /* Remove restrições anteriores */
+        /* PROTEÇÃO CONTRA INTERFERÊNCIA DE CONTEÚDO EXTERNO */
+        .lesson-content * {
+            position: static !important;
+            float: none !important;
+            clear: none !important;
+            transform: none !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            z-index: auto !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
         }
 
         /* Elementos inline mantêm comportamento natural */
@@ -691,9 +635,9 @@
         .lesson-content strong,
         .lesson-content a,
         .lesson-content code {
-            /* Comportamento inline natural */
-            display: inline;
-            position: static;
+            width: auto !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
 
         /* === BOTÃO DINÂMICO DE QUESTÕES === */
@@ -824,138 +768,6 @@
                 }
             }
         }
-
-        /* === ESTILOS PARA GRÁFICOS MERMAID INTERATIVOS === */
-        .mermaid-container {
-            margin: 2rem 0;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--main-content-bg);
-            box-shadow: var(--card-shadow);
-        }
-
-        .mermaid-header {
-            background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-2) 100%);
-            color: white;
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .mermaid-header h4 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .mermaid-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .mermaid-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .mermaid-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-1px);
-        }
-
-        .mermaid-graph {
-            padding: 2rem;
-            text-align: center;
-            background: var(--main-content-bg);
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mermaid-graph svg {
-            max-width: 100%;
-            height: auto;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .mermaid-source {
-            border-top: 1px solid var(--border-color);
-            background: var(--light-grey-bg);
-        }
-
-        .mermaid-source pre {
-            margin: 0;
-            padding: 1.5rem;
-            background: transparent;
-            border-radius: 0;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            overflow-x: auto;
-        }
-
-        .mermaid-error {
-            padding: 2rem;
-            text-align: center;
-            color: var(--error-color);
-        }
-
-        .mermaid-error details {
-            margin-top: 1rem;
-            text-align: left;
-        }
-
-        .mermaid-error summary {
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .mermaid-error pre {
-            margin-top: 0.5rem;
-            padding: 1rem;
-            background: var(--light-grey-bg);
-            border-radius: 6px;
-            font-size: 0.85rem;
-            overflow-x: auto;
-        }
-
-        /* Responsividade dos gráficos Mermaid */
-        @media (max-width: 768px) {
-            .mermaid-container {
-                margin: 1rem 0;
-            }
-
-            .mermaid-header {
-                padding: 0.8rem 1rem;
-                flex-direction: column;
-                gap: 0.8rem;
-                text-align: center;
-            }
-
-            .mermaid-controls {
-                justify-content: center;
-            }
-
-            .mermaid-graph {
-                padding: 1rem;
-            }
-
-            .mermaid-source pre {
-                padding: 1rem;
-                font-size: 0.8rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -981,10 +793,6 @@
                         <p>Carregando cursos...</p>
                     </div>
                 </nav>
-                <!-- Indicador de scroll -->
-                <div class="scroll-indicator" id="scrollIndicator">
-                    <div class="scroll-indicator-icon">↓</div>
-                </div>
             </div>
         </aside>
 
@@ -1015,20 +823,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     
-    <!-- Mermaid.js para renderização de gráficos -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
-    
     <script>
         'use strict';
-
-        // === COMPORTAMENTO DO MENU ===
-        // O menu de cursos, módulos e aulas SEMPRE é apresentado no estado RECOLHIDO
-        // Independentemente da última visualização do usuário, ele deve clicar para expandir:
-        // 1. Clique no curso para ver os módulos
-        // 2. Clique no módulo para ver as aulas
-        // 3. Clique na aula para carregar o conteúdo
-        // 
-        // O indicador de scroll (↓) aparece quando há mais conteúdo abaixo no menu
 
         // === CONFIGURAÇÃO E INICIALIZAÇÃO ===
         class StudyRoomApp {
@@ -1079,9 +875,6 @@
                     
                     // Configura event listeners
                     this.setupEventListeners();
-                    
-                    // Configura indicador de scroll após elementos estarem prontos
-                    this.setupScrollIndicator();
                     
                     // Aplica tema salvo
                     this.applyTheme();
@@ -1478,8 +1271,7 @@
                     sidebar: document.getElementById('studySidebar'),
                     courseNav: document.getElementById('courseNavigation'),
                     contentBody: document.getElementById('contentBody'),
-                    overlay: document.getElementById('sidebarOverlay'),
-                    scrollIndicator: document.getElementById('scrollIndicator')
+                    overlay: document.getElementById('sidebarOverlay')
                 };
             }
 
@@ -1519,10 +1311,6 @@
                 
                 // Resize handler
                 window.addEventListener('resize', () => this.handleResize());
-                
-                // Configurar indicador de scroll para a sidebar (será chamado após inicialização)
-                // this.setupScrollIndicator();
-                
                 console.log('✅ Event listeners configurados');
             }
 
@@ -1572,58 +1360,6 @@
                     this.elements.sidebar.classList.remove('visible');
                     this.elements.overlay.classList.remove('visible');
                 }
-            }
-
-            updateScrollIndicator() {
-                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
-                
-                const nav = this.elements.courseNav;
-                const indicator = this.elements.scrollIndicator;
-                
-                if (nav.scrollHeight > nav.clientHeight) {
-                    // Há conteúdo para scroll
-                    if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
-                        // Próximo do final - oculta indicador
-                        indicator.classList.remove('visible');
-                    } else {
-                        // Mostra indicador
-                        indicator.classList.add('visible');
-                    }
-                } else {
-                    // Não há scroll necessário - oculta indicador
-                    indicator.classList.remove('visible');
-                }
-            }
-
-            setupScrollIndicator() {
-                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
-                
-                const checkScrollIndicator = () => {
-                    const nav = this.elements.courseNav;
-                    const indicator = this.elements.scrollIndicator;
-                    
-                    if (nav.scrollHeight > nav.clientHeight) {
-                        // Há conteúdo para scroll
-                        if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
-                            // Próximo do final - oculta indicador
-                            indicator.classList.remove('visible');
-                        } else {
-                            // Mostra indicador
-                            indicator.classList.add('visible');
-                        }
-                    } else {
-                        // Não há scroll necessário - oculta indicador
-                        indicator.classList.remove('visible');
-                    }
-                };
-                
-                // Verificar ao carregar conteúdo
-                this.elements.courseNav.addEventListener('scroll', checkScrollIndicator);
-                
-                // Verificar inicialmente
-                setTimeout(checkScrollIndicator, 100);
-                
-                console.log('✅ Indicador de scroll configurado');
             }
 
             // === GERENCIAMENTO DE TEMA ===
@@ -1778,7 +1514,6 @@
                             const courses = await this.loadSelectedModules(userData.selectedModules);
                             this.cacheCourses(courses);
                             this.renderCourses(courses);
-                            console.log('✅ Cursos personalizados carregados em modo recolhido');
                         } 
                         // Para usuários antigos, carrega todos os cursos
                         else {
@@ -1992,34 +1727,27 @@
                 this.elements.courseNav.innerHTML = html;
                 this.attachCourseEvents();
                 
-                // Auto-seleciona primeiro conteúdo SEM expandir menu
+                // Auto-seleciona primeiro conteúdo
                 this.autoSelectFirstContent();
                 
-                // Atualizar indicador de scroll após renderizar
-                setTimeout(() => this.updateScrollIndicator(), 200);
-                
-                console.log(`✅ ${courses.length} cursos renderizados em modo recolhido`);
+                console.log(`✅ ${courses.length} cursos renderizados`);
             }
 
             attachCourseEvents() {
-                // Course headers (toggle) - SEMPRE começa recolhido
+                // Course headers (toggle)
                 this.elements.courseNav.querySelectorAll('.course-header').forEach(header => {
                     header.addEventListener('click', () => {
                         const moduleList = header.nextElementSibling;
                         const toggleIcon = header.querySelector('.toggle-icon');
                         const isVisible = moduleList.classList.contains('visible');
                         
-                        // Toggle visibilidade dos módulos
                         moduleList.classList.toggle('visible', !isVisible);
                         toggleIcon.classList.toggle('expanded', !isVisible);
                         toggleIcon.textContent = isVisible ? '▶' : '▼';
-                        
-                        // Atualizar indicador de scroll após expandir/recolher
-                        setTimeout(() => this.updateScrollIndicator(), 100);
                     });
                 });
 
-                // Module items (toggle aulas) - SEMPRE começa recolhido
+                // Module items (toggle aulas)
                 this.elements.courseNav.querySelectorAll('.module-item').forEach(item => {
                     const moduleHeader = item.querySelector('.module-header');
                     const aulasList = item.querySelector('.aulas-list');
@@ -2032,10 +1760,14 @@
                         const isVisible = aulasList.style.display !== 'none';
                         aulasList.style.display = isVisible ? 'none' : 'block';
                         toggleIcon.classList.toggle('expanded', !isVisible);
-                        toggleIcon.textContent = isVisible ? '▶' : '▼';
                         
-                        // Atualizar indicador de scroll após expandir/recolher
-                        setTimeout(() => this.updateScrollIndicator(), 100);
+                        // Se abrindo, carrega primeira aula automaticamente
+                        if (!isVisible) {
+                            const firstAulaItem = aulasList.querySelector('.aula-item');
+                            if (firstAulaItem) {
+                                setTimeout(() => firstAulaItem.click(), 100);
+                            }
+                        }
                     });
                 });
 
@@ -2062,13 +1794,25 @@
                     const firstModule = firstCourse.modules[0];
                     const firstAula = firstModule.aulas?.[0];
                     
-                    // SEMPRE mantém menu recolhido - usuário deve clicar para expandir
-                    // Apenas seleciona primeira aula sem expandir nada
+                    // Expande primeiro curso e módulo
                     setTimeout(() => {
+                        const firstCourseHeader = this.elements.courseNav.querySelector('.course-header');
+                        const firstModuleList = this.elements.courseNav.querySelector('.module-list');
+                        const firstModuleItem = this.elements.courseNav.querySelector('.module-item');
+                        const firstAulasList = this.elements.courseNav.querySelector('.aulas-list');
                         const firstAulaItem = this.elements.courseNav.querySelector('.aula-item');
                         
-                        if (firstAulaItem && firstAula) {
-                            // Seleciona primeira aula sem expandir curso/módulo
+                        if (firstCourseHeader && firstModuleList && firstModuleItem && firstAulaItem && firstAula) {
+                            // Expande curso
+                            firstModuleList.classList.add('visible');
+                            firstCourseHeader.querySelector('.toggle-icon').classList.add('expanded');
+                            firstCourseHeader.querySelector('.toggle-icon').textContent = '▼';
+                            
+                            // Expande módulo
+                            firstAulasList.style.display = 'block';
+                            firstModuleItem.querySelector('.module-toggle').classList.add('expanded');
+                            
+                            // Seleciona primeira aula
                             firstAulaItem.classList.add('active');
                             this.loadAulaContent(firstCourse.id, firstModule.id, firstAula.id);
                         }
@@ -2173,55 +1917,15 @@
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = rawHtml;
 
-                // Remove elementos perigosos (MODIFICADO PARA PRESERVAR MERMAID)
+                // Remove elementos perigosos
                 const dangerousElements = [
-                    'iframe', 'object', 'embed', 
+                    'script', 'style', 'iframe', 'object', 'embed', 
                     'form', 'input', 'button', 'textarea', 'select',
                     'applet', 'audio', 'video', 'source', 'track'
                 ];
                 
-                // PRESERVAR: script, style (necessários para Mermaid)
-                
                 dangerousElements.forEach(tag => {
                     tempDiv.querySelectorAll(tag).forEach(el => el.remove());
-                });
-                
-                // Tratamento especial para scripts (preservar Mermaid)
-                tempDiv.querySelectorAll('script').forEach(script => {
-                    // Preservar scripts Mermaid
-                    if (script.src && script.src.includes('mermaid')) {
-                        console.log('✅ Preservando script Mermaid:', script.src);
-                        return; // Manter script Mermaid
-                    }
-                    if (script.textContent && script.textContent.includes('mermaid')) {
-                        console.log('✅ Preservando script de inicialização Mermaid');
-                        return; // Manter script de inicialização Mermaid
-                    }
-                    // Remover outros scripts perigosos
-                    console.log('⚠️ Removendo script potencialmente perigoso');
-                    script.remove();
-                });
-                
-                // Tratamento especial para estilos (preservar Mermaid)
-                tempDiv.querySelectorAll('style').forEach(style => {
-                    // Preservar estilos Mermaid
-                    if (style.textContent && style.textContent.includes('mermaid')) {
-                        console.log('✅ Preservando estilos Mermaid');
-                        return; // Manter estilos Mermaid
-                    }
-                    // Preservar estilos de tabelas e gráficos
-                    if (style.textContent && (
-                        style.textContent.includes('table') ||
-                        style.textContent.includes('chart') ||
-                        style.textContent.includes('graph') ||
-                        style.textContent.includes('mermaid-container')
-                    )) {
-                        console.log('✅ Preservando estilos de tabelas/gráficos');
-                        return; // Manter estilos necessários
-                    }
-                    // Remover outros estilos potencialmente perigosos
-                    console.log('⚠️ Removendo estilo potencialmente perigoso');
-                    style.remove();
                 });
 
                 // Remove tags <html> e <body> (caso existam)
@@ -2252,56 +1956,28 @@
                     }
                 });
 
-                // Remove estilos inline perigosos (MELHORADO PARA MERMAID)
+                // Remove estilos inline perigosos
                 tempDiv.querySelectorAll('[style]').forEach(el => {
-                    // Preservar elementos Mermaid e relacionados
-                    if (el.classList.contains('mermaid') || 
-                        el.classList.contains('mermaid-container') ||
-                        el.classList.contains('mermaid-graph') ||
-                        el.classList.contains('mermaid-source') ||
-                        el.closest('.mermaid-container')) {
-                        console.log('✅ Preservando estilos de elemento Mermaid');
-                        return; // Manter todos os estilos para elementos Mermaid
-                    }
+                    const dangerousStyles = [
+                        'position', 'left', 'right', 'top', 'bottom', 
+                        'transform', 'z-index', 'width', 'height', 
+                        'margin', 'padding'
+                    ];
                     
-                    // Estilos potencialmente perigosos que podem quebrar o layout do container
-                    const dangerousStyles = ['position', 'z-index'];
-                    
-                    // Remove apenas estilos que podem quebrar o container principal
                     dangerousStyles.forEach(style => {
-                        const styleValue = el.style.getPropertyValue(style);
-                        if (styleValue === 'fixed' || styleValue === 'absolute' || 
-                            (style === 'z-index' && parseInt(styleValue) > 9998)) {
-                            el.style.removeProperty(style);
-                        }
+                        el.style.removeProperty(style);
                     });
                     
-                    // Remove viewport units perigosos (exceto para elementos Mermaid)
+                    // Remove viewport units
                     if (el.style.height && el.style.height.includes('vh')) {
                         el.style.removeProperty('height');
                     }
                     if (el.style.width && el.style.width.includes('vw')) {
                         el.style.removeProperty('width');
                     }
-                    
-                    // Preserva estilos necessários para tabelas, cards, grids, etc.
-                    // Não remove: width, height, margin, padding, display, flex, grid, etc.
                 });
 
-                // Preservar elementos SVG gerados pelo Mermaid
-                tempDiv.querySelectorAll('svg').forEach(svg => {
-                    if (svg.closest('.mermaid-container') || 
-                        svg.getAttribute('data-processed') === 'true' ||
-                        svg.classList.contains('mermaid')) {
-                        console.log('✅ Preservando SVG do Mermaid');
-                        // Garantir que o SVG tenha os atributos necessários
-                        if (!svg.hasAttribute('data-processed')) {
-                            svg.setAttribute('data-processed', 'true');
-                        }
-                    }
-                });
-                
-                console.log('✅ Conteúdo sanitizado carregado com sucesso (Mermaid preservado)');
+                console.log('✅ Conteúdo sanitizado carregado com sucesso');
                 return tempDiv.innerHTML;
             }
 
@@ -2318,9 +1994,6 @@
                 
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
-                
-                // Processar gráficos Mermaid após carregar conteúdo
-                this.processMermaidGraphs();
                 
                 // Atualizar botão dinâmico de questões
                 this.updateDynamicQuestoesButton(contentData.meta);
@@ -2433,129 +2106,6 @@
                 return div.innerHTML;
             }
 
-            // === CORRIGIR MODO ESCURO PARA GRÁFICOS MERMAID ===
-            injectMermaidDarkModeCSS() {
-                // Remover CSS anterior se existir
-                const existingStyle = document.getElementById('mermaid-dark-mode-fix');
-                if (existingStyle) {
-                    existingStyle.remove();
-                }
-
-                // Criar elemento de estilo dinâmico
-                const style = document.createElement('style');
-                style.id = 'mermaid-dark-mode-fix';
-                style.textContent = `
-                    /* Correção dos gráficos Mermaid no modo escuro */
-                    body.dark-mode .mermaid-graph svg {
-                        background-color: var(--main-content-bg) !important;
-                    }
-                    
-                    /* Forçar cores corretas para nós em modo escuro */
-                    body.dark-mode .mermaid-graph .node rect,
-                    body.dark-mode .mermaid-graph .node circle,
-                    body.dark-mode .mermaid-graph .node ellipse,
-                    body.dark-mode .mermaid-graph .node polygon {
-                        fill: var(--main-content-bg) !important;
-                        stroke: var(--main-color) !important;
-                        stroke-width: 2px !important;
-                    }
-                    
-                    /* Textos dos nós em modo escuro */
-                    body.dark-mode .mermaid-graph .node .label,
-                    body.dark-mode .mermaid-graph text {
-                        fill: var(--text-dark) !important;
-                        color: var(--text-dark) !important;
-                    }
-                    
-                    /* Setas e conexões em modo escuro */
-                    body.dark-mode .mermaid-graph .edgePath .path {
-                        stroke: var(--main-color) !important;
-                        stroke-width: 2px !important;
-                    }
-                    
-                    /* Labels das setas em modo escuro */
-                    body.dark-mode .mermaid-graph .edgeLabel {
-                        background-color: var(--main-content-bg) !important;
-                        color: var(--text-dark) !important;
-                        border: 1px solid var(--border-color) !important;
-                        border-radius: 4px !important;
-                        padding: 2px 6px !important;
-                    }
-                    
-                    /* Fundo dos gráficos em modo escuro */
-                    body.dark-mode .mermaid-graph .cluster rect {
-                        fill: var(--light-highlight-bg) !important;
-                        stroke: var(--border-color) !important;
-                    }
-                    
-                    /* Títulos dos gráficos */
-                    body.dark-mode .mermaid-graph .titleText {
-                        fill: var(--text-dark) !important;
-                    }
-                    
-                    /* Flowchart específico */
-                    body.dark-mode .mermaid-graph .flowchart-label {
-                        color: var(--text-dark) !important;
-                        fill: var(--text-dark) !important;
-                    }
-                `;
-                
-                // Adicionar ao head
-                document.head.appendChild(style);
-                console.log('✅ CSS de correção para modo escuro do Mermaid aplicado');
-            }
-
-            getMermaidThemeCSS(isDarkMode) {
-                if (isDarkMode) {
-                    return `
-                        .node rect, .node circle, .node ellipse, .node polygon {
-                            fill: var(--main-content-bg) !important;
-                            stroke: var(--main-color) !important;
-                            stroke-width: 2px !important;
-                        }
-                        .node .label, text {
-                            color: var(--text-dark) !important;
-                            fill: var(--text-dark) !important;
-                        }
-                        .edgePath .path {
-                            stroke: var(--main-color) !important;
-                            stroke-width: 2px !important;
-                        }
-                        .edgeLabel {
-                            background-color: var(--main-content-bg) !important;
-                            color: var(--text-dark) !important;
-                            border: 1px solid var(--border-color) !important;
-                        }
-                        .cluster rect {
-                            fill: var(--light-highlight-bg) !important;
-                            stroke: var(--border-color) !important;
-                        }
-                        .titleText {
-                            fill: var(--text-dark) !important;
-                        }
-                    `;
-                } else {
-                    return `
-                        .node rect, .node circle, .node ellipse, .node polygon {
-                            fill: var(--main-content-bg);
-                            stroke: var(--main-color);
-                            stroke-width: 2px;
-                        }
-                        .node .label {
-                            color: var(--text-dark);
-                        }
-                        .edgePath .path {
-                            stroke: var(--main-color);
-                            stroke-width: 2px;
-                        }
-                        .edgeLabel {
-                            background-color: var(--main-content-bg);
-                            color: var(--text-dark);
-                        }
-                    `;
-                }
-            }
-
             // === API PÚBLICA ===
             clearCache() {
                 this.contentCache.clear();
@@ -2566,202 +2116,6 @@
             refresh() {
                 this.clearCache();
                 this.loadUserCourses();
-            }
-
-            // === PROCESSAMENTO DE GRÁFICOS MERMAID ===
-            processMermaidGraphs() {
-                if (typeof mermaid === 'undefined') {
-                    console.warn('❌ Mermaid.js não carregado');
-                    return;
-                }
-                
-                // Aplicar CSS dinâmico para corrigir modo escuro
-                this.injectMermaidDarkModeCSS();
-                
-                // Configurar Mermaid
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                mermaid.initialize({
-                    startOnLoad: false,
-                    theme: isDarkMode ? 'dark' : 'default',
-                    themeCSS: this.getMermaidThemeCSS(isDarkMode),
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: 14,
-                    flowchart: {
-                        useMaxWidth: true,
-                        htmlLabels: true,
-                        curve: 'basis'
-                    },
-                    securityLevel: 'loose', // Permitir mais flexibilidade na sintaxe
-                    suppressErrorRendering: false, // Mostrar erros para debug
-                    logLevel: 1, // Debug em desenvolvimento
-                    er: { useMaxWidth: true },
-                    sequence: { useMaxWidth: true },
-                    gantt: { useMaxWidth: true },
-                    journey: { useMaxWidth: true },
-                    pie: { useMaxWidth: true }
-                });
-                
-                // Detectar blocos de código com gráficos Mermaid
-                const codeBlocks = this.elements.contentBody.querySelectorAll('pre code, .codehilite pre code, .highlight pre code');
-                let mermaidCounter = 0;
-                
-                codeBlocks.forEach((codeElement, index) => {
-                    const codeText = this.extractTextFromCode(codeElement);
-                    
-                    // Verificar se é um gráfico Mermaid
-                    if (this.isMermaidGraph(codeText)) {
-                        mermaidCounter++;
-                        const mermaidId = `mermaid-graph-${mermaidCounter}`;
-                        
-                        console.log(`🎨 Renderizando gráfico Mermaid ${mermaidCounter}:`, codeText.substring(0, 50) + '...');
-                        
-                        // Criar container para o gráfico
-                        const graphContainer = document.createElement('div');
-                        graphContainer.className = 'mermaid-container';
-                        graphContainer.innerHTML = `
-                            <div class="mermaid-header">
-                                <h4>📊 Gráfico Interativo</h4>
-                                <div class="mermaid-controls">
-                                    <button class="mermaid-btn" onclick="this.closest('.mermaid-container').querySelector('.mermaid-source').style.display = 
-                                        this.closest('.mermaid-container').querySelector('.mermaid-source').style.display === 'none' ? 'block' : 'none'">
-                                        Ver Código
-                                    </button>
-                                    <a class="mermaid-btn" href="https://mermaid.live/edit#${btoa(codeText)}" target="_blank">Editar Online</a>
-                                </div>
-                            </div>
-                            <div class="mermaid-graph" id="${mermaidId}">${codeText}</div>
-                            <div class="mermaid-source" style="display: none;">
-                                <pre><code>${this.escapeHtml(codeText)}</code></pre>
-                            </div>
-                        `;
-                        
-                        // Substituir o bloco de código original
-                        const preElement = codeElement.closest('pre') || codeElement.closest('.codehilite') || codeElement.closest('.highlight');
-                        if (preElement) {
-                            preElement.parentNode.replaceChild(graphContainer, preElement);
-                            
-                            // Renderizar o gráfico Mermaid
-                            setTimeout(() => {
-                                // Preparar o código para renderização com limpeza rigorosa
-                                let preparedCode = codeText;
-                                
-                                // 1. Remover tags HTML residuais
-                                preparedCode = preparedCode.replace(/<[^>]*>/g, '');
-                                
-                                // 2. Decodificar entidades HTML
-                                preparedCode = preparedCode.replace(/&quot;/g, '"');
-                                preparedCode = preparedCode.replace(/&apos;/g, "'");
-                                preparedCode = preparedCode.replace(/&amp;/g, '&');
-                                preparedCode = preparedCode.replace(/&lt;/g, '<');
-                                preparedCode = preparedCode.replace(/&gt;/g, '>');
-                                preparedCode = preparedCode.replace(/&nbsp;/g, ' ');
-                                
-                                // 3. Normalizar quebras de linha
-                                preparedCode = preparedCode.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                                
-                                // 4. Limpar apenas caracteres realmente problemáticos
-                                // Preservar acentos portugueses e caracteres latinos válidos
-                                preparedCode = preparedCode.replace(/[\x00-\x1F\x7F-\x9F]/g, ''); // Remove apenas caracteres de controle
-                                
-                                // 5. Limpar espaços extras e normalizar
-                                preparedCode = preparedCode.split('\n')
-                                    .map(line => line.trimRight())
-                                    .filter(line => line.trim() !== '') // Remove linhas vazias
-                                    .join('\n');
-                                
-                                // 6. Garantir que termina com uma quebra de linha
-                                if (!preparedCode.endsWith('\n')) {
-                                    preparedCode += '\n';
-                                }
-                                
-                                console.log(`🔍 Processando gráfico Mermaid ${mermaidCounter}:`, preparedCode.substring(0, 200) + '...');
-                                
-                                // Debug: verificar caracteres problemáticos
-                                const problematicChars = preparedCode.match(/[^\x20-\x7E\u00C0-\u017F\n\t]/g);
-                                if (problematicChars) {
-                                    console.warn(`⚠️ Caracteres não-padrão detectados no gráfico ${mermaidCounter}:`, [...new Set(problematicChars)]);
-                                }
-                                mermaid.render(mermaidId + '-svg', preparedCode)
-                                    .then(({ svg }) => {
-                                        const graphElement = document.getElementById(mermaidId);
-                                        if (graphElement) {
-                                            graphElement.innerHTML = svg;
-                                            console.log(`✅ Gráfico Mermaid ${mermaidCounter} renderizado com sucesso`);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error(`❌ Erro ao renderizar gráfico Mermaid ${mermaidCounter}:`, error);
-                                        const graphElement = document.getElementById(mermaidId);
-                                        if (graphElement) {
-                                            graphElement.innerHTML = `
-                                                <div class="mermaid-error">
-                                                    <p>❌ Erro ao renderizar gráfico</p>
-                                                    <details>
-                                                        <summary>Ver detalhes</summary>
-                                                        <pre>${this.escapeHtml(error.toString())}</pre>
-                                                    </details>
-                                                </div>
-                                            `;
-                                        }
-                                    });
-                            }, 100 * mermaidCounter); // Delay escalonado para evitar conflitos
-                        }
-                    }
-                });
-                
-                if (mermaidCounter > 0) {
-                    console.log(`✅ ${mermaidCounter} gráfico(s) Mermaid processado(s)`);
-                } else {
-                    console.log('ℹ️ Nenhum gráfico Mermaid encontrado');
-                }
-            }
-            
-            extractTextFromCode(codeElement) {
-                // Extrair texto limpo removendo tags de syntax highlighting
-                const clone = codeElement.cloneNode(true);
-                
-                // Remover todas as tags de highlighting e formatação
-                clone.querySelectorAll('span, strong, em, b, i, mark').forEach(element => {
-                    element.replaceWith(element.textContent);
-                });
-                
-                // Remover tags <br> e substituir por quebras de linha
-                clone.querySelectorAll('br').forEach(br => {
-                    br.replaceWith('\n');
-                });
-                
-                let text = clone.textContent || clone.innerText || '';
-                
-                // Normalizar espaços e quebras de linha
-                text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                
-                // Limpar espaços extras mas preservar indentação
-                text = text.split('\n')
-                    .map(line => line.trimRight())
-                    .join('\n')
-                    .trim();
-                
-                return text;
-            }
-            
-            isMermaidGraph(text) {
-                // Detectar diferentes tipos de gráficos Mermaid
-                const mermaidPatterns = [
-                    /graph\s+(TD|LR|BT|RL|TB)/i,
-                    /flowchart\s+(TD|LR|BT|RL|TB)/i,
-                    /sequenceDiagram/i,
-                    /classDiagram/i,
-                    /stateDiagram/i,
-                    /erDiagram/i,
-                    /journey/i,
-                    /gantt/i,
-                    /pie/i,
-                    /gitgraph/i,
-                    /mindmap/i,
-                    /timeline/i
-                ];
-                
-                return mermaidPatterns.some(pattern => pattern.test(text));
             }
         }
 
