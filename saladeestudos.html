@@ -2433,6 +2433,129 @@
                 return div.innerHTML;
             }
 
+            // === CORRIGIR MODO ESCURO PARA GRÁFICOS MERMAID ===
+            injectMermaidDarkModeCSS() {
+                // Remover CSS anterior se existir
+                const existingStyle = document.getElementById('mermaid-dark-mode-fix');
+                if (existingStyle) {
+                    existingStyle.remove();
+                }
+
+                // Criar elemento de estilo dinâmico
+                const style = document.createElement('style');
+                style.id = 'mermaid-dark-mode-fix';
+                style.textContent = `
+                    /* Correção dos gráficos Mermaid no modo escuro */
+                    body.dark-mode .mermaid-graph svg {
+                        background-color: var(--main-content-bg) !important;
+                    }
+                    
+                    /* Forçar cores corretas para nós em modo escuro */
+                    body.dark-mode .mermaid-graph .node rect,
+                    body.dark-mode .mermaid-graph .node circle,
+                    body.dark-mode .mermaid-graph .node ellipse,
+                    body.dark-mode .mermaid-graph .node polygon {
+                        fill: var(--main-content-bg) !important;
+                        stroke: var(--main-color) !important;
+                        stroke-width: 2px !important;
+                    }
+                    
+                    /* Textos dos nós em modo escuro */
+                    body.dark-mode .mermaid-graph .node .label,
+                    body.dark-mode .mermaid-graph text {
+                        fill: var(--text-dark) !important;
+                        color: var(--text-dark) !important;
+                    }
+                    
+                    /* Setas e conexões em modo escuro */
+                    body.dark-mode .mermaid-graph .edgePath .path {
+                        stroke: var(--main-color) !important;
+                        stroke-width: 2px !important;
+                    }
+                    
+                    /* Labels das setas em modo escuro */
+                    body.dark-mode .mermaid-graph .edgeLabel {
+                        background-color: var(--main-content-bg) !important;
+                        color: var(--text-dark) !important;
+                        border: 1px solid var(--border-color) !important;
+                        border-radius: 4px !important;
+                        padding: 2px 6px !important;
+                    }
+                    
+                    /* Fundo dos gráficos em modo escuro */
+                    body.dark-mode .mermaid-graph .cluster rect {
+                        fill: var(--light-highlight-bg) !important;
+                        stroke: var(--border-color) !important;
+                    }
+                    
+                    /* Títulos dos gráficos */
+                    body.dark-mode .mermaid-graph .titleText {
+                        fill: var(--text-dark) !important;
+                    }
+                    
+                    /* Flowchart específico */
+                    body.dark-mode .mermaid-graph .flowchart-label {
+                        color: var(--text-dark) !important;
+                        fill: var(--text-dark) !important;
+                    }
+                `;
+                
+                // Adicionar ao head
+                document.head.appendChild(style);
+                console.log('✅ CSS de correção para modo escuro do Mermaid aplicado');
+            }
+
+            getMermaidThemeCSS(isDarkMode) {
+                if (isDarkMode) {
+                    return `
+                        .node rect, .node circle, .node ellipse, .node polygon {
+                            fill: var(--main-content-bg) !important;
+                            stroke: var(--main-color) !important;
+                            stroke-width: 2px !important;
+                        }
+                        .node .label, text {
+                            color: var(--text-dark) !important;
+                            fill: var(--text-dark) !important;
+                        }
+                        .edgePath .path {
+                            stroke: var(--main-color) !important;
+                            stroke-width: 2px !important;
+                        }
+                        .edgeLabel {
+                            background-color: var(--main-content-bg) !important;
+                            color: var(--text-dark) !important;
+                            border: 1px solid var(--border-color) !important;
+                        }
+                        .cluster rect {
+                            fill: var(--light-highlight-bg) !important;
+                            stroke: var(--border-color) !important;
+                        }
+                        .titleText {
+                            fill: var(--text-dark) !important;
+                        }
+                    `;
+                } else {
+                    return `
+                        .node rect, .node circle, .node ellipse, .node polygon {
+                            fill: var(--main-content-bg);
+                            stroke: var(--main-color);
+                            stroke-width: 2px;
+                        }
+                        .node .label {
+                            color: var(--text-dark);
+                        }
+                        .edgePath .path {
+                            stroke: var(--main-color);
+                            stroke-width: 2px;
+                        }
+                        .edgeLabel {
+                            background-color: var(--main-content-bg);
+                            color: var(--text-dark);
+                        }
+                    `;
+                }
+            }
+
             // === API PÚBLICA ===
             clearCache() {
                 this.contentCache.clear();
@@ -2452,28 +2575,15 @@
                     return;
                 }
                 
+                // Aplicar CSS dinâmico para corrigir modo escuro
+                this.injectMermaidDarkModeCSS();
+                
                 // Configurar Mermaid
+                const isDarkMode = document.body.classList.contains('dark-mode');
                 mermaid.initialize({
                     startOnLoad: false,
-                    theme: document.body.classList.contains('dark-mode') ? 'dark' : 'default',
-                    themeCSS: `
-                        .node rect, .node circle, .node ellipse, .node polygon {
-                            fill: var(--main-content-bg);
-                            stroke: var(--main-color);
-                            stroke-width: 2px;
-                        }
-                        .node .label {
-                            color: var(--text-dark);
-                        }
-                        .edgePath .path {
-                            stroke: var(--main-color);
-                            stroke-width: 2px;
-                        }
-                        .edgeLabel {
-                            background-color: var(--main-content-bg);
-                            color: var(--text-dark);
-                        }
-                    `,
+                    theme: isDarkMode ? 'dark' : 'default',
+                    themeCSS: this.getMermaidThemeCSS(isDarkMode),
                     fontFamily: 'Inter, sans-serif',
                     fontSize: 14,
                     flowchart: {
