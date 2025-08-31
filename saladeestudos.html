@@ -1239,6 +1239,9 @@
                         
                         localStorage.setItem('theme', isDark ? 'dark' : 'light');
                         this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+                        
+                        // Reprocessar gráficos Mermaid para o novo tema
+                        this.reprocessMermaidForTheme();
                     };
                     console.log('✅ themeToggleBtn configurado');
                 } else {
@@ -2446,32 +2449,70 @@
             }
 
             // === PROCESSAMENTO DE GRÁFICOS MERMAID ===
+            reprocessMermaidForTheme() {
+                // Reprocessar gráficos Mermaid existentes quando o tema muda
+                const existingGraphs = document.querySelectorAll('.mermaid-graph[id^="mermaid-graph-"]');
+                if (existingGraphs.length > 0) {
+                    console.log(`🎨 Reprocessando ${existingGraphs.length} gráficos Mermaid para novo tema`);
+                    setTimeout(() => this.processMermaidGraphs(), 100);
+                }
+            }
+
             processMermaidGraphs() {
                 if (typeof mermaid === 'undefined') {
                     console.warn('❌ Mermaid.js não carregado');
                     return;
                 }
                 
-                // Configurar Mermaid
+                // Configurar Mermaid com melhor contraste e tratamento de erros
+                const isDarkMode = document.body.classList.contains('dark-mode');
                 mermaid.initialize({
                     startOnLoad: false,
-                    theme: document.body.classList.contains('dark-mode') ? 'dark' : 'default',
-                    themeCSS: `
+                    theme: isDarkMode ? 'dark' : 'default',
+                    themeCSS: isDarkMode ? `
                         .node rect, .node circle, .node ellipse, .node polygon {
-                            fill: var(--main-content-bg);
-                            stroke: var(--main-color);
-                            stroke-width: 2px;
+                            fill: #2d3748 !important;
+                            stroke: #4a90e2 !important;
+                            stroke-width: 2px !important;
                         }
-                        .node .label {
-                            color: var(--text-dark);
+                        .node .label, .nodeLabel {
+                            color: #ffffff !important;
+                            font-weight: 500 !important;
                         }
                         .edgePath .path {
-                            stroke: var(--main-color);
-                            stroke-width: 2px;
+                            stroke: #4a90e2 !important;
+                            stroke-width: 2px !important;
                         }
                         .edgeLabel {
-                            background-color: var(--main-content-bg);
-                            color: var(--text-dark);
+                            background-color: #2d3748 !important;
+                            color: #ffffff !important;
+                            border: 1px solid #4a90e2 !important;
+                        }
+                        .cluster rect {
+                            fill: #1a202c !important;
+                            stroke: #4a90e2 !important;
+                        }
+                        .cluster .label {
+                            color: #ffffff !important;
+                        }
+                    ` : `
+                        .node rect, .node circle, .node ellipse, .node polygon {
+                            fill: #ffffff !important;
+                            stroke: #4a90e2 !important;
+                            stroke-width: 2px !important;
+                        }
+                        .node .label, .nodeLabel {
+                            color: #2d3748 !important;
+                            font-weight: 500 !important;
+                        }
+                        .edgePath .path {
+                            stroke: #4a90e2 !important;
+                            stroke-width: 2px !important;
+                        }
+                        .edgeLabel {
+                            background-color: #ffffff !important;
+                            color: #2d3748 !important;
+                            border: 1px solid #4a90e2 !important;
                         }
                     `,
                     fontFamily: 'Inter, sans-serif',
@@ -2481,9 +2522,9 @@
                         htmlLabels: true,
                         curve: 'basis'
                     },
-                    securityLevel: 'loose', // Permitir mais flexibilidade na sintaxe
-                    suppressErrorRendering: false, // Mostrar erros para debug
-                    logLevel: 1, // Debug em desenvolvimento
+                    securityLevel: 'loose',
+                    suppressErrorRendering: false,
+                    logLevel: 0,
                     er: { useMaxWidth: true },
                     sequence: { useMaxWidth: true },
                     gantt: { useMaxWidth: true },
@@ -2530,47 +2571,25 @@
                         if (preElement) {
                             preElement.parentNode.replaceChild(graphContainer, preElement);
                             
-                            // Renderizar o gráfico Mermaid
+                            // Renderizar o gráfico Mermaid com tratamento melhorado
                             setTimeout(() => {
-                                // Preparar o código para renderização com limpeza rigorosa
+                                // NOVA ABORDAGEM: Processamento mais cuidadoso
                                 let preparedCode = codeText;
                                 
-                                // 1. Remover tags HTML residuais
-                                preparedCode = preparedCode.replace(/<[^>]*>/g, '');
+                                // Limpeza e normalização do código Mermaid
+                                preparedCode = preparedCode
+                                    .replace(/<[^>]*>/g, '') // Remove HTML tags
+                                    .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
+                                    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ')
+                                    .replace(/\r\n/g, '\n').replace(/\r/g, '\n') // Normalizar quebras
+                                    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove caracteres de controle
+                                    .split('\n').map(line => line.trimRight()).join('\n').trim(); // Limpar espaços
                                 
-                                // 2. Decodificar entidades HTML
-                                preparedCode = preparedCode.replace(/&quot;/g, '"');
-                                preparedCode = preparedCode.replace(/&apos;/g, "'");
-                                preparedCode = preparedCode.replace(/&amp;/g, '&');
-                                preparedCode = preparedCode.replace(/&lt;/g, '<');
-                                preparedCode = preparedCode.replace(/&gt;/g, '>');
-                                preparedCode = preparedCode.replace(/&nbsp;/g, ' ');
-                                
-                                // 3. Normalizar quebras de linha
-                                preparedCode = preparedCode.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                                
-                                // 4. Limpar apenas caracteres realmente problemáticos
-                                // Preservar acentos portugueses e caracteres latinos válidos
-                                preparedCode = preparedCode.replace(/[\x00-\x1F\x7F-\x9F]/g, ''); // Remove apenas caracteres de controle
-                                
-                                // 5. Limpar espaços extras e normalizar
-                                preparedCode = preparedCode.split('\n')
-                                    .map(line => line.trimRight())
-                                    .filter(line => line.trim() !== '') // Remove linhas vazias
-                                    .join('\n');
-                                
-                                // 6. Garantir que termina com uma quebra de linha
-                                if (!preparedCode.endsWith('\n')) {
-                                    preparedCode += '\n';
+                                // Debug apenas se necessário
+                                if (preparedCode.length < 50) {
+                                    console.warn(`⚠️ Código Mermaid ${mermaidCounter} parece truncado (${preparedCode.length} chars):`, preparedCode);
                                 }
                                 
-                                console.log(`🔍 Processando gráfico Mermaid ${mermaidCounter}:`, preparedCode.substring(0, 200) + '...');
-                                
-                                // Debug: verificar caracteres problemáticos
-                                const problematicChars = preparedCode.match(/[^\x20-\x7E\u00C0-\u017F\n\t]/g);
-                                if (problematicChars) {
-                                    console.warn(`⚠️ Caracteres não-padrão detectados no gráfico ${mermaidCounter}:`, [...new Set(problematicChars)]);
-                                }
                                 mermaid.render(mermaidId + '-svg', preparedCode)
                                     .then(({ svg }) => {
                                         const graphElement = document.getElementById(mermaidId);
@@ -2607,27 +2626,44 @@
             }
             
             extractTextFromCode(codeElement) {
-                // Extrair texto limpo removendo tags de syntax highlighting
-                const clone = codeElement.cloneNode(true);
+                // SOLUÇÃO MELHORADA: Extrair texto completo sem truncamento
+                let text = '';
                 
-                // Remover todas as tags de highlighting e formatação
-                clone.querySelectorAll('span, strong, em, b, i, mark').forEach(element => {
-                    element.replaceWith(element.textContent);
-                });
+                // Método 1: Tentar extrair o texto original completo
+                if (codeElement.dataset && codeElement.dataset.originalText) {
+                    text = codeElement.dataset.originalText;
+                } else {
+                    // Método 2: Extrair texto recursivamente preservando conteúdo
+                    const extractRecursively = (node) => {
+                        let result = '';
+                        for (const child of node.childNodes) {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                result += child.textContent;
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                if (child.tagName === 'BR') {
+                                    result += '\n';
+                                } else {
+                                    result += extractRecursively(child);
+                                }
+                            }
+                        }
+                        return result;
+                    };
+                    
+                    text = extractRecursively(codeElement);
+                    
+                    // Fallback: usar textContent/innerText se não conseguiu extrair
+                    if (!text || text.length < 10) {
+                        text = codeElement.textContent || codeElement.innerText || '';
+                    }
+                }
                 
-                // Remover tags <br> e substituir por quebras de linha
-                clone.querySelectorAll('br').forEach(br => {
-                    br.replaceWith('\n');
-                });
-                
-                let text = clone.textContent || clone.innerText || '';
-                
-                // Normalizar espaços e quebras de linha
+                // Limpeza básica preservando o conteúdo completo
                 text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
                 
-                // Limpar espaços extras mas preservar indentação
+                // NÃO remover linhas vazias - podem ser importantes para sintaxe Mermaid
                 text = text.split('\n')
-                    .map(line => line.trimRight())
+                    .map(line => line.trimRight()) // Remove apenas espaços à direita
                     .join('\n')
                     .trim();
                 
