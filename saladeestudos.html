@@ -677,6 +677,100 @@
 
 
     </style>
+
+    <!-- Estilos específicos para proteger gráficos Mermaid do tema escuro -->
+    <style data-mermaid-protection>
+        /* Proteção para gráficos Mermaid - cores sempre adequadas independentemente do tema */
+        .mermaid-container,
+        .mermaid-container * {
+            /* Forçar cores adequadas para gráficos Mermaid */
+            color: #2d3748 !important;
+        }
+
+        .mermaid-container svg {
+            /* Fundo sempre branco para contraste */
+            background-color: #ffffff !important;
+        }
+
+        .mermaid-container svg text,
+        .mermaid-container svg tspan {
+            /* Texto sempre escuro para legibilidade */
+            fill: #2d3748 !important;
+            color: #2d3748 !important;
+        }
+
+        .mermaid-container svg .node rect,
+        .mermaid-container svg .node circle,
+        .mermaid-container svg .node ellipse,
+        .mermaid-container svg .node polygon {
+            /* Nós sempre com cores adequadas */
+            fill: #ffffff !important;
+            stroke: #4a90e2 !important;
+            stroke-width: 2px !important;
+        }
+
+        .mermaid-container svg .node .label,
+        .mermaid-container svg .nodeLabel {
+            /* Texto dos nós sempre escuro */
+            fill: #2d3748 !important;
+            color: #2d3748 !important;
+            font-weight: 500 !important;
+        }
+
+        .mermaid-container svg .edgePath .path {
+            /* Conectores sempre com cor adequada */
+            stroke: #4a90e2 !important;
+            stroke-width: 2px !important;
+        }
+
+        .mermaid-container svg .edgeLabel {
+            /* Labels das conexões sempre legíveis */
+            fill: #2d3748 !important;
+            color: #2d3748 !important;
+        }
+
+        .mermaid-container svg .cluster rect {
+            /* Clusters sempre adequados */
+            fill: #f8fafc !important;
+            stroke: #4a90e2 !important;
+        }
+
+        .mermaid-container svg .cluster .label {
+            /* Texto dos clusters sempre escuro */
+            fill: #2d3748 !important;
+            color: #2d3748 !important;
+        }
+
+        /* Proteção adicional contra mudanças de tema */
+        body.dark-mode .mermaid-container,
+        body.dark-mode .mermaid-container *,
+        body.dark-mode .mermaid-container svg,
+        body.dark-mode .mermaid-container svg * {
+            /* Manter cores adequadas mesmo no modo escuro */
+            color: #2d3748 !important;
+            fill: #2d3748 !important;
+        }
+
+        body.dark-mode .mermaid-container svg {
+            /* Fundo sempre branco no modo escuro também */
+            background-color: #ffffff !important;
+        }
+
+        body.dark-mode .mermaid-container svg .node rect,
+        body.dark-mode .mermaid-container svg .node circle,
+        body.dark-mode .mermaid-container svg .node ellipse,
+        body.dark-mode .mermaid-container svg .node polygon {
+            /* Nós sempre brancos no modo escuro */
+            fill: #ffffff !important;
+            stroke: #4a90e2 !important;
+        }
+
+        body.dark-mode .mermaid-container svg .cluster rect {
+            /* Clusters sempre com fundo claro no modo escuro */
+            fill: #f8fafc !important;
+            stroke: #4a90e2 !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Header placeholder que será carregado dinamicamente -->
@@ -801,9 +895,14 @@
                     
                     // Configura autenticação
                     this.setupAuth();
-                    
+
                     this.isInitialized = true;
                     console.log('✅ StudyRoomApp inicializado com sucesso');
+
+                    // Proteger gráficos Mermaid na inicialização
+                    setTimeout(() => {
+                        this.protectMermaidGraphs();
+                    }, 300);
                 } catch (error) {
                     console.error('❌ Erro na inicialização:', error);
                     this.showNotification('Erro na inicialização da aplicação', 'error');
@@ -870,6 +969,11 @@
                     // Inicializar eventos do header após carregamento dinâmico
                     setTimeout(() => {
                         this.setupHeaderButtons();
+
+                        // Proteger gráficos Mermaid existentes após carregamento do header
+                        setTimeout(() => {
+                            this.protectMermaidGraphs();
+                        }, 200);
                     }, 100);
                     
                 } catch (error) {
@@ -903,6 +1007,58 @@
                         console.log('✅ Tema aplicado ao header:', isDark ? 'escuro' : 'claro');
                     }
                 }
+            }
+
+            // === PROTEGER GRÁFICOS MERMAID DO TEMA ===
+            protectMermaidGraphs() {
+                console.log('🛡️ Aplicando proteção aos gráficos Mermaid');
+
+                // Encontrar todos os containers de gráficos Mermaid
+                const mermaidContainers = document.querySelectorAll('.mermaid-container');
+
+                mermaidContainers.forEach(container => {
+                    // Garantir que o container tenha isolamento de cor
+                    container.style.setProperty('color', '#2d3748', 'important');
+                    container.style.setProperty('background-color', '#ffffff', 'important');
+
+                    // Encontrar o SVG dentro do container
+                    const svg = container.querySelector('svg');
+                    if (svg) {
+                        // Aplicar fundo branco ao SVG
+                        svg.style.setProperty('background-color', '#ffffff', 'important');
+
+                        // Aplicar cores adequadas a todos os elementos de texto
+                        const textElements = svg.querySelectorAll('text, tspan');
+                        textElements.forEach(text => {
+                            text.style.setProperty('fill', '#2d3748', 'important');
+                            text.style.setProperty('color', '#2d3748', 'important');
+                        });
+
+                        // Aplicar cores adequadas aos nós
+                        const nodeElements = svg.querySelectorAll('.node rect, .node circle, .node ellipse, .node polygon');
+                        nodeElements.forEach(node => {
+                            node.style.setProperty('fill', '#ffffff', 'important');
+                            node.style.setProperty('stroke', '#4a90e2', 'important');
+                            node.style.setProperty('stroke-width', '2px', 'important');
+                        });
+
+                        // Aplicar cores adequadas às conexões
+                        const edgePaths = svg.querySelectorAll('.edgePath .path');
+                        edgePaths.forEach(path => {
+                            path.style.setProperty('stroke', '#4a90e2', 'important');
+                            path.style.setProperty('stroke-width', '2px', 'important');
+                        });
+
+                        // Aplicar cores adequadas aos clusters
+                        const clusterRects = svg.querySelectorAll('.cluster rect');
+                        clusterRects.forEach(cluster => {
+                            cluster.style.setProperty('fill', '#f8fafc', 'important');
+                            cluster.style.setProperty('stroke', '#4a90e2', 'important');
+                        });
+
+                        console.log('✅ Proteção aplicada ao gráfico Mermaid');
+                    }
+                });
             }
 
             // === CONFIGURAR BOTÕES DO HEADER ===
@@ -947,6 +1103,11 @@
 
                         // Notificar usuário
                         this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+
+                        // Proteger gráficos Mermaid após mudança de tema
+                        setTimeout(() => {
+                            this.protectMermaidGraphs();
+                        }, 100);
                     };
                     console.log('✅ Botão de tema configurado');
                 } else {
@@ -989,6 +1150,81 @@
                     } catch (error) {
                         console.warn('⚠️ Erro ao inicializar Pomodoro Timer:', error);
                     }
+                }
+
+                // Configurar observador para mudanças de tema
+                this.setupThemeObserver();
+            }
+
+            // === MONITOR DE MUDANÇAS DE TEMA ===
+            setupThemeObserver() {
+                console.log('👁️ Configurando observador de mudanças de tema');
+
+                // Criar um MutationObserver para monitorar mudanças na classe do body
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            const target = mutation.target;
+                            const hasDarkMode = target.classList.contains('dark-mode');
+
+                            console.log('🎨 Mudança de tema detectada:', hasDarkMode ? 'escuro' : 'claro');
+
+                            // Aplicar proteção aos gráficos Mermaid após mudança de tema
+                            setTimeout(() => {
+                                this.protectMermaidGraphs();
+                            }, 50);
+                        }
+                    });
+                });
+
+                // Iniciar observação do body
+                observer.observe(document.body, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+
+                console.log('✅ Observador de tema configurado');
+
+                // Teste da proteção Mermaid (apenas em desenvolvimento)
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    console.log('🧪 Modo de teste ativado - Mermaid protection test');
+                    window.testMermaidProtection = () => {
+                        console.log('🧪 Testando proteção Mermaid...');
+                        this.protectMermaidGraphs();
+                        console.log('✅ Teste concluído');
+                    };
+
+                    // Função para criar gráfico de teste
+                    window.createTestMermaidGraph = () => {
+                        const testGraph = `
+                            <div class="mermaid-container">
+                                <div class="mermaid-header">
+                                    <h4>🧪 Gráfico de Teste - Proteção Mermaid</h4>
+                                </div>
+                                <div class="mermaid-graph" id="test-mermaid">
+                                    graph TD
+                                    A[Texto Sempre Legível] --> B[No Modo Claro]
+                                    A --> C[No Modo Escuro]
+                                    B --> D[Mesmas Cores]
+                                    C --> D
+                                </div>
+                            </div>
+                        `;
+
+                        const contentBody = this.elements.contentBody;
+                        if (contentBody) {
+                            const testDiv = document.createElement('div');
+                            testDiv.innerHTML = testGraph;
+                            contentBody.appendChild(testDiv);
+
+                            console.log('🧪 Gráfico de teste criado - alterne entre temas para testar');
+
+                            // Renderizar o gráfico
+                            setTimeout(() => {
+                                this.protectMermaidGraphs();
+                            }, 100);
+                        }
+                    };
                 }
             }
 
@@ -1767,6 +2003,11 @@
                 
                 // Processar gráficos Mermaid após carregar conteúdo
                 console.log('✅ Conteúdo exibido:', contentData.title);
+
+                // Proteger gráficos Mermaid recém-carregados
+                setTimeout(() => {
+                    this.protectMermaidGraphs();
+                }, 500); // Delay maior para garantir que os gráficos sejam renderizados
             }
 
             // === ESTADOS DE UI ===
