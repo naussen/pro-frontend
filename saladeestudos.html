@@ -712,7 +712,8 @@
         .mermaid-container,
         .mermaid,
         div[class*="mermaid"],
-        pre[class*="mermaid"] {
+        pre[class*="mermaid"],
+        [class*="mermaid"] {
             background-color: var(--mermaid-bg) !important;
             color: var(--mermaid-text) !important;
             border-radius: 8px;
@@ -722,11 +723,49 @@
             transition: all 0.3s ease;
         }
 
+        /* 🎯 FORÇA MÁXIMA - Garante que o fundo seja sempre aplicado */
+        [data-theme="light"] .mermaid,
+        [data-theme="light"] .mermaid-container,
+        [data-theme="light"] div[class*="mermaid"],
+        [data-theme="light"] pre[class*="mermaid"],
+        [data-theme="light"] [class*="mermaid"] {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+        }
+
+        [data-theme="dark"] .mermaid,
+        [data-theme="dark"] .mermaid-container,
+        [data-theme="dark"] div[class*="mermaid"],
+        [data-theme="dark"] pre[class*="mermaid"],
+        [data-theme="dark"] [class*="mermaid"] {
+            background-color: #1e293b !important;
+            color: #f1f5f9 !important;
+        }
+
         /* SVG principal - transparente para herdar do container */
         .mermaid svg,
         .mermaid-container svg {
             background-color: transparent !important;
             color: var(--mermaid-text) !important;
+        }
+
+        /* 🎯 FORÇA ESPECÍFICA PARA SVG */
+        [data-theme="light"] .mermaid svg,
+        [data-theme="light"] .mermaid-container svg,
+        [data-theme="light"] div[class*="mermaid"] svg,
+        [data-theme="light"] pre[class*="mermaid"] svg,
+        [data-theme="light"] [class*="mermaid"] svg {
+            background-color: transparent !important;
+            color: #1e293b !important;
+        }
+
+        [data-theme="dark"] .mermaid svg,
+        [data-theme="dark"] .mermaid-container svg,
+        [data-theme="dark"] div[class*="mermaid"] svg,
+        [data-theme="dark"] pre[class*="mermaid"] svg,
+        [data-theme="dark"] [class*="mermaid"] svg {
+            background-color: transparent !important;
+            color: #f1f5f9 !important;
         }
 
         /* Nós dos diagramas - cores reativas */
@@ -1035,12 +1074,26 @@
 
             // === APLICAR TEMA ===
             applyTheme() {
+                console.log('🎨 Aplicando tema inicial...');
+                
                 const savedTheme = localStorage.getItem('theme');
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
-                // Aplicar tema ao body
-                document.body.classList.toggle('dark-mode', isDark);
+                console.log('🎯 Tema determinado:', isDark ? 'escuro' : 'claro');
+
+                // 🎯 SINCRONIZAR TODAS AS ABORDAGENS DE TEMA
+                const body = document.body;
+                const html = document.documentElement;
+                
+                // 1. Classe no body (para compatibilidade)
+                body.classList.toggle('dark-mode', isDark);
+                
+                // 2. Atributo data-theme no HTML (para CSS variables)
+                html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+                
+                // 3. localStorage (para persistência)
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
 
                 // Atualizar ícone do tema no header
                 const headerPlaceholder = document.getElementById('header-placeholder');
@@ -1327,7 +1380,18 @@
 
                         // Alternar tema
                         const body = document.body;
+                        const html = document.documentElement;
                         const isDark = body.classList.toggle('dark-mode');
+
+                        // 🎯 SINCRONIZAR TODAS AS ABORDAGENS DE TEMA
+                        // 1. Classe no body (para compatibilidade)
+                        body.classList.toggle('dark-mode', isDark);
+                        
+                        // 2. Atributo data-theme no HTML (para CSS variables)
+                        html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+                        
+                        // 3. localStorage (para persistência)
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
 
                         // Atualizar ícone
                         const themeIcon = headerPlaceholder.querySelector('#themeIcon');
@@ -1335,14 +1399,15 @@
                             themeIcon.textContent = isDark ? '☀️' : '🌙';
                         }
 
-                        // Salvar no localStorage
-                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
                         // Notificar usuário
                         this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
 
-                        // Sistema reativo já detecta mudanças automaticamente
-                        // Não é necessário chamar manualmente
+                        // 🎨 FORÇAR ATUALIZAÇÃO IMEDIATA DOS GRÁFICOS MERMAID
+                        console.log('🔄 Forçando sincronização de cores Mermaid...');
+                        setTimeout(() => {
+                            this.configureMermaidTheme();
+                            this.applyReactiveColors();
+                        }, 50);
                     };
                     console.log('✅ Botão de tema configurado');
                 } else {
