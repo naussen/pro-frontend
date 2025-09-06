@@ -12,6 +12,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca Mermaid.js para renderização de gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
     <style>
         /* === VARIÁVEIS CSS === */
         :root {
@@ -908,6 +912,9 @@
                         themeIcon.textContent = isDark ? '☀️' : '🌙';
                     }
                     this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+
+                    // Re-renderiza os gráficos com o novo tema
+                    this.renderMermaidGraphs();
                 };
                 console.log('✅ Botão de tema configurado');
             } else {
@@ -957,6 +964,9 @@
                         const target = mutation.target;
                         const hasDarkMode = target.classList.contains('dark-mode');
                         console.log('🎨 Mudança de tema detectada:', hasDarkMode ? 'escuro' : 'claro');
+
+                        // Garante que os gráficos sejam re-renderizados em qualquer mudança de tema
+                        this.renderMermaidGraphs();
                     }
                 });
             });
@@ -1404,6 +1414,38 @@
             this.elements.contentBody.innerHTML = contentHtml;
             this.elements.contentBody.scrollTop = 0;
             console.log(`✅ Conteúdo exibido: ${data.title}`);
+
+            // Renderiza componentes dinâmicos como gráficos Mermaid
+            this.renderMermaidGraphs();
+        }
+
+        async renderMermaidGraphs() {
+            try {
+                if (typeof mermaid === 'undefined') {
+                    console.warn('⚠️ Mermaid.js não está disponível.');
+                    return;
+                }
+                const isDark = document.body.classList.contains('dark-mode');
+                console.log(`🎨 Renderizando gráficos Mermaid com tema: ${isDark ? 'escuro' : 'claro'}`);
+
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: isDark ? 'dark' : 'default',
+                    securityLevel: 'strict',
+                });
+
+                const mermaidElements = this.elements.contentBody.querySelectorAll('pre.mermaid');
+                if (mermaidElements.length > 0) {
+                    mermaidElements.forEach(el => el.removeAttribute('data-processed'));
+                    await mermaid.run({
+                        nodes: mermaidElements
+                    });
+                    console.log(`✅ ${mermaidElements.length} gráficos Mermaid renderizados.`);
+                }
+            } catch (error) {
+                console.error('❌ Erro ao renderizar gráficos Mermaid:', error);
+                this.showNotification('Erro ao exibir gráficos', 'error');
+            }
         }
 
         async fetchHTMLContent(contentUrl) {
