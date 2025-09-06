@@ -1046,7 +1046,7 @@
                 });
 
                 console.log('✅ Observador de tema configurado');
-
+            }
                 
             initFirebase() {
                 if (!firebase.apps.length) {
@@ -1241,15 +1241,6 @@
                 console.log('✅ Indicador de scroll configurado');
             }
 
-            // === GERENCIAMENTO DE TEMA ===
-            applyTheme() {
-                // Restaura estado da sidebar
-                const sidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
-                if (sidebarState && window.innerWidth > 768) {
-                    this.sidebarCollapsed = true;
-                    this.elements.sidebar.classList.add('collapsed');
-                }
-            }
 
 
 
@@ -1629,6 +1620,24 @@
                 }
             }
 
+            displayContent(data) {
+                if (!data || !this.elements.contentBody) return;
+
+                const contentHtml = `
+                    <div class="lesson-content">
+                        <h1>${this.escapeHtml(data.title)}</h1>
+                        ${data.content}
+                    </div>
+                `;
+
+                this.elements.contentBody.innerHTML = contentHtml;
+
+                // Scroll to top of content
+                this.elements.contentBody.scrollTop = 0;
+
+                console.log(`✅ Conteúdo exibido: ${data.title}`);
+            }
+
             // === SANITIZAÇÃO MELHORADA DE HTML ===
             async fetchHTMLContent(contentUrl) {
                 try {
@@ -1671,17 +1680,25 @@
                 }
             }
 
-            
-                // Remove tags <html> e <body> (caso existam)
+            sanitizeHTML(rawHtml) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rawHtml;
+
+                // Remove tags perigosas que podem executar scripts
+                tempDiv.querySelectorAll('script, style, link[rel="stylesheet"]').forEach(el => el.remove());
+
+                // Remove tags <html> e <body> (caso existam), movendo o conteúdo para o div
                 tempDiv.querySelectorAll('html, body').forEach(el => {
-                    while (el.firstChild) tempDiv.appendChild(el.firstChild);
+                    while (el.firstChild) {
+                        tempDiv.appendChild(el.firstChild);
+                    }
                     el.remove();
                 });
 
-                // Remove atributos perigosos
+                // Remove atributos perigosos de todos os elementos
                 const dangerousAttributes = [
                     'onclick', 'onload', 'onerror', 'onmouseover', 
-                    'onfocus', 'onblur', 'onchange', 'onsubmit'
+                    'onfocus', 'onblur', 'onchange', 'onsubmit', 'onunload', 'onscroll'
                 ];
                 
                 tempDiv.querySelectorAll('*').forEach(el => {
@@ -1691,15 +1708,23 @@
                         }
                     });
                     
-                    // Sanitiza links externos
+                    // Garante que links externos abram em nova aba e sejam seguros
                     if (el.tagName === 'A' && el.href) {
-                        if (!el.href.startsWith(window.location.origin)) {
-                            el.setAttribute('target', '_blank');
-                            el.setAttribute('rel', 'noopener noreferrer');
+                        try {
+                            const url = new URL(el.href, window.location.origin);
+                            if (url.origin !== window.location.origin) {
+                                el.setAttribute('target', '_blank');
+                                el.setAttribute('rel', 'noopener noreferrer');
+                            }
+                        } catch (e) {
+                            // URL inválida, remove o href para segurança
+                            el.removeAttribute('href');
+                            console.warn('Link com href inválido removido:', el);
                         }
                     }
                 });
 
+                return tempDiv.innerHTML;
             }
 
             // === ESTADOS DE UI ===
@@ -1876,7 +1901,8 @@
             // Expor para debug em desenvolvimento
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 window.studyApp.debug = studyApp;
-                
+            }
+        });
 
         // Service Worker para cache offline
         if ('serviceWorker' in navigator) {
