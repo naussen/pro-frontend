@@ -805,11 +805,7 @@
 
                     this.isInitialized = true;
                     console.log('✅ StudyRoomApp inicializado com sucesso');
-
-                    // Inicializar sistema reativo Mermaid
-                    setTimeout(() => {
-                        this.initMermaidReactiveSystem();
-                    }, 300);
+                   
                 } catch (error) {
                     console.error('❌ Erro na inicialização:', error);
                     this.showNotification('Erro na inicialização da aplicação', 'error');
@@ -889,13 +885,6 @@
             }
 
 
-
-
-
-
-
-
-
             // === APLICAR TEMA ===
             applyTheme() {
                 console.log('🎨 Aplicando tema inicial...');
@@ -930,250 +919,7 @@
                 }
             }
 
-            // === SISTEMA REATIVO MERMAID === 
-            initMermaidReactiveSystem() {
-                console.log('🎨 Inicializando Sistema Reativo Mermaid');
 
-                // Configurar Mermaid para usar tema baseado no estado atual
-                this.configureMermaidTheme();
-
-                // Inicializar observadores de mudança de tema
-                this.setupThemeObserver();
-
-                // Aplicar cores reativas aos gráficos existentes
-                this.applyReactiveColors();
-
-                // Configurar observador de novos gráficos
-                this.setupMermaidObserver();
-            }
-
-            configureMermaidTheme() {
-                // Verificar se Mermaid está disponível
-                if (typeof window.mermaid === 'undefined') {
-                    console.warn('⚠️ Mermaid não carregado ainda, configuração será aplicada quando disponível');
-                    return;
-                }
-
-                const isDarkMode = this.isDarkMode();
-                console.log('🎨 Configurando tema Mermaid:', isDarkMode ? 'escuro' : 'claro');
-
-                // Configuração do tema Mermaid baseada no estado atual
-                const mermaidConfig = {
-                    startOnLoad: false,
-                    theme: 'base', // Usar tema base para controle completo
-                    themeVariables: isDarkMode ? {
-                        // Cores para modo escuro
-                        primaryColor: '#334155',
-                        primaryTextColor: '#f1f5f9',
-                        primaryBorderColor: '#60a5fa',
-                        lineColor: '#60a5fa',
-                        secondaryColor: '#475569',
-                        tertiaryColor: '#1e293b',
-                        background: '#1e293b',
-                        mainBkg: '#334155',
-                        secondBkg: '#475569',
-                        tertiaryBkg: '#1e293b'
-                    } : {
-                        // Cores para modo claro
-                        primaryColor: '#f8fafc',
-                        primaryTextColor: '#1e293b',
-                        primaryBorderColor: '#3b82f6',
-                        lineColor: '#3b82f6',
-                        secondaryColor: '#e2e8f0',
-                        tertiaryColor: '#ffffff',
-                        background: '#ffffff',
-                        mainBkg: '#f8fafc',
-                        secondBkg: '#e2e8f0',
-                        tertiaryBkg: '#ffffff'
-                    },
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: 14,
-                    securityLevel: 'loose',
-                    suppressErrorRendering: false
-                };
-
-                window.mermaid.initialize(mermaidConfig);
-                console.log('✅ Mermaid reconfigurado para tema:', isDarkMode ? 'escuro' : 'claro');
-            }
-
-            isDarkMode() {
-                return document.body.classList.contains('dark-mode') ||
-                       document.documentElement.getAttribute('data-theme') === 'dark' ||
-                       localStorage.getItem('theme') === 'dark';
-            }
-
-            setupThemeObserver() {
-                // Observer para mudanças na classe do body
-                const bodyObserver = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                            console.log('🔄 Mudança de tema detectada');
-                            
-                            // Reconfigurar Mermaid com novo tema
-                            setTimeout(() => {
-                                this.configureMermaidTheme();
-                                this.applyReactiveColors();
-                            }, 100);
-                        }
-                    });
-                });
-
-                bodyObserver.observe(document.body, {
-                    attributes: true,
-                    attributeFilter: ['class']
-                });
-
-                // Observer para mudanças no atributo data-theme
-                const htmlObserver = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-                            console.log('🔄 Mudança de data-theme detectada');
-                            
-                            setTimeout(() => {
-                                this.configureMermaidTheme();
-                                this.applyReactiveColors();
-                            }, 100);
-                        }
-                    });
-                });
-
-                htmlObserver.observe(document.documentElement, {
-                    attributes: true,
-                    attributeFilter: ['data-theme']
-                });
-
-                console.log('✅ Observadores de tema configurados');
-            }
-
-            setupMermaidObserver() {
-                // Observer para detectar novos gráficos Mermaid adicionados ao DOM
-                const mermaidObserver = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        mutation.addedNodes.forEach((node) => {
-                            if (node.nodeType === 1) { // Element node
-                                // Verificar se o nó é um container Mermaid ou contém um
-                                if (this.isMermaidElement(node) || node.querySelector && node.querySelector('.mermaid, .mermaid-container, [class*="mermaid"]')) {
-                                    console.log('📊 Novo gráfico Mermaid detectado');
-                                    
-                                    // Aplicar cores reativas ao novo gráfico
-                                    setTimeout(() => {
-                                        this.applyReactiveColors();
-                                    }, 200);
-                                }
-                            }
-                        });
-                    });
-                });
-
-                mermaidObserver.observe(document.body, {
-                    childList: true,
-                    subtree: true
-                });
-
-                console.log('✅ Observer de novos gráficos Mermaid configurado');
-            }
-
-            isMermaidElement(element) {
-                if (!element.classList) return false;
-                
-                const mermaidClasses = ['mermaid', 'mermaid-container', 'mermaid-graph'];
-                return mermaidClasses.some(cls => 
-                    element.classList.contains(cls) || 
-                    element.className.includes(cls)
-                );
-            }
-
-            applyReactiveColors() {
-                console.log('🎨 Aplicando cores reativas aos gráficos Mermaid');
-
-                // Selecionar todos os possíveis containers Mermaid
-                const selectors = [
-                    '.mermaid',
-                    '.mermaid-container', 
-                    '.mermaid-graph',
-                    'div[class*="mermaid"]',
-                    'pre[class*="mermaid"]',
-                    '[class*="mermaid"]'
-                ];
-
-                let processedCount = 0;
-
-                selectors.forEach(selector => {
-                    const elements = document.querySelectorAll(selector);
-                    
-                    elements.forEach(element => {
-                        // Evitar processar o mesmo elemento múltiplas vezes
-                        if (element.hasAttribute('data-reactive-processed')) {
-                            return;
-                        }
-
-                        const svg = element.querySelector('svg');
-                    if (svg) {
-                            // Marcar como processado
-                            element.setAttribute('data-reactive-processed', 'true');
-                            element.setAttribute('data-theme-sync', this.isDarkMode() ? 'dark' : 'light');
-
-                            // Aplicar CSS variables - o CSS fará o resto automaticamente
-                            element.style.setProperty('--current-theme', this.isDarkMode() ? 'dark' : 'light');
-                            
-                            // Forçar atualização dos elementos SVG para usar as novas variáveis
-                            this.updateSVGColors(svg);
-                            
-                            processedCount++;
-                        }
-                    });
-                });
-
-                if (processedCount > 0) {
-                    console.log(`✅ ${processedCount} gráficos Mermaid processados com sistema reativo`);
-                } else {
-                    console.log('ℹ️ Nenhum gráfico Mermaid encontrado para processar');
-                }
-            }
-
-            updateSVGColors(svg) {
-                // Forçar re-renderização dos elementos SVG para aplicar as novas CSS variables
-                const computedStyle = getComputedStyle(document.documentElement);
-                
-                // Obter valores atuais das variáveis CSS
-                const textColor = computedStyle.getPropertyValue('--mermaid-text').trim();
-                const nodeColor = computedStyle.getPropertyValue('--mermaid-node-bg').trim();
-                const borderColor = computedStyle.getPropertyValue('--mermaid-node-border').trim();
-                const edgeColor = computedStyle.getPropertyValue('--mermaid-edge-color').trim();
-
-                if (textColor && nodeColor && borderColor && edgeColor) {
-                    // Aplicar cores diretamente para garantir que funcionem
-                        const textElements = svg.querySelectorAll('text, tspan');
-                    textElements.forEach(el => {
-                        el.style.setProperty('fill', textColor, 'important');
-                        el.style.setProperty('color', textColor, 'important');
-                    });
-
-                        const nodeElements = svg.querySelectorAll('.node rect, .node circle, .node ellipse, .node polygon');
-                    nodeElements.forEach(el => {
-                        el.style.setProperty('fill', nodeColor, 'important');
-                        el.style.setProperty('stroke', borderColor, 'important');
-                    });
-
-                    const edgeElements = svg.querySelectorAll('.edgePath .path, path.path');
-                    edgeElements.forEach(el => {
-                        el.style.setProperty('stroke', edgeColor, 'important');
-                    });
-                }
-            }
-
-            // Função pública para forçar atualização (útil para debug)
-            refreshMermaidColors() {
-                console.log('🔄 Forçando atualização de cores Mermaid');
-                this.configureMermaidTheme();
-                
-                // Remover marcadores de processamento para reprocessar tudo
-                document.querySelectorAll('[data-reactive-processed]').forEach(el => {
-                    el.removeAttribute('data-reactive-processed');
-                });
-                
-                this.applyReactiveColors();
-            }
 
             // === CONFIGURAR BOTÕES DO HEADER ===
             setupHeaderButtons() {
@@ -1225,13 +971,7 @@
 
                         // Notificar usuário
                         this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
-
-                        // 🎨 FORÇAR ATUALIZAÇÃO IMEDIATA DOS GRÁFICOS MERMAID
-                        console.log('🔄 Forçando sincronização de cores Mermaid...');
-                        setTimeout(() => {
-                            this.configureMermaidTheme();
-                            this.applyReactiveColors();
-                        }, 50);
+                        
                     };
                     console.log('✅ Botão de tema configurado');
                 } else {
@@ -1307,49 +1047,7 @@
 
                 console.log('✅ Observador de tema configurado');
 
-                // Teste da proteção Mermaid (apenas em desenvolvimento)
-                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                    console.log('🧪 Modo de teste ativado - Mermaid protection test');
-                    window.testMermaidProtection = () => {
-                        console.log('🧪 Testando proteção Mermaid...');
-                        this.protectMermaidGraphs();
-                        console.log('✅ Teste concluído');
-                    };
-
-                    // Função para criar gráfico de teste
-                    window.createTestMermaidGraph = () => {
-                        const testGraph = `
-                            <div class="mermaid-container">
-                                <div class="mermaid-header">
-                                    <h4>🧪 Gráfico de Teste - Proteção Mermaid</h4>
-                                </div>
-                                <div class="mermaid-graph" id="test-mermaid">
-                                    graph TD
-                                    A[Texto Sempre Legível] --> B[No Modo Claro]
-                                    A --> C[No Modo Escuro]
-                                    B --> D[Mesmas Cores]
-                                    C --> D
-                                </div>
-                            </div>
-                        `;
-
-                        const contentBody = this.elements.contentBody;
-                        if (contentBody) {
-                            const testDiv = document.createElement('div');
-                            testDiv.innerHTML = testGraph;
-                            contentBody.appendChild(testDiv);
-
-                            console.log('🧪 Gráfico de teste criado - alterne entre temas para testar');
-
-                            // Renderizar o gráfico
-                            setTimeout(() => {
-                                this.protectMermaidGraphs();
-                            }, 100);
-                        }
-                    };
-                }
-            }
-
+                
             initFirebase() {
                 if (!firebase.apps.length) {
                     firebase.initializeApp(this.firebaseConfig);
@@ -1973,61 +1671,7 @@
                 }
             }
 
-            sanitizeHTML(rawHtml) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = rawHtml;
-
-                // Remove elementos perigosos (MODIFICADO PARA PRESERVAR MERMAID)
-                const dangerousElements = [
-                    'iframe', 'object', 'embed', 
-                    'form', 'input', 'button', 'textarea', 'select',
-                    'applet', 'audio', 'video', 'source', 'track'
-                ];
-                
-                // PRESERVAR: script, style (necessários para Mermaid)
-                
-                dangerousElements.forEach(tag => {
-                    tempDiv.querySelectorAll(tag).forEach(el => el.remove());
-                });
-                
-                // Tratamento especial para scripts (preservar Mermaid)
-                tempDiv.querySelectorAll('script').forEach(script => {
-                    // Preservar scripts Mermaid
-                    if (script.src && script.src.includes('mermaid')) {
-                        console.log('✅ Preservando script Mermaid:', script.src);
-                        return; // Manter script Mermaid
-                    }
-                    if (script.textContent && script.textContent.includes('mermaid')) {
-                        console.log('✅ Preservando script de inicialização Mermaid');
-                        return; // Manter script de inicialização Mermaid
-                    }
-                    // Remover outros scripts perigosos
-                    console.log('⚠️ Removendo script potencialmente perigoso');
-                    script.remove();
-                });
-                
-                // Tratamento especial para estilos (preservar Mermaid)
-                tempDiv.querySelectorAll('style').forEach(style => {
-                    // Preservar estilos Mermaid
-                    if (style.textContent && style.textContent.includes('mermaid')) {
-                        console.log('✅ Preservando estilos Mermaid');
-                        return; // Manter estilos Mermaid
-                    }
-                    // Preservar estilos de tabelas e gráficos
-                    if (style.textContent && (
-                        style.textContent.includes('table') ||
-                        style.textContent.includes('chart') ||
-                        style.textContent.includes('graph') ||
-                        style.textContent.includes('mermaid-container')
-                    )) {
-                        console.log('✅ Preservando estilos de tabelas/gráficos');
-                        return; // Manter estilos necessários
-                    }
-                    // Remover outros estilos potencialmente perigosos
-                    console.log('⚠️ Removendo estilo potencialmente perigoso');
-                    style.remove();
-                });
-
+            
                 // Remove tags <html> e <body> (caso existam)
                 tempDiv.querySelectorAll('html, body').forEach(el => {
                     while (el.firstChild) tempDiv.appendChild(el.firstChild);
@@ -2056,80 +1700,6 @@
                     }
                 });
 
-                // Remove estilos inline perigosos (MELHORADO PARA MERMAID)
-                tempDiv.querySelectorAll('[style]').forEach(el => {
-                    // Preservar elementos Mermaid e relacionados
-                    if (el.classList.contains('mermaid') || 
-                        el.classList.contains('mermaid-container') ||
-                        el.classList.contains('mermaid-graph') ||
-                        el.classList.contains('mermaid-source') ||
-                        el.closest('.mermaid-container')) {
-                        console.log('✅ Preservando estilos de elemento Mermaid');
-                        return; // Manter todos os estilos para elementos Mermaid
-                    }
-                    
-                    // Estilos potencialmente perigosos que podem quebrar o layout do container
-                    const dangerousStyles = ['position', 'z-index'];
-                    
-                    // Remove apenas estilos que podem quebrar o container principal
-                    dangerousStyles.forEach(style => {
-                        const styleValue = el.style.getPropertyValue(style);
-                        if (styleValue === 'fixed' || styleValue === 'absolute' || 
-                            (style === 'z-index' && parseInt(styleValue) > 9998)) {
-                            el.style.removeProperty(style);
-                        }
-                    });
-                    
-                    // Remove viewport units perigosos (exceto para elementos Mermaid)
-                    if (el.style.height && el.style.height.includes('vh')) {
-                        el.style.removeProperty('height');
-                    }
-                    if (el.style.width && el.style.width.includes('vw')) {
-                        el.style.removeProperty('width');
-                    }
-                    
-                    // Preserva estilos necessários para tabelas, cards, grids, etc.
-                    // Não remove: width, height, margin, padding, display, flex, grid, etc.
-                });
-
-                // Preservar elementos SVG gerados pelo Mermaid
-                tempDiv.querySelectorAll('svg').forEach(svg => {
-                    if (svg.closest('.mermaid-container') || 
-                        svg.getAttribute('data-processed') === 'true' ||
-                        svg.classList.contains('mermaid')) {
-                        console.log('✅ Preservando SVG do Mermaid');
-                        // Garantir que o SVG tenha os atributos necessários
-                        if (!svg.hasAttribute('data-processed')) {
-                            svg.setAttribute('data-processed', 'true');
-                        }
-                    }
-                });
-                
-                console.log('✅ Conteúdo sanitizado carregado com sucesso (Mermaid preservado)');
-                return tempDiv.innerHTML;
-            }
-
-            displayContent(contentData) {
-                this.currentContent = contentData;
-                
-                // Atualiza corpo do conteúdo
-                const lessonContentDiv = document.createElement('div');
-                lessonContentDiv.className = 'lesson-content';
-                lessonContentDiv.innerHTML = contentData.content; // Já sanitizado
-                
-                this.elements.contentBody.innerHTML = '';
-                this.elements.contentBody.appendChild(lessonContentDiv);
-                
-                // Scroll para o topo
-                this.elements.contentBody.scrollTop = 0;
-                
-                // Processar gráficos Mermaid após carregar conteúdo
-                console.log('✅ Conteúdo exibido:', contentData.title);
-
-                // Sistema reativo detecta novos gráficos automaticamente
-                setTimeout(() => {
-                    this.applyReactiveColors();
-                }, 500); // Delay para garantir que os gráficos sejam renderizados
             }
 
             // === ESTADOS DE UI ===
@@ -2307,29 +1877,6 @@
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 window.studyApp.debug = studyApp;
                 
-                // Funções de debug para Mermaid
-                window.studyApp.mermaid = {
-                    refresh: () => studyApp.refreshMermaidColors(),
-                    status: () => {
-                        const elements = document.querySelectorAll('[data-reactive-processed]');
-                        console.log(`🔍 ${elements.length} gráficos Mermaid processados pelo sistema reativo`);
-                        elements.forEach((el, i) => {
-                            console.log(`  ${i+1}. Tema: ${el.getAttribute('data-theme-sync')}, Classe: ${el.className}`);
-                        });
-                    },
-                    test: () => {
-                        console.log('🧪 Testando sistema reativo Mermaid...');
-                        studyApp.applyReactiveColors();
-                        console.log('✅ Teste concluído');
-                    }
-                };
-                
-                console.log('🔧 Funções de debug Mermaid disponíveis:');
-                console.log('  - window.studyApp.mermaid.refresh() - Atualizar cores');
-                console.log('  - window.studyApp.mermaid.status() - Ver status');
-                console.log('  - window.studyApp.mermaid.test() - Testar sistema');
-            }
-        });
 
         // Service Worker para cache offline
         if ('serviceWorker' in navigator) {
