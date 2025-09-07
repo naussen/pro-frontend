@@ -104,6 +104,91 @@
             cursor: pointer;
         }
 
+        /* === CSS ESPECÍFICO PARA MERMAID === */
+        .mermaid-loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            background: var(--light-grey-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mermaid-loading p {
+            margin: 0.5rem 0;
+        }
+
+        .mermaid-loading small {
+            opacity: 0.7;
+        }
+
+        /* === ESTILOS FALLBACK MERMAID === */
+        .mermaid-fallback {
+            background: var(--light-highlight-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .fallback-header h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--main-color);
+        }
+
+        .fallback-header p {
+            margin: 0 0 1rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .fallback-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .fallback-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--main-content-bg);
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .fallback-btn:hover {
+            background: var(--light-highlight-bg);
+            transform: translateY(-1px);
+        }
+
+        .fallback-btn.primary {
+            background: var(--main-color);
+            color: white;
+            border-color: var(--main-color);
+        }
+
+        .fallback-btn.primary:hover {
+            background: var(--dark-blue-hover);
+        }
+
+        .fallback-code {
+            background: var(--main-content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
         /* === RESET E BASE === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -729,10 +814,27 @@
             position: static;
         }
 
-
-
-
     </style>
+
+    <!-- Mermaid Script - Solution 1 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        // Sistema de carregamento Mermaid - Solution 1
+        window.mermaidLoadPromise = new Promise((resolve) => {
+            if (typeof mermaid !== 'undefined') {
+                resolve();
+            } else {
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (typeof mermaid !== 'undefined') {
+                        resolve();
+                    } else {
+                        console.error('❌ Mermaid failed to load');
+                        resolve(); // Resolver mesmo com erro para não travar
+                    }
+                });
+            }
+        });
+    </script>
 
 </head>
 <body>
@@ -1074,6 +1176,9 @@
 
                 // Configurar observador para mudanças de tema
                 this.setupThemeObserver();
+                
+                // Sistema integrado Mermaid
+                this.setupMermaidSystem();
             }
 
             // === MONITOR DE MUDANÇAS DE TEMA ===
@@ -1105,6 +1210,53 @@
 
                 // === SISTEMA REATIVO MERMAID ===
                 this.applyReactiveColors();
+            }
+
+            // === SISTEMA MERMAID INTEGRADO ===
+            setupMermaidSystem() {
+                console.log('🎨 Configurando sistema Mermaid integrado...');
+                
+                // Configurar observador de mudanças de tema
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            const target = mutation.target;
+                            if (target === document.body && mutation.oldValue !== target.className) {
+                                console.log('🎨 Mudança de tema detectada, atualizando Mermaid...');
+                                setTimeout(() => this.applyReactiveColors(), 100);
+                            }
+                        }
+                    });
+                });
+
+                observer.observe(document.body, {
+                    attributes: true,
+                    attributeFilter: ['class'],
+                    attributeOldValue: true
+                });
+
+                // Configurar Mermaid inicialmente
+                this.configureMermaidOnLoad();
+            }
+
+            async configureMermaidOnLoad() {
+                try {
+                    // Aguardar Mermaid estar disponível
+                    let attempts = 0;
+                    while (typeof mermaid === 'undefined' && attempts < 50) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        attempts++;
+                    }
+                    
+                    if (typeof mermaid !== 'undefined') {
+                        this.applyReactiveColors();
+                        console.log('✅ Sistema Mermaid configurado');
+                    } else {
+                        console.warn('⚠️ Mermaid não disponível após timeout');
+                    }
+                } catch (error) {
+                    console.error('❌ Erro na configuração Mermaid:', error);
+                }
             }
 
             // === SISTEMA REATIVO MERMAID ===
@@ -1793,7 +1945,11 @@
                 }
             }
 
-            
+            // === FUNÇÃO DE SANITIZAÇÃO HTML ===
+            sanitizeHTML(html) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+
                 // Remove tags <html> e <body> (caso existam)
                 tempDiv.querySelectorAll('html, body').forEach(el => {
                     while (el.firstChild) tempDiv.appendChild(el.firstChild);
@@ -1822,6 +1978,128 @@
                     }
                 });
 
+                return tempDiv.innerHTML;
+            }
+
+            // === FUNÇÃO PARA INICIALIZAR GRÁFICOS MERMAID COM FALLBACK ===
+            async initializeMermaidGraphs() {
+                const MERMAID_TIMEOUT = 10000; // 10 segundos
+                const RETRY_ATTEMPTS = 3;
+                
+                try {
+                    // Aguardar carregamento com timeout
+                    await Promise.race([
+                        window.mermaidLoadPromise,
+                        new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Timeout')), MERMAID_TIMEOUT)
+                        )
+                    ]);
+                    
+                    // Aplicar configurações de tema antes de renderizar
+                    this.applyReactiveColors();
+                    
+                    const placeholders = document.querySelectorAll('.mermaid-graph-placeholder');
+                    
+                    for (let placeholder of placeholders) {
+                        const mermaidCode = placeholder.getAttribute('data-mermaid');
+                        if (mermaidCode) {
+                            let success = false;
+                            let attempts = 0;
+                            
+                            while (!success && attempts < RETRY_ATTEMPTS) {
+                                try {
+                                    attempts++;
+                                    
+                                    const mermaidDiv = document.createElement('div');
+                                    mermaidDiv.className = 'mermaid';
+                                    mermaidDiv.textContent = mermaidCode;
+                                    mermaidDiv.setAttribute('data-original-code', mermaidCode);
+                                    
+                                    placeholder.innerHTML = '';
+                                    placeholder.appendChild(mermaidDiv);
+                                    
+                                    await mermaid.run({
+                                        nodes: [mermaidDiv]
+                                    });
+                                    
+                                    success = true;
+                                    console.log('✅ Gráfico Mermaid renderizado com sucesso');
+                                    
+                                } catch (error) {
+                                    console.warn(`Tentativa ${attempts} falhou:`, error);
+                                    
+                                    if (attempts >= RETRY_ATTEMPTS) {
+                                        // Fallback: mostrar código ou link externo
+                                        this.createMermaidFallback(placeholder, mermaidCode);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro crítico no Mermaid:', error);
+                    this.createGlobalMermaidFallback();
+                }
+            }
+
+            // === SISTEMA DE FALLBACK MERMAID ===
+            createMermaidFallback(placeholder, mermaidCode) {
+                const encodedCode = btoa(mermaidCode);
+                const mermaidLiveUrl = `https://mermaid.live/edit#${encodedCode}`;
+                
+                placeholder.innerHTML = `
+                    <div class="mermaid-fallback">
+                        <div class="fallback-header">
+                            <h4>📊 Gráfico Mermaid</h4>
+                            <p>❌ Erro no carregamento local</p>
+                        </div>
+                        <div class="fallback-actions">
+                            <a href="${mermaidLiveUrl}" target="_blank" class="fallback-btn primary">
+                                🌐 Ver Online
+                            </a>
+                            <button onclick="this.parentElement.nextElementSibling.style.display='block'" class="fallback-btn">
+                                📝 Ver Código
+                            </button>
+                            <button onclick="location.reload()" class="fallback-btn">
+                                🔄 Tentar Novamente
+                            </button>
+                        </div>
+                        <pre class="fallback-code" style="display: none;"><code>${mermaidCode}</code></pre>
+                    </div>
+                `;
+            }
+
+            createGlobalMermaidFallback() {
+                const placeholders = document.querySelectorAll('.mermaid-graph-placeholder');
+                placeholders.forEach(placeholder => {
+                    const mermaidCode = placeholder.getAttribute('data-mermaid');
+                    if (mermaidCode) {
+                        this.createMermaidFallback(placeholder, mermaidCode);
+                    }
+                });
+                
+                this.showNotification('Gráficos Mermaid carregados em modo fallback', 'warning');
+            }
+
+            // === FUNÇÃO PARA EXIBIR CONTEÚDO ===
+            async displayContent(contentData) {
+                this.currentContent = contentData;
+                
+                const html = `
+                    <div class="lesson-content">
+                        <h1>${this.escapeHtml(contentData.title)}</h1>
+                        ${contentData.content}
+                    </div>
+                `;
+                
+                this.elements.contentBody.innerHTML = html;
+                
+                // Inicializar gráficos Mermaid após inserção do conteúdo
+                setTimeout(() => {
+                    this.initializeMermaidGraphs();
+                }, 100);
+                
+                console.log('✅ Conteúdo carregado e Mermaid inicializado');
             }
 
             // === ESTADOS DE UI ===
