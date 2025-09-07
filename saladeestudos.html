@@ -1412,8 +1412,8 @@
                         // Temporariamente definir contexto baseado na aula atual
                         window.QuestoesIntegration.currentContext = {
                             type: 'content',
-                            courses: this.normalizeCourseId(meta.course),
-                            modules: this.normalizeModuleId(meta.module),
+                            curso: this.normalizeCourseId(meta.course),
+                            modulo: this.normalizeModuleId(meta.module),
                             aula: meta.aula || null
                         };
                         
@@ -1438,10 +1438,10 @@
                 let url;
                 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                     // URL direta para servidor de desenvolvimento
-                    url = 'http://localhost:8001/pro-questoes.html';
+                    url = 'http://localhost:8001/qindex.html';
                 } else {
                     // Subdomínio para produção
-                    url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+                    url = 'https://questoes.proconcursos.com.br/qindex.html';
                 }
                 
                 const params = new URLSearchParams();
@@ -1453,8 +1453,8 @@
                         .replace(/-+/g, '-')
                         .trim()
                     : val;
-                if (meta.course) params.append('courses', slugify(meta.course));
-                if (meta.module) params.append('modules', slugify(meta.module));
+                if (meta.course) params.append('curso', slugify(meta.course));
+                if (meta.module) params.append('modulo', slugify(meta.module));
                 if (meta.aula) params.append('aula', slugify(meta.aula));
                 
                 if (params.toString()) {
