@@ -46,7 +46,63 @@
             --info-color: #17a2b8;
         }
 
+        /* === VARIÁVEIS MERMAID TEMA ADAPTATIVO === */
+        :root {
+            /* Mermaid Light Theme */
+            --mermaid-bg: transparent;
+            --mermaid-text: var(--text-dark);
+            --mermaid-node-bg: #f8fafc;
+            --mermaid-node-border: var(--main-color);
+            --mermaid-edge-color: var(--main-color);
+            --mermaid-label-bg: #ffffff;
+            --mermaid-label-text: var(--text-dark);
+        }
 
+        /* Modo escuro */
+        body.dark-mode {
+            /* Mermaid Dark Theme */
+            --mermaid-bg: transparent;
+            --mermaid-text: #e2e8f0;
+            --mermaid-node-bg: #334155;
+            --mermaid-node-border: #60a5fa;
+            --mermaid-edge-color: #60a5fa;
+            --mermaid-label-bg: #1e293b;
+            --mermaid-label-text: #f1f5f9;
+        }
+
+        /* === ESTILOS MERMAID RESPONSIVOS === */
+        .mermaid,
+        .mermaid-graph-placeholder,
+        .mermaid-container {
+            background: var(--mermaid-bg) !important;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .mermaid svg {
+            background: transparent !important;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .mermaid-error {
+            text-align: center;
+            padding: 2rem;
+            color: var(--error-color);
+            background: var(--light-grey-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mermaid-error button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--main-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
         /* === RESET E BASE === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1033,8 +1089,8 @@
 
                             console.log('🎨 Mudança de tema detectada:', hasDarkMode ? 'escuro' : 'claro');
 
-                            // Sistema reativo já detecta mudanças automaticamente
-                            // Não é necessário chamar manualmente
+                            // Aplicar cores reativas aos gráficos Mermaid
+                            setTimeout(() => this.applyReactiveColors(), 100);
                         }
                     });
                 });
@@ -1047,6 +1103,72 @@
 
                 console.log('✅ Observador de tema configurado');
 
+                // === SISTEMA REATIVO MERMAID ===
+                this.applyReactiveColors();
+            }
+
+            // === SISTEMA REATIVO MERMAID ===
+            applyReactiveColors() {
+                console.log('🎨 Aplicando cores reativas aos gráficos Mermaid...');
+                
+                const isDark = document.body.classList.contains('dark-mode');
+                const theme = isDark ? 'dark' : 'light';
+                
+                // Configurar Mermaid para o tema atual
+                if (typeof mermaid !== 'undefined') {
+                    mermaid.initialize({
+                        startOnLoad: false,
+                        theme: 'base',
+                        themeVariables: isDark ? {
+                            primaryColor: '#334155',
+                            primaryTextColor: '#f1f5f9',
+                            primaryBorderColor: '#60a5fa',
+                            lineColor: '#60a5fa',
+                            secondaryColor: '#475569',
+                            tertiaryColor: '#1e293b',
+                            background: 'transparent',
+                            mainBkg: '#334155',
+                            secondBkg: '#475569'
+                        } : {
+                            primaryColor: '#f8fafc',
+                            primaryTextColor: '#1e293b',
+                            primaryBorderColor: '#3b82f6',
+                            lineColor: '#3b82f6',
+                            secondaryColor: '#e2e8f0',
+                            background: 'transparent',
+                            mainBkg: '#f8fafc',
+                            secondBkg: '#e2e8f0'
+                        },
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: 14,
+                        securityLevel: 'loose'
+                    });
+                    
+                    // Re-renderizar gráficos existentes
+                    this.reinitializeMermaidGraphs();
+                }
+            }
+
+            async reinitializeMermaidGraphs() {
+                const mermaidElements = document.querySelectorAll('.mermaid');
+                
+                for (let element of mermaidElements) {
+                    if (element.hasAttribute('data-processed')) {
+                        element.removeAttribute('data-processed');
+                        const originalCode = element.getAttribute('data-original-code');
+                        if (originalCode) {
+                            element.textContent = originalCode;
+                            try {
+                                await mermaid.run({
+                                    nodes: [element]
+                                });
+                            } catch (error) {
+                                console.warn('Erro ao re-renderizar gráfico:', error);
+                            }
+                        }
+                    }
+                }
+            }
                 
             initFirebase() {
                 if (!firebase.apps.length) {
