@@ -46,62 +46,29 @@
             --info-color: #17a2b8;
         }
 
-        /* === VARIÁVEIS MERMAID TEMA ADAPTATIVO === */
-        :root {
-            /* Mermaid Light Theme */
-            --mermaid-bg: transparent;
-            --mermaid-text: var(--text-dark);
-            --mermaid-node-bg: #f8fafc;
-            --mermaid-node-border: var(--main-color);
-            --mermaid-edge-color: var(--main-color);
-            --mermaid-label-bg: #ffffff;
-            --mermaid-label-text: var(--text-dark);
-        }
-
-        /* Modo escuro */
+        /* === MODO ESCURO === */
         body.dark-mode {
-            /* Mermaid Dark Theme */
-            --mermaid-bg: transparent;
-            --mermaid-text: #e2e8f0;
-            --mermaid-node-bg: #334155;
-            --mermaid-node-border: #60a5fa;
-            --mermaid-edge-color: #60a5fa;
-            --mermaid-label-bg: #1e293b;
-            --mermaid-label-text: #f1f5f9;
-        }
-
-        /* === ESTILOS MERMAID RESPONSIVOS === */
-        .mermaid,
-        .mermaid-graph-placeholder,
-        .mermaid-container {
-            background: var(--mermaid-bg) !important;
-            border-radius: 8px;
-            padding: 1rem;
-        }
-
-        .mermaid svg {
-            background: transparent !important;
-            max-width: 100%;
-            height: auto;
-        }
-
-        .mermaid-error {
-            text-align: center;
-            padding: 2rem;
-            color: var(--error-color);
-            background: var(--light-grey-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .mermaid-error button {
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            background: var(--main-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            --main-color: #63b3ed;
+            --light-highlight-bg: #1a202c;
+            --accent-1: #ff8a65;
+            --accent-1-darker: #ff7043;
+            --accent-2: #4fd1c7;
+            --accent-3: #ffd93d;
+            --dark-bg: #0f1419;
+            --text-dark: #e2e8f0;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --light-grey-bg: #1a202c;
+            --header-bg: rgba(26, 32, 44, 0.95);
+            --header-border: #2d3748;
+            --main-content-bg: #1a202c;
+            --sidebar-bg: #1a202c;
+            --sidebar-border: #2d3748;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --card-hover-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            --gradient-primary: linear-gradient(135deg, #63b3ed 0%, #4fd1c7 100%);
+            --gradient-accent: linear-gradient(135deg, #ff8a65 0%, #ffd93d 100%);
         }
 
         /* === RESET E BASE === */
@@ -247,52 +214,6 @@
         .sidebar-nav::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 2px;
-        }
-
-        /* Indicador de scroll para mostrar que há mais conteúdo */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: linear-gradient(transparent, var(--sidebar-bg));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .scroll-indicator.visible {
-            opacity: 1;
-        }
-
-        .scroll-indicator-icon {
-            width: 20px;
-            height: 20px;
-            background: var(--accent-1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-5px);
-            }
-            60% {
-                transform: translateY(-3px);
-            }
         }
 
         /* === MENU DE NAVEGAÇÃO === */
@@ -583,7 +504,7 @@
             }
 
             .content-body {
-                padding: 1rem 1.5rem 1rem 1rem; /* Mantém margem direita maior também no mobile */
+                padding: 1rem;
             }
         }
 
@@ -659,7 +580,7 @@
         .content-body {
             flex: 1;
             overflow-y: auto;
-            padding: 2rem 2.5rem 2rem 2rem; /* Margem direita aumentada para 2.5rem */
+            padding: 2rem;
             background: var(--main-content-bg);
             position: relative;
             width: 100%;
@@ -686,36 +607,26 @@
             background: var(--text-muted);
         }
 
-        /* ISOLAMENTO INTELIGENTE - PERMITE LAYOUTS ESPECÍFICOS DOS ARQUIVOS */
-        .lesson-content {
-            /* Reset básico apenas para elementos de layout do container */
-            position: relative;
-            z-index: 1;
-            isolation: isolate;
-        }
-
-        /* Proteção mínima apenas para elementos que podem quebrar o layout do container */
-        .lesson-content > * {
-            /* Apenas impede que elementos filhos diretos quebrem o container */
-            position: relative;
-        }
-
-        /* Permite que elementos específicos mantenham seus estilos originais */
-        .lesson-content table,
-        .lesson-content .table-container,
-        .lesson-content .content-cards,
-        .lesson-content .content-card,
-        .lesson-content .card-header,
-        .lesson-content .card-title,
-        .lesson-content .card-content,
-        .lesson-content .mermaid-graph,
-        .lesson-content div[class*="table"],
-        .lesson-content div[class*="card"],
-        .lesson-content div[class*="grid"],
-        .lesson-content div[class*="flex"] {
-            /* Permite comportamento original dos componentes específicos */
-            position: relative;
-            /* Remove restrições anteriores */
+        /* PROTEÇÃO CONTRA INTERFERÊNCIA DE CONTEÚDO EXTERNO */
+        .lesson-content * {
+            position: static !important;
+            float: none !important;
+            clear: none !important;
+            transform: none !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            z-index: auto !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
         }
 
         /* Elementos inline mantêm comportamento natural */
@@ -724,16 +635,140 @@
         .lesson-content strong,
         .lesson-content a,
         .lesson-content code {
-            /* Comportamento inline natural */
-            display: inline;
-            position: static;
+            width: auto !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
 
+        /* === BOTÃO DINÂMICO DE QUESTÕES === */
+        #dynamic-questoes-btn {
+            position: fixed !important;
+            top: 50% !important;
+            right: 2rem !important;
+            transform: translateY(-50%) !important;
+            z-index: 9999 !important;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 70px !important;
+            height: 70px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            backdrop-filter: blur(10px) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            pointer-events: none !important;
+            animation: pulse-glow 2s ease-in-out infinite alternate !important;
+        }
 
+        #dynamic-questoes-btn.visible {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            animation: pulse-glow 2s ease-in-out infinite alternate, bounce-in 0.6s ease-out !important;
+        }
 
+        /* Animação de entrada do botão */
+        @keyframes bounce-in {
+            0% {
+                transform: translateY(-50%) scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(-50%) scale(1.1);
+            }
+            100% {
+                transform: translateY(-50%) scale(1);
+                opacity: 1;
+            }
+        }
 
+        #dynamic-questoes-btn:hover {
+            transform: translateY(-50%) scale(1.15) !important;
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.6), 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+            background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%) !important;
+            border-color: rgba(255, 255, 255, 0.4) !important;
+            animation: none !important;
+        }
+
+        #dynamic-questoes-btn:active {
+            transform: translateY(-50%) scale(0.95) !important;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5) !important;
+        }
+
+        /* Animação de pulse para chamar atenção */
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            100% {
+                box-shadow: 0 12px 35px rgba(255, 107, 53, 0.6), 0 6px 18px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        #dynamic-questoes-btn svg {
+            width: 28px !important;
+            height: 28px !important;
+            fill: none !important;
+            stroke: currentColor !important;
+            stroke-width: 2.5 !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3)) !important;
+        }
+
+        /* Ajustar posição quando sidebar está recolhida */
+        .study-sidebar.collapsed ~ .study-content #dynamic-questoes-btn {
+            right: 2rem !important;
+        }
+
+        /* Responsividade mobile */
+        @media (max-width: 768px) {
+            #dynamic-questoes-btn {
+                right: 1rem !important;
+                bottom: 2rem !important;
+                top: auto !important;
+                transform: translateY(0) !important;
+                width: 60px !important;
+                height: 60px !important;
+            }
+            
+            #dynamic-questoes-btn:hover {
+                transform: scale(1.15) !important;
+            }
+            
+            #dynamic-questoes-btn:active {
+                transform: scale(0.95) !important;
+            }
+
+            #dynamic-questoes-btn svg {
+                width: 24px !important;
+                height: 24px !important;
+            }
+
+            #dynamic-questoes-btn.visible {
+                animation: pulse-glow 2s ease-in-out infinite alternate, bounce-in-mobile 0.6s ease-out !important;
+            }
+
+            @keyframes bounce-in-mobile {
+                0% {
+                    transform: scale(0.3);
+                    opacity: 0;
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+        }
     </style>
-
 </head>
 <body>
     <!-- Header placeholder que será carregado dinamicamente -->
@@ -758,15 +793,17 @@
                         <p>Carregando cursos...</p>
                     </div>
                 </nav>
-                <!-- Indicador de scroll -->
-                <div class="scroll-indicator" id="scrollIndicator">
-                    <div class="scroll-indicator-icon">↓</div>
-                </div>
             </div>
         </aside>
 
         <!-- Área de conteúdo principal -->
         <main class="study-content">
+            <!-- Botão dinâmico para questões do módulo atual -->
+            <button id="dynamic-questoes-btn" title="🎯 Questões do módulo atual - Clique para praticar!">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+            </button>
             <div class="content-body" id="contentBody">
                 <div class="empty-state">
                     <div class="empty-state-icon">📖</div>
@@ -786,19 +823,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     
-
-    
     <script>
         'use strict';
-
-        // === COMPORTAMENTO DO MENU ===
-        // O menu de cursos, módulos e aulas SEMPRE é apresentado no estado RECOLHIDO
-        // Independentemente da última visualização do usuário, ele deve clicar para expandir:
-        // 1. Clique no curso para ver os módulos
-        // 2. Clique no módulo para ver as aulas
-        // 3. Clique na aula para carregar o conteúdo
-        // 
-        // O indicador de scroll (↓) aparece quando há mais conteúdo abaixo no menu
 
         // === CONFIGURAÇÃO E INICIALIZAÇÃO ===
         class StudyRoomApp {
@@ -850,18 +876,14 @@
                     // Configura event listeners
                     this.setupEventListeners();
                     
-                    // Configura indicador de scroll após elementos estarem prontos
-                    this.setupScrollIndicator();
-                    
                     // Aplica tema salvo
                     this.applyTheme();
                     
                     // Configura autenticação
                     this.setupAuth();
-
+                    
                     this.isInitialized = true;
                     console.log('✅ StudyRoomApp inicializado com sucesso');
-                   
                 } catch (error) {
                     console.error('❌ Erro na inicialização:', error);
                     this.showNotification('Erro na inicialização da aplicação', 'error');
@@ -921,49 +943,278 @@
                     console.log('📋 Scripts do header ignorados para evitar conflitos');
                     
                     console.log('✅ Header carregado com sucesso');
-
+                    
                     // Aplicar tema imediatamente
-                    this.applyTheme();
-
+                    this.applyThemeToHeader();
+                    
                     // Inicializar eventos do header após carregamento dinâmico
                     setTimeout(() => {
+                        console.log('🔧 Configurando botões do header manualmente...');
                         this.setupHeaderButtons();
-
-                        // Aplicar sistema reativo aos gráficos existentes após carregamento do header
-                        setTimeout(() => {
-                            this.applyReactiveColors();
-                        }, 200);
-                    }, 100);
+                        console.log('✅ Botões do header configurados com sucesso');
+                    }, 300);
                     
                 } catch (error) {
                     console.warn('⚠️ Falha ao carregar header:', error);
+                    // Fallback: criar header mínimo
+                    this.createFallbackHeader();
                 }
             }
 
-
-            // === APLICAR TEMA ===
-            applyTheme() {
-                console.log('🎨 Aplicando tema inicial...');
+            createFallbackHeader() {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                headerPlaceholder.innerHTML = `
+                    <header style="height: var(--header-height); background: var(--header-bg); border-bottom: 1px solid var(--header-border); display: flex; align-items: center; padding: 0 1rem; position: fixed; top: 0; left: 0; right: 0; z-index: 105;">
+                        <button id="sidebarToggleBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-right: 1rem;">☰</button>
+                        <h1 style="margin: 0; font-size: 1.2rem; color: var(--text-dark);">PRO Concursos - Sala de Estudos</h1>
+                        <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                            <button id="showAllCoursesBtn" style="padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 4px; cursor: pointer;">📚 Todos os Cursos</button>
+                            <button id="themeToggleBtn" style="padding: 0.5rem; background: var(--border-color); border: none; border-radius: 4px; cursor: pointer;">🌙</button>
+                        </div>
+                    </header>
+                `;
                 
+                // Configurar event listeners para header fallback
+                const sidebarBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
+                const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
+                const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
+                
+                if (sidebarBtn) {
+                    sidebarBtn.onclick = () => this.toggleSidebar();
+                }
+                if (showAllBtn) {
+                    showAllBtn.onclick = () => this.loadAllCourses();
+                }
+                if (themeBtn) {
+                    themeBtn.onclick = () => {
+                        document.body.classList.toggle('dark-mode');
+                        const isDark = document.body.classList.contains('dark-mode');
+                        themeBtn.textContent = isDark ? '☀️' : '🌙';
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    };
+                }
+                
+                console.log('✅ Header fallback criado');
+            }
+
+            setupHeaderButtons() {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (!headerPlaceholder) return;
+
+                // Botão showAllCoursesBtn
+                const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
+                if (showAllBtn) {
+                    showAllBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Show All Courses clicked');
+                        this.loadAllCourses();
+                    };
+                    console.log('✅ showAllCoursesBtn configurado');
+                } else {
+                    console.warn('❌ showAllCoursesBtn não encontrado');
+                }
+
+                // Botão themeToggleBtn
+                const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
+                if (themeBtn) {
+                    themeBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Theme Toggle clicked');
+                        const body = document.body;
+                        const isDark = body.classList.toggle('dark-mode');
+                        
+                        const themeIcon = headerPlaceholder.querySelector('#themeIcon');
+                        if (themeIcon) {
+                            themeIcon.textContent = isDark ? '☀️' : '🌙';
+                        }
+                        
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                        this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+                    };
+                    console.log('✅ themeToggleBtn configurado');
+                } else {
+                    console.warn('❌ themeToggleBtn não encontrado');
+                }
+
+                // Botão pomodoro-btn
+                const pomodoroBtn = headerPlaceholder.querySelector('#pomodoro-btn');
+                if (pomodoroBtn) {
+                    pomodoroBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Pomodoro clicked');
+                        
+                        const pomodoroPanel = headerPlaceholder.querySelector('#pomodoroTimerPanel');
+                        if (pomodoroPanel) {
+                            const isVisible = pomodoroPanel.style.display === 'flex';
+                            pomodoroPanel.style.display = isVisible ? 'none' : 'flex';
+                            console.log('🍅 Painel pomodoro', isVisible ? 'fechado' : 'aberto');
+                        } else {
+                            console.warn('❌ Painel pomodoro não encontrado');
+                        }
+                    };
+                    console.log('✅ pomodoro-btn configurado');
+                } else {
+                    console.warn('❌ pomodoro-btn não encontrado');
+                }
+
+                // Botão sidebarToggleBtn
+                const sidebarBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
+                if (sidebarBtn) {
+                    sidebarBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Sidebar Toggle clicked');
+                        this.toggleSidebar();
+                    };
+                    console.log('✅ sidebarToggleBtn configurado');
+                } else {
+                    console.warn('❌ sidebarToggleBtn não encontrado');
+                }
+
+                // === CONFIGURAÇÃO DOS MENUS DROPDOWN ===
+                this.setupDropdownMenus(headerPlaceholder);
+            }
+
+            setupDropdownMenus(headerContainer) {
+                console.log('🔧 Configurando menus dropdown...');
+                
+                if (!headerContainer) {
+                    console.warn('❌ Container do header não fornecido');
+                    return false;
+                }
+
+                // Configurar botão CURSOS
+                const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
+                const cursosMenu = headerContainer.querySelector('#cursos-menu');
+                
+                console.log('🔍 Elementos CURSOS:', {
+                    button: cursosBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: cursosMenu ? 'Encontrado' : 'Não encontrado'
+                });
+                
+                if (cursosBtn && cursosMenu) {
+                    cursosBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão CURSOS clicado - toggling menu');
+                        this.toggleDropdownMenu(cursosMenu, cursosBtn);
+                    };
+                    console.log('✅ Menu CURSOS configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu CURSOS não encontrados');
+                }
+
+                // Configurar botão FLASHCARDS
+                const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
+                const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
+                
+                console.log('🔍 Elementos FLASHCARDS:', {
+                    button: flashcardsBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: flashcardsMenu ? 'Encontrado' : 'Não encontrado'
+                });
+                
+                if (flashcardsBtn && flashcardsMenu) {
+                    flashcardsBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão FLASHCARDS clicado - toggling menu');
+                        this.toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
+                    };
+                    console.log('✅ Menu FLASHCARDS configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
+                }
+
+                // Configurar botão QUESTÕES
+                const questoesBtn = headerContainer.querySelector('#questoesMenuBtn');
+                const questoesMenu = headerContainer.querySelector('#questoes-menu');
+
+                console.log('🔍 Elementos QUESTÕES:', {
+                    button: questoesBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: questoesMenu ? 'Encontrado' : 'Não encontrado'
+                });
+
+                if (questoesBtn && questoesMenu) {
+                    questoesBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão QUESTÕES clicado - toggling menu');
+                        this.toggleDropdownMenu(questoesMenu, questoesBtn);
+                    };
+                    console.log('✅ Menu QUESTÕES configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu QUESTÕES não encontrados');
+                }
+
+                // Configurar fechamento ao clicar fora
+                if (!window.dropdownClickHandlerAdded) {
+                    document.addEventListener('click', (e) => {
+                        const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+                        const isClickOnNavButton = e.target.closest('.nav-button');
+                        const isClickInsideDropdown = e.target.closest('.dropdown-menu');
+                        
+                        if (!isClickOnNavButton && !isClickInsideDropdown) {
+                            dropdowns.forEach(dropdown => {
+                                this.closeDropdownMenu(dropdown);
+                            });
+                        }
+                    });
+                    window.dropdownClickHandlerAdded = true;
+                    console.log('✅ Handler de fechamento global configurado');
+                }
+
+                return true;
+            }
+
+            toggleDropdownMenu(menu, button) {
+                console.log('🔄 Toggle menu:', menu.id);
+                
+                // Fechar outros menus primeiro
+                const allDropdowns = document.querySelectorAll('.dropdown-menu');
+                allDropdowns.forEach(dropdown => {
+                    if (dropdown !== menu && dropdown.classList.contains('show')) {
+                        this.closeDropdownMenu(dropdown);
+                    }
+                });
+                
+                // Toggle do menu atual
+                const isOpen = menu.classList.contains('show');
+                
+                if (isOpen) {
+                    this.closeDropdownMenu(menu);
+                } else {
+                    this.openDropdownMenu(menu, button);
+                }
+            }
+
+            openDropdownMenu(menu, button) {
+                menu.classList.add('show');
+                if (button) {
+                    button.setAttribute('aria-expanded', 'true');
+                }
+                console.log('📂 Menu aberto:', menu.id);
+            }
+
+            closeDropdownMenu(menu) {
+                menu.classList.remove('show');
+                const button = document.querySelector(`[data-target="${menu.id}"]`);
+                if (button) {
+                    button.setAttribute('aria-expanded', 'false');
+                }
+                console.log('📁 Menu fechado:', menu.id);
+            }
+
+            applyThemeToHeader() {
                 const savedTheme = localStorage.getItem('theme');
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-
-                console.log('🎯 Tema determinado:', isDark ? 'escuro' : 'claro');
-
-                // 🎯 SINCRONIZAR TODAS AS ABORDAGENS DE TEMA
-                const body = document.body;
-                const html = document.documentElement;
                 
-                // 1. Classe no body (para compatibilidade)
-                body.classList.toggle('dark-mode', isDark);
+                // Aplicar tema ao body
+                document.body.classList.toggle('dark-mode', isDark);
                 
-                // 2. Atributo data-theme no HTML (para CSS variables)
-                html.setAttribute('data-theme', isDark ? 'dark' : 'light');
-                
-                // 3. localStorage (para persistência)
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
                 // Atualizar ícone do tema no header
                 const headerPlaceholder = document.getElementById('header-placeholder');
                 if (headerPlaceholder) {
@@ -975,201 +1226,6 @@
                 }
             }
 
-
-
-            // === CONFIGURAR BOTÕES DO HEADER ===
-            setupHeaderButtons() {
-                const headerPlaceholder = document.getElementById('header-placeholder');
-                if (!headerPlaceholder) return;
-
-                // Botão "Todos os Cursos"
-                const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
-                if (showAllBtn) {
-                    showAllBtn.onclick = (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('🔧 Botão "Todos os Cursos" clicado');
-                        this.loadAllCourses();
-                    };
-                    console.log('✅ Botão "Todos os Cursos" configurado');
-                } else {
-                    console.warn('❌ showAllCoursesBtn não encontrado');
-                }
-
-                // Botão "Tema"
-                const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
-                if (themeBtn) {
-                    themeBtn.onclick = (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('🔧 Botão de tema clicado');
-
-                        // Alternar tema
-                        const body = document.body;
-                        const html = document.documentElement;
-                        const isDark = body.classList.toggle('dark-mode');
-
-                        // 🎯 SINCRONIZAR TODAS AS ABORDAGENS DE TEMA
-                        // 1. Classe no body (para compatibilidade)
-                        body.classList.toggle('dark-mode', isDark);
-                        
-                        // 2. Atributo data-theme no HTML (para CSS variables)
-                        html.setAttribute('data-theme', isDark ? 'dark' : 'light');
-                        
-                        // 3. localStorage (para persistência)
-                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
-                        // Atualizar ícone
-                        const themeIcon = headerPlaceholder.querySelector('#themeIcon');
-                        if (themeIcon) {
-                            themeIcon.textContent = isDark ? '☀️' : '🌙';
-                        }
-
-                        // Notificar usuário
-                        this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
-                        
-                    };
-                    console.log('✅ Botão de tema configurado');
-                } else {
-                    console.warn('❌ themeToggleBtn não encontrado');
-                }
-
-                // Botão "Pomodoro"
-                const pomodoroBtn = headerPlaceholder.querySelector('#pomodoro-btn');
-                if (pomodoroBtn) {
-                    pomodoroBtn.onclick = (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('🔧 Botão Pomodoro clicado');
-
-                        // Tentar usar PomodoroTimerApp se disponível
-                        if (window.PomodoroTimerApp && typeof window.PomodoroTimerApp.togglePanel === 'function') {
-                            window.PomodoroTimerApp.togglePanel();
-                        } else {
-                            // Fallback: mostrar/ocultar painel diretamente
-                            const pomodoroPanel = headerPlaceholder.querySelector('#pomodoroTimerPanel');
-                            if (pomodoroPanel) {
-                                const isVisible = pomodoroPanel.style.display === 'flex';
-                                pomodoroPanel.style.display = isVisible ? 'none' : 'flex';
-                                console.log('🍅 Painel pomodoro', isVisible ? 'fechado' : 'aberto');
-                            } else {
-                                console.warn('❌ Painel pomodoro não encontrado');
-                            }
-                        }
-                    };
-                    console.log('✅ Botão Pomodoro configurado');
-                } else {
-                    console.warn('❌ pomodoro-btn não encontrado');
-                }
-
-                // Inicializar Pomodoro Timer se disponível
-                if (window.PomodoroTimerApp && typeof window.PomodoroTimerApp.init === 'function') {
-                    try {
-                        window.PomodoroTimerApp.init();
-                        console.log('✅ Pomodoro Timer inicializado');
-                    } catch (error) {
-                        console.warn('⚠️ Erro ao inicializar Pomodoro Timer:', error);
-                    }
-                }
-
-                // Configurar observador para mudanças de tema
-                this.setupThemeObserver();
-            }
-
-            // === MONITOR DE MUDANÇAS DE TEMA ===
-            setupThemeObserver() {
-                console.log('👁️ Configurando observador de mudanças de tema');
-
-                // Criar um MutationObserver para monitorar mudanças na classe do body
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                            const target = mutation.target;
-                            const hasDarkMode = target.classList.contains('dark-mode');
-
-                            console.log('🎨 Mudança de tema detectada:', hasDarkMode ? 'escuro' : 'claro');
-
-                            // Aplicar cores reativas aos gráficos Mermaid
-                            setTimeout(() => this.applyReactiveColors(), 100);
-                        }
-                    });
-                });
-
-                // Iniciar observação do body
-                observer.observe(document.body, {
-                    attributes: true,
-                    attributeFilter: ['class']
-                });
-
-                console.log('✅ Observador de tema configurado');
-
-                // === SISTEMA REATIVO MERMAID ===
-                this.applyReactiveColors();
-            }
-
-            // === SISTEMA REATIVO MERMAID ===
-            applyReactiveColors() {
-                console.log('🎨 Aplicando cores reativas aos gráficos Mermaid...');
-                
-                const isDark = document.body.classList.contains('dark-mode');
-                const theme = isDark ? 'dark' : 'light';
-                
-                // Configurar Mermaid para o tema atual
-                if (typeof mermaid !== 'undefined') {
-                    mermaid.initialize({
-                        startOnLoad: false,
-                        theme: 'base',
-                        themeVariables: isDark ? {
-                            primaryColor: '#334155',
-                            primaryTextColor: '#f1f5f9',
-                            primaryBorderColor: '#60a5fa',
-                            lineColor: '#60a5fa',
-                            secondaryColor: '#475569',
-                            tertiaryColor: '#1e293b',
-                            background: 'transparent',
-                            mainBkg: '#334155',
-                            secondBkg: '#475569'
-                        } : {
-                            primaryColor: '#f8fafc',
-                            primaryTextColor: '#1e293b',
-                            primaryBorderColor: '#3b82f6',
-                            lineColor: '#3b82f6',
-                            secondaryColor: '#e2e8f0',
-                            background: 'transparent',
-                            mainBkg: '#f8fafc',
-                            secondBkg: '#e2e8f0'
-                        },
-                        fontFamily: 'Inter, sans-serif',
-                        fontSize: 14,
-                        securityLevel: 'loose'
-                    });
-                    
-                    // Re-renderizar gráficos existentes
-                    this.reinitializeMermaidGraphs();
-                }
-            }
-
-            async reinitializeMermaidGraphs() {
-                const mermaidElements = document.querySelectorAll('.mermaid');
-                
-                for (let element of mermaidElements) {
-                    if (element.hasAttribute('data-processed')) {
-                        element.removeAttribute('data-processed');
-                        const originalCode = element.getAttribute('data-original-code');
-                        if (originalCode) {
-                            element.textContent = originalCode;
-                            try {
-                                await mermaid.run({
-                                    nodes: [element]
-                                });
-                            } catch (error) {
-                                console.warn('Erro ao re-renderizar gráfico:', error);
-                            }
-                        }
-                    }
-                }
-            }
-                
             initFirebase() {
                 if (!firebase.apps.length) {
                     firebase.initializeApp(this.firebaseConfig);
@@ -1215,8 +1271,7 @@
                     sidebar: document.getElementById('studySidebar'),
                     courseNav: document.getElementById('courseNavigation'),
                     contentBody: document.getElementById('contentBody'),
-                    overlay: document.getElementById('sidebarOverlay'),
-                    scrollIndicator: document.getElementById('scrollIndicator')
+                    overlay: document.getElementById('sidebarOverlay')
                 };
             }
 
@@ -1256,10 +1311,6 @@
                 
                 // Resize handler
                 window.addEventListener('resize', () => this.handleResize());
-                
-                // Configurar indicador de scroll para a sidebar (será chamado após inicialização)
-                // this.setupScrollIndicator();
-                
                 console.log('✅ Event listeners configurados');
             }
 
@@ -1311,58 +1362,6 @@
                 }
             }
 
-            updateScrollIndicator() {
-                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
-                
-                const nav = this.elements.courseNav;
-                const indicator = this.elements.scrollIndicator;
-                
-                if (nav.scrollHeight > nav.clientHeight) {
-                    // Há conteúdo para scroll
-                    if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
-                        // Próximo do final - oculta indicador
-                        indicator.classList.remove('visible');
-                    } else {
-                        // Mostra indicador
-                        indicator.classList.add('visible');
-                    }
-                } else {
-                    // Não há scroll necessário - oculta indicador
-                    indicator.classList.remove('visible');
-                }
-            }
-
-            setupScrollIndicator() {
-                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
-                
-                const checkScrollIndicator = () => {
-                    const nav = this.elements.courseNav;
-                    const indicator = this.elements.scrollIndicator;
-                    
-                    if (nav.scrollHeight > nav.clientHeight) {
-                        // Há conteúdo para scroll
-                        if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
-                            // Próximo do final - oculta indicador
-                            indicator.classList.remove('visible');
-                        } else {
-                            // Mostra indicador
-                            indicator.classList.add('visible');
-                        }
-                    } else {
-                        // Não há scroll necessário - oculta indicador
-                        indicator.classList.remove('visible');
-                    }
-                };
-                
-                // Verificar ao carregar conteúdo
-                this.elements.courseNav.addEventListener('scroll', checkScrollIndicator);
-                
-                // Verificar inicialmente
-                setTimeout(checkScrollIndicator, 100);
-                
-                console.log('✅ Indicador de scroll configurado');
-            }
-
             // === GERENCIAMENTO DE TEMA ===
             applyTheme() {
                 // Restaura estado da sidebar
@@ -1373,9 +1372,122 @@
                 }
             }
 
+            // === GERENCIAMENTO DO BOTÃO DINÂMICO DE QUESTÕES ===
+            updateDynamicQuestoesButton(meta) {
+                const button = document.getElementById('dynamic-questoes-btn');
+                if (!button) return;
 
+                if (meta && meta.course && meta.module) {
+                    // Exibir botão quando houver contexto de aula
+                    button.classList.add('visible');
+                    button.title = `Questões: ${meta.course} > ${meta.module}`;
+                    
+                    // Remover event listener anterior
+                    button.onclick = null;
+                    
+                    // Adicionar novo event listener
+                    button.onclick = () => {
+                        this.openQuestoesForCurrentModule(meta);
+                    };
+                    
+                    console.log('✅ Botão dinâmico ativado para:', meta.course, '>', meta.module);
+                } else {
+                    // Ocultar botão quando não há contexto
+                    button.classList.remove('visible');
+                    button.onclick = null;
+                    console.log('⚪ Botão dinâmico oculto - sem contexto');
+                }
+            }
 
+            openQuestoesForCurrentModule(meta) {
+                console.log('🎯 Abrindo questões para módulo atual:', meta);
+                
+                try {
+                    // Se a integração estiver presente, usar contexto específico
+                    if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                        console.log('🔗 Usando integração QuestoesIntegration com contexto específico');
+                        // Criar um contexto personalizado para a integração
+                        const originalContext = window.QuestoesIntegration.currentContext;
+                        
+                        // Temporariamente definir contexto baseado na aula atual
+                        window.QuestoesIntegration.currentContext = {
+                            type: 'content',
+                            courses: this.normalizeCourseId(meta.course),
+                            modules: this.normalizeModuleId(meta.module),
+                            aula: meta.aula || null
+                        };
+                        
+                        // Aplicar filtros contextuais
+                        window.QuestoesIntegration.setContextualFilters();
+                        
+                        // Abrir em modo overlay
+                        window.QuestoesIntegration.openQuestions('overlay');
+                        
+                        // Restaurar contexto original
+                        setTimeout(() => {
+                            window.QuestoesIntegration.currentContext = originalContext;
+                        }, 1000);
+                        
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+                }
 
+                // Fallback: abrir com parâmetros específicos
+                let url;
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    // URL direta para servidor de desenvolvimento
+                    url = 'http://localhost:8001/pro-questoes.html';
+                } else {
+                    // Subdomínio para produção
+                    url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+                }
+                
+                const params = new URLSearchParams();
+                const slugify = (val) => typeof val === 'string' 
+                    ? val.toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-')
+                        .trim()
+                    : val;
+                if (meta.course) params.append('courses', slugify(meta.course));
+                if (meta.module) params.append('modules', slugify(meta.module));
+                if (meta.aula) params.append('aula', slugify(meta.aula));
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                console.log('🌐 Abrindo URL específica do módulo:', url);
+                window.open(url, '_blank');
+            }
+
+            normalizeCourseId(courseName) {
+                return courseName.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[áàâã]/g, 'a')
+                    .replace(/[éèê]/g, 'e')
+                    .replace(/[íìî]/g, 'i')
+                    .replace(/[óòôõ]/g, 'o')
+                    .replace(/[úùû]/g, 'u')
+                    .replace(/ç/g, 'c')
+                    .replace(/[^\w-]/g, '');
+            }
+
+            normalizeModuleId(moduleName) {
+                return moduleName.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[áàâã]/g, 'a')
+                    .replace(/[éèê]/g, 'e')
+                    .replace(/[íìî]/g, 'i')
+                    .replace(/[óòôõ]/g, 'o')
+                    .replace(/[úùû]/g, 'u')
+                    .replace(/ç/g, 'c')
+                    .replace(/[^\w-]/g, '');
+            }
 
             // === CARREGAMENTO DE CURSOS ===
             async loadUserCourses() {
@@ -1402,7 +1514,6 @@
                             const courses = await this.loadSelectedModules(userData.selectedModules);
                             this.cacheCourses(courses);
                             this.renderCourses(courses);
-                            console.log('✅ Cursos personalizados carregados em modo recolhido');
                         } 
                         // Para usuários antigos, carrega todos os cursos
                         else {
@@ -1616,34 +1727,27 @@
                 this.elements.courseNav.innerHTML = html;
                 this.attachCourseEvents();
                 
-                // Auto-seleciona primeiro conteúdo SEM expandir menu
+                // Auto-seleciona primeiro conteúdo
                 this.autoSelectFirstContent();
                 
-                // Atualizar indicador de scroll após renderizar
-                setTimeout(() => this.updateScrollIndicator(), 200);
-                
-                console.log(`✅ ${courses.length} cursos renderizados em modo recolhido`);
+                console.log(`✅ ${courses.length} cursos renderizados`);
             }
 
             attachCourseEvents() {
-                // Course headers (toggle) - SEMPRE começa recolhido
+                // Course headers (toggle)
                 this.elements.courseNav.querySelectorAll('.course-header').forEach(header => {
                     header.addEventListener('click', () => {
                         const moduleList = header.nextElementSibling;
                         const toggleIcon = header.querySelector('.toggle-icon');
                         const isVisible = moduleList.classList.contains('visible');
                         
-                        // Toggle visibilidade dos módulos
                         moduleList.classList.toggle('visible', !isVisible);
                         toggleIcon.classList.toggle('expanded', !isVisible);
                         toggleIcon.textContent = isVisible ? '▶' : '▼';
-                        
-                        // Atualizar indicador de scroll após expandir/recolher
-                        setTimeout(() => this.updateScrollIndicator(), 100);
                     });
                 });
 
-                // Module items (toggle aulas) - SEMPRE começa recolhido
+                // Module items (toggle aulas)
                 this.elements.courseNav.querySelectorAll('.module-item').forEach(item => {
                     const moduleHeader = item.querySelector('.module-header');
                     const aulasList = item.querySelector('.aulas-list');
@@ -1656,10 +1760,14 @@
                         const isVisible = aulasList.style.display !== 'none';
                         aulasList.style.display = isVisible ? 'none' : 'block';
                         toggleIcon.classList.toggle('expanded', !isVisible);
-                        toggleIcon.textContent = isVisible ? '▶' : '▼';
                         
-                        // Atualizar indicador de scroll após expandir/recolher
-                        setTimeout(() => this.updateScrollIndicator(), 100);
+                        // Se abrindo, carrega primeira aula automaticamente
+                        if (!isVisible) {
+                            const firstAulaItem = aulasList.querySelector('.aula-item');
+                            if (firstAulaItem) {
+                                setTimeout(() => firstAulaItem.click(), 100);
+                            }
+                        }
                     });
                 });
 
@@ -1686,13 +1794,25 @@
                     const firstModule = firstCourse.modules[0];
                     const firstAula = firstModule.aulas?.[0];
                     
-                    // SEMPRE mantém menu recolhido - usuário deve clicar para expandir
-                    // Apenas seleciona primeira aula sem expandir nada
+                    // Expande primeiro curso e módulo
                     setTimeout(() => {
+                        const firstCourseHeader = this.elements.courseNav.querySelector('.course-header');
+                        const firstModuleList = this.elements.courseNav.querySelector('.module-list');
+                        const firstModuleItem = this.elements.courseNav.querySelector('.module-item');
+                        const firstAulasList = this.elements.courseNav.querySelector('.aulas-list');
                         const firstAulaItem = this.elements.courseNav.querySelector('.aula-item');
                         
-                        if (firstAulaItem && firstAula) {
-                            // Seleciona primeira aula sem expandir curso/módulo
+                        if (firstCourseHeader && firstModuleList && firstModuleItem && firstAulaItem && firstAula) {
+                            // Expande curso
+                            firstModuleList.classList.add('visible');
+                            firstCourseHeader.querySelector('.toggle-icon').classList.add('expanded');
+                            firstCourseHeader.querySelector('.toggle-icon').textContent = '▼';
+                            
+                            // Expande módulo
+                            firstAulasList.style.display = 'block';
+                            firstModuleItem.querySelector('.module-toggle').classList.add('expanded');
+                            
+                            // Seleciona primeira aula
                             firstAulaItem.classList.add('active');
                             this.loadAulaContent(firstCourse.id, firstModule.id, firstAula.id);
                         }
@@ -1793,7 +1913,21 @@
                 }
             }
 
-            
+            sanitizeHTML(rawHtml) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rawHtml;
+
+                // Remove elementos perigosos
+                const dangerousElements = [
+                    'script', 'style', 'iframe', 'object', 'embed', 
+                    'form', 'input', 'button', 'textarea', 'select',
+                    'applet', 'audio', 'video', 'source', 'track'
+                ];
+                
+                dangerousElements.forEach(tag => {
+                    tempDiv.querySelectorAll(tag).forEach(el => el.remove());
+                });
+
                 // Remove tags <html> e <body> (caso existam)
                 tempDiv.querySelectorAll('html, body').forEach(el => {
                     while (el.firstChild) tempDiv.appendChild(el.firstChild);
@@ -1822,6 +1956,49 @@
                     }
                 });
 
+                // Remove estilos inline perigosos
+                tempDiv.querySelectorAll('[style]').forEach(el => {
+                    const dangerousStyles = [
+                        'position', 'left', 'right', 'top', 'bottom', 
+                        'transform', 'z-index', 'width', 'height', 
+                        'margin', 'padding'
+                    ];
+                    
+                    dangerousStyles.forEach(style => {
+                        el.style.removeProperty(style);
+                    });
+                    
+                    // Remove viewport units
+                    if (el.style.height && el.style.height.includes('vh')) {
+                        el.style.removeProperty('height');
+                    }
+                    if (el.style.width && el.style.width.includes('vw')) {
+                        el.style.removeProperty('width');
+                    }
+                });
+
+                console.log('✅ Conteúdo sanitizado carregado com sucesso');
+                return tempDiv.innerHTML;
+            }
+
+            displayContent(contentData) {
+                this.currentContent = contentData;
+                
+                // Atualiza corpo do conteúdo
+                const lessonContentDiv = document.createElement('div');
+                lessonContentDiv.className = 'lesson-content';
+                lessonContentDiv.innerHTML = contentData.content; // Já sanitizado
+                
+                this.elements.contentBody.innerHTML = '';
+                this.elements.contentBody.appendChild(lessonContentDiv);
+                
+                // Scroll para o topo
+                this.elements.contentBody.scrollTop = 0;
+                
+                // Atualizar botão dinâmico de questões
+                this.updateDynamicQuestoesButton(contentData.meta);
+                
+                console.log('✅ Conteúdo exibido:', contentData.title);
             }
 
             // === ESTADOS DE UI ===
@@ -1940,8 +2117,6 @@
                 this.clearCache();
                 this.loadUserCourses();
             }
-
-
         }
 
         // === INICIALIZAÇÃO GLOBAL ===
@@ -1998,7 +2173,8 @@
             // Expor para debug em desenvolvimento
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 window.studyApp.debug = studyApp;
-                
+            }
+        });
 
         // Service Worker para cache offline
         if ('serviceWorker' in navigator) {
