@@ -44,6 +44,7 @@
             --warning-color: #ffc107;
             --error-color: #dc3545;
             --info-color: #17a2b8;
+            --dark-blue-hover: #1e3a8a;
         }
 
 
@@ -673,8 +674,43 @@
             position: static;
         }
 
+        /* === ESTILOS MERMAID - SOLUTION 1 === */
+        .mermaid,
+        .mermaid-graph-placeholder,
+        .mermaid-container {
+            background: transparent !important;
+            border-radius: 8px;
+            padding: 1rem;
+        }
 
+        .mermaid svg {
+            background: transparent !important;
+            max-width: 100%;
+            height: auto;
+        }
 
+        .mermaid-error {
+            text-align: center;
+            padding: 2rem;
+            color: var(--error-color);
+            background: var(--light-grey-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mermaid-error button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--main-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .mermaid-error button:hover {
+            background: var(--dark-blue-hover);
+        }
 
     </style>
 
@@ -729,6 +765,26 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    
+    <!-- Mermaid Script - Solution 1 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        // Sistema de carregamento Mermaid - Solution 1
+        window.mermaidLoadPromise = new Promise((resolve) => {
+            if (typeof mermaid !== 'undefined') {
+                resolve();
+            } else {
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (typeof mermaid !== 'undefined') {
+                        resolve();
+                    } else {
+                        console.error('❌ Mermaid failed to load');
+                        resolve(); // Resolver mesmo com erro para não travar
+                    }
+                });
+            }
+        });
+    </script>
     
 
     
@@ -1629,6 +1685,27 @@
                 }
             }
 
+            // === FUNÇÃO DISPLAYCONTENT ATUALIZADA - SOLUTION 1 ===
+            async displayContent(contentData) {
+                this.currentContent = contentData;
+                
+                const html = `
+                    <div class="lesson-content">
+                        <h1>${this.escapeHtml(contentData.title)}</h1>
+                        ${contentData.content}
+                    </div>
+                `;
+                
+                this.elements.contentBody.innerHTML = html;
+                
+                // Inicializar gráficos Mermaid após inserção do conteúdo
+                setTimeout(() => {
+                    this.initializeMermaidGraphs();
+                }, 100);
+                
+                console.log('✅ Conteúdo carregado e Mermaid inicializado');
+            }
+
             // === SANITIZAÇÃO MELHORADA DE HTML ===
             async fetchHTMLContent(contentUrl) {
                 try {
@@ -1671,35 +1748,84 @@
                 }
             }
 
-            
-                // Remove tags <html> e <body> (caso existam)
-                tempDiv.querySelectorAll('html, body').forEach(el => {
-                    while (el.firstChild) tempDiv.appendChild(el.firstChild);
-                    el.remove();
-                });
+            // === FUNÇÃO DE SANITIZAÇÃO HTML CORRIGIDA ===
+            sanitizeHTML(rawHtml) {
+                try {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = rawHtml;
+                    
+                    // Remove tags <html> e <body> (caso existam)
+                    tempDiv.querySelectorAll('html, body').forEach(el => {
+                        while (el.firstChild) tempDiv.appendChild(el.firstChild);
+                        el.remove();
+                    });
 
-                // Remove atributos perigosos
-                const dangerousAttributes = [
-                    'onclick', 'onload', 'onerror', 'onmouseover', 
-                    'onfocus', 'onblur', 'onchange', 'onsubmit'
-                ];
-                
-                tempDiv.querySelectorAll('*').forEach(el => {
-                    dangerousAttributes.forEach(attr => {
-                        if (el.hasAttribute(attr)) {
-                            el.removeAttribute(attr);
+                    // Remove atributos perigosos
+                    const dangerousAttributes = [
+                        'onclick', 'onload', 'onerror', 'onmouseover', 
+                        'onfocus', 'onblur', 'onchange', 'onsubmit'
+                    ];
+                    
+                    tempDiv.querySelectorAll('*').forEach(el => {
+                        dangerousAttributes.forEach(attr => {
+                            if (el.hasAttribute(attr)) {
+                                el.removeAttribute(attr);
+                            }
+                        });
+                        
+                        // Sanitiza links externos
+                        if (el.tagName === 'A' && el.href) {
+                            if (!el.href.startsWith(window.location.origin)) {
+                                el.setAttribute('target', '_blank');
+                                el.setAttribute('rel', 'noopener noreferrer');
+                            }
                         }
                     });
+
+                    return tempDiv.innerHTML;
+                } catch (error) {
+                    console.error('Erro na sanitização HTML:', error);
+                    return rawHtml;
+                }
+            }
+
+            // === SISTEMA DE INICIALIZAÇÃO MERMAID - SOLUTION 1 ===
+            async initializeMermaidGraphs() {
+                try {
+                    await window.mermaidLoadPromise;
                     
-                    // Sanitiza links externos
-                    if (el.tagName === 'A' && el.href) {
-                        if (!el.href.startsWith(window.location.origin)) {
-                            el.setAttribute('target', '_blank');
-                            el.setAttribute('rel', 'noopener noreferrer');
+                    const placeholders = document.querySelectorAll('.mermaid-graph-placeholder');
+                    
+                    for (let placeholder of placeholders) {
+                        const mermaidCode = placeholder.getAttribute('data-mermaid');
+                        if (mermaidCode) {
+                            try {
+                                const mermaidDiv = document.createElement('div');
+                                mermaidDiv.className = 'mermaid';
+                                mermaidDiv.textContent = mermaidCode;
+                                
+                                placeholder.innerHTML = '';
+                                placeholder.appendChild(mermaidDiv);
+                                
+                                await mermaid.run({
+                                    nodes: [mermaidDiv]
+                                });
+                                
+                                console.log('✅ Gráfico Mermaid renderizado com sucesso');
+                            } catch (error) {
+                                console.warn('Erro ao renderizar gráfico Mermaid:', error);
+                                placeholder.innerHTML = `
+                                    <div class="mermaid-error">
+                                        <p>⚠️ Erro ao carregar gráfico</p>
+                                        <button onclick="location.reload()">Tentar Novamente</button>
+                                    </div>
+                                `;
+                            }
                         }
                     }
-                });
-
+                } catch (error) {
+                    console.error('Erro na inicialização Mermaid:', error);
+                }
             }
 
             // === ESTADOS DE UI ===
