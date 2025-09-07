@@ -928,11 +928,6 @@
                     // Inicializar eventos do header após carregamento dinâmico
                     setTimeout(() => {
                         this.setupHeaderButtons();
-
-                        // Aplicar sistema reativo aos gráficos existentes após carregamento do header
-                        setTimeout(() => {
-                            this.applyReactiveColors();
-                        }, 200);
                     }, 100);
                     
                 } catch (error) {
