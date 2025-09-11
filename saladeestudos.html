@@ -590,6 +590,89 @@
             z-index: 1;
         }
 
+        /* === SISTEMA DE ISOLAMENTO - ESTILOS === */
+        .isolated-content-host {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+            border-radius: 0.5rem;
+            box-shadow: var(--card-shadow);
+            background: var(--main-content-bg);
+        }
+
+        .isolated-content-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 1rem;
+            box-sizing: border-box;
+            line-height: 1.7;
+        }
+
+        /* Estilos para conteúdo isolado */
+        .isolated-content-wrapper h1,
+        .isolated-content-wrapper h2,
+        .isolated-content-wrapper h3 {
+            color: var(--main-color);
+            margin: 1.5rem 0 1rem;
+        }
+
+        .isolated-content-wrapper h1 { font-size: 2rem; }
+        .isolated-content-wrapper h2 { font-size: 1.5rem; }
+        .isolated-content-wrapper h3 { font-size: 1.25rem; }
+
+        .isolated-content-wrapper p {
+            margin-bottom: 1rem;
+        }
+
+        .isolated-content-wrapper ul,
+        .isolated-content-wrapper ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .isolated-content-wrapper blockquote {
+            border-left: 4px solid var(--accent-1);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .isolated-content-wrapper code {
+            background: var(--light-highlight-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .isolated-content-wrapper pre {
+            background: var(--light-highlight-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        /* Scrollbar personalizada para conteúdo isolado */
+        .isolated-content-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .isolated-content-wrapper::-webkit-scrollbar-track {
+            background: var(--light-highlight-bg);
+        }
+
+        .isolated-content-wrapper::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .isolated-content-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
         .content-body::-webkit-scrollbar {
             width: 8px;
         }
@@ -826,6 +909,675 @@
     <script>
         'use strict';
 
+        // === SISTEMA DE ISOLAMENTO - FASE 2 ===
+        
+        /**
+         * Classe para gerenciar Shadow DOM Container
+         * Implementa isolamento completo de CSS/JS conforme FASE 2
+         */
+        class IsolatedContentLoader {
+            constructor(containerSelector) {
+                this.container = document.querySelector(containerSelector);
+                this.shadowHost = null;
+                this.shadowRoot = null;
+                this.scopeId = this.generateScopeId();
+                this.isInitialized = false;
+            }
+
+            /**
+             * Gera ID único para escopo de isolamento
+             */
+            generateScopeId() {
+                return 'isolated-content-' + Math.random().toString(36).substr(2, 9);
+            }
+
+            /**
+             * Cria container Shadow DOM com isolamento completo
+             */
+            createShadowContainer() {
+                if (this.isInitialized) {
+                    console.log('⚠️ Shadow container já inicializado');
+                    return this.shadowRoot;
+                }
+
+                try {
+                    // Criar shadow host
+                    this.shadowHost = document.createElement('div');
+                    this.shadowHost.className = 'isolated-content-host';
+                    this.shadowHost.id = this.scopeId;
+                    this.shadowHost.style.cssText = `
+                        width: 100%;
+                        height: 100%;
+                        overflow: hidden;
+                        position: relative;
+                    `;
+                    
+                    // Criar shadow root com isolamento completo
+                    this.shadowRoot = this.shadowHost.attachShadow({
+                        mode: 'closed', // Isolamento completo
+                        delegatesFocus: true
+                    });
+                    
+                    // Adicionar ao container principal
+                    this.container.appendChild(this.shadowHost);
+                    
+                    this.isInitialized = true;
+                    console.log('✅ Shadow DOM container criado com sucesso:', this.scopeId);
+                    return this.shadowRoot;
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao criar Shadow DOM container:', error);
+                    throw new Error('Falha na criação do container isolado: ' + error.message);
+                }
+            }
+
+            /**
+             * Carrega conteúdo HTML no Shadow DOM
+             */
+            loadContent(htmlContent, cssContent = '') {
+                if (!this.isInitialized) {
+                    this.createShadowContainer();
+                }
+
+                try {
+                    // Limpar conteúdo anterior
+                    this.shadowRoot.innerHTML = '';
+                    
+                    // Criar container interno
+                    const contentWrapper = document.createElement('div');
+                    contentWrapper.className = 'isolated-content-wrapper';
+                    contentWrapper.style.cssText = `
+                        width: 100%;
+                        height: 100%;
+                        overflow-y: auto;
+                        padding: 1rem;
+                        box-sizing: border-box;
+                    `;
+                    
+                    // Adicionar CSS isolado se fornecido
+                    if (cssContent) {
+                        const styleElement = document.createElement('style');
+                        styleElement.textContent = cssContent;
+                        this.shadowRoot.appendChild(styleElement);
+                    }
+                    
+                    // Adicionar HTML
+                    contentWrapper.innerHTML = htmlContent;
+                    this.shadowRoot.appendChild(contentWrapper);
+                    
+                    console.log('✅ Conteúdo carregado no Shadow DOM');
+                    return true;
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar conteúdo no Shadow DOM:', error);
+                    return false;
+                }
+            }
+
+            /**
+             * Destrói o container isolado
+             */
+            destroy() {
+                if (this.shadowHost && this.shadowHost.parentNode) {
+                    this.shadowHost.parentNode.removeChild(this.shadowHost);
+                }
+                this.shadowHost = null;
+                this.shadowRoot = null;
+                this.isInitialized = false;
+                console.log('🗑️ Shadow DOM container destruído');
+            }
+
+            /**
+             * Verifica se o container está ativo
+             */
+            isActive() {
+                return this.isInitialized && this.shadowRoot;
+            }
+        }
+
+        /**
+         * Processador de CSS para isolamento
+         * Implementa escopo único para todos os seletores
+         */
+        class CSSProcessor {
+            /**
+             * Adiciona escopo único a todos os seletores CSS
+             */
+            static scopeCSS(cssText, scopeId) {
+                if (!cssText || !scopeId) return cssText;
+                
+                try {
+                    // Adicionar escopo único a todos os seletores
+                    return cssText.replace(/([^{}]+){/g, (match, selector) => {
+                        const cleanSelector = selector.trim();
+                        
+                        // Preservar regras especiais (@media, @keyframes, etc.)
+                        if (cleanSelector.startsWith('@') || 
+                            cleanSelector.includes(':root') ||
+                            cleanSelector.includes('::before') ||
+                            cleanSelector.includes('::after')) {
+                            return match;
+                        }
+                        
+                        // Aplicar escopo a seletores normais
+                        return `#${scopeId} ${cleanSelector} {`;
+                    });
+                } catch (error) {
+                    console.warn('⚠️ Erro ao processar CSS:', error);
+                    return cssText;
+                }
+            }
+
+            /**
+             * Extrai CSS de conteúdo HTML
+             */
+            static extractCSSFromHTML(htmlContent) {
+                if (!htmlContent) return { inlineStyles: [], externalLinks: [] };
+                
+                try {
+                    const styleMatches = htmlContent.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || [];
+                    const linkMatches = htmlContent.match(/<link[^>]*rel=["\']stylesheet["\'][^>]*>/gi) || [];
+                    
+                    return {
+                        inlineStyles: styleMatches,
+                        externalLinks: linkMatches
+                    };
+                } catch (error) {
+                    console.warn('⚠️ Erro ao extrair CSS do HTML:', error);
+                    return { inlineStyles: [], externalLinks: [] };
+                }
+            }
+
+            /**
+             * Sanitiza CSS removendo propriedades perigosas
+             */
+            static sanitizeCSS(cssText) {
+                if (!cssText) return '';
+                
+                const dangerousProperties = [
+                    'position: fixed', 'position: absolute', 'position: sticky',
+                    'z-index', 'transform', 'left:', 'right:', 'top:', 'bottom:',
+                    'width: 100vw', 'height: 100vh', 'width: 100%', 'height: 100%'
+                ];
+                
+                let sanitized = cssText;
+                dangerousProperties.forEach(prop => {
+                    const regex = new RegExp(prop + '[^;]*;?', 'gi');
+                    sanitized = sanitized.replace(regex, '');
+                });
+                
+                return sanitized;
+            }
+        }
+
+        /**
+         * Gerenciador de recursos externos
+         * Carrega dependências de forma controlada no Shadow DOM
+         */
+        class ExternalResourceManager {
+            constructor(resourceCache = null) {
+                this.loadedResources = new Map();
+                this.pendingLoads = new Map();
+                this.maxRetries = 3;
+                this.resourceCache = resourceCache; // === FASE 5: Integração com ResourceCache ===
+            }
+
+            /**
+             * Carrega CSS externo no Shadow DOM
+             */
+            async loadExternalCSS(href, targetShadowRoot) {
+                if (this.loadedResources.has(href)) {
+                    return this.loadedResources.get(href);
+                }
+
+                // Evitar carregamentos duplicados
+                if (this.pendingLoads.has(href)) {
+                    return this.pendingLoads.get(href);
+                }
+
+                // === FASE 5: Usar ResourceCache se disponível ===
+                const loadPromise = this._loadCSSResourceWithCache(href, targetShadowRoot);
+                this.pendingLoads.set(href, loadPromise);
+
+                try {
+                    const result = await loadPromise;
+                    this.loadedResources.set(href, result);
+                    this.pendingLoads.delete(href);
+                    return result;
+                } catch (error) {
+                    this.pendingLoads.delete(href);
+                    throw error;
+                }
+            }
+
+            /**
+             * Carrega recurso CSS com cache (FASE 5)
+             */
+            async _loadCSSResourceWithCache(href, targetShadowRoot) {
+                // Usar ResourceCache se disponível
+                if (this.resourceCache) {
+                    try {
+                        const cssText = await this.resourceCache.getCachedCSS(href);
+                        
+                        // Sanitizar CSS
+                        const sanitizedCSS = CSSProcessor.sanitizeCSS(cssText);
+                        
+                        // Criar elemento style no Shadow DOM
+                        const style = document.createElement('style');
+                        style.textContent = sanitizedCSS;
+                        targetShadowRoot.appendChild(style);
+                        
+                        console.log('✅ CSS externo carregado com cache:', href);
+                        return cssText;
+                    } catch (error) {
+                        console.warn('⚠️ Erro no cache CSS, usando método tradicional:', error.message);
+                        return this._loadCSSResource(href, targetShadowRoot);
+                    }
+                } else {
+                    return this._loadCSSResource(href, targetShadowRoot);
+                }
+            }
+
+            /**
+             * Carrega recurso CSS individual (método tradicional)
+             */
+            async _loadCSSResource(href, targetShadowRoot) {
+                for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+                    try {
+                        console.log(`🔗 Carregando CSS externo (tentativa ${attempt}):`, href);
+                        
+                        const response = await fetch(href);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        
+                        const cssText = await response.text();
+                        
+                        // Sanitizar CSS
+                        const sanitizedCSS = CSSProcessor.sanitizeCSS(cssText);
+                        
+                        // Criar elemento style no Shadow DOM
+                        const style = document.createElement('style');
+                        style.textContent = sanitizedCSS;
+                        targetShadowRoot.appendChild(style);
+                        
+                        console.log('✅ CSS externo carregado com sucesso:', href);
+                        return cssText;
+                        
+                    } catch (error) {
+                        console.warn(`⚠️ Tentativa ${attempt} falhou para ${href}:`, error.message);
+                        
+                        if (attempt === this.maxRetries) {
+                            throw new Error(`Falha ao carregar CSS após ${this.maxRetries} tentativas: ${error.message}`);
+                        }
+                        
+                        // Aguardar antes da próxima tentativa
+                        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+                    }
+                }
+            }
+
+            /**
+             * Carrega script externo
+             */
+            async loadScript(src) {
+                if (this.loadedResources.has(src)) {
+                    return this.loadedResources.get(src);
+                }
+
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.onload = () => {
+                        this.loadedResources.set(src, true);
+                        resolve(true);
+                    };
+                    script.onerror = () => {
+                        reject(new Error(`Falha ao carregar script: ${src}`));
+                    };
+                    document.head.appendChild(script);
+                });
+            }
+
+            /**
+             * Carrega Mermaid no contexto do Shadow DOM
+             */
+            async loadMermaid(shadowRoot) {
+                try {
+                    // Carregar Mermaid se não estiver disponível
+                    if (!window.mermaid) {
+                        console.log('🔗 Carregando Mermaid...');
+                        await this.loadScript('https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js');
+                    }
+                    
+                    // Configurar Mermaid no contexto do Shadow DOM
+                    const mermaidConfig = {
+                        startOnLoad: false,
+                        securityLevel: 'loose',
+                        theme: 'default',
+                        themeVariables: {
+                            primaryColor: '#2c5aa0',
+                            primaryTextColor: '#2d3748',
+                            primaryBorderColor: '#e2e8f0',
+                            lineColor: '#4ecdc4'
+                        }
+                    };
+                    
+                    // Inicializar Mermaid
+                    window.mermaid.initialize(mermaidConfig);
+                    
+                    // Processar diagramas no Shadow DOM
+                    const mermaidElements = shadowRoot.querySelectorAll('.mermaid');
+                    if (mermaidElements.length > 0) {
+                        console.log(`🎨 Processando ${mermaidElements.length} diagramas Mermaid...`);
+                        await window.mermaid.run({ nodes: mermaidElements });
+                    }
+                    
+                    console.log('✅ Mermaid carregado e configurado no Shadow DOM');
+                    return true;
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar Mermaid:', error);
+                    return false;
+                }
+            }
+
+            /**
+             * Limpa cache de recursos
+             */
+            clearCache() {
+                this.loadedResources.clear();
+                this.pendingLoads.clear();
+                console.log('🗑️ Cache de recursos externos limpo');
+            }
+        }
+
+        /**
+         * FASE 5.1: Cache de Recursos
+         * Sistema de cache inteligente para melhorar performance
+         */
+        class ResourceCache {
+            constructor() {
+                this.cssCache = new Map();
+                this.scriptCache = new Map();
+                this.htmlCache = new Map();
+                this.maxAge = 30 * 60 * 1000; // 30 minutos
+                this.maxSize = 50; // Máximo de 50 itens por cache
+            }
+            
+            /**
+             * Obtém CSS do cache ou carrega se necessário
+             */
+            async getCachedCSS(url) {
+                const cached = this.cssCache.get(url);
+                if (cached && (Date.now() - cached.timestamp) < this.maxAge) {
+                    console.log('📋 CSS obtido do cache:', url);
+                    return cached.content;
+                }
+                
+                try {
+                    console.log('🔗 Carregando CSS:', url);
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const content = await response.text();
+                    
+                    // Gerenciar tamanho do cache
+                    this._manageCacheSize('cssCache');
+                    
+                    this.cssCache.set(url, {
+                        content,
+                        timestamp: Date.now()
+                    });
+                    
+                    console.log('✅ CSS carregado e armazenado no cache:', url);
+                    return content;
+                } catch (error) {
+                    console.error('❌ Erro ao carregar CSS:', error);
+                    throw error;
+                }
+            }
+            
+            /**
+             * Obtém script do cache ou carrega se necessário
+             */
+            async getCachedScript(url) {
+                const cached = this.scriptCache.get(url);
+                if (cached && (Date.now() - cached.timestamp) < this.maxAge) {
+                    console.log('📋 Script obtido do cache:', url);
+                    return cached.content;
+                }
+                
+                try {
+                    console.log('🔗 Carregando script:', url);
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const content = await response.text();
+                    
+                    // Gerenciar tamanho do cache
+                    this._manageCacheSize('scriptCache');
+                    
+                    this.scriptCache.set(url, {
+                        content,
+                        timestamp: Date.now()
+                    });
+                    
+                    console.log('✅ Script carregado e armazenado no cache:', url);
+                    return content;
+                } catch (error) {
+                    console.error('❌ Erro ao carregar script:', error);
+                    throw error;
+                }
+            }
+            
+            /**
+             * Obtém HTML do cache ou carrega se necessário
+             */
+            async getCachedHTML(url) {
+                const cached = this.htmlCache.get(url);
+                if (cached && (Date.now() - cached.timestamp) < this.maxAge) {
+                    console.log('📋 HTML obtido do cache:', url);
+                    return cached.content;
+                }
+                
+                try {
+                    console.log('🔗 Carregando HTML:', url);
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const content = await response.text();
+                    
+                    // Gerenciar tamanho do cache
+                    this._manageCacheSize('htmlCache');
+                    
+                    this.htmlCache.set(url, {
+                        content,
+                        timestamp: Date.now()
+                    });
+                    
+                    console.log('✅ HTML carregado e armazenado no cache:', url);
+                    return content;
+                } catch (error) {
+                    console.error('❌ Erro ao carregar HTML:', error);
+                    throw error;
+                }
+            }
+            
+            /**
+             * Gerenciar tamanho do cache removendo itens mais antigos
+             */
+            _manageCacheSize(cacheType) {
+                const cache = this[cacheType];
+                if (cache.size >= this.maxSize) {
+                    // Encontrar item mais antigo
+                    let oldestKey = null;
+                    let oldestTime = Date.now();
+                    
+                    for (const [key, value] of cache.entries()) {
+                        if (value.timestamp < oldestTime) {
+                            oldestTime = value.timestamp;
+                            oldestKey = key;
+                        }
+                    }
+                    
+                    if (oldestKey) {
+                        cache.delete(oldestKey);
+                        console.log(`🗑️ Item removido do cache ${cacheType}:`, oldestKey);
+                    }
+                }
+            }
+            
+            /**
+             * Limpa cache específico
+             */
+            clearCache(cacheType = 'all') {
+                if (cacheType === 'all' || cacheType === 'css') {
+                    this.cssCache.clear();
+                }
+                if (cacheType === 'all' || cacheType === 'script') {
+                    this.scriptCache.clear();
+                }
+                if (cacheType === 'all' || cacheType === 'html') {
+                    this.htmlCache.clear();
+                }
+                console.log(`🗑️ Cache ${cacheType} limpo`);
+            }
+            
+            /**
+             * Obtém estatísticas do cache
+             */
+            getCacheStats() {
+                return {
+                    css: this.cssCache.size,
+                    script: this.scriptCache.size,
+                    html: this.htmlCache.size,
+                    total: this.cssCache.size + this.scriptCache.size + this.htmlCache.size,
+                    maxSize: this.maxSize,
+                    maxAge: this.maxAge
+                };
+            }
+        }
+
+        /**
+         * FASE 5.2: Sistema de Fallback
+         * Garante funcionamento mesmo com falhas
+         */
+        class FallbackManager {
+            constructor(appInstance) {
+                this.app = appInstance;
+                this.maxRetries = 3;
+                this.retryDelay = 1000; // 1 segundo
+            }
+            
+            /**
+             * Exibe conteúdo com sistema de fallback robusto
+             */
+            static async safeDisplayContent(appInstance, contentData, attempts = 0) {
+                try {
+                    console.log(`🔄 Tentativa ${attempts + 1} de exibição de conteúdo`);
+                    await appInstance.displayContent(contentData);
+                    console.log('✅ Conteúdo exibido com sucesso');
+                } catch (error) {
+                    console.warn(`⚠️ Tentativa ${attempts + 1} falhou:`, error.message);
+                    
+                    if (attempts < 2) {
+                        // Aguardar antes da próxima tentativa
+                        await new Promise(resolve => setTimeout(resolve, 1000 * (attempts + 1)));
+                        
+                        // Tentar novamente com sanitização simples
+                        return FallbackManager.safeDisplayContent(appInstance, contentData, attempts + 1);
+                    } else {
+                        // Fallback para método original
+                        console.log('🔄 Aplicando fallback para método tradicional');
+                        return FallbackManager.displayContentSanitized(appInstance, contentData);
+                    }
+                }
+            }
+            
+            /**
+             * Fallback para método de sanitização tradicional
+             */
+            static displayContentSanitized(appInstance, contentData) {
+                try {
+                    console.log('📄 Aplicando fallback com sanitização tradicional');
+                    
+                    // Desativar isolamento temporariamente
+                    const originalIsolation = appInstance.isolationEnabled;
+                    appInstance.isolationEnabled = false;
+                    
+                    // Usar método tradicional
+                    appInstance.displayContentTraditional(contentData);
+                    
+                    // Restaurar configuração original
+                    appInstance.isolationEnabled = originalIsolation;
+                    
+                    console.log('✅ Fallback aplicado com sucesso');
+                } catch (error) {
+                    console.error('❌ Erro no fallback:', error);
+                    appInstance.showContentError('Erro ao carregar conteúdo. Tente novamente.');
+                }
+            }
+            
+            /**
+             * Carregamento seguro de recursos externos
+             */
+            static async safeLoadResource(loadFunction, resourceUrl, maxRetries = 3) {
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                    try {
+                        console.log(`🔄 Tentativa ${attempt} de carregamento:`, resourceUrl);
+                        return await loadFunction(resourceUrl);
+                    } catch (error) {
+                        console.warn(`⚠️ Tentativa ${attempt} falhou para ${resourceUrl}:`, error.message);
+                        
+                        if (attempt === maxRetries) {
+                            throw new Error(`Falha ao carregar ${resourceUrl} após ${maxRetries} tentativas: ${error.message}`);
+                        }
+                        
+                        // Aguardar antes da próxima tentativa
+                        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+                    }
+                }
+            }
+            
+            /**
+             * Verifica se o sistema está funcionando corretamente
+             */
+            static async healthCheck(appInstance) {
+                const checks = {
+                    shadowDOM: false,
+                    fetch: false,
+                    cache: false
+                };
+                
+                try {
+                    // Verificar Shadow DOM
+                    if (typeof document.createElement('div').attachShadow === 'function') {
+                        checks.shadowDOM = true;
+                    }
+                    
+                    // Verificar fetch
+                    if (typeof fetch === 'function') {
+                        checks.fetch = true;
+                    }
+                    
+                    // Verificar cache
+                    if (appInstance.resourceCache && typeof appInstance.resourceCache.getCacheStats === 'function') {
+                        checks.cache = true;
+                    }
+                    
+                    console.log('🏥 Health check:', checks);
+                    return checks;
+                } catch (error) {
+                    console.error('❌ Erro no health check:', error);
+                    return checks;
+                }
+            }
+        }
+
         // === CONFIGURAÇÃO E INICIALIZAÇÃO ===
         class StudyRoomApp {
             constructor() {
@@ -847,6 +1599,19 @@
                 
                 // Elementos DOM
                 this.elements = {};
+                
+                // === SISTEMA DE ISOLAMENTO FASE 2 ===
+                this.isolatedLoader = null;
+                this.cssProcessor = new CSSProcessor();
+                
+                // === FASE 5: OTIMIZAÇÕES E MELHORIAS ===
+                this.resourceCache = new ResourceCache(); // Cache inteligente de recursos
+                this.resourceManager = new ExternalResourceManager(this.resourceCache); // Passar ResourceCache
+                this.fallbackManager = new FallbackManager(this); // Sistema de fallback
+                this.isolationEnabled = true; // Flag para habilitar/desabilitar isolamento
+                
+                // === FASE 4: FUNCIONALIDADES ESPECÍFICAS ===
+                this.eventBridge = null; // Ponte de eventos para Shadow DOM
                 
                 // Configuração do Firebase
                 this.firebaseConfig = {
@@ -1898,11 +2663,18 @@
                         }
                     }
                     
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    // === FASE 5: Usar ResourceCache para HTML ===
+                    let rawHtml;
+                    try {
+                        rawHtml = await this.resourceCache.getCachedHTML(url);
+                    } catch (cacheError) {
+                        console.warn('⚠️ Erro no cache, carregando diretamente:', cacheError.message);
+                        const response = await fetch(url);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        rawHtml = await response.text();
                     }
-                    let rawHtml = await response.text();
 
                     // === SANITIZAÇÃO ROBUSTA DO CONTEÚDO HTML ===
                     return this.sanitizeHTML(rawHtml);
@@ -1984,6 +2756,106 @@
             displayContent(contentData) {
                 this.currentContent = contentData;
                 
+                // === FASE 5: Usar FallbackManager para maior robustez ===
+                FallbackManager.safeDisplayContent(this, contentData);
+            }
+
+            /**
+             * Exibe conteúdo usando Shadow DOM isolado
+             */
+            async displayContentIsolated(contentData) {
+                console.log('🔒 Exibindo conteúdo em modo isolado (Shadow DOM)');
+                
+                // Inicializar loader isolado se necessário
+                if (!this.isolatedLoader) {
+                    this.isolatedLoader = new IsolatedContentLoader('#contentBody');
+                }
+                
+                // Destruir container anterior se existir
+                if (this.isolatedLoader.isActive()) {
+                    this.isolatedLoader.destroy();
+                }
+                
+                // Criar novo container isolado
+                const shadowRoot = this.isolatedLoader.createShadowContainer();
+                
+                // === FASE 4: INTEGRAÇÃO DAS FUNCIONALIDADES ESPECÍFICAS ===
+                
+                // 4.1: Injetar variáveis CSS principais no Shadow DOM
+                CSSBridge.injectMainVariables(shadowRoot);
+                console.log('🎨 Variáveis CSS principais injetadas no Shadow DOM');
+                
+                // 4.2: Configurar ponte de eventos
+                this.eventBridge = new EventBridge(shadowRoot, this);
+                console.log('🔗 Ponte de eventos configurada');
+                
+                // Processar CSS do conteúdo
+                const cssData = this.cssProcessor.extractCSSFromHTML(contentData.content);
+                let processedCSS = '';
+                
+                // Processar estilos inline
+                if (cssData.inlineStyles.length > 0) {
+                    console.log(`🎨 Processando ${cssData.inlineStyles.length} estilos inline...`);
+                    
+                    for (const styleTag of cssData.inlineStyles) {
+                        const styleMatch = styleTag.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+                        if (styleMatch && styleMatch[1]) {
+                            const cssText = styleMatch[1];
+                            const scopedCSS = this.cssProcessor.scopeCSS(cssText, this.isolatedLoader.scopeId);
+                            const sanitizedCSS = this.cssProcessor.sanitizeCSS(scopedCSS);
+                            processedCSS += sanitizedCSS + '\n';
+                        }
+                    }
+                }
+                
+                // Processar links CSS externos
+                if (cssData.externalLinks.length > 0) {
+                    console.log(`🔗 Processando ${cssData.externalLinks.length} links CSS externos...`);
+                    
+                    for (const linkTag of cssData.externalLinks) {
+                        const hrefMatch = linkTag.match(/href=["\']([^"\']+)["\']/i);
+                        if (hrefMatch && hrefMatch[1]) {
+                            try {
+                                await this.resourceManager.loadExternalCSS(hrefMatch[1], shadowRoot);
+                            } catch (error) {
+                                console.warn('⚠️ Falha ao carregar CSS externo:', hrefMatch[1], error.message);
+                            }
+                        }
+                    }
+                }
+                
+                // Sanitizar HTML removendo tags de estilo (já processadas)
+                const sanitizedHTML = this.sanitizeHTMLForIsolation(contentData.content);
+                
+                // Carregar conteúdo no Shadow DOM
+                const success = this.isolatedLoader.loadContent(sanitizedHTML, processedCSS);
+                
+                if (!success) {
+                    throw new Error('Falha ao carregar conteúdo no Shadow DOM');
+                }
+                
+                // Processar Mermaid se necessário
+                const mermaidElements = shadowRoot.querySelectorAll('.mermaid');
+                if (mermaidElements.length > 0) {
+                    console.log(`🎨 Processando ${mermaidElements.length} diagramas Mermaid...`);
+                    await this.resourceManager.loadMermaid(shadowRoot);
+                }
+                
+                // Scroll para o topo
+                const contentWrapper = shadowRoot.querySelector('.isolated-content-wrapper');
+                if (contentWrapper) {
+                    contentWrapper.scrollTop = 0;
+                }
+                
+                console.log('✅ Conteúdo isolado carregado com sucesso');
+            }
+
+            /**
+             * Exibe conteúdo no modo tradicional (fallback)
+             */
+            displayContentTraditional(contentData) {
+                console.log('📄 Exibindo conteúdo em modo tradicional');
+                
                 // Atualiza corpo do conteúdo
                 const lessonContentDiv = document.createElement('div');
                 lessonContentDiv.className = 'lesson-content';
@@ -1994,11 +2866,44 @@
                 
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
+            }
+
+            /**
+             * Sanitiza HTML para isolamento, removendo tags de estilo
+             */
+            sanitizeHTMLForIsolation(htmlContent) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlContent;
+
+                // Remover tags de estilo (já processadas separadamente)
+                tempDiv.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => el.remove());
+
+                // Remover elementos perigosos
+                const dangerousElements = [
+                    'script', 'iframe', 'object', 'embed', 
+                    'form', 'input', 'button', 'textarea', 'select',
+                    'applet', 'audio', 'video', 'source', 'track'
+                ];
                 
-                // Atualizar botão dinâmico de questões
-                this.updateDynamicQuestoesButton(contentData.meta);
+                dangerousElements.forEach(tag => {
+                    tempDiv.querySelectorAll(tag).forEach(el => el.remove());
+                });
+
+                // Remover atributos perigosos
+                const dangerousAttributes = [
+                    'onclick', 'onload', 'onerror', 'onmouseover', 
+                    'onfocus', 'onblur', 'onchange', 'onsubmit'
+                ];
                 
-                console.log('✅ Conteúdo exibido:', contentData.title);
+                tempDiv.querySelectorAll('*').forEach(el => {
+                    dangerousAttributes.forEach(attr => {
+                        if (el.hasAttribute(attr)) {
+                            el.removeAttribute(attr);
+                        }
+                    });
+                });
+
+                return tempDiv.innerHTML;
             }
 
             // === ESTADOS DE UI ===
@@ -2106,16 +3011,244 @@
                 return div.innerHTML;
             }
 
+            // === SISTEMA DE ISOLAMENTO - CONTROLES ===
+            
+            /**
+             * Habilita/desabilita sistema de isolamento
+             */
+            setIsolationEnabled(enabled) {
+                this.isolationEnabled = enabled;
+                console.log(`🔒 Sistema de isolamento ${enabled ? 'habilitado' : 'desabilitado'}`);
+                
+                if (enabled) {
+                    this.showNotification('Sistema de isolamento ativado', 'success');
+                } else {
+                    this.showNotification('Sistema de isolamento desativado', 'info');
+                }
+                
+                // Recarregar conteúdo atual se houver
+                if (this.currentContent) {
+                    this.displayContent(this.currentContent);
+                }
+            }
+
+            /**
+             * Verifica status do sistema de isolamento
+             */
+            getIsolationStatus() {
+                return {
+                    enabled: this.isolationEnabled,
+                    active: this.isolatedLoader ? this.isolatedLoader.isActive() : false,
+                    scopeId: this.isolatedLoader ? this.isolatedLoader.scopeId : null
+                };
+            }
+
+            /**
+             * Limpa recursos do sistema de isolamento
+             */
+            clearIsolationResources() {
+                if (this.isolatedLoader) {
+                    this.isolatedLoader.destroy();
+                    this.isolatedLoader = null;
+                }
+                
+                if (this.resourceManager) {
+                    this.resourceManager.clearCache();
+                }
+                
+                // === FASE 4: Limpar ponte de eventos ===
+                if (this.eventBridge) {
+                    this.eventBridge = null;
+                }
+                
+                console.log('🗑️ Recursos de isolamento limpos');
+            }
+
+            /**
+             * Reinicializa sistema de isolamento
+             */
+            reinitializeIsolation() {
+                this.clearIsolationResources();
+                this.isolatedLoader = new IsolatedContentLoader('#contentBody');
+                this.resourceManager = new ExternalResourceManager();
+                console.log('🔄 Sistema de isolamento reinicializado');
+            }
+
             // === API PÚBLICA ===
             clearCache() {
                 this.contentCache.clear();
                 this.coursesCache = null;
+                this.clearIsolationResources();
+                
+                // === FASE 5: Limpar ResourceCache ===
+                if (this.resourceCache) {
+                    this.resourceCache.clearCache();
+                }
+                
                 this.showNotification('Cache limpo', 'success');
             }
 
             refresh() {
                 this.clearCache();
                 this.loadUserCourses();
+            }
+
+            // === API PÚBLICA - SISTEMA DE ISOLAMENTO ===
+            toggleIsolation() {
+                this.setIsolationEnabled(!this.isolationEnabled);
+            }
+
+            getIsolationInfo() {
+                return this.getIsolationStatus();
+            }
+            
+            // === FASE 5: MÉTODOS DE OTIMIZAÇÃO E MONITORAMENTO ===
+            
+            /**
+             * Obtém estatísticas do cache de recursos
+             */
+            getCacheStats() {
+                if (this.resourceCache) {
+                    return this.resourceCache.getCacheStats();
+                }
+                return { error: 'ResourceCache não disponível' };
+            }
+            
+            /**
+             * Executa health check do sistema
+             */
+            async performHealthCheck() {
+                return await FallbackManager.healthCheck(this);
+            }
+            
+            /**
+             * Limpa cache específico (CSS, Script, HTML ou all)
+             */
+            clearSpecificCache(cacheType = 'all') {
+                if (this.resourceCache) {
+                    this.resourceCache.clearCache(cacheType);
+                    this.showNotification(`Cache ${cacheType} limpo`, 'success');
+                } else {
+                    this.showNotification('ResourceCache não disponível', 'error');
+                }
+            }
+            
+            // === FASE 4: MÉTODOS DE COMUNICAÇÃO COM SHADOW DOM ===
+            
+            /**
+             * Dispara evento para o Shadow DOM
+             * @param {string} action - Ação a ser executada
+             * @param {Object} context - Contexto da ação
+             */
+            dispatchShadowEvent(action, context = {}) {
+                if (this.eventBridge && this.eventBridge.shadowRoot) {
+                    const event = new CustomEvent('content-action', {
+                        detail: { action, context }
+                    });
+                    this.eventBridge.shadowRoot.dispatchEvent(event);
+                    console.log('📡 Evento disparado para Shadow DOM:', action, context);
+                } else {
+                    console.warn('⚠️ EventBridge não disponível para disparar evento:', action);
+                }
+            }
+            
+            /**
+             * Obtém informações sobre a ponte de eventos
+             */
+            getEventBridgeInfo() {
+                return {
+                    available: this.eventBridge !== null,
+                    shadowRoot: this.eventBridge ? this.eventBridge.shadowRoot : null,
+                    mainApp: this.eventBridge ? this.eventBridge.mainApp : null
+                };
+            }
+        }
+
+        // === FASE 4: FUNCIONALIDADES ESPECÍFICAS ===
+        
+        /**
+         * Sistema de Ponte CSS - FASE 4.1
+         * Permite que variáveis CSS principais sejam acessíveis no Shadow DOM
+         */
+        class CSSBridge {
+            /**
+             * Injeta variáveis CSS principais no Shadow DOM
+             * @param {ShadowRoot} shadowRoot - Root do Shadow DOM
+             */
+            static injectMainVariables(shadowRoot) {
+                const mainVariables = this.extractCSSVariables(document.documentElement);
+                
+                const bridgeStyle = document.createElement('style');
+                bridgeStyle.textContent = `
+                    :host {
+                        ${mainVariables}
+                    }
+                `;
+                shadowRoot.insertBefore(bridgeStyle, shadowRoot.firstChild);
+            }
+            
+            /**
+             * Extrai variáveis CSS do elemento especificado
+             * @param {Element} element - Elemento para extrair variáveis
+             * @returns {string} - String com variáveis CSS formatadas
+             */
+            static extractCSSVariables(element) {
+                const computedStyle = getComputedStyle(element);
+                const variables = [];
+                
+                for (let i = 0; i < computedStyle.length; i++) {
+                    const prop = computedStyle[i];
+                    if (prop.startsWith('--')) {
+                        const value = computedStyle.getPropertyValue(prop);
+                        variables.push(`${prop}: ${value};`);
+                    }
+                }
+                
+                return variables.join('\n');
+            }
+        }
+
+        /**
+         * Gerenciamento de Eventos - FASE 4.2
+         * Permite comunicação entre Shadow DOM e aplicação principal
+         */
+        class EventBridge {
+            constructor(shadowRoot, mainApp) {
+                this.shadowRoot = shadowRoot;
+                this.mainApp = mainApp;
+                this.setupEventForwarding();
+            }
+            
+            /**
+             * Configura encaminhamento de eventos
+             */
+            setupEventForwarding() {
+                // Escutar eventos no Shadow DOM
+                this.shadowRoot.addEventListener('content-action', (e) => {
+                    switch(e.detail.action) {
+                        case 'open-questions':
+                            this.mainApp.openQuestoesForCurrentModule(e.detail.context);
+                            break;
+                        case 'print-content':
+                            this.printShadowContent();
+                            break;
+                    }
+                });
+            }
+            
+            /**
+             * Imprime conteúdo do Shadow DOM
+             */
+            printShadowContent() {
+                const content = this.shadowRoot.innerHTML;
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                        <head><title>Conteúdo da Aula</title></head>
+                        <body>${content}</body>
+                    </html>
+                `);
+                printWindow.print();
             }
         }
 
@@ -2147,6 +3280,24 @@
                 } else {
                     console.log('Notificação (fallback):', message);
                 }
+            },
+            // === API SISTEMA DE ISOLAMENTO ===
+            toggleIsolation: () => {
+                console.log('toggleIsolation chamado via header (early)');
+                if (studyApp && studyApp.toggleIsolation) {
+                    return studyApp.toggleIsolation();
+                } else {
+                    console.warn('studyApp.toggleIsolation não disponível ainda');
+                }
+            },
+            getIsolationInfo: () => {
+                console.log('getIsolationInfo chamado via header (early)');
+                if (studyApp && studyApp.getIsolationInfo) {
+                    return studyApp.getIsolationInfo();
+                } else {
+                    console.warn('studyApp.getIsolationInfo não disponível ainda');
+                    return { enabled: false, active: false, scopeId: null };
+                }
             }
         };
 
@@ -2168,11 +3319,42 @@
                 return studyApp.showNotification(message, type);
             };
             
+            // === ATUALIZAR MÉTODOS DE ISOLAMENTO ===
+            window.studyApp.toggleIsolation = () => {
+                console.log('toggleIsolation chamado via header');
+                return studyApp.toggleIsolation();
+            };
+            window.studyApp.getIsolationInfo = () => {
+                console.log('getIsolationInfo chamado via header');
+                return studyApp.getIsolationInfo();
+            };
+            window.studyApp.setIsolationEnabled = (enabled) => {
+                console.log('setIsolationEnabled chamado via header:', enabled);
+                return studyApp.setIsolationEnabled(enabled);
+            };
+            window.studyApp.reinitializeIsolation = () => {
+                console.log('reinitializeIsolation chamado via header');
+                return studyApp.reinitializeIsolation();
+            };
+            
+            // === FASE 4: MÉTODOS DE COMUNICAÇÃO COM SHADOW DOM ===
+            window.studyApp.dispatchShadowEvent = (action, context) => {
+                console.log('dispatchShadowEvent chamado via header:', action, context);
+                return studyApp.dispatchShadowEvent(action, context);
+            };
+            window.studyApp.getEventBridgeInfo = () => {
+                console.log('getEventBridgeInfo chamado via header');
+                return studyApp.getEventBridgeInfo();
+            };
+            
             console.log('window.studyApp atualizado com referências reais');
+            console.log('🔒 Sistema de isolamento FASE 2 implementado e disponível');
+            console.log('🔗 FASE 4: Funcionalidades específicas implementadas e disponíveis');
             
             // Expor para debug em desenvolvimento
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 window.studyApp.debug = studyApp;
+                console.log('🐛 Modo debug ativado - use window.studyApp.debug para acessar a instância completa');
             }
         });
 
