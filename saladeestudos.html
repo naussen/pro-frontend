@@ -1475,12 +1475,24 @@
             
             /**
              * Exibe conteúdo com sistema de fallback robusto
+             * CORREÇÃO FASE 7: Evitar recursão infinita
              */
             static async safeDisplayContent(appInstance, contentData, attempts = 0) {
+                // CORREÇÃO: Verificar se já está processando para evitar recursão
+                if (appInstance._isDisplayingContent) {
+                    console.warn('⚠️ displayContent já em execução, evitando recursão infinita');
+                    return;
+                }
+                
+                appInstance._isDisplayingContent = true;
+                
                 try {
                     console.log(`🔄 Tentativa ${attempts + 1} de exibição de conteúdo`);
-                    await appInstance.displayContent(contentData);
+                    
+                    // CORREÇÃO: Chamar método interno ao invés do público para evitar recursão
+                    await appInstance._displayContentInternal(contentData);
                     console.log('✅ Conteúdo exibido com sucesso');
+                    
                 } catch (error) {
                     console.warn(`⚠️ Tentativa ${attempts + 1} falhou:`, error.message);
                     
@@ -1488,13 +1500,17 @@
                         // Aguardar antes da próxima tentativa
                         await new Promise(resolve => setTimeout(resolve, 1000 * (attempts + 1)));
                         
-                        // Tentar novamente com sanitização simples
+                        // CORREÇÃO: Reset do flag antes da nova tentativa
+                        appInstance._isDisplayingContent = false;
                         return FallbackManager.safeDisplayContent(appInstance, contentData, attempts + 1);
                     } else {
                         // Fallback para método original
                         console.log('🔄 Aplicando fallback para método tradicional');
                         return FallbackManager.displayContentSanitized(appInstance, contentData);
                     }
+                } finally {
+                    // CORREÇÃO: Sempre limpar o flag no final
+                    appInstance._isDisplayingContent = false;
                 }
             }
             
@@ -1578,6 +1594,355 @@
             }
         }
 
+        /**
+         * Circuit Breaker - FASE 7.2
+         * Evita cascata de falhas e melhora resiliência
+         */
+        class CircuitBreaker {
+            constructor(threshold = 3, timeout = 30000) {
+                this.threshold = threshold;
+                this.timeout = timeout;
+                this.failureCount = 0;
+                this.lastFailureTime = null;
+                this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
+            }
+            
+            async execute(fn) {
+                if (this.state === 'OPEN') {
+                    if (Date.now() - this.lastFailureTime > this.timeout) {
+                        this.state = 'HALF_OPEN';
+                        console.log('🔄 Circuit Breaker: HALF_OPEN');
+                    } else {
+                        throw new Error('Circuit breaker is OPEN');
+                    }
+                }
+                
+                try {
+                    const result = await fn();
+                    this.onSuccess();
+                    return result;
+                } catch (error) {
+                    this.onFailure();
+                    throw error;
+                }
+            }
+            
+            onSuccess() {
+                this.failureCount = 0;
+                this.state = 'CLOSED';
+                console.log('✅ Circuit Breaker: CLOSED');
+            }
+            
+            onFailure() {
+                this.failureCount++;
+                this.lastFailureTime = Date.now();
+                
+                if (this.failureCount >= this.threshold) {
+                    this.state = 'OPEN';
+                    console.log('🚨 Circuit Breaker: OPEN');
+                }
+            }
+        }
+
+        /**
+         * Rate Limiter - FASE 7.3
+         * Evita sobrecarga de requisições simultâneas
+         */
+        class RateLimiter {
+            constructor(maxRequests = 5, windowMs = 1000) {
+                this.maxRequests = maxRequests;
+                this.windowMs = windowMs;
+                this.requests = [];
+            }
+            
+            async acquire() {
+                const now = Date.now();
+                
+                // Limpar requisições antigas
+                this.requests = this.requests.filter(time => now - time < this.windowMs);
+                
+                if (this.requests.length >= this.maxRequests) {
+                    const oldestRequest = Math.min(...this.requests);
+                    const waitTime = this.windowMs - (now - oldestRequest);
+                    
+                    console.log(`⏳ Rate limit atingido, aguardando ${waitTime}ms`);
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                    
+                    return this.acquire(); // Tentar novamente
+                }
+                
+                this.requests.push(now);
+                return true;
+            }
+        }
+
+        /**
+         * Performance Monitor - FASE 7.4
+         * Detecta e reporta problemas em tempo real
+         */
+        class PerformanceMonitor {
+            constructor() {
+                this.metrics = {
+                    loadTimes: [],
+                    errors: [],
+                    memoryUsage: [],
+                    shadowDOMCreations: 0
+                };
+                this.alertThresholds = {
+                    maxLoadTime: 5000,
+                    maxErrors: 10,
+                    maxMemoryMB: 100
+                };
+            }
+            
+            recordLoadTime(duration) {
+                this.metrics.loadTimes.push({
+                    duration,
+                    timestamp: Date.now()
+                });
+                
+                if (duration > this.alertThresholds.maxLoadTime) {
+                    this.triggerAlert('HIGH_LOAD_TIME', { duration });
+                }
+            }
+            
+            recordError(error) {
+                this.metrics.errors.push({
+                    error: error.message,
+                    stack: error.stack,
+                    timestamp: Date.now()
+                });
+                
+                // Alertar se muitos erros em pouco tempo
+                const recentErrors = this.metrics.errors.filter(
+                    e => Date.now() - e.timestamp < 60000
+                );
+                
+                if (recentErrors.length > this.alertThresholds.maxErrors) {
+                    this.triggerAlert('HIGH_ERROR_RATE', { count: recentErrors.length });
+                }
+            }
+            
+            recordMemoryUsage() {
+                if (performance.memory) {
+                    const memoryMB = performance.memory.usedJSHeapSize / 1024 / 1024;
+                    this.metrics.memoryUsage.push({
+                        memoryMB,
+                        timestamp: Date.now()
+                    });
+                    
+                    if (memoryMB > this.alertThresholds.maxMemoryMB) {
+                        this.triggerAlert('HIGH_MEMORY_USAGE', { memoryMB });
+                    }
+                }
+            }
+            
+            recordShadowDOMCreation() {
+                this.metrics.shadowDOMCreations++;
+            }
+            
+            triggerAlert(type, data) {
+                console.error(`🚨 ALERTA: ${type}`, data);
+                
+                // Enviar para sistema de monitoramento externo
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'performance_alert', {
+                        alert_type: type,
+                        alert_data: JSON.stringify(data)
+                    });
+                }
+            }
+            
+            getMetrics() {
+                return {
+                    ...this.metrics,
+                    averageLoadTime: this.metrics.loadTimes.length > 0 
+                        ? this.metrics.loadTimes.reduce((a, b) => a + b.duration, 0) / this.metrics.loadTimes.length
+                        : 0,
+                    errorRate: this.metrics.errors.length,
+                    successRate: this.metrics.loadTimes.length > 0 
+                        ? (this.metrics.loadTimes.length / (this.metrics.loadTimes.length + this.metrics.errors.length)) * 100
+                        : 100
+                };
+            }
+        }
+
+        /**
+         * Retry Manager - FASE 7.5
+         * Melhora resiliência em falhas temporárias com backoff exponencial
+         */
+        class RetryManager {
+            static async withExponentialBackoff(fn, maxRetries = 3, baseDelay = 1000) {
+                let lastError;
+                
+                for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                    try {
+                        return await fn();
+                    } catch (error) {
+                        lastError = error;
+                        
+                        if (attempt === maxRetries) {
+                            break;
+                        }
+                        
+                        const delay = baseDelay * Math.pow(2, attempt);
+                        const jitter = Math.random() * 0.1 * delay; // 10% jitter
+                        const totalDelay = delay + jitter;
+                        
+                        console.log(`⏳ Tentativa ${attempt + 1} falhou, aguardando ${Math.round(totalDelay)}ms`);
+                        await new Promise(resolve => setTimeout(resolve, totalDelay));
+                    }
+                }
+                
+                throw lastError;
+            }
+            
+            static async withLinearBackoff(fn, maxRetries = 3, delay = 1000) {
+                let lastError;
+                
+                for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                    try {
+                        return await fn();
+                    } catch (error) {
+                        lastError = error;
+                        
+                        if (attempt === maxRetries) {
+                            break;
+                        }
+                        
+                        console.log(`⏳ Tentativa ${attempt + 1} falhou, aguardando ${delay}ms`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+                
+                throw lastError;
+            }
+        }
+
+        /**
+         * Stress Test Suite - FASE 7.6
+         * Valida correções sob condições adversas
+         */
+        class StressTestSuite {
+            static async runContentLoadStressTest(appInstance, iterations = 100) {
+                console.log(`🔥 Iniciando teste de stress: ${iterations} iterações`);
+                
+                const results = {
+                    success: 0,
+                    failures: 0,
+                    averageTime: 0,
+                    errors: [],
+                    startTime: Date.now()
+                };
+                
+                const times = [];
+                
+                for (let i = 0; i < iterations; i++) {
+                    const startTime = performance.now();
+                    
+                    try {
+                        await appInstance.displayContent({
+                            content: '<div>Teste de stress ' + i + '</div>',
+                            meta: { title: 'Teste ' + i }
+                        });
+                        
+                        results.success++;
+                        times.push(performance.now() - startTime);
+                        
+                    } catch (error) {
+                        results.failures++;
+                        results.errors.push(error.message);
+                    }
+                    
+                    // Pequena pausa entre iterações
+                    if (i % 10 === 0) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                }
+                
+                results.averageTime = times.length > 0 
+                    ? times.reduce((a, b) => a + b, 0) / times.length 
+                    : 0;
+                results.totalTime = Date.now() - results.startTime;
+                
+                console.log('📊 Resultados do teste de stress:', results);
+                return results;
+            }
+            
+            static async runMemoryStressTest(appInstance, iterations = 50) {
+                console.log(`🧠 Iniciando teste de stress de memória: ${iterations} iterações`);
+                
+                const results = {
+                    initialMemory: performance.memory ? performance.memory.usedJSHeapSize : 0,
+                    finalMemory: 0,
+                    memoryIncrease: 0,
+                    errors: []
+                };
+                
+                for (let i = 0; i < iterations; i++) {
+                    try {
+                        await appInstance.displayContent({
+                            content: `<div>Memory Test ${i}</div><script>console.log('Test ${i}');</script>`,
+                            meta: { title: `Memory Test ${i}` }
+                        });
+                        
+                        // Forçar garbage collection se disponível
+                        if (window.gc) {
+                            window.gc();
+                        }
+                        
+                    } catch (error) {
+                        results.errors.push(error.message);
+                    }
+                }
+                
+                results.finalMemory = performance.memory ? performance.memory.usedJSHeapSize : 0;
+                results.memoryIncrease = results.finalMemory - results.initialMemory;
+                
+                console.log('🧠 Resultados do teste de memória:', results);
+                return results;
+            }
+            
+            static async runConcurrentLoadTest(appInstance, concurrentRequests = 10) {
+                console.log(`⚡ Iniciando teste de carga concorrente: ${concurrentRequests} requisições`);
+                
+                const promises = [];
+                const results = {
+                    success: 0,
+                    failures: 0,
+                    averageTime: 0,
+                    errors: []
+                };
+                
+                for (let i = 0; i < concurrentRequests; i++) {
+                    promises.push((async () => {
+                        const startTime = performance.now();
+                        
+                        try {
+                            await appInstance.displayContent({
+                                content: `<div>Concurrent Test ${i}</div>`,
+                                meta: { title: `Concurrent ${i}` }
+                            });
+                            
+                            results.success++;
+                            return performance.now() - startTime;
+                            
+                        } catch (error) {
+                            results.failures++;
+                            results.errors.push(error.message);
+                            return performance.now() - startTime;
+                        }
+                    })());
+                }
+                
+                const times = await Promise.all(promises);
+                results.averageTime = times.reduce((a, b) => a + b, 0) / times.length;
+                
+                console.log('⚡ Resultados do teste concorrente:', results);
+                return results;
+            }
+        }
+
         // === CONFIGURAÇÃO E INICIALIZAÇÃO ===
         class StudyRoomApp {
             constructor() {
@@ -1597,6 +1962,9 @@
                 this.currentContent = null;
                 this.loadedCourses = [];
                 
+                // CORREÇÃO FASE 7: Flag para evitar recursão infinita
+                this._isDisplayingContent = false;
+                
                 // Elementos DOM
                 this.elements = {};
                 
@@ -1612,6 +1980,12 @@
                 
                 // === FASE 4: FUNCIONALIDADES ESPECÍFICAS ===
                 this.eventBridge = null; // Ponte de eventos para Shadow DOM
+                
+                // === FASE 7: CORREÇÕES E OTIMIZAÇÕES ===
+                this.circuitBreaker = new CircuitBreaker(3, 10000); // 3 falhas, 10s timeout
+                this.rateLimiter = new RateLimiter(5, 2000); // 5 req/2s
+                this.performanceMonitor = new PerformanceMonitor();
+                this.retryManager = RetryManager;
                 
                 // Configuração do Firebase
                 this.firebaseConfig = {
@@ -2756,8 +3130,49 @@
             displayContent(contentData) {
                 this.currentContent = contentData;
                 
-                // === FASE 5: Usar FallbackManager para maior robustez ===
-                FallbackManager.safeDisplayContent(this, contentData);
+                // CORREÇÃO FASE 7: Verificar se já está processando
+                if (!this._isDisplayingContent) {
+                    // === FASE 5: Usar FallbackManager para maior robustez ===
+                    FallbackManager.safeDisplayContent(this, contentData);
+                } else {
+                    console.warn('⚠️ displayContent já em execução, ignorando nova chamada');
+                }
+            }
+            
+            /**
+             * Método interno para lógica real de display
+             * CORREÇÃO FASE 7: Evitar recursão infinita + integração de componentes
+             */
+            async _displayContentInternal(contentData) {
+                console.log('🔒 Processando conteúdo internamente...');
+                
+                const startTime = performance.now();
+                
+                try {
+                    // FASE 7: Aplicar Rate Limiter
+                    await this.rateLimiter.acquire();
+                    
+                    // FASE 7: Aplicar Circuit Breaker
+                    await this.circuitBreaker.execute(async () => {
+                        if (this.isolationEnabled) {
+                            await this.displayContentIsolated(contentData);
+                        } else {
+                            await this.displayContentSanitized(contentData);
+                        }
+                    });
+                    
+                    // FASE 7: Registrar sucesso no monitor
+                    const duration = performance.now() - startTime;
+                    this.performanceMonitor.recordLoadTime(duration);
+                    this.performanceMonitor.recordMemoryUsage();
+                    
+                } catch (error) {
+                    // FASE 7: Registrar erro no monitor
+                    this.performanceMonitor.recordError(error);
+                    
+                    console.error('❌ Erro no processamento interno:', error);
+                    throw error;
+                }
             }
 
             /**
@@ -2960,6 +3375,101 @@
                         </p>
                     </div>
                 `;
+            }
+
+            // === FASE 7: MÉTODOS DE TESTE E MONITORAMENTO ===
+            
+            /**
+             * Executa teste de stress de carregamento de conteúdo
+             */
+            async runStressTest(iterations = 50) {
+                console.log('🔥 Iniciando teste de stress...');
+                return await StressTestSuite.runContentLoadStressTest(this, iterations);
+            }
+            
+            /**
+             * Executa teste de stress de memória
+             */
+            async runMemoryTest(iterations = 25) {
+                console.log('🧠 Iniciando teste de memória...');
+                return await StressTestSuite.runMemoryStressTest(this, iterations);
+            }
+            
+            /**
+             * Executa teste de carga concorrente
+             */
+            async runConcurrentTest(requests = 10) {
+                console.log('⚡ Iniciando teste concorrente...');
+                return await StressTestSuite.runConcurrentLoadTest(this, requests);
+            }
+            
+            /**
+             * Obtém métricas de performance atuais
+             */
+            getPerformanceMetrics() {
+                return this.performanceMonitor.getMetrics();
+            }
+            
+            /**
+             * Obtém status do Circuit Breaker
+             */
+            getCircuitBreakerStatus() {
+                return {
+                    state: this.circuitBreaker.state,
+                    failureCount: this.circuitBreaker.failureCount,
+                    lastFailureTime: this.circuitBreaker.lastFailureTime
+                };
+            }
+            
+            /**
+             * Obtém status do Rate Limiter
+             */
+            getRateLimiterStatus() {
+                return {
+                    currentRequests: this.rateLimiter.requests.length,
+                    maxRequests: this.rateLimiter.maxRequests,
+                    windowMs: this.rateLimiter.windowMs
+                };
+            }
+            
+            /**
+             * Executa todos os testes de validação
+             */
+            async runAllTests() {
+                console.log('🧪 Executando todos os testes de validação...');
+                
+                const results = {
+                    stressTest: null,
+                    memoryTest: null,
+                    concurrentTest: null,
+                    metrics: null,
+                    circuitBreaker: null,
+                    rateLimiter: null
+                };
+                
+                try {
+                    // Teste de stress
+                    results.stressTest = await this.runStressTest(20);
+                    
+                    // Teste de memória
+                    results.memoryTest = await this.runMemoryTest(10);
+                    
+                    // Teste concorrente
+                    results.concurrentTest = await this.runConcurrentTest(5);
+                    
+                    // Métricas
+                    results.metrics = this.getPerformanceMetrics();
+                    results.circuitBreaker = this.getCircuitBreakerStatus();
+                    results.rateLimiter = this.getRateLimiterStatus();
+                    
+                    console.log('✅ Todos os testes concluídos:', results);
+                    return results;
+                    
+                } catch (error) {
+                    console.error('❌ Erro durante os testes:', error);
+                    results.error = error.message;
+                    return results;
+                }
             }
 
             // === NOTIFICAÇÕES ===
