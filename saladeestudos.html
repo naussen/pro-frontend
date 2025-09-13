@@ -601,6 +601,111 @@
             background: var(--main-content-bg);
         }
 
+        /* === HEADER DROPDOWN MENUS - ESTILOS PRIORITÁRIOS === */
+        /* Garantir que os dropdowns do header funcionem corretamente */
+        #header-placeholder .dropdown-menu,
+        .w3s-header .dropdown-menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            background-color: var(--main-content-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 0 0 8px 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            min-width: 220px !important;
+            z-index: 10000 !important;
+            display: none !important;
+            flex-direction: column !important;
+            max-height: 400px !important;
+            overflow-y: auto !important;
+            opacity: 0 !important;
+            transform: translateY(-10px) !important;
+            transition: all 0.2s ease !important;
+        }
+
+        #header-placeholder .dropdown-menu.show,
+        .w3s-header .dropdown-menu.show {
+            display: flex !important;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* Garantir que os botões do header sejam clicáveis */
+        #header-placeholder .nav-button,
+        .w3s-header .nav-button {
+            position: relative !important;
+            z-index: 10001 !important;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+        }
+
+        /* Garantir que o header tenha z-index suficiente */
+        #header-placeholder .w3s-header,
+        .w3s-header {
+            z-index: 10002 !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+        }
+
+        /* Evitar que o isolamento interfira nos dropdowns */
+        .isolated-content-host .dropdown-menu {
+            z-index: 10003 !important;
+        }
+
+        /* Excluir header do isolamento */
+        #header-placeholder,
+        #header-placeholder *,
+        .w3s-header,
+        .w3s-header * {
+            contain: none !important;
+            isolation: auto !important;
+            z-index: auto !important;
+        }
+
+        /* Garantir que os estilos do header sejam preservados */
+        #header-placeholder .dropdown-menu,
+        #header-placeholder .nav-button,
+        #header-placeholder .w3s-nav-menu,
+        .w3s-header .dropdown-menu,
+        .w3s-header .nav-button,
+        .w3s-header .w3s-nav-menu {
+            all: revert !important;
+        }
+
+        /* Forçar aplicação dos estilos específicos do header */
+        #header-placeholder .dropdown-menu:not(.show) {
+            display: none !important;
+            opacity: 0 !important;
+            transform: translateY(-10px) !important;
+        }
+
+        #header-placeholder .dropdown-menu.show {
+            display: flex !important;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* Estilos para dispositivos móveis */
+        @media (max-width: 768px) {
+            #header-placeholder .dropdown-menu,
+            .w3s-header .dropdown-menu {
+                position: fixed !important;
+                top: var(--header-height) !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: calc(100vw - 20px) !important;
+                max-width: 300px !important;
+                border-radius: 8px !important;
+            }
+
+            #header-placeholder .dropdown-menu.show,
+            .w3s-header .dropdown-menu.show {
+                transform: translateX(-50%) !important;
+            }
+        }
+
         .isolated-content-wrapper {
             width: 100%;
             height: 100%;
@@ -2219,28 +2324,47 @@
 
             setupDropdownMenus(headerContainer) {
                 console.log('🔧 Configurando menus dropdown...');
-                
+
                 if (!headerContainer) {
                     console.warn('❌ Container do header não fornecido');
                     return false;
                 }
 
+                // Aguardar um pouco para garantir que o DOM esteja pronto
+                setTimeout(() => {
+                    this.setupDropdownMenusInternal(headerContainer);
+                }, 100);
+            }
+
+            setupDropdownMenusInternal(headerContainer) {
+                console.log('🔧 Configurando menus dropdown (interna)...');
+
                 // Configurar botão CURSOS
                 const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
                 const cursosMenu = headerContainer.querySelector('#cursos-menu');
-                
+
                 console.log('🔍 Elementos CURSOS:', {
-                    button: cursosBtn ? 'Encontrado' : 'Não encontrado',
-                    menu: cursosMenu ? 'Encontrado' : 'Não encontrado'
+                    button: cursosBtn ? `Encontrado (${cursosBtn.tagName})` : '❌ Não encontrado',
+                    menu: cursosMenu ? `Encontrado (${cursosMenu.tagName})` : '❌ Não encontrado',
+                    container: headerContainer.id || headerContainer.className
                 });
-                
+
                 if (cursosBtn && cursosMenu) {
-                    cursosBtn.onclick = (e) => {
+                    // Limpar event listeners anteriores
+                    cursosBtn.onclick = null;
+                    cursosBtn.removeEventListener('click', cursosBtn._dropdownHandler);
+
+                    // Configurar novo event listener
+                    const handler = (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         console.log('🔧 Botão CURSOS clicado - toggling menu');
                         this.toggleDropdownMenu(cursosMenu, cursosBtn);
                     };
+
+                    cursosBtn.addEventListener('click', handler);
+                    cursosBtn._dropdownHandler = handler;
+
                     console.log('✅ Menu CURSOS configurado com sucesso');
                 } else {
                     console.warn('❌ Elementos do menu CURSOS não encontrados');
@@ -2249,19 +2373,28 @@
                 // Configurar botão FLASHCARDS
                 const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
                 const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
-                
+
                 console.log('🔍 Elementos FLASHCARDS:', {
-                    button: flashcardsBtn ? 'Encontrado' : 'Não encontrado',
-                    menu: flashcardsMenu ? 'Encontrado' : 'Não encontrado'
+                    button: flashcardsBtn ? `Encontrado (${flashcardsBtn.tagName})` : '❌ Não encontrado',
+                    menu: flashcardsMenu ? `Encontrado (${flashcardsMenu.tagName})` : '❌ Não encontrado'
                 });
-                
+
                 if (flashcardsBtn && flashcardsMenu) {
-                    flashcardsBtn.onclick = (e) => {
+                    // Limpar event listeners anteriores
+                    flashcardsBtn.onclick = null;
+                    flashcardsBtn.removeEventListener('click', flashcardsBtn._dropdownHandler);
+
+                    // Configurar novo event listener
+                    const handler = (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         console.log('🔧 Botão FLASHCARDS clicado - toggling menu');
                         this.toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
                     };
+
+                    flashcardsBtn.addEventListener('click', handler);
+                    flashcardsBtn._dropdownHandler = handler;
+
                     console.log('✅ Menu FLASHCARDS configurado com sucesso');
                 } else {
                     console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
@@ -2272,17 +2405,26 @@
                 const questoesMenu = headerContainer.querySelector('#questoes-menu');
 
                 console.log('🔍 Elementos QUESTÕES:', {
-                    button: questoesBtn ? 'Encontrado' : 'Não encontrado',
-                    menu: questoesMenu ? 'Encontrado' : 'Não encontrado'
+                    button: questoesBtn ? `Encontrado (${questoesBtn.tagName})` : '❌ Não encontrado',
+                    menu: questoesMenu ? `Encontrado (${questoesMenu.tagName})` : '❌ Não encontrado'
                 });
 
                 if (questoesBtn && questoesMenu) {
-                    questoesBtn.onclick = (e) => {
+                    // Limpar event listeners anteriores
+                    questoesBtn.onclick = null;
+                    questoesBtn.removeEventListener('click', questoesBtn._dropdownHandler);
+
+                    // Configurar novo event listener
+                    const handler = (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         console.log('🔧 Botão QUESTÕES clicado - toggling menu');
                         this.toggleDropdownMenu(questoesMenu, questoesBtn);
                     };
+
+                    questoesBtn.addEventListener('click', handler);
+                    questoesBtn._dropdownHandler = handler;
+
                     console.log('✅ Menu QUESTÕES configurado com sucesso');
                 } else {
                     console.warn('❌ Elementos do menu QUESTÕES não encontrados');
@@ -2310,18 +2452,27 @@
 
             toggleDropdownMenu(menu, button) {
                 console.log('🔄 Toggle menu:', menu.id);
-                
+
+                // Verificar se o menu existe
+                if (!menu) {
+                    console.error('❌ Menu não fornecido para toggle');
+                    return;
+                }
+
                 // Fechar outros menus primeiro
                 const allDropdowns = document.querySelectorAll('.dropdown-menu');
+                console.log('🔍 Fechando outros menus:', allDropdowns.length);
                 allDropdowns.forEach(dropdown => {
                     if (dropdown !== menu && dropdown.classList.contains('show')) {
+                        console.log('📁 Fechando menu:', dropdown.id);
                         this.closeDropdownMenu(dropdown);
                     }
                 });
-                
+
                 // Toggle do menu atual
                 const isOpen = menu.classList.contains('show');
-                
+                console.log('🔄 Estado atual do menu:', menu.id, isOpen ? 'aberto' : 'fechado');
+
                 if (isOpen) {
                     this.closeDropdownMenu(menu);
                 } else {
@@ -2330,20 +2481,48 @@
             }
 
             openDropdownMenu(menu, button) {
+                if (!menu) {
+                    console.error('❌ Menu não fornecido para abertura');
+                    return;
+                }
+
+                console.log('📂 Abrindo menu:', menu.id);
                 menu.classList.add('show');
+
+                // Forçar estilos via JavaScript se necessário
+                menu.style.display = 'flex';
+                menu.style.opacity = '1';
+                menu.style.transform = 'translateY(0)';
+
                 if (button) {
                     button.setAttribute('aria-expanded', 'true');
+                    console.log('✅ Atributo aria-expanded definido para true no botão:', button.id);
                 }
-                console.log('📂 Menu aberto:', menu.id);
+
+                console.log('✅ Menu aberto com sucesso:', menu.id);
             }
 
             closeDropdownMenu(menu) {
+                if (!menu) {
+                    console.error('❌ Menu não fornecido para fechamento');
+                    return;
+                }
+
+                console.log('📁 Fechando menu:', menu.id);
                 menu.classList.remove('show');
+
+                // Forçar estilos via JavaScript se necessário
+                menu.style.display = 'none';
+                menu.style.opacity = '0';
+                menu.style.transform = 'translateY(-10px)';
+
                 const button = document.querySelector(`[data-target="${menu.id}"]`);
                 if (button) {
                     button.setAttribute('aria-expanded', 'false');
+                    console.log('✅ Atributo aria-expanded definido para false no botão:', button.id);
                 }
-                console.log('📁 Menu fechado:', menu.id);
+
+                console.log('✅ Menu fechado com sucesso:', menu.id);
             }
 
             applyThemeToHeader() {
