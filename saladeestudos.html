@@ -1346,6 +1346,7 @@
 
             /**
              * Carrega Mermaid no contexto do Shadow DOM
+             * CORREÇÃO: Método aprimorado para funcionar com Shadow DOM
              */
             async loadMermaid(shadowRoot) {
                 try {
@@ -1355,34 +1356,140 @@
                         await this.loadScript('https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js');
                     }
                     
-                    // Configurar Mermaid no contexto do Shadow DOM
+                    // Detectar tema atual
+                    const isDarkMode = document.body.classList.contains('dark-mode') || 
+                                     document.documentElement.getAttribute('data-theme') === 'dark' ||
+                                     (localStorage && localStorage.getItem('theme') === 'dark') ||
+                                     (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                    
+                    // Configurar Mermaid com tema dinâmico
                     const mermaidConfig = {
                         startOnLoad: false,
                         securityLevel: 'loose',
-                        theme: 'default',
-                        themeVariables: {
-                            primaryColor: '#2c5aa0',
-                            primaryTextColor: '#2d3748',
-                            primaryBorderColor: '#e2e8f0',
-                            lineColor: '#4ecdc4'
-                        }
+                        theme: 'base',
+                        themeVariables: isDarkMode ? {
+                            // Tema Escuro
+                            primaryColor: '#334155',
+                            primaryTextColor: '#f1f5f9',
+                            primaryBorderColor: '#60a5fa',
+                            lineColor: '#60a5fa',
+                            secondaryColor: '#475569',
+                            tertiaryColor: '#1e293b',
+                            background: '#0f172a',
+                            mainBkg: '#334155',
+                            secondBkg: '#475569',
+                            tertiaryBkg: '#64748b'
+                        } : {
+                            // Tema Claro
+                            primaryColor: '#f8fafc',
+                            primaryTextColor: '#1e293b',
+                            primaryBorderColor: '#3b82f6',
+                            lineColor: '#3b82f6',
+                            secondaryColor: '#e2e8f0',
+                            tertiaryColor: '#cbd5e1',
+                            background: '#ffffff',
+                            mainBkg: '#f8fafc',
+                            secondBkg: '#f1f5f9',
+                            tertiaryBkg: '#e2e8f0'
+                        },
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        fontSize: 14,
+                        flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+                        sequence: { useMaxWidth: true, showSequenceNumbers: false },
+                        gantt: { useMaxWidth: true },
+                        journey: { useMaxWidth: true },
+                        pie: { useMaxWidth: true },
+                        class: { useMaxWidth: true },
+                        state: { useMaxWidth: true },
+                        er: { useMaxWidth: true }
                     };
                     
                     // Inicializar Mermaid
                     window.mermaid.initialize(mermaidConfig);
                     
-                    // Processar diagramas no Shadow DOM
-                    const mermaidElements = shadowRoot.querySelectorAll('.mermaid');
+                    // CORREÇÃO: Processar diagramas no Shadow DOM com método aprimorado
+                    const mermaidElements = shadowRoot.querySelectorAll('.mermaid, .mermaid-container .mermaid, div[class*="mermaid"]');
+                    console.log(`🎨 Encontrados ${mermaidElements.length} elementos Mermaid no Shadow DOM`);
+                    
                     if (mermaidElements.length > 0) {
-                        console.log(`🎨 Processando ${mermaidElements.length} diagramas Mermaid...`);
-                        await window.mermaid.run({ nodes: mermaidElements });
+                        let processedCount = 0;
+                        let errorCount = 0;
+                        
+                        for (let i = 0; i < mermaidElements.length; i++) {
+                            const element = mermaidElements[i];
+                            const source = element.textContent?.trim();
+                            
+                            if (source && source.length > 0) {
+                                try {
+                                    const graphId = `shadow-mermaid-${i}-${Date.now()}`;
+                                    console.log(`🔄 Processando gráfico ${i + 1}/${mermaidElements.length}: ${graphId}`);
+                                    
+                                    // Método direto de renderização para Shadow DOM
+                                    const result = await window.mermaid.render(graphId, source);
+                                    element.innerHTML = result.svg;
+                                    
+                                    processedCount++;
+                                    console.log(`✅ Gráfico ${graphId} renderizado com sucesso`);
+                                    
+                                } catch (renderError) {
+                                    console.error(`❌ Erro ao renderizar gráfico ${i + 1}:`, renderError);
+                                    element.innerHTML = `
+                                        <div style="
+                                            background: #fef2f2; 
+                                            border: 1px solid #f87171; 
+                                            color: #dc2626; 
+                                            padding: 1rem; 
+                                            border-radius: 8px; 
+                                            text-align: center;
+                                            font-family: Arial, sans-serif;
+                                        ">
+                                            <p><strong>❌ Erro ao renderizar gráfico</strong></p>
+                                            <p><em>${renderError.message || 'Erro desconhecido'}</em></p>
+                                            <details style="margin-top: 10px; text-align: left;">
+                                                <summary style="cursor: pointer;">🔍 Ver código fonte</summary>
+                                                <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; margin-top: 5px;"><code>${source}</code></pre>
+                                            </details>
+                                        </div>
+                                    `;
+                                    errorCount++;
+                                }
+                            } else {
+                                console.warn(`⚠️ Elemento Mermaid ${i + 1} sem conteúdo válido`);
+                            }
+                        }
+                        
+                        console.log(`📊 Relatório Mermaid Shadow DOM:`);
+                        console.log(`   ✅ Processados: ${processedCount}`);
+                        console.log(`   ❌ Erros: ${errorCount}`);
+                        console.log(`   📄 Total: ${mermaidElements.length}`);
                     }
                     
                     console.log('✅ Mermaid carregado e configurado no Shadow DOM');
                     return true;
                     
                 } catch (error) {
-                    console.error('❌ Erro ao carregar Mermaid:', error);
+                    console.error('❌ Erro ao carregar Mermaid no Shadow DOM:', error);
+                    
+                    // Fallback: mostrar erro nos elementos
+                    const mermaidElements = shadowRoot.querySelectorAll('.mermaid, .mermaid-container .mermaid');
+                    mermaidElements.forEach((element, index) => {
+                        element.innerHTML = `
+                            <div style="
+                                background: #fef2f2; 
+                                border: 1px solid #f87171; 
+                                color: #dc2626; 
+                                padding: 1rem; 
+                                border-radius: 8px; 
+                                text-align: center;
+                                font-family: Arial, sans-serif;
+                            ">
+                                <p><strong>⚠️ Gráfico Mermaid não disponível</strong></p>
+                                <p><em>Erro no carregamento: ${error.message}</em></p>
+                                <p style="font-size: 0.9em; margin-top: 0.5rem;">Verifique a conexão de internet e recarregue a página.</p>
+                            </div>
+                        `;
+                    });
+                    
                     return false;
                 }
             }
@@ -3379,6 +3486,10 @@
                 CSSBridge.injectMainVariables(shadowRoot);
                 console.log('🎨 Variáveis CSS principais injetadas no Shadow DOM');
                 
+                // CORREÇÃO: Injetar estilos específicos para Mermaid no Shadow DOM
+                CSSBridge.injectMermaidStyles(shadowRoot);
+                console.log('🎨 Estilos Mermaid injetados no Shadow DOM');
+                
                 // 4.2: Configurar ponte de eventos
                 this.eventBridge = new EventBridge(shadowRoot, this);
                 console.log('🔗 Ponte de eventos configurada');
@@ -3874,6 +3985,126 @@
                     }
                 `;
                 shadowRoot.insertBefore(bridgeStyle, shadowRoot.firstChild);
+            }
+            
+            /**
+             * Injeta estilos específicos para Mermaid no Shadow DOM
+             * @param {ShadowRoot} shadowRoot - Root do Shadow DOM
+             */
+            static injectMermaidStyles(shadowRoot) {
+                const mermaidStyle = document.createElement('style');
+                mermaidStyle.setAttribute('data-mermaid-styles', 'true');
+                mermaidStyle.textContent = `
+                    /* === ESTILOS MERMAID PARA SHADOW DOM === */
+                    .mermaid-container {
+                        background: var(--light-grey-bg, #f8fafc);
+                        border: 1px solid var(--main-color, #3b82f6);
+                        border-radius: 12px;
+                        overflow: hidden;
+                        margin: 2rem 0;
+                        padding: 0;
+                        box-shadow: var(--card-shadow, 0 4px 12px rgba(0,0,0,0.08));
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .mermaid-container:hover {
+                        box-shadow: var(--card-hover-shadow, 0 8px 25px rgba(0,0,0,0.15));
+                        transform: translateY(-2px);
+                    }
+                    
+                    .mermaid {
+                        background: var(--main-content-bg, #ffffff);
+                        padding: 2rem;
+                        min-height: 300px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        text-align: center;
+                        font-family: var(--font-family, 'Inter', Arial, sans-serif);
+                        position: relative;
+                    }
+                    
+                    .mermaid svg {
+                        max-width: 100% !important;
+                        height: auto !important;
+                        display: block;
+                        margin: 0 auto;
+                        background: transparent;
+                    }
+                    
+                    .mermaid-error {
+                        background: var(--error-bg, #fef2f2);
+                        border: 1px solid var(--error-color, #f87171);
+                        color: var(--error-color, #dc2626);
+                        padding: 1rem;
+                        border-radius: 8px;
+                        text-align: center;
+                        font-family: var(--font-family, Arial, sans-serif);
+                    }
+                    
+                    .mermaid-loading {
+                        background: var(--info-bg, #f0f9ff);
+                        border: 1px solid var(--info-color, #0ea5e9);
+                        color: var(--info-color, #0284c7);
+                        padding: 1rem;
+                        border-radius: 8px;
+                        text-align: center;
+                        font-family: var(--font-family, Arial, sans-serif);
+                    }
+                    
+                    /* === TEMA ESCURO === */
+                    :host(.dark-mode) .mermaid-container,
+                    .dark-mode .mermaid-container {
+                        background: var(--dark-bg, #1a202c);
+                        border-color: var(--accent-2, #4fd1c7);
+                    }
+                    
+                    :host(.dark-mode) .mermaid,
+                    .dark-mode .mermaid {
+                        background: var(--sidebar-bg, #1a202c);
+                        color: var(--text-light, #ffffff);
+                    }
+                    
+                    /* === RESPONSIVIDADE === */
+                    @media (max-width: 768px) {
+                        .mermaid-container {
+                            margin: 1rem 0;
+                            border-radius: 8px;
+                        }
+                        
+                        .mermaid {
+                            padding: 1rem;
+                            min-height: 200px;
+                        }
+                    }
+                    
+                    /* === ACESSIBILIDADE === */
+                    .mermaid svg {
+                        outline: none;
+                    }
+                    
+                    .mermaid-container:focus-within {
+                        outline: 2px solid var(--main-color, #3b82f6);
+                        outline-offset: 2px;
+                    }
+                    
+                    /* === ANIMAÇÕES === */
+                    .mermaid-container {
+                        animation: fadeInUp 0.5s ease-out;
+                    }
+                    
+                    @keyframes fadeInUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                `;
+                shadowRoot.appendChild(mermaidStyle);
             }
             
             /**
