@@ -2094,7 +2094,7 @@
                 for (let i = 0; i < iterations; i++) {
                     try {
                         await appInstance.displayContent({
-                            content: `<div>Memory Test ${i}</div><script>console.log('Test ${i}');</script>`,
+                            content: `<div>Memory Test ${i}</div><script>console.log("Test ${i}");</script>`,
                             meta: { title: `Memory Test ${i}` }
                         });
                         
