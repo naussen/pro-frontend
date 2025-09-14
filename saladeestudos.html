@@ -1345,7 +1345,227 @@
             }
 
             /**
-             * Carrega Mermaid no contexto do Shadow DOM
+             * Carrega Mermaid no contexto do Shadow DOM (versão aprimorada)
+             * CORREÇÃO DEFINITIVA: Método robusto para renderização confiável
+             */
+            async loadMermaidEnhanced(shadowRoot, mermaidElements) {
+                try {
+                    // Carregar Mermaid se não estiver disponível
+                    if (!window.mermaid) {
+                        console.log('🔗 Carregando Mermaid...');
+                        await this.loadScript('https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js');
+                        
+                        // Verificar carregamento com timeout
+                        let attempts = 0;
+                        while (!window.mermaid && attempts < 10) {
+                            await new Promise(resolve => setTimeout(resolve, 500));
+                            attempts++;
+                        }
+                        
+                        if (!window.mermaid) {
+                            throw new Error('Falha ao carregar biblioteca Mermaid');
+                        }
+                    }
+                    
+                    // Detectar tema atual
+                    const isDarkMode = document.body.classList.contains('dark-mode') || 
+                                     document.documentElement.getAttribute('data-theme') === 'dark' ||
+                                     (localStorage && localStorage.getItem('theme') === 'dark') ||
+                                     (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                    
+                    // Configurar Mermaid com tema dinâmico e configurações robustas
+                    const mermaidConfig = {
+                        startOnLoad: false,
+                        securityLevel: 'loose',
+                        theme: 'base',
+                        themeVariables: isDarkMode ? {
+                            // Tema Escuro Otimizado
+                            primaryColor: '#334155',
+                            primaryTextColor: '#f1f5f9',
+                            primaryBorderColor: '#60a5fa',
+                            lineColor: '#60a5fa',
+                            secondaryColor: '#475569',
+                            tertiaryColor: '#1e293b',
+                            background: '#0f172a',
+                            mainBkg: '#334155',
+                            secondBkg: '#475569',
+                            tertiaryBkg: '#64748b'
+                        } : {
+                            // Tema Claro Otimizado
+                            primaryColor: '#f8fafc',
+                            primaryTextColor: '#1e293b',
+                            primaryBorderColor: '#3b82f6',
+                            lineColor: '#3b82f6',
+                            secondaryColor: '#e2e8f0',
+                            tertiaryColor: '#cbd5e1',
+                            background: '#ffffff',
+                            mainBkg: '#f8fafc',
+                            secondBkg: '#f1f5f9',
+                            tertiaryBkg: '#e2e8f0'
+                        },
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        fontSize: 14,
+                        flowchart: { 
+                            useMaxWidth: true, 
+                            htmlLabels: true, 
+                            curve: 'basis',
+                            padding: 20
+                        },
+                        sequence: { useMaxWidth: true, showSequenceNumbers: false },
+                        gantt: { useMaxWidth: true },
+                        journey: { useMaxWidth: true },
+                        pie: { useMaxWidth: true },
+                        class: { useMaxWidth: true },
+                        state: { useMaxWidth: true },
+                        er: { useMaxWidth: true }
+                    };
+                    
+                    // Reinicializar Mermaid com nova configuração
+                    window.mermaid.initialize(mermaidConfig);
+                    
+                    console.log(`🎨 Processando ${mermaidElements.length} elementos Mermaid no Shadow DOM`);
+                    
+                    let processedCount = 0;
+                    let errorCount = 0;
+                    
+                    // Processar elementos em paralelo para melhor performance
+                    const renderPromises = mermaidElements.map(async (element, index) => {
+                        const source = element.textContent?.trim();
+                        
+                        if (!source || source.length === 0) {
+                            console.warn(`⚠️ Elemento Mermaid ${index + 1} sem conteúdo válido`);
+                            return;
+                        }
+                        
+                        try {
+                            const graphId = `enhanced-mermaid-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                            console.log(`🔄 Renderizando gráfico ${index + 1}/${mermaidElements.length}: ${graphId}`);
+                            
+                            // Método direto de renderização para Shadow DOM
+                            const result = await window.mermaid.render(graphId, source);
+                            element.innerHTML = result.svg;
+                            
+                            // Aplicar estilos adicionais ao SVG
+                            const svg = element.querySelector('svg');
+                            if (svg) {
+                                svg.style.maxWidth = '100%';
+                                svg.style.height = 'auto';
+                                svg.style.display = 'block';
+                                svg.style.margin = '0 auto';
+                            }
+                            
+                            processedCount++;
+                            console.log(`✅ Gráfico ${graphId} renderizado com sucesso`);
+                            
+                        } catch (renderError) {
+                            console.error(`❌ Erro ao renderizar gráfico ${index + 1}:`, renderError);
+                            element.innerHTML = `
+                                <div style="
+                                    background: #fef2f2; 
+                                    border: 1px solid #f87171; 
+                                    color: #dc2626; 
+                                    padding: 1.5rem; 
+                                    border-radius: 8px; 
+                                    text-align: center;
+                                    font-family: 'Inter', Arial, sans-serif;
+                                    max-width: 100%;
+                                    margin: 1rem 0;
+                                ">
+                                    <p><strong>❌ Erro ao renderizar gráfico</strong></p>
+                                    <p><em>${renderError.message || 'Erro desconhecido'}</em></p>
+                                    <details style="margin-top: 10px; text-align: left;">
+                                        <summary style="cursor: pointer; font-weight: bold;">🔍 Ver código fonte</summary>
+                                        <pre style="
+                                            background: #f8f9fa; 
+                                            padding: 10px; 
+                                            border-radius: 4px; 
+                                            overflow-x: auto; 
+                                            margin-top: 5px;
+                                            white-space: pre-wrap;
+                                            font-size: 0.9em;
+                                        "><code>${source}</code></pre>
+                                    </details>
+                                </div>
+                            `;
+                            errorCount++;
+                        }
+                    });
+                    
+                    // Aguardar todos os elementos serem processados
+                    await Promise.all(renderPromises);
+                    
+                    // Relatório final
+                    console.log(`📊 Relatório Mermaid Enhanced (Shadow DOM):`);
+                    console.log(`   ✅ Processados com sucesso: ${processedCount}`);
+                    console.log(`   ❌ Erros encontrados: ${errorCount}`);
+                    console.log(`   📄 Total de elementos: ${mermaidElements.length}`);
+                    console.log(`   🎯 Taxa de sucesso: ${Math.round((processedCount / mermaidElements.length) * 100)}%`);
+                    
+                    if (processedCount > 0) {
+                        // Aguardar um pouco para garantir que os SVGs sejam renderizados
+                        setTimeout(() => {
+                            console.log('🎨 Aplicando estilos finais aos gráficos Mermaid...');
+                            mermaidElements.forEach(element => {
+                                const svg = element.querySelector('svg');
+                                if (svg) {
+                                    // Garantir responsividade
+                                    svg.style.maxWidth = '100%';
+                                    svg.style.height = 'auto';
+                                    // Melhorar aparência
+                                    svg.style.borderRadius = '4px';
+                                    svg.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+                                }
+                            });
+                        }, 1000);
+                    }
+                    
+                    console.log('✅ Mermaid Enhanced carregado e configurado no Shadow DOM');
+                    return { success: true, processed: processedCount, errors: errorCount };
+                    
+                } catch (error) {
+                    console.error('❌ Erro crítico no loadMermaidEnhanced:', error);
+                    
+                    // Fallback: mostrar erro em todos os elementos
+                    mermaidElements.forEach((element, index) => {
+                        const source = element.textContent?.trim();
+                        element.innerHTML = `
+                            <div style="
+                                background: #fef2f2; 
+                                border: 1px solid #f87171; 
+                                color: #dc2626; 
+                                padding: 1.5rem; 
+                                border-radius: 8px; 
+                                text-align: center;
+                                font-family: 'Inter', Arial, sans-serif;
+                                margin: 1rem 0;
+                            ">
+                                <p><strong>⚠️ Gráfico Mermaid não disponível</strong></p>
+                                <p><em>Erro crítico: ${error.message}</em></p>
+                                <p style="font-size: 0.9em; margin-top: 0.5rem;">
+                                    Verifique a conexão de internet e recarregue a página.
+                                </p>
+                                <details style="margin-top: 10px; text-align: left;">
+                                    <summary style="cursor: pointer; font-weight: bold;">🔍 Ver código original</summary>
+                                    <pre style="
+                                        background: #f8f9fa; 
+                                        padding: 10px; 
+                                        border-radius: 4px; 
+                                        overflow-x: auto; 
+                                        margin-top: 5px;
+                                        white-space: pre-wrap;
+                                        font-size: 0.9em;
+                                    "><code>${source || 'Código não encontrado'}</code></pre>
+                                </details>
+                            </div>
+                        `;
+                    });
+                    
+                    return { success: false, processed: 0, errors: mermaidElements.length };
+                }
+            }
+
+            /**
+             * Carrega Mermaid no contexto do Shadow DOM (método legado)
              * CORREÇÃO: Método aprimorado para funcionar com Shadow DOM
              */
             async loadMermaid(shadowRoot) {
@@ -3539,12 +3759,32 @@
                     throw new Error('Falha ao carregar conteúdo no Shadow DOM');
                 }
                 
-                // Processar Mermaid se necessário
-                const mermaidElements = shadowRoot.querySelectorAll('.mermaid');
-                if (mermaidElements.length > 0) {
-                    console.log(`🎨 Processando ${mermaidElements.length} diagramas Mermaid...`);
-                    await this.resourceManager.loadMermaid(shadowRoot);
-                }
+                // CORREÇÃO: Processar Mermaid com timing e seletores aprimorados
+                setTimeout(async () => {
+                    const mermaidSelectors = [
+                        '.mermaid',
+                        '.mermaid-container .mermaid',
+                        'div[class*="mermaid"]',
+                        '[id*="mermaid"] .mermaid'
+                    ];
+                    
+                    let allMermaidElements = [];
+                    mermaidSelectors.forEach(selector => {
+                        const elements = shadowRoot.querySelectorAll(selector);
+                        elements.forEach(el => {
+                            if (!allMermaidElements.includes(el)) {
+                                allMermaidElements.push(el);
+                            }
+                        });
+                    });
+                    
+                    if (allMermaidElements.length > 0) {
+                        console.log(`🎨 Processando ${allMermaidElements.length} diagramas Mermaid (seletores aprimorados)...`);
+                        await this.resourceManager.loadMermaidEnhanced(shadowRoot, allMermaidElements);
+                    } else {
+                        console.log('📄 Nenhum diagrama Mermaid encontrado neste conteúdo');
+                    }
+                }, 500); // Aguarda DOM estar completamente carregado
                 
                 // Scroll para o topo
                 const contentWrapper = shadowRoot.querySelector('.isolated-content-wrapper');
@@ -3569,8 +3809,79 @@
                 this.elements.contentBody.innerHTML = '';
                 this.elements.contentBody.appendChild(lessonContentDiv);
                 
+                // CORREÇÃO: Processar Mermaid no modo tradicional também
+                setTimeout(async () => {
+                    const mermaidSelectors = [
+                        '.mermaid',
+                        '.mermaid-container .mermaid',
+                        'div[class*="mermaid"]',
+                        '[id*="mermaid"] .mermaid'
+                    ];
+                    
+                    let allMermaidElements = [];
+                    mermaidSelectors.forEach(selector => {
+                        const elements = this.elements.contentBody.querySelectorAll(selector);
+                        elements.forEach(el => {
+                            if (!allMermaidElements.includes(el)) {
+                                allMermaidElements.push(el);
+                            }
+                        });
+                    });
+                    
+                    if (allMermaidElements.length > 0) {
+                        console.log(`🎨 Processando ${allMermaidElements.length} diagramas Mermaid (modo tradicional)...`);
+                        await this.processMermaidTraditional(allMermaidElements);
+                    }
+                }, 300);
+                
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
+            }
+
+            /**
+             * Processa Mermaid no modo tradicional (fora do Shadow DOM)
+             */
+            async processMermaidTraditional(mermaidElements) {
+                try {
+                    if (!window.mermaid) {
+                        await this.resourceManager.loadScript('https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js');
+                    }
+
+                    if (!window.mermaid) {
+                        console.error('❌ Mermaid não disponível para modo tradicional');
+                        return;
+                    }
+
+                    // Detectar tema atual
+                    const isDarkMode = document.body.classList.contains('dark-mode');
+                    
+                    // Configurar Mermaid
+                    window.mermaid.initialize({
+                        startOnLoad: false,
+                        theme: isDarkMode ? 'dark' : 'default',
+                        securityLevel: 'loose',
+                        fontFamily: 'Inter, Arial, sans-serif'
+                    });
+
+                    let processed = 0;
+                    for (const element of mermaidElements) {
+                        const source = element.textContent?.trim();
+                        if (source) {
+                            try {
+                                const graphId = `traditional-mermaid-${processed}-${Date.now()}`;
+                                const result = await window.mermaid.render(graphId, source);
+                                element.innerHTML = result.svg;
+                                processed++;
+                            } catch (error) {
+                                console.warn(`⚠️ Erro ao renderizar Mermaid tradicional:`, error);
+                            }
+                        }
+                    }
+
+                    console.log(`✅ Processados ${processed}/${mermaidElements.length} gráficos no modo tradicional`);
+                } catch (error) {
+                    console.error('❌ Erro no processamento Mermaid tradicional:', error);
+                }
             }
 
             /**
