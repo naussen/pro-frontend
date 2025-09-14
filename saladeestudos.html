@@ -1371,10 +1371,10 @@
                     // Inicializar Mermaid
                     window.mermaid.initialize(mermaidConfig);
                     
-                    // Processar diagramas no Shadow DOM
-                    const mermaidElements = shadowRoot.querySelectorAll('.mermaid');
+                    // Processar diagramas no Shadow DOM - CORREÇÃO APP 13
+                    const mermaidElements = shadowRoot.querySelectorAll('.mermaid, .mermaid-container .mermaid');
                     if (mermaidElements.length > 0) {
-                        console.log(`🎨 Processando ${mermaidElements.length} diagramas Mermaid...`);
+                        console.log(`🎨 CORREÇÃO: Processando ${mermaidElements.length} diagramas Mermaid...`);
                         await window.mermaid.run({ nodes: mermaidElements });
                     }
                     
@@ -3428,10 +3428,10 @@
                     throw new Error('Falha ao carregar conteúdo no Shadow DOM');
                 }
                 
-                // Processar Mermaid se necessário
-                const mermaidElements = shadowRoot.querySelectorAll('.mermaid');
+                // Processar Mermaid se necessário - CORREÇÃO APP 13
+                const mermaidElements = shadowRoot.querySelectorAll('.mermaid, .mermaid-container .mermaid');
                 if (mermaidElements.length > 0) {
-                    console.log(`🎨 Processando ${mermaidElements.length} diagramas Mermaid...`);
+                    console.log(`🎨 CORREÇÃO: Processando ${mermaidElements.length} diagramas Mermaid...`);
                     await this.resourceManager.loadMermaid(shadowRoot);
                 }
                 
