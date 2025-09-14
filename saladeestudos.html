@@ -2584,6 +2584,19 @@
                                     .replace(/\r\n/g, '\n').replace(/\r/g, '\n') // Normalizar quebras
                                     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove caracteres de controle
                                     .split('\n').map(line => line.trimRight()).join('\n').trim(); // Limpar espaços
+
+                                // Fallback: se vier tudo em uma linha com separadores ';', quebrar em linhas
+                                if (!/\n/.test(preparedCode)) {
+                                    // Tentar quebrar por ';'
+                                    preparedCode = preparedCode.replace(/;[\t ]*/g, '\n');
+                                    // Se ainda sem quebras, inserir quebras antes de prováveis identificadores de nós e diretivas
+                                    if (!/\n/.test(preparedCode)) {
+                                        preparedCode = preparedCode
+                                            .replace(/\s(subgraph\s+)/gi, '\n$1')
+                                            .replace(/\s(end)\b/gi, '\n$1')
+                                            .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
+                                    }
+                                }
                                 
                                 // Debug apenas se necessário
                                 if (preparedCode.length < 50) {
@@ -2619,7 +2632,10 @@
                 });
                 
                 // NOVO: Renderizar elementos Mermaid já existentes (gerados por Apps 9/13)
-                const existingMermaidElems = this.elements.contentBody.querySelectorAll('.mermaid-container .mermaid, .mermaid');
+                const existingMermaidElems = this.elements.contentBody.querySelectorAll(
+                    '.mermaid-container .mermaid, .mermaid, .mermaid-container, .mermaid-graph, [id^="mermaid-"]'
+                );
+                console.log(`🔎 Detectados ${existingMermaidElems.length} possíveis elementos Mermaid existentes`);
                 existingMermaidElems.forEach((elem) => {
                     // Ignorar se já houver SVG renderizado
                     if (elem.querySelector('svg')) return;
@@ -2657,6 +2673,17 @@
                         .replace(/&nbsp;/g, ' ')
                         .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
                         .split('\n').map(line => line.trimRight()).join('\n').trim();
+
+                    // Fallback: uma linha -> quebrar por ';'
+                    if (!/\n/.test(preparedCode)) {
+                        preparedCode = preparedCode.replace(/;[\t ]*/g, '\n');
+                        if (!/\n/.test(preparedCode)) {
+                            preparedCode = preparedCode
+                                .replace(/\s(subgraph\s+)/gi, '\n$1')
+                                .replace(/\s(end)\b/gi, '\n$1')
+                                .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
+                        }
+                    }
                     
                     // Renderizar no próprio elemento
                     try {
@@ -2674,11 +2701,90 @@
                         console.warn('⚠️ Erro inesperado ao renderizar Mermaid existente:', e);
                     }
                 });
+
+                // Fallback: se ainda não encontrou nada, procurar blocos de texto que parecem Mermaid
+                if (mermaidCounter === 0) {
+                    const candidates = this.elements.contentBody.querySelectorAll('div, pre, code, section, article');
+                    let foundFallback = 0;
+                    candidates.forEach((el) => {
+                        if (foundFallback >= 10) return; // limitar para evitar custo
+                        const text = (el.textContent || '').trim();
+                        if (text.length < 12) return;
+                        if (!this.isMermaidGraph(text)) return;
+                        if (el.querySelector('svg')) return;
+                        
+                        foundFallback++;
+                        mermaidCounter++;
+                        const mermaidId = `mermaid-graph-auto-${mermaidCounter}`;
+                        let preparedCode = text
+                            .replace(/<[^>]*>/g, '')
+                            .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+                            .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+                            .replace(/&nbsp;/g, ' ')
+                            .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+                            .split('\n').map(line => line.trimRight()).join('\n').trim();
+
+                        if (!/\n/.test(preparedCode)) {
+                            preparedCode = preparedCode.replace(/;[\t ]*/g, '\n');
+                            if (!/\n/.test(preparedCode)) {
+                                preparedCode = preparedCode
+                                    .replace(/\s(subgraph\s+)/gi, '\n$1')
+                                    .replace(/\s(end)\b/gi, '\n$1')
+                                    .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
+                            }
+                        }
+                        
+                        mermaid.render(mermaidId + '-svg', preparedCode)
+                            .then(({ svg }) => {
+                                // Envolver em container amigável
+                                const graphContainer = document.createElement('div');
+                                graphContainer.className = 'mermaid-container';
+                                graphContainer.innerHTML = `
+                                    <div class="mermaid-header">
+                                        <h4>📊 Gráfico Interativo</h4>
+                                        <div class="mermaid-controls">
+                                            <button class="mermaid-btn" onclick="this.closest('.mermaid-container').querySelector('.mermaid-source').style.display = 
+                                                this.closest('.mermaid-container').querySelector('.mermaid-source').style.display === 'none' ? 'block' : 'none'">
+                                                Ver Código
+                                            </button>
+                                            <a class="mermaid-btn" href="https://mermaid.live/edit#${btoa(preparedCode)}" target="_blank">Editar Online</a>
+                                        </div>
+                                    </div>
+                                    <div class="mermaid-graph" id="${mermaidId}">${svg}</div>
+                                    <div class="mermaid-source" style="display: none;">
+                                        <pre><code>${this.escapeHtml(preparedCode)}</code></pre>
+                                    </div>
+                                `;
+                                el.replaceWith(graphContainer);
+                                console.log(`✅ Gráfico Mermaid (fallback) renderizado (${mermaidId})`);
+                            })
+                            .catch((error) => {
+                                console.warn('⚠️ Falha no fallback Mermaid:', error);
+                            });
+                    });
+                    if (foundFallback > 0) {
+                        console.log(`🔁 Fallback ativado: ${foundFallback} bloco(s) Mermaid renderizado(s)`);
+                    }
+                }
                 
                 if (mermaidCounter > 0) {
                     console.log(`✅ ${mermaidCounter} gráfico(s) Mermaid processado(s)`);
                 } else {
                     console.log('ℹ️ Nenhum gráfico Mermaid encontrado');
+                    // Fallback final: tentar mermaid.run() nos elementos dentro do contentBody
+                    try {
+                        const scope = this.elements.contentBody;
+                        if (scope && scope.querySelector('.mermaid')) {
+                            console.log('🔁 Tentando fallback mermaid.run()');
+                            const maybePromise = mermaid.run({ nodes: [scope] });
+                            if (maybePromise && typeof maybePromise.then === 'function') {
+                                maybePromise.then(() => console.log('✅ Fallback mermaid.run() executado'))
+                                    .catch(e => console.warn('⚠️ Fallback mermaid.run() falhou:', e));
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Erro ao executar fallback mermaid.run():', e);
+                    }
                 }
             }
             
