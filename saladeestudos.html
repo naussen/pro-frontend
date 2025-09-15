@@ -1015,60 +1015,115 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     
-    <!-- Mermaid.js para renderização de gráficos -->
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.js';
-      
-      // Configuração otimizada com logs reduzidos e melhor tratamento de erros
-      let config = {
-        startOnLoad: true,
-        theme: 'default',
-        securityLevel: 'loose',
-        fontFamily: 'Arial, sans-serif',
-        logLevel: 'error', // Reduzir logs verbosos - apenas erros críticos
-        suppressErrorRendering: false,
-        htmlLabels: true,
-        flowchart: {
-          htmlLabels: true,
-          curve: 'basis',
-          useMaxWidth: true,
-          padding: 15
-        },
-        sequence: {
-          diagramMarginX: 50,
-          diagramMarginY: 10,
-          actorMargin: 50,
-          width: 150,
-          height: 65,
-          boxMargin: 10,
-          boxTextMargin: 5,
-          noteMargin: 10,
-          messageMargin: 35,
-          useMaxWidth: true
-        },
-        gantt: {
-          useMaxWidth: true
-        },
-        pie: {
-          useMaxWidth: true
-        },
-        class: {
-          useMaxWidth: true
-        },
-        state: {
-          useMaxWidth: true
-        },
-        er: {
-          useMaxWidth: true
+    <!-- Mermaid.js para renderização de gráficos com fallback robusto -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js" 
+            onerror="this.onerror=null; this.src='https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js'"></script>
+    <script>
+      // Sistema de inicialização com fallback
+      function initializeMermaid() {
+        if (typeof mermaid === 'undefined') {
+          console.warn('❌ Mermaid não encontrado, tentando fallback...');
+          return false;
         }
-      };
-      
-      mermaid.initialize(config);
-      
-      // Disponibilizar globalmente para compatibilidade
-      window.mermaid = mermaid;
-      
-      console.log('✅ Mermaid inicializado com configuração otimizada');
+
+        try {
+          // Configuração otimizada com logs reduzidos e melhor tratamento de erros
+          const config = {
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontFamily: 'Arial, sans-serif',
+            logLevel: 'error', // Reduzir logs verbosos - apenas erros críticos
+            suppressErrorRendering: false,
+            htmlLabels: true,
+            flowchart: {
+              htmlLabels: true,
+              curve: 'basis',
+              useMaxWidth: true,
+              padding: 15
+            },
+            sequence: {
+              diagramMarginX: 50,
+              diagramMarginY: 10,
+              actorMargin: 50,
+              width: 150,
+              height: 65,
+              boxMargin: 10,
+              boxTextMargin: 5,
+              noteMargin: 10,
+              messageMargin: 35,
+              useMaxWidth: true
+            },
+            gantt: {
+              useMaxWidth: true
+            },
+            pie: {
+              useMaxWidth: true
+            },
+            class: {
+              useMaxWidth: true
+            },
+            state: {
+              useMaxWidth: true
+            },
+            er: {
+              useMaxWidth: true
+            }
+          };
+          
+          mermaid.initialize(config);
+          console.log('✅ Mermaid inicializado com configuração otimizada');
+          return true;
+        } catch (error) {
+          console.error('❌ Erro ao inicializar Mermaid:', error);
+          return false;
+        }
+      }
+
+      // Sistema de carregamento com múltiplos fallbacks
+      function loadMermaidWithFallback() {
+        const cdnUrls = [
+          'https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js',
+          'https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js'
+        ];
+
+        let currentCdnIndex = 0;
+
+        function tryLoadScript() {
+          if (typeof mermaid !== 'undefined') {
+            initializeMermaid();
+            return;
+          }
+
+          if (currentCdnIndex >= cdnUrls.length) {
+            console.error('❌ Todos os CDNs do Mermaid falharam');
+            return;
+          }
+
+          const script = document.createElement('script');
+          script.src = cdnUrls[currentCdnIndex];
+          script.onload = () => {
+            console.log(`✅ Mermaid carregado via CDN ${currentCdnIndex + 1}`);
+            initializeMermaid();
+          };
+          script.onerror = () => {
+            console.warn(`⚠️ CDN ${currentCdnIndex + 1} falhou, tentando próximo...`);
+            currentCdnIndex++;
+            setTimeout(tryLoadScript, 500);
+          };
+          document.head.appendChild(script);
+        }
+
+        // Tentar inicializar imediatamente
+        if (!initializeMermaid()) {
+          // Se não conseguir, tentar carregar dinamicamente
+          setTimeout(tryLoadScript, 1000);
+        }
+      }
+
+      // Iniciar processo de carregamento
+      loadMermaidWithFallback();
     </script>
     
     <script>
@@ -2511,9 +2566,42 @@
                 }
             }
 
+            showMermaidFallbackMessage() {
+                // Mostrar mensagem de fallback para elementos Mermaid
+                const mermaidElements = this.elements.contentBody.querySelectorAll('.mermaid, .mermaid-container, pre code');
+                mermaidElements.forEach(element => {
+                    const codeText = element.textContent || element.innerHTML;
+                    if (this.isMermaidGraph(codeText)) {
+                        const fallbackDiv = document.createElement('div');
+                        fallbackDiv.className = 'mermaid-fallback';
+                        fallbackDiv.innerHTML = `
+                            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                                <h4 style="margin: 0 0 10px 0; color: #856404;">📊 Gráfico Mermaid</h4>
+                                <p style="margin: 0 0 10px 0; color: #856404;">O gráfico não pôde ser carregado devido a problemas de conectividade.</p>
+                                <details>
+                                    <summary style="cursor: pointer; color: #856404;">Ver código fonte</summary>
+                                    <pre style="background: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 4px; overflow-x: auto;"><code>${this.escapeHtml(codeText)}</code></pre>
+                                </details>
+                            </div>
+                        `;
+                        element.parentNode?.replaceChild(fallbackDiv, element);
+                    }
+                });
+            }
+
             processMermaidGraphs() {
                 if (typeof mermaid === 'undefined') {
                     console.warn('❌ Mermaid.js não carregado');
+                    // Tentar carregar novamente após um delay
+                    setTimeout(() => {
+                        if (typeof mermaid !== 'undefined') {
+                            console.log('✅ Mermaid carregado com delay, reprocessando...');
+                            this.processMermaidGraphs();
+                        } else {
+                            console.error('❌ Mermaid não disponível após tentativa de fallback');
+                            this.showMermaidFallbackMessage();
+                        }
+                    }, 2000);
                     return;
                 }
                 
