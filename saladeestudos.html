@@ -1016,7 +1016,34 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     
     <!-- Mermaid.js para renderização de gráficos -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.js';
+      let config = {
+        startOnLoad: true,
+        theme: 'default',
+        securityLevel: 'loose',
+        fontFamily: 'Arial, sans-serif',
+        flowchart: {
+          htmlLabels: true,
+          curve: 'basis'
+        },
+        sequence: {
+          diagramMarginX: 50,
+          diagramMarginY: 10,
+          actorMargin: 50,
+          width: 150,
+          height: 65,
+          boxMargin: 10,
+          boxTextMargin: 5,
+          noteMargin: 10,
+          messageMargin: 35
+        }
+      };
+      mermaid.initialize(config);
+      
+      // Disponibilizar globalmente para compatibilidade
+      window.mermaid = mermaid;
+    </script>
     
     <script>
         'use strict';
