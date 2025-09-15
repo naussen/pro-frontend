@@ -1018,14 +1018,21 @@
     <!-- Mermaid.js para renderização de gráficos -->
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.js';
+      
+      // Configuração otimizada com logs reduzidos e melhor tratamento de erros
       let config = {
         startOnLoad: true,
         theme: 'default',
         securityLevel: 'loose',
         fontFamily: 'Arial, sans-serif',
+        logLevel: 'error', // Reduzir logs verbosos - apenas erros críticos
+        suppressErrorRendering: false,
+        htmlLabels: true,
         flowchart: {
           htmlLabels: true,
-          curve: 'basis'
+          curve: 'basis',
+          useMaxWidth: true,
+          padding: 15
         },
         sequence: {
           diagramMarginX: 50,
@@ -1036,13 +1043,32 @@
           boxMargin: 10,
           boxTextMargin: 5,
           noteMargin: 10,
-          messageMargin: 35
+          messageMargin: 35,
+          useMaxWidth: true
+        },
+        gantt: {
+          useMaxWidth: true
+        },
+        pie: {
+          useMaxWidth: true
+        },
+        class: {
+          useMaxWidth: true
+        },
+        state: {
+          useMaxWidth: true
+        },
+        er: {
+          useMaxWidth: true
         }
       };
+      
       mermaid.initialize(config);
       
       // Disponibilizar globalmente para compatibilidade
       window.mermaid = mermaid;
+      
+      console.log('✅ Mermaid inicializado com configuração otimizada');
     </script>
     
     <script>
@@ -2491,6 +2517,49 @@
                     return;
                 }
                 
+                // Função para sanitizar código Mermaid
+                const sanitizeMermaidCode = (code) => {
+                    if (!code) return '';
+                    
+                    // Limpar e normalizar o código
+                    let cleanCode = code.trim();
+                    
+                    // Escapar caracteres problemáticos em labels
+                    cleanCode = cleanCode.replace(/\[([^\]]*)\(/g, (match, content) => {
+                        // Substitui parênteses em labels por hífen
+                        const cleanContent = content.replace(/\(/g, '-').replace(/\)/g, '');
+                        return `[${cleanContent}`;
+                    });
+                    
+                    // Remover quebras de linha desnecessárias
+                    cleanCode = cleanCode.replace(/\n\s*\n/g, '\n');
+                    
+                    // Garantir que cada linha termina corretamente
+                    const lines = cleanCode.split('\n');
+                    const processedLines = lines.map(line => {
+                        line = line.trim();
+                        if (!line) return line;
+                        
+                        // Escapar caracteres especiais em textos de nós
+                        if (line.includes('[') && line.includes(']')) {
+                            line = line.replace(/\[([^\]]*)\]/g, (match, content) => {
+                                // Limpar conteúdo problemático
+                                const cleanContent = content
+                                    .replace(/\(/g, ' ')
+                                    .replace(/\)/g, ' ')
+                                    .replace(/:/g, ' -')
+                                    .replace(/\s+/g, ' ')
+                                    .trim();
+                                return `[${cleanContent}]`;
+                            });
+                        }
+                        
+                        return line;
+                    });
+                    
+                    return processedLines.join('\n');
+                };
+                
                 // Configurar Mermaid com melhor contraste e tratamento de erros
                 const isDarkMode = document.body.classList.contains('dark-mode');
                 mermaid.initialize({
@@ -2551,7 +2620,7 @@
                     },
                     securityLevel: 'loose',
                     suppressErrorRendering: false,
-                    logLevel: 0,
+                    logLevel: 'error', // Reduzir logs verbosos
                     er: { useMaxWidth: true },
                     sequence: { useMaxWidth: true },
                     gantt: { useMaxWidth: true },
@@ -2603,27 +2672,8 @@
                                 // NOVA ABORDAGEM: Processamento mais cuidadoso
                                 let preparedCode = codeText;
                                 
-                                // Limpeza e normalização do código Mermaid
-                                preparedCode = preparedCode
-                                    .replace(/<[^>]*>/g, '') // Remove HTML tags
-                                    .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
-                                    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ')
-                                    .replace(/\r\n/g, '\n').replace(/\r/g, '\n') // Normalizar quebras
-                                    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove caracteres de controle
-                                    .split('\n').map(line => line.trimRight()).join('\n').trim(); // Limpar espaços
-
-                                // Fallback: se vier tudo em uma linha com separadores ';', quebrar em linhas
-                                if (!/\n/.test(preparedCode)) {
-                                    // Tentar quebrar por ';'
-                                    preparedCode = preparedCode.replace(/;[\t ]*/g, '\n');
-                                    // Se ainda sem quebras, inserir quebras antes de prováveis identificadores de nós e diretivas
-                                    if (!/\n/.test(preparedCode)) {
-                                        preparedCode = preparedCode
-                                            .replace(/\s(subgraph\s+)/gi, '\n$1')
-                                            .replace(/\s(end)\b/gi, '\n$1')
-                                            .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
-                                    }
-                                }
+                                // Usar função de sanitização melhorada
+                                preparedCode = sanitizeMermaidCode(preparedCode);
                                 
                                 // Debug apenas se necessário
                                 if (preparedCode.length < 50) {
