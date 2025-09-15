@@ -2532,15 +2532,18 @@
                     pie: { useMaxWidth: true }
                 });
                 
-                // Detectar blocos de código com gráficos Mermaid
-                const codeBlocks = this.elements.contentBody.querySelectorAll('pre code, .codehilite pre code, .highlight pre code');
+                // Detectar blocos de código com gráficos Mermaid - seleção mais robusta
+                const codeBlocks = this.elements.contentBody.querySelectorAll('pre code, .codehilite pre code, .highlight pre code, pre, code');
+                console.log(`🔍 Encontrados ${codeBlocks.length} blocos de código para análise`);
                 let mermaidCounter = 0;
                 
                 codeBlocks.forEach((codeElement, index) => {
                     const codeText = this.extractTextFromCode(codeElement);
+                    console.log(`📝 Bloco ${index + 1}: "${codeText.substring(0, 50)}${codeText.length > 50 ? '...' : ''}"`);
                     
                     // Verificar se é um gráfico Mermaid
                     if (this.isMermaidGraph(codeText)) {
+                        console.log(`✅ Bloco ${index + 1} identificado como Mermaid`);
                         mermaidCounter++;
                         const mermaidId = `mermaid-graph-${mermaidCounter}`;
                         
@@ -2621,7 +2624,7 @@
                 if (mermaidCounter > 0) {
                     console.log(`✅ ${mermaidCounter} gráfico(s) Mermaid processado(s)`);
                 } else {
-                    console.log('ℹ️ Nenhum gráfico Mermaid encontrado');
+                    console.log(`ℹ️ Nenhum gráfico Mermaid encontrado (${codeBlocks.length} blocos de código analisados)`);
                 }
             }
             
