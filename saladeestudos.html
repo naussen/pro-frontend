@@ -2594,7 +2594,8 @@
                                         preparedCode = preparedCode
                                             .replace(/\s(subgraph\s+)/gi, '\n$1')
                                             .replace(/\s(end)\b/gi, '\n$1')
-                                            .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
+                                            .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1')
+                                            .replace(/[\]\)\}]\s+([A-Za-z][A-Za-z0-9_]*)\s*(?=(?:-\.->|-->|===|==>|->))/g, ']\n$1 ');
                                     }
                                 }
                                 
@@ -2681,7 +2682,8 @@
                             preparedCode = preparedCode
                                 .replace(/\s(subgraph\s+)/gi, '\n$1')
                                 .replace(/\s(end)\b/gi, '\n$1')
-                                .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
+                                .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1')
+                                .replace(/[\]\)\}]\s+([A-Za-z][A-Za-z0-9_]*)\s*(?=(?:-\.->|-->|===|==>|->))/g, ']\n$1 ');
                         }
                     }
                     
@@ -2730,7 +2732,8 @@
                                 preparedCode = preparedCode
                                     .replace(/\s(subgraph\s+)/gi, '\n$1')
                                     .replace(/\s(end)\b/gi, '\n$1')
-                                    .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
+                                    .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1')
+                                    .replace(/[\]\)\}]\s+([A-Za-z][A-Za-z0-9_]*)\s*(?=(?:-\.->|-->|===|==>|->))/g, ']\n$1 ');
                             }
                         }
                         
