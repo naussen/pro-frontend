@@ -1073,6 +1073,12 @@
           
           mermaid.initialize(config);
           console.log('✅ Mermaid inicializado com configuração otimizada');
+
+          // Sinalizar que o Mermaid está pronto
+          if (window.mermaidReady) {
+            window.mermaidReady();
+          }
+
           return true;
         } catch (error) {
           console.error('❌ Erro ao inicializar Mermaid:', error);
@@ -1124,6 +1130,26 @@
 
       // Iniciar processo de carregamento
       loadMermaidWithFallback();
+
+      // Callback para quando o Mermaid estiver pronto
+      window.mermaidReady = function() {
+        console.log('🎉 Mermaid sinalizou que está pronto!');
+        // Notificar a aplicação principal
+        if (window.studyApp && window.studyApp.forceMermaidReprocessing) {
+          window.studyApp.forceMermaidReprocessing();
+        }
+      };
+
+      // Verificação adicional quando a página estiver completamente carregada
+      window.addEventListener('load', function() {
+        console.log('📄 Página completamente carregada, verificando Mermaid...');
+        setTimeout(function() {
+          if (window.studyApp && typeof mermaid !== 'undefined') {
+            console.log('🔄 Verificação final de Mermaid após carregamento completo');
+            window.studyApp.scheduleMermaidProcessing();
+          }
+        }, 500);
+      });
     </script>
     
     <script>
@@ -1189,7 +1215,10 @@
                     
                     // Configura indicador de scroll após elementos estarem prontos
                     this.setupScrollIndicator();
-                    
+
+                    // Configura observador de DOM para Mermaid
+                    this.setupMermaidDOMObserver();
+
                     // Aplica tema salvo
                     this.applyTheme();
                     
@@ -1592,6 +1621,11 @@
                     overlay: document.getElementById('sidebarOverlay'),
                     scrollIndicator: document.getElementById('scrollIndicator')
                 };
+
+                // Reinicializar observador se necessário
+                if (this.mermaidObserver) {
+                    this.setupMermaidDOMObserver();
+                }
             }
 
             setupEventListeners() {
@@ -2429,10 +2463,10 @@
                 
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
-                
-                // Processar gráficos Mermaid após carregar conteúdo
-                this.processMermaidGraphs();
-                
+
+                // Processar gráficos Mermaid após carregar conteúdo com delay estratégico
+                this.scheduleMermaidProcessing();
+
                 // Atualizar botão dinâmico de questões
                 this.updateDynamicQuestoesButton(contentData.meta);
                 
@@ -2544,6 +2578,23 @@
                 return div.innerHTML;
             }
 
+            // === LIMPEZA DE RECURSOS ===
+            cleanup() {
+                // Limpar timer do processamento Mermaid
+                if (this.mermaidProcessingTimer) {
+                    clearTimeout(this.mermaidProcessingTimer);
+                    this.mermaidProcessingTimer = null;
+                }
+
+                // Desconectar observador de DOM
+                if (this.mermaidObserver) {
+                    this.mermaidObserver.disconnect();
+                    this.mermaidObserver = null;
+                }
+
+                console.log('🧹 Recursos Mermaid limpos');
+            }
+
             // === API PÚBLICA ===
             clearCache() {
                 this.contentCache.clear();
@@ -2556,13 +2607,174 @@
                 this.loadUserCourses();
             }
 
+            // Método público para forçar reprocessamento de Mermaid
+            forceMermaidReprocessing() {
+                console.log('🔧 Forçando reprocessamento de Mermaid...');
+                this.scheduleMermaidProcessing();
+            }
+
+            // === AGENDAMENTO INTELIGENTE DO PROCESSAMENTO MERMAID ===
+            scheduleMermaidProcessing() {
+                // Cancelar agendamentos anteriores se existirem
+                if (this.mermaidProcessingTimer) {
+                    clearTimeout(this.mermaidProcessingTimer);
+                }
+
+                // Agendar processamento com múltiplas verificações de timing
+                const processWithChecks = () => {
+                    // Verificação 1: DOM pronto
+                    if (document.readyState !== 'complete') {
+                        console.log('⏳ Aguardando DOM completo...');
+                        setTimeout(processWithChecks, 100);
+                        return;
+                    }
+
+                    // Verificação 2: Content Body existe e tem conteúdo
+                    if (!this.elements.contentBody || !this.elements.contentBody.innerHTML.trim()) {
+                        console.log('⏳ Aguardando conteúdo ser inserido...');
+                        setTimeout(processWithChecks, 50);
+                        return;
+                    }
+
+                    // Verificação 3: Mermaid disponível
+                    if (!this.isMermaidReady()) {
+                        console.log('⏳ Aguardando Mermaid...');
+                        setTimeout(processWithChecks, 200);
+                        return;
+                    }
+
+                    // Tudo pronto - processar
+                    console.log('✅ Todas as condições atendidas, processando Mermaid...');
+                    this.processMermaidGraphs();
+                };
+
+                // Iniciar processamento com pequeno delay para garantir estabilidade
+                this.mermaidProcessingTimer = setTimeout(processWithChecks, 100);
+            }
+
+            // Verificação de disponibilidade do Mermaid
+            isMermaidReady() {
+                return typeof mermaid !== 'undefined' &&
+                       typeof mermaid.render === 'function' &&
+                       typeof mermaid.initialize === 'function' &&
+                       typeof mermaid.parse === 'function';
+            }
+
+            // === SISTEMA DE RETRY PARA MERMAID ===
+            retryMermaidProcessing(attempt = 0) {
+                const maxAttempts = 10;
+                const baseDelay = 500; // 500ms
+                const maxDelay = 5000; // 5 segundos
+
+                if (attempt >= maxAttempts) {
+                    console.error('❌ Máximo de tentativas de carregamento do Mermaid atingido');
+                    this.showMermaidFallbackMessage();
+                    return;
+                }
+
+                // Backoff exponencial com jitter
+                const delay = Math.min(baseDelay * Math.pow(2, attempt) + Math.random() * 200, maxDelay);
+
+                console.log(`🔄 Tentativa ${attempt + 1}/${maxAttempts} de processar Mermaid em ${delay}ms`);
+
+                setTimeout(() => {
+                    if (typeof mermaid !== 'undefined' &&
+                        typeof mermaid.render === 'function' &&
+                        typeof mermaid.initialize === 'function') {
+
+                        try {
+                            // Teste de funcionalidade antes de prosseguir
+                            mermaid.parse('graph TD; A-->B;');
+                            console.log('✅ Mermaid funcional após retry, processando gráficos...');
+                            this.processMermaidGraphs();
+                        } catch (testError) {
+                            console.warn('⚠️ Mermaid ainda não funcional, tentando novamente...');
+                            this.retryMermaidProcessing(attempt + 1);
+                        }
+                    } else {
+                        this.retryMermaidProcessing(attempt + 1);
+                    }
+                }, delay);
+            }
+
+            // === OBSERVADOR DE MUDANÇAS NO DOM ===
+            setupMermaidDOMObserver() {
+                if (this.mermaidObserver) {
+                    this.mermaidObserver.disconnect();
+                }
+
+                this.mermaidObserver = new MutationObserver((mutations) => {
+                    let hasNewMermaidContent = false;
+
+                    mutations.forEach((mutation) => {
+                        // Verificar se foram adicionados nós
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                            mutation.addedNodes.forEach((node) => {
+                                if (node.nodeType === Node.ELEMENT_NODE) {
+                                    // Verificar se o nó adicionado ou seus filhos contêm gráficos Mermaid
+                                    const hasMermaid = this.checkNodeForMermaid(node);
+                                    if (hasMermaid) {
+                                        hasNewMermaidContent = true;
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    // Se encontrou novo conteúdo Mermaid, processar
+                    if (hasNewMermaidContent) {
+                        console.log('🔍 Novo conteúdo Mermaid detectado, processando...');
+                        this.scheduleMermaidProcessing();
+                    }
+                });
+
+                // Observar mudanças no contentBody
+                if (this.elements.contentBody) {
+                    this.mermaidObserver.observe(this.elements.contentBody, {
+                        childList: true,
+                        subtree: true,
+                        characterData: false,
+                        attributes: false
+                    });
+                    console.log('✅ Observador de DOM para Mermaid configurado');
+                }
+            }
+
+            // Verificar se um nó contém conteúdo Mermaid
+            checkNodeForMermaid(node) {
+                // Verificar o próprio nó
+                if (this.isMermaidGraph(node.textContent || '')) {
+                    return true;
+                }
+
+                // Verificar filhos recursivamente (limitado para performance)
+                if (node.children) {
+                    for (let i = 0; i < node.children.length && i < 10; i++) {
+                        const child = node.children[i];
+                        if (this.isMermaidGraph(child.textContent || '')) {
+                            return true;
+                        }
+                        // Verificar classes específicas
+                        if (child.classList && (
+                            child.classList.contains('mermaid') ||
+                            child.classList.contains('mermaid-container') ||
+                            child.classList.contains('mermaid-graph')
+                        )) {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
             // === PROCESSAMENTO DE GRÁFICOS MERMAID ===
             reprocessMermaidForTheme() {
                 // Reprocessar gráficos Mermaid existentes quando o tema muda
                 const existingGraphs = document.querySelectorAll('.mermaid-graph[id^="mermaid-graph-"]');
                 if (existingGraphs.length > 0) {
                     console.log(`🎨 Reprocessando ${existingGraphs.length} gráficos Mermaid para novo tema`);
-                    setTimeout(() => this.processMermaidGraphs(), 100);
+                    this.scheduleMermaidProcessing();
                 }
             }
 
@@ -2590,18 +2802,26 @@
             }
 
             processMermaidGraphs() {
-                if (typeof mermaid === 'undefined') {
-                    console.warn('❌ Mermaid.js não carregado');
-                    // Tentar carregar novamente após um delay
-                    setTimeout(() => {
-                        if (typeof mermaid !== 'undefined') {
-                            console.log('✅ Mermaid carregado com delay, reprocessando...');
-                            this.processMermaidGraphs();
-                        } else {
-                            console.error('❌ Mermaid não disponível após tentativa de fallback');
-                            this.showMermaidFallbackMessage();
-                        }
-                    }, 2000);
+                // Verificação melhorada de disponibilidade do Mermaid
+                const checkMermaidReady = () => {
+                    return typeof mermaid !== 'undefined' &&
+                           typeof mermaid.render === 'function' &&
+                           typeof mermaid.initialize === 'function';
+                };
+
+                if (!checkMermaidReady()) {
+                    console.warn('❌ Mermaid.js não está completamente carregado');
+                    this.retryMermaidProcessing(0);
+                    return;
+                }
+
+                // Verificar se o Mermaid está realmente funcional
+                try {
+                    // Teste rápido de funcionalidade
+                    mermaid.parse('graph TD; A-->B;');
+                } catch (testError) {
+                    console.warn('⚠️ Mermaid carregado mas não funcional, tentando novamente...');
+                    this.retryMermaidProcessing(0);
                     return;
                 }
                 
