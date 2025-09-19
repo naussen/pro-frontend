@@ -1037,23 +1037,37 @@ const AppState = {
 
 // Inicialização do header quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
-  // Inicializar sistema de autenticação
-  initAuthSystem();
-  
-  // Inicializar sistema de login
-  initLoginSystem();
-  
-  // Inicializar botão de tema
-  initThemeToggle();
-  
-  // Inicializar botões de autenticação social da página principal
-  initSocialAuthButtons();
+  // Aguardar o Firebase estar carregado antes de inicializar
+  if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+    // Firebase já está inicializado
+    initAuthSystem();
+    initLoginSystem();
+    initThemeToggle();
+    initSocialAuthButtons();
+  } else {
+    // Aguardar o Firebase carregar
+    const checkFirebase = setInterval(() => {
+      if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+        clearInterval(checkFirebase);
+        initAuthSystem();
+        initLoginSystem();
+        initThemeToggle();
+        initSocialAuthButtons();
+      }
+    }, 100);
+  }
 });
 
 // Função para inicializar sistema de autenticação
 function initAuthSystem() {
+  // Verificar se auth está disponível
+  if (!window.auth) {
+    console.error('Firebase Auth não está disponível');
+    return;
+  }
+  
   // Configurar listener de estado de autenticação
-  AppState.authListener = auth.onAuthStateChanged(async (user) => {
+  AppState.authListener = window.auth.onAuthStateChanged(async (user) => {
     if (user) {
       // Usuário está logado
       AppState.user = {
@@ -1195,7 +1209,7 @@ function initLoginSystem() {
     if (logoutBtn) {
       logoutBtn.addEventListener('click', async () => {
         try {
-          await auth.signOut();
+          await window.auth.signOut();
           showAuthMessage('Logout realizado com sucesso!', 'success');
         } catch (error) {
           console.error('Erro no logout:', error);
@@ -1224,7 +1238,7 @@ function initLoginSystem() {
       googleLoginBtn.addEventListener('click', async () => {
         try {
           const provider = new firebase.auth.GoogleAuthProvider();
-          await auth.signInWithPopup(provider);
+          await window.auth.signInWithPopup(provider);
           showAuthMessage('Login com Google realizado com sucesso!', 'success');
         } catch (error) {
           console.error('Erro no login com Google:', error);
@@ -1267,7 +1281,7 @@ function initLoginSystem() {
       googleSignupPopupBtn.addEventListener('click', async () => {
         try {
           const provider = new firebase.auth.GoogleAuthProvider();
-          await auth.signInWithPopup(provider);
+          await window.auth.signInWithPopup(provider);
           showAuthMessage('Cadastro com Google realizado com sucesso!', 'success');
         } catch (error) {
           console.error('Erro no cadastro com Google:', error);
@@ -1300,7 +1314,7 @@ function initLoginSystem() {
         const password = document.getElementById('login-password').value;
         
         try {
-          await auth.signInWithEmailAndPassword(email, password);
+          await window.auth.signInWithEmailAndPassword(email, password);
           showAuthMessage('Login realizado com sucesso!', 'success');
           loginForm.reset();
         } catch (error) {
@@ -1343,7 +1357,7 @@ function initLoginSystem() {
         }
         
         try {
-          await auth.createUserWithEmailAndPassword(email, password);
+          await window.auth.createUserWithEmailAndPassword(email, password);
           showAuthMessage('Cadastro realizado com sucesso!', 'success');
           signupForm.reset();
         } catch (error) {
@@ -1383,7 +1397,7 @@ function initLoginSystem() {
           try {
             const accessToken = response.authResponse.accessToken;
             const credential = firebase.auth.FacebookAuthProvider.credential(accessToken);
-            const result = await auth.signInWithCredential(credential);
+            const result = await window.auth.signInWithCredential(credential);
             
             // Salvar dados do usuário no Firestore
             if (result.user) {
@@ -1420,7 +1434,7 @@ function initLoginSystem() {
               response.authorization.id_token
             );
             
-            const result = await auth.signInWithCredential(credential);
+            const result = await window.auth.signInWithCredential(credential);
             
             // Salvar dados do usuário no Firestore
             if (result.user) {
@@ -1455,7 +1469,7 @@ function initLoginSystem() {
         photoURL: user.photoURL || null
       };
 
-      await db.collection('users').doc(user.uid).set(userData, { merge: true });
+      await window.db.collection('users').doc(user.uid).set(userData, { merge: true });
       
       // Redirecionar para página de pagamento após cadastro bem-sucedido
       window.location.href = 'pagamento.html';
@@ -1531,7 +1545,7 @@ function initSocialAuthButtons() {
     googleSignupBtn.addEventListener('click', async () => {
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
-        const result = await auth.signInWithPopup(provider);
+        const result = await window.auth.signInWithPopup(provider);
         
         // Salvar dados do usuário no Firestore
         if (result.user) {
@@ -1590,11 +1604,11 @@ function initSocialAuthButtons() {
     alert('Erro ao carregar Firebase. Verifique sua conexão com a internet.');
   } else {
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    window.auth = firebase.auth();
+    window.db = firebase.firestore();
     
     // Verificar se a inicialização foi bem-sucedida
-    if (!auth || !db) {
+    if (!window.auth || !window.db) {
       console.error('Erro ao inicializar Firebase Auth ou Firestore');
       alert('Erro ao inicializar Firebase. Verifique as configurações.');
     }
@@ -1643,7 +1657,7 @@ function initSocialAuthButtons() {
           termsAcceptedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        auth.createUserWithEmailAndPassword(email, password)
+        window.auth.createUserWithEmailAndPassword(email, password)
           .then((userCredential) => {
             const user = userCredential.user;
             userData.user_id = user.uid; // Adiciona o UID ao campo user_id
@@ -1653,7 +1667,7 @@ function initSocialAuthButtons() {
               url: window.location.origin + '/email-verificado.html',
               handleCodeInApp: false
             }).then(() => {
-              return db.collection('users').doc(user.uid).set(userData);
+              return window.db.collection('users').doc(user.uid).set(userData);
             });
           })
           .then(() => {
