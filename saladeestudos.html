@@ -579,6 +579,65 @@
             max-width: none;
             width: 100%;
             box-sizing: border-box;
+            /* FORÇA APLICAÇÃO DO TEMA AO CONTEÚDO DAS AULAS */
+            background: var(--main-content-bg) !important;
+            color: var(--text-dark) !important;
+        }
+
+        /* Garante que elementos dentro das aulas herdem o tema */
+        .lesson-content .container,
+        .lesson-content .content-wrapper {
+            background: var(--main-content-bg) !important;
+            color: var(--text-dark) !important;
+        }
+
+        /* Adapta elementos específicos ao modo escuro */
+        body.dark-mode .lesson-content .mermaid-container {
+            background: var(--main-content-bg) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        body.dark-mode .lesson-content .mermaid {
+            background: var(--main-content-bg) !important;
+            color: var(--text-dark) !important;
+        }
+
+        /* === ESTILOS ESPECÍFICOS PARA AULAS NO MODO ESCURO === */
+        .lesson-content.dark-mode-content {
+            background: var(--main-content-bg) !important;
+            color: var(--text-dark) !important;
+        }
+
+        .lesson-content.dark-mode-content .container,
+        .lesson-content.dark-mode-content .content-wrapper {
+            background: var(--main-content-bg) !important;
+            color: var(--text-dark) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        .lesson-content.dark-mode-content .lesson-dark-mode {
+            background: var(--main-content-bg) !important;
+            color: var(--text-dark) !important;
+        }
+
+        /* Força override de estilos inline das aulas */
+        body.dark-mode .lesson-content * {
+            border-color: var(--border-color) !important;
+        }
+
+        body.dark-mode .lesson-content .mermaid-container * {
+            background: inherit !important;
+            color: inherit !important;
+        }
+
+        /* Preserva elementos que precisam manter suas cores específicas */
+        body.dark-mode .lesson-content .mermaid svg,
+        body.dark-mode .lesson-content .mermaid svg * {
+            /* Permite que SVGs mantenham suas cores originais */
+            background: unset !important;
+            color: unset !important;
+            fill: unset !important;
+            stroke: unset !important;
         }
 
         .lesson-content h1, .lesson-content h2, .lesson-content h3 {
@@ -2464,6 +2523,9 @@
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
 
+                // Aplicar tema atual ao conteúdo da aula
+                this.applyCurrentThemeToLesson(lessonContentDiv);
+
                 // Processar gráficos Mermaid após carregar conteúdo com delay estratégico
                 this.scheduleMermaidProcessing();
 
@@ -2471,6 +2533,79 @@
                 this.updateDynamicQuestoesButton(contentData.meta);
                 
                 console.log('✅ Conteúdo exibido:', contentData.title);
+            }
+
+            // === APLICAÇÃO DE TEMA AO CONTEÚDO DAS AULAS ===
+            applyCurrentThemeToLesson(lessonContentDiv) {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                
+                if (isDarkMode) {
+                    // Força aplicação do modo escuro em elementos específicos
+                    lessonContentDiv.classList.add('dark-mode-content');
+                    
+                    // Aplicar modo escuro a elementos que podem ter CSS inline
+                    const elementsToTheme = [
+                        '.container',
+                        '.content-wrapper', 
+                        '.mermaid-container',
+                        '.mermaid',
+                        'body',
+                        'html'
+                    ];
+                    
+                    elementsToTheme.forEach(selector => {
+                        const elements = lessonContentDiv.querySelectorAll(selector);
+                        elements.forEach(el => {
+                            // Remove estilos inline que podem interferir com o tema
+                            if (el.style.backgroundColor) {
+                                el.style.backgroundColor = '';
+                                el.setAttribute('data-original-bg', 'removed');
+                            }
+                            if (el.style.color) {
+                                el.style.color = '';
+                                el.setAttribute('data-original-color', 'removed');
+                            }
+                            // Adiciona classe para modo escuro
+                            el.classList.add('lesson-dark-mode');
+                        });
+                    });
+                    
+                    // Notificar scripts da aula sobre mudança de tema (se existirem)
+                    this.notifyLessonThemeChange(lessonContentDiv, 'dark');
+                } else {
+                    // Remove classe de modo escuro
+                    lessonContentDiv.classList.remove('dark-mode-content');
+                    
+                    // Remove classes de modo escuro dos elementos
+                    lessonContentDiv.querySelectorAll('.lesson-dark-mode').forEach(el => {
+                        el.classList.remove('lesson-dark-mode');
+                    });
+                    
+                    // Notificar scripts da aula sobre mudança de tema (se existirem)
+                    this.notifyLessonThemeChange(lessonContentDiv, 'light');
+                }
+                
+                console.log(`🎨 Tema ${isDarkMode ? 'escuro' : 'claro'} aplicado ao conteúdo da aula`);
+            }
+
+            // Notifica scripts da aula sobre mudança de tema
+            notifyLessonThemeChange(lessonContentDiv, theme) {
+                try {
+                    // Verifica se existe função de refresh do Mermaid na aula
+                    if (window.refreshMermaidTheme && typeof window.refreshMermaidTheme === 'function') {
+                        console.log('🔄 Atualizando tema do Mermaid na aula...');
+                        window.refreshMermaidTheme();
+                    }
+                    
+                    // Disparar evento personalizado para scripts da aula
+                    const themeEvent = new CustomEvent('lessonThemeChange', {
+                        detail: { theme: theme, isDark: theme === 'dark' }
+                    });
+                    lessonContentDiv.dispatchEvent(themeEvent);
+                    
+                } catch (error) {
+                    console.warn('⚠️ Erro ao notificar mudança de tema:', error);
+                }
             }
 
             // === ESTADOS DE UI ===
