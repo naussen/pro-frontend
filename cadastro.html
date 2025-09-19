@@ -1576,17 +1576,29 @@ function initSocialAuthButtons() {
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-	authDomain: "proconcursos.com.br",
-	projectId: "nvp-concursos",
-	storageBucket: "nvp-concursos.firebasestorage.app",
-	messagingSenderId: "397960760271",
-	appId: "1:397960760271:web:1243b04141178453d860ba",
-	measurementId: "G-T6RVBM12BQ"
+    authDomain: "nvp-concursos.firebaseapp.com",
+    projectId: "nvp-concursos",
+    storageBucket: "nvp-concursos.firebasestorage.app",
+    messagingSenderId: "397960760271",
+    appId: "1:397960760271:web:1243b04141178453d860ba",
+    measurementId: "G-T6RVBM12BQ"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+  // Verificar se o Firebase está carregado
+  if (typeof firebase === 'undefined') {
+    console.error('Firebase não foi carregado corretamente');
+    alert('Erro ao carregar Firebase. Verifique sua conexão com a internet.');
+  } else {
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    // Verificar se a inicialização foi bem-sucedida
+    if (!auth || !db) {
+      console.error('Erro ao inicializar Firebase Auth ou Firestore');
+      alert('Erro ao inicializar Firebase. Verifique as configurações.');
+    }
+  }
 
 
 
