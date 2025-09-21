@@ -1207,7 +1207,9 @@
           if (window.studyApp && typeof mermaid !== 'undefined') {
             console.log('🔄 Verificação final de Mermaid após carregamento completo');
             // Sempre processar Mermaid quando a página carrega completamente
-            window.studyApp.scheduleMermaidProcessing();
+            if (window.studyApp.scheduleMermaidProcessing) {
+              window.studyApp.scheduleMermaidProcessing();
+            }
             // Também chamar forceMermaidReprocessing para garantir
             if (window.studyApp.forceMermaidReprocessing) {
               window.studyApp.forceMermaidReprocessing();
@@ -2970,16 +2972,16 @@
                 // Observer desabilitado para evitar loop infinito
                 this.mermaidObserver = null;
 
-                // Observar mudanças no contentBody
-                if (this.elements.contentBody) {
-                    this.mermaidObserver.observe(this.elements.contentBody, {
-                        childList: true,
-                        subtree: true,
-                        characterData: false,
-                        attributes: false
-                    });
-                    console.log('✅ Observador de DOM para Mermaid configurado');
-                }
+                // Observação desabilitada temporariamente
+                // if (this.elements.contentBody) {
+                //     this.mermaidObserver.observe(this.elements.contentBody, {
+                //         childList: true,
+                //         subtree: true,
+                //         characterData: false,
+                //         attributes: false
+                //     });
+                //     console.log('✅ Observador de DOM para Mermaid configurado');
+                // }
             }
 
             // Verificar se um nó contém conteúdo Mermaid
