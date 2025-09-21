@@ -6,12 +6,48 @@
     <title>Gráficos em Mermaid - O Surgimento do Direito Moderno</title>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+        // Tornar mermaid disponível globalmente
+        window.mermaid = mermaid;
+
         mermaid.initialize({
             startOnLoad: true,
             theme: 'default',
             securityLevel: 'loose',
             fontFamily: 'arial',
-            fontSize: 14
+            fontSize: 14,
+            flowchart: {
+                nodeSpacing: 50,
+                rankSpacing: 50,
+                curve: 'basis',
+                padding: 20
+            },
+            sequence: {
+                diagramMarginX: 50,
+                diagramMarginY: 10,
+                actorMargin: 50,
+                width: 150,
+                height: 65,
+                boxMargin: 10,
+                boxTextMargin: 5,
+                noteMargin: 10,
+                messageMargin: 35,
+                mirrorActors: true,
+                bottomMarginAdj: 1,
+                useMaxWidth: true
+            },
+            gantt: {
+                titleTopMargin: 25,
+                barHeight: 20,
+                barGap: 4,
+                topPadding: 50,
+                leftPadding: 75,
+                gridLineStartPadding: 35,
+                fontSize: 11,
+                fontFamily: '"Open Sans", verdana, arial, sans-serif',
+                numberSectionStyles: 4,
+                axisFormat: '%Y-%m-%d'
+            }
         });
     </script>
     <style>
@@ -53,10 +89,20 @@
         .mermaid {
             background: white;
             border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
+            padding: 30px;
+            margin: 30px 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             text-align: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+            margin: 10px auto;
         }
 
         .section-title {
