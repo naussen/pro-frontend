@@ -284,8 +284,8 @@ flowchart TD
     A[Direito Público<br/>Normas que regulam<br/>relações entre<br/>Estado e particulares]
 
     subgraph "RELAÇÕES REGULADAS"
-        B1[Estado ↔ Particulares]
-        B2[Entes Estatais ↔<br/>Entes Estatais]
+        B1["Estado ↔ Particulares"]
+        B2["Entes Estatais ↔<br/>Entes Estatais"]
     end
 
     subgraph "DIFERENTE DO<br/>DIREITO PRIVADO"
@@ -379,7 +379,7 @@ flowchart LR
     subgraph "ESTADO LIBERAL<br/>(Século XIX)"
         C1[Separação de poderes]
         C2[Direitos individuais]
-        C3[Estado mínimo<br/>(não intervencionista)]
+        C3["Estado mínimo<br/>(não intervencionista)"]
         C4[Constitucionalismo]
     end
 
@@ -418,7 +418,7 @@ flowchart TD
         B2[Federalismo]
         B3[Separação de poderes]
         B4[Checks and balances]
-        B5[Direitos individuais<br/>(Bill of Rights)]
+        B5["Direitos individuais<br/>(Bill of Rights)"]
     end
 
     subgraph "CONSTITUIÇÃO FRANCESA<br/>1791"
@@ -499,7 +499,7 @@ flowchart TD
     subgraph "DIREITO PÚBLICO<br/>👑 Interesse Coletivo"
         A1[Interesse Coletivo]
         A2[Normas Cogentes<br/>Obrigatórias]
-        A3[Desigualdade<br/>Estado ↔ Cidadão]
+        A3["Desigualdade<br/>Estado ↔ Cidadão"]
         A4[Imposição Estatal]
     end
 
@@ -528,7 +528,7 @@ flowchart TD
         <h2>SLIDE 8: Convergências no Mundo Contemporâneo</h2>
         <div class="mermaid">
 flowchart TD
-    A[Direito Contemporâneo<br/>🌍 Fusão Público-Privado]
+    A["Direito Contemporâneo<br/>🌍 Fusão Público-Privado"]
 
     subgraph "DIREITO DO TRABALHO<br/>🔄 Origem Privada + Intervenção Estatal"
         B1[Contrato Individual<br/>de Trabalho]
@@ -632,8 +632,8 @@ flowchart TD
     end
 
     subgraph "DIVISÃO FUNDAMENTAL<br/>⚖️ Dois Blocos"
-        C1[Direito Público<br/>🏛️ Estado vs Cidadão<br/>Interesse Coletivo]
-        C2[Direito Privado<br/>👥 Cidadão vs Cidadão<br/>Interesse Individual]
+        C1["Direito Público<br/>🏛️ Estado vs Cidadão<br/>Interesse Coletivo"]
+        C2["Direito Privado<br/>👥 Cidadão vs Cidadão<br/>Interesse Individual"]
     end
 
     A --> B1
@@ -653,7 +653,7 @@ flowchart TD
         <h2>SLIDE 11: Linha Divisória Tênue - Complexidade Social</h2>
         <div class="mermaid">
 flowchart TD
-    A[SOCIEDADE MODERNA<br/>🌍 Complexa]
+    A["SOCIEDADE MODERNA<br/>🌍 Complexa"]
 
     subgraph "FATORE INTERSECÇÃO<br/>🔄 Público + Privado"
         B1[Direito do Trabalho<br/>Contrato + Estado]
@@ -663,8 +663,8 @@ flowchart TD
     end
 
     subgraph "LINHA DIVISÓRIA<br/>✨ Mais Tênue"
-        C1[Antes: Separados<br/>⚫ Público ⚫ Privado]
-        C2[Hoje: Entrelaçados<br/>🔗 Público ↔ Privado]
+        C1["Antes: Separados<br/>⚫ Público ⚫ Privado"]
+        C2["Hoje: Entrelaçados<br/>🔗 Público ↔ Privado"]
     end
 
     A --> B1
@@ -690,11 +690,11 @@ flowchart TD
         <h2>SLIDE 12: Equilíbrio - Mensagem Final</h2>
         <div class="mermaid">
 flowchart TD
-    A[DIREITO MODERNO<br/>🎯 Missão Final]
+    A["DIREITO MODERNO<br/>🎯 Missão Final"]
 
     subgraph "BALANÇA DO DIREITO<br/>⚖️ Equilíbrio Perfeito"
-        B1[Interesse Público<br/>🏛️ Coletivo<br/>Estado<br/>Sociedade]
-        B2[Liberdade Privada<br/>👤 Individual<br/>Cidadão<br/>Autonomia]
+        B1["Interesse Público<br/>🏛️ Coletivo<br/>Estado<br/>Sociedade"]
+        B2["Liberdade Privada<br/>👤 Individual<br/>Cidadão<br/>Autonomia"]
     end
 
     subgraph "RESULTADO<br/>✅ Justiça"
@@ -741,7 +741,19 @@ flowchart TD
     <script>
         // Inicializar Mermaid após o carregamento da página
         document.addEventListener('DOMContentLoaded', function() {
-            mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+            // Aguardar o carregamento do módulo Mermaid
+            if (typeof mermaid !== 'undefined') {
+                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+            } else {
+                // Fallback: tentar novamente após um pequeno delay
+                setTimeout(function() {
+                    if (typeof mermaid !== 'undefined') {
+                        mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                    } else {
+                        console.error('Mermaid não pôde ser carregado');
+                    }
+                }, 100);
+            }
         });
     </script>
 </body>
