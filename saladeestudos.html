@@ -2941,30 +2941,34 @@
                     this.mermaidObserver.disconnect();
                 }
 
-                this.mermaidObserver = new MutationObserver((mutations) => {
-                    let hasNewMermaidContent = false;
+                // TEMPORARIAMENTE DESABILITADO - Observer causando loop infinito
+                // this.mermaidObserver = new MutationObserver((mutations) => {
+                //     let hasNewMermaidContent = false;
 
-                    mutations.forEach((mutation) => {
-                        // Verificar se foram adicionados nós
-                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                            mutation.addedNodes.forEach((node) => {
-                                if (node.nodeType === Node.ELEMENT_NODE) {
-                                    // Verificar se o nó adicionado ou seus filhos contêm gráficos Mermaid
-                                    const hasMermaid = this.checkNodeForMermaid(node);
-                                    if (hasMermaid) {
-                                        hasNewMermaidContent = true;
-                                    }
-                                }
-                            });
-                        }
-                    });
+                //     mutations.forEach((mutation) => {
+                //         // Verificar se foram adicionados nós
+                //         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                //             mutation.addedNodes.forEach((node) => {
+                //                 if (node.nodeType === Node.ELEMENT_NODE) {
+                //                     // Verificar se o nó adicionado ou seus filhos contêm gráficos Mermaid
+                //                     const hasMermaid = this.checkNodeForMermaid(node);
+                //                     if (hasMermaid) {
+                //                         hasNewMermaidContent = true;
+                //                     }
+                //                 }
+                //             });
+                //         }
+                //     });
 
-                    // Se encontrou novo conteúdo Mermaid, processar
-                    if (hasNewMermaidContent) {
-                        console.log('🔍 Novo conteúdo Mermaid detectado, processando...');
-                        this.scheduleMermaidProcessing();
-                    }
-                });
+                //     // Se encontrou novo conteúdo Mermaid, processar
+                //     if (hasNewMermaidContent) {
+                //         console.log('🔍 Novo conteúdo Mermaid detectado, processando...');
+                //         this.scheduleMermaidProcessing();
+                //     }
+                // });
+
+                // Observer desabilitado para evitar loop infinito
+                this.mermaidObserver = null;
 
                 // Observar mudanças no contentBody
                 if (this.elements.contentBody) {
@@ -3069,6 +3073,24 @@
                     
                     // Limpar e normalizar o código
                     let cleanCode = code.trim();
+                    
+                    // CORREÇÃO: Remover elementos de interface HTML que podem ter contaminado o código
+                    cleanCode = cleanCode
+                        .replace(/📊\s*Gráfico\s*Interativo[\s\S]*?Editar\s*Online[\s\S]*?mindmap/g, 'mindmap') // Remove header completo
+                        .replace(/Ver\s*Código[\s\S]*?Editar\s*Online[\s\S]*?mindmap/g, 'mindmap') // Remove controles
+                        .replace(/<[^>]*>/g, '') // Remove qualquer HTML restante
+                        .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+                        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+                        .replace(/&nbsp;/g, ' ');
+                    
+                    // Detectar e corrigir quebras de linha incorretas em mindmap
+                    if (cleanCode.includes('mindmap')) {
+                        // Corrigir quebras de linha problemáticas em mindmap
+                        cleanCode = cleanCode
+                            .replace(/(\w+)\s*\n\s*\(([^)]+)\)/g, '$1($2)') // Corrigir quebras entre nome e parênteses
+                            .replace(/(\w+)\s*\n\s*::/g, '$1 ::') // Corrigir quebras antes de ::
+                            .replace(/\n\s*\n/g, '\n'); // Remover linhas vazias duplas
+                    }
                     
                     // Escapar caracteres problemáticos em labels
                     cleanCode = cleanCode.replace(/\[([^\]]*)\(/g, (match, content) => {
@@ -3263,39 +3285,62 @@
                     // Ignorar se já houver SVG renderizado
                     if (elem.querySelector('svg')) return;
                     
-                    // Obter código Mermaid do próprio elemento
+                    // Obter código Mermaid do próprio elemento - CORRIGIDO
                     let codeText = '';
-                    const extractText = (node) => {
-                        let result = '';
-                        for (const child of node.childNodes) {
-                            if (child.nodeType === Node.TEXT_NODE) {
-                                result += child.textContent;
-                            } else if (child.nodeType === Node.ELEMENT_NODE) {
-                                if (child.tagName === 'BR') {
-                                    result += '\n';
-                                } else {
-                                    result += extractText(child);
+                    
+                    // CORREÇÃO: Extrair apenas do elemento .mermaid ou .mermaid-graph, não do container completo
+                    const mermaidElement = elem.classList.contains('mermaid') || elem.classList.contains('mermaid-graph') 
+                        ? elem 
+                        : elem.querySelector('.mermaid, .mermaid-graph');
+                    
+                    if (mermaidElement) {
+                        // Extrair apenas texto puro, ignorando elementos de interface
+                        const extractCleanText = (node) => {
+                            let result = '';
+                            for (const child of node.childNodes) {
+                                if (child.nodeType === Node.TEXT_NODE) {
+                                    result += child.textContent;
+                                } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                    // Ignorar elementos de interface (botões, controles, etc.)
+                                    if (child.classList.contains('mermaid-header') || 
+                                        child.classList.contains('mermaid-controls') ||
+                                        child.classList.contains('mermaid-source') ||
+                                        child.tagName === 'BUTTON' ||
+                                        child.tagName === 'A' ||
+                                        child.tagName === 'H4') {
+                                        continue; // Pular elementos de interface
+                                    }
+                                    
+                                    if (child.tagName === 'BR') {
+                                        result += '\n';
+                                    } else {
+                                        result += extractCleanText(child);
+                                    }
                                 }
                             }
-                        }
-                        return result;
-                    };
-                    codeText = extractText(elem).replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-                        .split('\n').map(l => l.trimRight()).join('\n').trim();
+                            return result;
+                        };
+                        
+                        codeText = extractCleanText(mermaidElement).replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+                            .split('\n').map(l => l.trimRight()).join('\n').trim();
+                    } else {
+                        // Fallback: extrair de todo o elemento se não encontrar sub-elemento
+                        codeText = elem.textContent || '';
+                    }
                     
                     if (!this.isMermaidGraph(codeText)) return;
                     
                     mermaidCounter++;
                     const mermaidId = `mermaid-graph-${mermaidCounter}`;
                     
-                    // Limpeza mínima antes do render
-                    let preparedCode = codeText
-                        .replace(/<[^>]*>/g, '')
-                        .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
-                        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-                        .replace(/&nbsp;/g, ' ')
-                        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-                        .split('\n').map(line => line.trimRight()).join('\n').trim();
+                    // CORREÇÃO: Usar função de sanitização melhorada
+                    let preparedCode = sanitizeMermaidCode(codeText);
+                    
+                    // Validação adicional: verificar se o código ainda é válido após limpeza
+                    if (!this.isMermaidGraph(preparedCode)) {
+                        console.warn(`⚠️ Código Mermaid ${mermaidCounter} inválido após limpeza, pulando...`);
+                        return;
+                    }
 
                     // Fallback: uma linha -> quebrar por ';'
                     if (!/\n/.test(preparedCode)) {
@@ -3331,7 +3376,24 @@
                     let foundFallback = 0;
                     candidates.forEach((el) => {
                         if (foundFallback >= 10) return; // limitar para evitar custo
-                        const text = (el.textContent || '').trim();
+                        
+                        // CORREÇÃO: Extrair texto limpo, ignorando elementos de interface
+                        let text = '';
+                        if (el.classList.contains('mermaid') || el.classList.contains('mermaid-graph')) {
+                            // Se é um elemento Mermaid direto, extrair apenas texto puro
+                            text = Array.from(el.childNodes)
+                                .filter(node => node.nodeType === Node.TEXT_NODE)
+                                .map(node => node.textContent)
+                                .join('')
+                                .trim();
+                        } else {
+                            // Para outros elementos, usar textContent mas filtrar elementos de interface
+                            const clone = el.cloneNode(true);
+                            // Remover elementos de interface do clone
+                            clone.querySelectorAll('.mermaid-header, .mermaid-controls, .mermaid-source, button, a, h4').forEach(elem => elem.remove());
+                            text = (clone.textContent || '').trim();
+                        }
+                        
                         if (text.length < 12) return;
                         if (!this.isMermaidGraph(text)) return;
                         if (el.querySelector('svg')) return;
@@ -3339,13 +3401,15 @@
                         foundFallback++;
                         mermaidCounter++;
                         const mermaidId = `mermaid-graph-auto-${mermaidCounter}`;
-                        let preparedCode = text
-                            .replace(/<[^>]*>/g, '')
-                            .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
-                            .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-                            .replace(/&nbsp;/g, ' ')
-                            .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-                            .split('\n').map(line => line.trimRight()).join('\n').trim();
+                        
+                        // CORREÇÃO: Usar função de sanitização melhorada
+                        let preparedCode = sanitizeMermaidCode(text);
+                        
+                        // Validação adicional: verificar se o código ainda é válido após limpeza
+                        if (!this.isMermaidGraph(preparedCode)) {
+                            console.warn(`⚠️ Código Mermaid fallback ${mermaidCounter} inválido após limpeza, pulando...`);
+                            return;
+                        }
 
                         if (!/\n/.test(preparedCode)) {
                             preparedCode = preparedCode.replace(/;[\t ]*/g, '\n');
