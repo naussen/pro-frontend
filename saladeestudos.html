@@ -1088,7 +1088,7 @@
         try {
           // Configuração otimizada com logs reduzidos e melhor tratamento de erros
           const config = {
-            startOnLoad: true,
+            startOnLoad: false, // Desabilitado para controle manual dos gráficos
             theme: 'default',
             securityLevel: 'loose',
             fontFamily: 'Arial, sans-serif',
@@ -1193,9 +1193,10 @@
       // Callback para quando o Mermaid estiver pronto
       window.mermaidReady = function() {
         console.log('🎉 Mermaid sinalizou que está pronto!');
-        // Notificar a aplicação principal
-        if (window.studyApp && window.studyApp.forceMermaidReprocessing) {
-          window.studyApp.forceMermaidReprocessing();
+        // Notificar a aplicação principal - sempre processar quando pronto
+        if (window.studyApp && window.studyApp.scheduleMermaidProcessing) {
+          console.log('🔄 Processando gráficos Mermaid após inicialização...');
+          window.studyApp.scheduleMermaidProcessing();
         }
       };
 
@@ -1205,9 +1206,14 @@
         setTimeout(function() {
           if (window.studyApp && typeof mermaid !== 'undefined') {
             console.log('🔄 Verificação final de Mermaid após carregamento completo');
+            // Sempre processar Mermaid quando a página carrega completamente
             window.studyApp.scheduleMermaidProcessing();
+            // Também chamar forceMermaidReprocessing para garantir
+            if (window.studyApp.forceMermaidReprocessing) {
+              window.studyApp.forceMermaidReprocessing();
+            }
           }
-        }, 500);
+        }, 1000); // Aumentar delay para dar mais tempo ao Mermaid
       });
     </script>
     
@@ -1227,6 +1233,7 @@
         class StudyRoomApp {
             constructor() {
                 this.isInitialized = false;
+                this.currentLessonState = null; // Estado da aula atual
                 this.userId = null;
                 this.db = null;
                 this.storage = null;
@@ -2261,16 +2268,26 @@
             }
 
             autoSelectFirstContent() {
+                // Primeiro tentar restaurar aula anterior
+                const previousState = this.restoreCurrentLessonState();
+
+                if (previousState && this.tryRestorePreviousLesson(previousState)) {
+                    console.log('✅ Aula anterior restaurada com sucesso');
+                    return;
+                }
+
+                // Fallback: selecionar primeira aula se não conseguir restaurar
+                console.log('📚 Restaurando primeira aula (fallback)');
                 if (this.loadedCourses.length > 0 && this.loadedCourses[0].modules.length > 0) {
                     const firstCourse = this.loadedCourses[0];
                     const firstModule = firstCourse.modules[0];
                     const firstAula = firstModule.aulas?.[0];
-                    
+
                     // SEMPRE mantém menu recolhido - usuário deve clicar para expandir
                     // Apenas seleciona primeira aula sem expandir nada
                     setTimeout(() => {
                         const firstAulaItem = this.elements.courseNav.querySelector('.aula-item');
-                        
+
                         if (firstAulaItem && firstAula) {
                             // Seleciona primeira aula sem expandir curso/módulo
                             firstAulaItem.classList.add('active');
@@ -2278,6 +2295,52 @@
                         }
                     }, 100);
                 }
+            }
+
+            tryRestorePreviousLesson(previousState) {
+                try {
+                    // Procurar pela aula salva no estado
+                    const targetAulaItem = this.elements.courseNav.querySelector(
+                        `.aula-item[data-course-id="${previousState.courseId}"][data-module-id="${previousState.moduleId}"][data-aula-id="${previousState.aulaId}"]`
+                    );
+
+                    if (targetAulaItem) {
+                        // Expandir curso e módulo necessários
+                        const courseItem = targetAulaItem.closest('.course-item');
+                        const moduleItem = targetAulaItem.closest('.module-item');
+
+                        if (courseItem) {
+                            const courseHeader = courseItem.querySelector('.course-header');
+                            const modulesList = courseItem.querySelector('.modules-list');
+                            if (courseHeader && modulesList) {
+                                modulesList.style.display = 'block';
+                                courseHeader.querySelector('.course-toggle').textContent = '▼';
+                            }
+                        }
+
+                        if (moduleItem) {
+                            const moduleHeader = moduleItem.querySelector('.module-header');
+                            const aulasList = moduleItem.querySelector('.aulas-list');
+                            if (moduleHeader && aulasList) {
+                                aulasList.style.display = 'block';
+                                moduleHeader.querySelector('.module-toggle').textContent = '▼';
+                            }
+                        }
+
+                        // Selecionar e carregar a aula
+                        targetAulaItem.classList.add('active');
+                        const { courseId, moduleId, aulaId } = targetAulaItem.dataset;
+                        this.loadAulaContent(courseId, moduleId, aulaId);
+
+                        // Atualizar indicador de scroll
+                        setTimeout(() => this.updateScrollIndicator(), 200);
+
+                        return true;
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Erro ao tentar restaurar aula anterior:', error);
+                }
+                return false;
             }
 
             // === CARREGAMENTO DE CONTEÚDO DE AULAS ===
@@ -2509,17 +2572,57 @@
                 return tempDiv.innerHTML;
             }
 
+            // === GERENCIAMENTO DE ESTADO DA AULA ATUAL ===
+            saveCurrentLessonState(meta) {
+                try {
+                    const lessonState = {
+                        courseId: meta.course,
+                        moduleId: meta.module,
+                        aulaId: meta.aula,
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem('currentLessonState', JSON.stringify(lessonState));
+                    console.log('💾 Estado da aula salvo:', lessonState);
+                } catch (error) {
+                    console.warn('⚠️ Erro ao salvar estado da aula:', error);
+                }
+            }
+
+            restoreCurrentLessonState() {
+                try {
+                    const savedState = localStorage.getItem('currentLessonState');
+                    if (savedState) {
+                        const lessonState = JSON.parse(savedState);
+                        // Verificar se não é muito antigo (24 horas)
+                        const isRecent = Date.now() - lessonState.timestamp < 24 * 60 * 60 * 1000;
+                        if (isRecent) {
+                            console.log('📖 Estado da aula restaurado:', lessonState);
+                            return lessonState;
+                        } else {
+                            console.log('⏰ Estado da aula expirado, removendo...');
+                            localStorage.removeItem('currentLessonState');
+                        }
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Erro ao restaurar estado da aula:', error);
+                }
+                return null;
+            }
+
             displayContent(contentData) {
                 this.currentContent = contentData;
-                
+
+                // Salvar estado da aula atual
+                this.saveCurrentLessonState(contentData.meta);
+
                 // Atualiza corpo do conteúdo
                 const lessonContentDiv = document.createElement('div');
                 lessonContentDiv.className = 'lesson-content';
                 lessonContentDiv.innerHTML = contentData.content; // Já sanitizado
-                
+
                 this.elements.contentBody.innerHTML = '';
                 this.elements.contentBody.appendChild(lessonContentDiv);
-                
+
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
 
@@ -3006,7 +3109,7 @@
                 // Configurar Mermaid com melhor contraste e tratamento de erros
                 const isDarkMode = document.body.classList.contains('dark-mode');
                 mermaid.initialize({
-                    startOnLoad: false,
+                    startOnLoad: false, // Sempre false para controle manual
                     theme: isDarkMode ? 'dark' : 'default',
                     themeCSS: isDarkMode ? `
                         .node rect, .node circle, .node ellipse, .node polygon {
