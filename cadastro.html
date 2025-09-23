@@ -1238,11 +1238,26 @@ function initLoginSystem() {
       googleLoginBtn.addEventListener('click', async () => {
         try {
           const provider = new firebase.auth.GoogleAuthProvider();
+          provider.addScope('email');
+          provider.addScope('profile');
+          provider.setCustomParameters({
+            prompt: 'select_account'
+          });
           await window.auth.signInWithPopup(provider);
           showAuthMessage('Login com Google realizado com sucesso!', 'success');
         } catch (error) {
           console.error('Erro no login com Google:', error);
-          showAuthMessage('Erro ao fazer login com Google', 'error');
+          let errorMessage = 'Erro ao fazer login com Google';
+
+          if (error.code === 'auth/popup-blocked') {
+            errorMessage = 'Popup bloqueado. Permita popups para este site.';
+          } else if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = 'Popup fechado pelo usuário.';
+          } else if (error.code === 'auth/unauthorized-domain') {
+            errorMessage = 'Domínio não autorizado. Configure o domínio no Firebase Console.';
+          }
+
+          showAuthMessage(errorMessage, 'error');
         }
       });
     }
@@ -1281,11 +1296,26 @@ function initLoginSystem() {
       googleSignupPopupBtn.addEventListener('click', async () => {
         try {
           const provider = new firebase.auth.GoogleAuthProvider();
+          provider.addScope('email');
+          provider.addScope('profile');
+          provider.setCustomParameters({
+            prompt: 'select_account'
+          });
           await window.auth.signInWithPopup(provider);
           showAuthMessage('Cadastro com Google realizado com sucesso!', 'success');
         } catch (error) {
           console.error('Erro no cadastro com Google:', error);
-          showAuthMessage('Erro ao fazer cadastro com Google', 'error');
+          let errorMessage = 'Erro ao fazer cadastro com Google';
+
+          if (error.code === 'auth/popup-blocked') {
+            errorMessage = 'Popup bloqueado. Permita popups para este site.';
+          } else if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = 'Popup fechado pelo usuário.';
+          } else if (error.code === 'auth/unauthorized-domain') {
+            errorMessage = 'Domínio não autorizado. Configure o domínio no Firebase Console.';
+          }
+
+          showAuthMessage(errorMessage, 'error');
         }
       });
     }
@@ -1513,6 +1543,9 @@ function initSocialAuthButtons() {
         const provider = new firebase.auth.GoogleAuthProvider();
         provider.addScope('email');
         provider.addScope('profile');
+        provider.setCustomParameters({
+          prompt: 'select_account'
+        });
 
         const result = await window.auth.signInWithPopup(provider);
 
@@ -1530,6 +1563,10 @@ function initSocialAuthButtons() {
           errorMessage = 'Popup bloqueado. Permita popups para este site.';
         } else if (error.code === 'auth/popup-closed-by-user') {
           errorMessage = 'Popup fechado pelo usuário.';
+        } else if (error.code === 'auth/unauthorized-domain') {
+          errorMessage = 'Domínio não autorizado. Configure o domínio no Firebase Console.';
+        } else if (error.code === 'auth/operation-not-allowed') {
+          errorMessage = 'Autenticação com Google não está habilitada no Firebase.';
         }
 
         showAuthMessage(errorMessage, 'error');
@@ -1589,16 +1626,9 @@ function initSocialAuthButtons() {
 <!-- Apple Sign-In SDK -->
 <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 
+<script src="firebase-config.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-    authDomain: "nvp-concursos.firebaseapp.com",
-    projectId: "nvp-concursos",
-    storageBucket: "nvp-concursos.firebasestorage.app",
-    messagingSenderId: "397960760271",
-    appId: "1:397960760271:web:1243b04141178453d860ba",
-    measurementId: "G-T6RVBM12BQ"
-  };
+  // Usar configuração do arquivo firebase-config.js
 
   // Verificar se o Firebase está carregado
   if (typeof firebase === 'undefined') {
@@ -1608,11 +1638,15 @@ function initSocialAuthButtons() {
     firebase.initializeApp(firebaseConfig);
     window.auth = firebase.auth();
     window.db = firebase.firestore();
-    
+
     // Verificar se a inicialização foi bem-sucedida
     if (!window.auth || !window.db) {
       console.error('Erro ao inicializar Firebase Auth ou Firestore');
       alert('Erro ao inicializar Firebase. Verifique as configurações.');
+    } else {
+      console.log('Firebase inicializado com sucesso');
+      console.log('Ambiente:', window.location.hostname === 'localhost' ? 'Desenvolvimento' : 'Produção');
+      console.log('Auth Domain:', firebaseConfig.authDomain);
     }
   }
 
