@@ -579,65 +579,6 @@
             max-width: none;
             width: 100%;
             box-sizing: border-box;
-            /* FORÇA APLICAÇÃO DO TEMA AO CONTEÚDO DAS AULAS */
-            background: var(--main-content-bg) !important;
-            color: var(--text-dark) !important;
-        }
-
-        /* Garante que elementos dentro das aulas herdem o tema */
-        .lesson-content .container,
-        .lesson-content .content-wrapper {
-            background: var(--main-content-bg) !important;
-            color: var(--text-dark) !important;
-        }
-
-        /* Adapta elementos específicos ao modo escuro */
-        body.dark-mode .lesson-content .mermaid-container {
-            background: var(--main-content-bg) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        body.dark-mode .lesson-content .mermaid {
-            background: var(--main-content-bg) !important;
-            color: var(--text-dark) !important;
-        }
-
-        /* === ESTILOS ESPECÍFICOS PARA AULAS NO MODO ESCURO === */
-        .lesson-content.dark-mode-content {
-            background: var(--main-content-bg) !important;
-            color: var(--text-dark) !important;
-        }
-
-        .lesson-content.dark-mode-content .container,
-        .lesson-content.dark-mode-content .content-wrapper {
-            background: var(--main-content-bg) !important;
-            color: var(--text-dark) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        .lesson-content.dark-mode-content .lesson-dark-mode {
-            background: var(--main-content-bg) !important;
-            color: var(--text-dark) !important;
-        }
-
-        /* Força override de estilos inline das aulas */
-        body.dark-mode .lesson-content * {
-            border-color: var(--border-color) !important;
-        }
-
-        body.dark-mode .lesson-content .mermaid-container * {
-            background: inherit !important;
-            color: inherit !important;
-        }
-
-        /* Preserva elementos que precisam manter suas cores específicas */
-        body.dark-mode .lesson-content .mermaid svg,
-        body.dark-mode .lesson-content .mermaid svg * {
-            /* Permite que SVGs mantenham suas cores originais */
-            background: unset !important;
-            color: unset !important;
-            fill: unset !important;
-            stroke: unset !important;
         }
 
         .lesson-content h1, .lesson-content h2, .lesson-content h3 {
@@ -1074,150 +1015,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     
-    <!-- Mermaid.js para renderização de gráficos com fallback robusto -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js" 
-            onerror="this.onerror=null; this.src='https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js'"></script>
-    <script>
-      // Sistema de inicialização com fallback
-      function initializeMermaid() {
-        if (typeof mermaid === 'undefined') {
-          console.warn('❌ Mermaid não encontrado, tentando fallback...');
-          return false;
-        }
-
-        try {
-          // Configuração otimizada com logs reduzidos e melhor tratamento de erros
-          const config = {
-            startOnLoad: false, // Desabilitado para controle manual dos gráficos
-            theme: 'default',
-            securityLevel: 'loose',
-            fontFamily: 'Arial, sans-serif',
-            logLevel: 'error', // Reduzir logs verbosos - apenas erros críticos
-            suppressErrorRendering: false,
-            htmlLabels: true,
-            flowchart: {
-              htmlLabels: true,
-              curve: 'basis',
-              useMaxWidth: true,
-              padding: 15
-            },
-            sequence: {
-              diagramMarginX: 50,
-              diagramMarginY: 10,
-              actorMargin: 50,
-              width: 150,
-              height: 65,
-              boxMargin: 10,
-              boxTextMargin: 5,
-              noteMargin: 10,
-              messageMargin: 35,
-              useMaxWidth: true
-            },
-            gantt: {
-              useMaxWidth: true
-            },
-            pie: {
-              useMaxWidth: true
-            },
-            class: {
-              useMaxWidth: true
-            },
-            state: {
-              useMaxWidth: true
-            },
-            er: {
-              useMaxWidth: true
-            }
-          };
-          
-          mermaid.initialize(config);
-          console.log('✅ Mermaid inicializado com configuração otimizada');
-
-          // Sinalizar que o Mermaid está pronto
-          if (window.mermaidReady) {
-            window.mermaidReady();
-          }
-
-          return true;
-        } catch (error) {
-          console.error('❌ Erro ao inicializar Mermaid:', error);
-          return false;
-        }
-      }
-
-      // Sistema de carregamento com múltiplos fallbacks
-      function loadMermaidWithFallback() {
-        const cdnUrls = [
-          'https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js',
-          'https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js'
-        ];
-
-        let currentCdnIndex = 0;
-
-        function tryLoadScript() {
-          if (typeof mermaid !== 'undefined') {
-            initializeMermaid();
-            return;
-          }
-
-          if (currentCdnIndex >= cdnUrls.length) {
-            console.error('❌ Todos os CDNs do Mermaid falharam');
-            return;
-          }
-
-          const script = document.createElement('script');
-          script.src = cdnUrls[currentCdnIndex];
-          script.onload = () => {
-            console.log(`✅ Mermaid carregado via CDN ${currentCdnIndex + 1}`);
-            initializeMermaid();
-          };
-          script.onerror = () => {
-            console.warn(`⚠️ CDN ${currentCdnIndex + 1} falhou, tentando próximo...`);
-            currentCdnIndex++;
-            setTimeout(tryLoadScript, 500);
-          };
-          document.head.appendChild(script);
-        }
-
-        // Tentar inicializar imediatamente
-        if (!initializeMermaid()) {
-          // Se não conseguir, tentar carregar dinamicamente
-          setTimeout(tryLoadScript, 1000);
-        }
-      }
-
-      // Iniciar processo de carregamento
-      loadMermaidWithFallback();
-
-      // Callback para quando o Mermaid estiver pronto
-      window.mermaidReady = function() {
-        console.log('🎉 Mermaid sinalizou que está pronto!');
-        // Notificar a aplicação principal - sempre processar quando pronto
-        if (window.studyApp && window.studyApp.scheduleMermaidProcessing) {
-          console.log('🔄 Processando gráficos Mermaid após inicialização...');
-          window.studyApp.scheduleMermaidProcessing();
-        }
-      };
-
-      // Verificação adicional quando a página estiver completamente carregada
-      window.addEventListener('load', function() {
-        console.log('📄 Página completamente carregada, verificando Mermaid...');
-        setTimeout(function() {
-          if (window.studyApp && typeof mermaid !== 'undefined') {
-            console.log('🔄 Verificação final de Mermaid após carregamento completo');
-            // Sempre processar Mermaid quando a página carrega completamente
-            if (window.studyApp.scheduleMermaidProcessing) {
-              window.studyApp.scheduleMermaidProcessing();
-            }
-            // Também chamar forceMermaidReprocessing para garantir
-            if (window.studyApp.forceMermaidReprocessing) {
-              window.studyApp.forceMermaidReprocessing();
-            }
-          }
-        }, 1000); // Aumentar delay para dar mais tempo ao Mermaid
-      });
-    </script>
+    <!-- Mermaid.js para renderização de gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     
     <script>
         'use strict';
@@ -1235,7 +1034,6 @@
         class StudyRoomApp {
             constructor() {
                 this.isInitialized = false;
-                this.currentLessonState = null; // Estado da aula atual
                 this.userId = null;
                 this.db = null;
                 this.storage = null;
@@ -1254,12 +1052,13 @@
                 // Elementos DOM
                 this.elements = {};
                 
-                // Configuração do Firebase (removido messagingSenderId para evitar erros de listener assíncrono)
+                // Configuração do Firebase
                 this.firebaseConfig = {
                     apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-                    authDomain: "proconcursos.com.br",
+                    authDomain: "nvp-concursos.firebaseapp.com",
                     projectId: "nvp-concursos",
                     storageBucket: "nvp-concursos.firebasestorage.app",
+                    messagingSenderId: "397960760271",
                     appId: "1:397960760271:web:1243b04141178453d860ba",
                     measurementId: "G-T6RVBM12BQ"
                 };
@@ -1283,10 +1082,7 @@
                     
                     // Configura indicador de scroll após elementos estarem prontos
                     this.setupScrollIndicator();
-
-                    // Configura observador de DOM para Mermaid
-                    this.setupMermaidDOMObserver();
-
+                    
                     // Aplica tema salvo
                     this.applyTheme();
                     
@@ -1653,8 +1449,7 @@
                 try {
                     // Nova API recomendada (Firebase v9+) com merge para evitar override warning
                     this.db.settings({
-                        cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
-                        merge: true
+                        cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
                     });
                     console.log('✅ Firebase inicializado com persistência moderna');
                 } catch (error) {
@@ -1689,11 +1484,6 @@
                     overlay: document.getElementById('sidebarOverlay'),
                     scrollIndicator: document.getElementById('scrollIndicator')
                 };
-
-                // Reinicializar observador se necessário
-                if (this.mermaidObserver) {
-                    this.setupMermaidDOMObserver();
-                }
             }
 
             setupEventListeners() {
@@ -2270,26 +2060,16 @@
             }
 
             autoSelectFirstContent() {
-                // Primeiro tentar restaurar aula anterior
-                const previousState = this.restoreCurrentLessonState();
-
-                if (previousState && this.tryRestorePreviousLesson(previousState)) {
-                    console.log('✅ Aula anterior restaurada com sucesso');
-                    return;
-                }
-
-                // Fallback: selecionar primeira aula se não conseguir restaurar
-                console.log('📚 Restaurando primeira aula (fallback)');
                 if (this.loadedCourses.length > 0 && this.loadedCourses[0].modules.length > 0) {
                     const firstCourse = this.loadedCourses[0];
                     const firstModule = firstCourse.modules[0];
                     const firstAula = firstModule.aulas?.[0];
-
+                    
                     // SEMPRE mantém menu recolhido - usuário deve clicar para expandir
                     // Apenas seleciona primeira aula sem expandir nada
                     setTimeout(() => {
                         const firstAulaItem = this.elements.courseNav.querySelector('.aula-item');
-
+                        
                         if (firstAulaItem && firstAula) {
                             // Seleciona primeira aula sem expandir curso/módulo
                             firstAulaItem.classList.add('active');
@@ -2297,52 +2077,6 @@
                         }
                     }, 100);
                 }
-            }
-
-            tryRestorePreviousLesson(previousState) {
-                try {
-                    // Procurar pela aula salva no estado
-                    const targetAulaItem = this.elements.courseNav.querySelector(
-                        `.aula-item[data-course-id="${previousState.courseId}"][data-module-id="${previousState.moduleId}"][data-aula-id="${previousState.aulaId}"]`
-                    );
-
-                    if (targetAulaItem) {
-                        // Expandir curso e módulo necessários
-                        const courseItem = targetAulaItem.closest('.course-item');
-                        const moduleItem = targetAulaItem.closest('.module-item');
-
-                        if (courseItem) {
-                            const courseHeader = courseItem.querySelector('.course-header');
-                            const modulesList = courseItem.querySelector('.modules-list');
-                            if (courseHeader && modulesList) {
-                                modulesList.style.display = 'block';
-                                courseHeader.querySelector('.course-toggle').textContent = '▼';
-                            }
-                        }
-
-                        if (moduleItem) {
-                            const moduleHeader = moduleItem.querySelector('.module-header');
-                            const aulasList = moduleItem.querySelector('.aulas-list');
-                            if (moduleHeader && aulasList) {
-                                aulasList.style.display = 'block';
-                                moduleHeader.querySelector('.module-toggle').textContent = '▼';
-                            }
-                        }
-
-                        // Selecionar e carregar a aula
-                        targetAulaItem.classList.add('active');
-                        const { courseId, moduleId, aulaId } = targetAulaItem.dataset;
-                        this.loadAulaContent(courseId, moduleId, aulaId);
-
-                        // Atualizar indicador de scroll
-                        setTimeout(() => this.updateScrollIndicator(), 200);
-
-                        return true;
-                    }
-                } catch (error) {
-                    console.warn('⚠️ Erro ao tentar restaurar aula anterior:', error);
-                }
-                return false;
             }
 
             // === CARREGAMENTO DE CONTEÚDO DE AULAS ===
@@ -2574,143 +2308,27 @@
                 return tempDiv.innerHTML;
             }
 
-            // === GERENCIAMENTO DE ESTADO DA AULA ATUAL ===
-            saveCurrentLessonState(meta) {
-                try {
-                    const lessonState = {
-                        courseId: meta.course,
-                        moduleId: meta.module,
-                        aulaId: meta.aula,
-                        timestamp: Date.now()
-                    };
-                    localStorage.setItem('currentLessonState', JSON.stringify(lessonState));
-                    console.log('💾 Estado da aula salvo:', lessonState);
-                } catch (error) {
-                    console.warn('⚠️ Erro ao salvar estado da aula:', error);
-                }
-            }
-
-            restoreCurrentLessonState() {
-                try {
-                    const savedState = localStorage.getItem('currentLessonState');
-                    if (savedState) {
-                        const lessonState = JSON.parse(savedState);
-                        // Verificar se não é muito antigo (24 horas)
-                        const isRecent = Date.now() - lessonState.timestamp < 24 * 60 * 60 * 1000;
-                        if (isRecent) {
-                            console.log('📖 Estado da aula restaurado:', lessonState);
-                            return lessonState;
-                        } else {
-                            console.log('⏰ Estado da aula expirado, removendo...');
-                            localStorage.removeItem('currentLessonState');
-                        }
-                    }
-                } catch (error) {
-                    console.warn('⚠️ Erro ao restaurar estado da aula:', error);
-                }
-                return null;
-            }
-
             displayContent(contentData) {
                 this.currentContent = contentData;
-
-                // Salvar estado da aula atual
-                this.saveCurrentLessonState(contentData.meta);
-
+                
                 // Atualiza corpo do conteúdo
                 const lessonContentDiv = document.createElement('div');
                 lessonContentDiv.className = 'lesson-content';
                 lessonContentDiv.innerHTML = contentData.content; // Já sanitizado
-
+                
                 this.elements.contentBody.innerHTML = '';
                 this.elements.contentBody.appendChild(lessonContentDiv);
-
+                
                 // Scroll para o topo
                 this.elements.contentBody.scrollTop = 0;
-
-                // Aplicar tema atual ao conteúdo da aula
-                this.applyCurrentThemeToLesson(lessonContentDiv);
-
-                // Processar gráficos Mermaid após carregar conteúdo com delay estratégico
-                this.scheduleMermaidProcessing();
-
+                
+                // Processar gráficos Mermaid após carregar conteúdo
+                this.processMermaidGraphs();
+                
                 // Atualizar botão dinâmico de questões
                 this.updateDynamicQuestoesButton(contentData.meta);
                 
                 console.log('✅ Conteúdo exibido:', contentData.title);
-            }
-
-            // === APLICAÇÃO DE TEMA AO CONTEÚDO DAS AULAS ===
-            applyCurrentThemeToLesson(lessonContentDiv) {
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                
-                if (isDarkMode) {
-                    // Força aplicação do modo escuro em elementos específicos
-                    lessonContentDiv.classList.add('dark-mode-content');
-                    
-                    // Aplicar modo escuro a elementos que podem ter CSS inline
-                    const elementsToTheme = [
-                        '.container',
-                        '.content-wrapper', 
-                        '.mermaid-container',
-                        '.mermaid',
-                        'body',
-                        'html'
-                    ];
-                    
-                    elementsToTheme.forEach(selector => {
-                        const elements = lessonContentDiv.querySelectorAll(selector);
-                        elements.forEach(el => {
-                            // Remove estilos inline que podem interferir com o tema
-                            if (el.style.backgroundColor) {
-                                el.style.backgroundColor = '';
-                                el.setAttribute('data-original-bg', 'removed');
-                            }
-                            if (el.style.color) {
-                                el.style.color = '';
-                                el.setAttribute('data-original-color', 'removed');
-                            }
-                            // Adiciona classe para modo escuro
-                            el.classList.add('lesson-dark-mode');
-                        });
-                    });
-                    
-                    // Notificar scripts da aula sobre mudança de tema (se existirem)
-                    this.notifyLessonThemeChange(lessonContentDiv, 'dark');
-                } else {
-                    // Remove classe de modo escuro
-                    lessonContentDiv.classList.remove('dark-mode-content');
-                    
-                    // Remove classes de modo escuro dos elementos
-                    lessonContentDiv.querySelectorAll('.lesson-dark-mode').forEach(el => {
-                        el.classList.remove('lesson-dark-mode');
-                    });
-                    
-                    // Notificar scripts da aula sobre mudança de tema (se existirem)
-                    this.notifyLessonThemeChange(lessonContentDiv, 'light');
-                }
-                
-                console.log(`🎨 Tema ${isDarkMode ? 'escuro' : 'claro'} aplicado ao conteúdo da aula`);
-            }
-
-            // Notifica scripts da aula sobre mudança de tema
-            notifyLessonThemeChange(lessonContentDiv, theme) {
-                try {
-                    // Verifica se existe função de refresh do Mermaid na aula
-                    if (window.refreshMermaidTheme && typeof window.refreshMermaidTheme === 'function') {
-                        console.log('🔄 Atualizando tema do Mermaid na aula...');
-                        window.refreshMermaidTheme();
-                    }
-                    
-                    // Disparar evento personalizado para scripts da aula
-                    const themeEvent = new CustomEvent('lessonThemeChange', {
-                        detail: { theme: theme, isDark: theme === 'dark' }
-                    });
-                    lessonContentDiv.dispatchEvent(themeEvent);
-                    
-                } catch (error) {
-                    console.warn('⚠️ Erro ao notificar mudança de tema:', error);
-                }
             }
 
             // === ESTADOS DE UI ===
@@ -2818,23 +2436,6 @@
                 return div.innerHTML;
             }
 
-            // === LIMPEZA DE RECURSOS ===
-            cleanup() {
-                // Limpar timer do processamento Mermaid
-                if (this.mermaidProcessingTimer) {
-                    clearTimeout(this.mermaidProcessingTimer);
-                    this.mermaidProcessingTimer = null;
-                }
-
-                // Desconectar observador de DOM
-                if (this.mermaidObserver) {
-                    this.mermaidObserver.disconnect();
-                    this.mermaidObserver = null;
-                }
-
-                console.log('🧹 Recursos Mermaid limpos');
-            }
-
             // === API PÚBLICA ===
             clearCache() {
                 this.contentCache.clear();
@@ -2847,293 +2448,26 @@
                 this.loadUserCourses();
             }
 
-            // Método público para forçar reprocessamento de Mermaid
-            forceMermaidReprocessing() {
-                console.log('🔧 Forçando reprocessamento de Mermaid...');
-                this.scheduleMermaidProcessing();
-            }
-
-            // === AGENDAMENTO INTELIGENTE DO PROCESSAMENTO MERMAID ===
-            scheduleMermaidProcessing() {
-                // Cancelar agendamentos anteriores se existirem
-                if (this.mermaidProcessingTimer) {
-                    clearTimeout(this.mermaidProcessingTimer);
-                }
-
-                // Agendar processamento com múltiplas verificações de timing
-                const processWithChecks = () => {
-                    // Verificação 1: DOM pronto
-                    if (document.readyState !== 'complete') {
-                        console.log('⏳ Aguardando DOM completo...');
-                        setTimeout(processWithChecks, 100);
-                        return;
-                    }
-
-                    // Verificação 2: Content Body existe e tem conteúdo
-                    if (!this.elements.contentBody || !this.elements.contentBody.innerHTML.trim()) {
-                        console.log('⏳ Aguardando conteúdo ser inserido...');
-                        setTimeout(processWithChecks, 50);
-                        return;
-                    }
-
-                    // Verificação 3: Mermaid disponível
-                    if (!this.isMermaidReady()) {
-                        console.log('⏳ Aguardando Mermaid...');
-                        setTimeout(processWithChecks, 200);
-                        return;
-                    }
-
-                    // Tudo pronto - processar
-                    console.log('✅ Todas as condições atendidas, processando Mermaid...');
-                    this.processMermaidGraphs();
-                };
-
-                // Iniciar processamento com pequeno delay para garantir estabilidade
-                this.mermaidProcessingTimer = setTimeout(processWithChecks, 100);
-            }
-
-            // Verificação de disponibilidade do Mermaid
-            isMermaidReady() {
-                return typeof mermaid !== 'undefined' &&
-                       typeof mermaid.render === 'function' &&
-                       typeof mermaid.initialize === 'function' &&
-                       typeof mermaid.parse === 'function';
-            }
-
-            // === SISTEMA DE RETRY PARA MERMAID ===
-            retryMermaidProcessing(attempt = 0) {
-                const maxAttempts = 10;
-                const baseDelay = 500; // 500ms
-                const maxDelay = 5000; // 5 segundos
-
-                if (attempt >= maxAttempts) {
-                    console.error('❌ Máximo de tentativas de carregamento do Mermaid atingido');
-                    this.showMermaidFallbackMessage();
-                    return;
-                }
-
-                // Backoff exponencial com jitter
-                const delay = Math.min(baseDelay * Math.pow(2, attempt) + Math.random() * 200, maxDelay);
-
-                console.log(`🔄 Tentativa ${attempt + 1}/${maxAttempts} de processar Mermaid em ${delay}ms`);
-
-                setTimeout(() => {
-                    if (typeof mermaid !== 'undefined' &&
-                        typeof mermaid.render === 'function' &&
-                        typeof mermaid.initialize === 'function') {
-
-                        try {
-                            // Teste de funcionalidade antes de prosseguir
-                            mermaid.parse('graph TD; A-->B;');
-                            console.log('✅ Mermaid funcional após retry, processando gráficos...');
-                            this.processMermaidGraphs();
-                        } catch (testError) {
-                            console.warn('⚠️ Mermaid ainda não funcional, tentando novamente...');
-                            this.retryMermaidProcessing(attempt + 1);
-                        }
-                    } else {
-                        this.retryMermaidProcessing(attempt + 1);
-                    }
-                }, delay);
-            }
-
-            // === OBSERVADOR DE MUDANÇAS NO DOM ===
-            setupMermaidDOMObserver() {
-                if (this.mermaidObserver) {
-                    this.mermaidObserver.disconnect();
-                }
-
-                // TEMPORARIAMENTE DESABILITADO - Observer causando loop infinito
-                // this.mermaidObserver = new MutationObserver((mutations) => {
-                //     let hasNewMermaidContent = false;
-
-                //     mutations.forEach((mutation) => {
-                //         // Verificar se foram adicionados nós
-                //         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                //             mutation.addedNodes.forEach((node) => {
-                //                 if (node.nodeType === Node.ELEMENT_NODE) {
-                //                     // Verificar se o nó adicionado ou seus filhos contêm gráficos Mermaid
-                //                     const hasMermaid = this.checkNodeForMermaid(node);
-                //                     if (hasMermaid) {
-                //                         hasNewMermaidContent = true;
-                //                     }
-                //                 }
-                //             });
-                //         }
-                //     });
-
-                //     // Se encontrou novo conteúdo Mermaid, processar
-                //     if (hasNewMermaidContent) {
-                //         console.log('🔍 Novo conteúdo Mermaid detectado, processando...');
-                //         this.scheduleMermaidProcessing();
-                //     }
-                // });
-
-                // Observer desabilitado para evitar loop infinito
-                this.mermaidObserver = null;
-
-                // Observação desabilitada temporariamente
-                // if (this.elements.contentBody) {
-                //     this.mermaidObserver.observe(this.elements.contentBody, {
-                //         childList: true,
-                //         subtree: true,
-                //         characterData: false,
-                //         attributes: false
-                //     });
-                //     console.log('✅ Observador de DOM para Mermaid configurado');
-                // }
-            }
-
-            // Verificar se um nó contém conteúdo Mermaid
-            checkNodeForMermaid(node) {
-                // Verificar o próprio nó
-                if (this.isMermaidGraph(node.textContent || '')) {
-                    return true;
-                }
-
-                // Verificar filhos recursivamente (limitado para performance)
-                if (node.children) {
-                    for (let i = 0; i < node.children.length && i < 10; i++) {
-                        const child = node.children[i];
-                        if (this.isMermaidGraph(child.textContent || '')) {
-                            return true;
-                        }
-                        // Verificar classes específicas
-                        if (child.classList && (
-                            child.classList.contains('mermaid') ||
-                            child.classList.contains('mermaid-container') ||
-                            child.classList.contains('mermaid-graph')
-                        )) {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
             // === PROCESSAMENTO DE GRÁFICOS MERMAID ===
             reprocessMermaidForTheme() {
                 // Reprocessar gráficos Mermaid existentes quando o tema muda
                 const existingGraphs = document.querySelectorAll('.mermaid-graph[id^="mermaid-graph-"]');
                 if (existingGraphs.length > 0) {
                     console.log(`🎨 Reprocessando ${existingGraphs.length} gráficos Mermaid para novo tema`);
-                    this.scheduleMermaidProcessing();
+                    setTimeout(() => this.processMermaidGraphs(), 100);
                 }
-            }
-
-            showMermaidFallbackMessage() {
-                // Mostrar mensagem de fallback para elementos Mermaid
-                const mermaidElements = this.elements.contentBody.querySelectorAll('.mermaid, .mermaid-container, pre code');
-                mermaidElements.forEach(element => {
-                    const codeText = element.textContent || element.innerHTML;
-                    if (this.isMermaidGraph(codeText)) {
-                        const fallbackDiv = document.createElement('div');
-                        fallbackDiv.className = 'mermaid-fallback';
-                        fallbackDiv.innerHTML = `
-                            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                <h4 style="margin: 0 0 10px 0; color: #856404;">📊 Gráfico Mermaid</h4>
-                                <p style="margin: 0 0 10px 0; color: #856404;">O gráfico não pôde ser carregado devido a problemas de conectividade.</p>
-                                <details>
-                                    <summary style="cursor: pointer; color: #856404;">Ver código fonte</summary>
-                                    <pre style="background: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 4px; overflow-x: auto;"><code>${this.escapeHtml(codeText)}</code></pre>
-                                </details>
-                            </div>
-                        `;
-                        element.parentNode?.replaceChild(fallbackDiv, element);
-                    }
-                });
             }
 
             processMermaidGraphs() {
-                // Verificação melhorada de disponibilidade do Mermaid
-                const checkMermaidReady = () => {
-                    return typeof mermaid !== 'undefined' &&
-                           typeof mermaid.render === 'function' &&
-                           typeof mermaid.initialize === 'function';
-                };
-
-                if (!checkMermaidReady()) {
-                    console.warn('❌ Mermaid.js não está completamente carregado');
-                    this.retryMermaidProcessing(0);
+                if (typeof mermaid === 'undefined') {
+                    console.warn('❌ Mermaid.js não carregado');
                     return;
                 }
-
-                // Verificar se o Mermaid está realmente funcional
-                try {
-                    // Teste rápido de funcionalidade
-                    mermaid.parse('graph TD; A-->B;');
-                } catch (testError) {
-                    console.warn('⚠️ Mermaid carregado mas não funcional, tentando novamente...');
-                    this.retryMermaidProcessing(0);
-                    return;
-                }
-                
-                // Função para sanitizar código Mermaid
-                const sanitizeMermaidCode = (code) => {
-                    if (!code) return '';
-                    
-                    // Limpar e normalizar o código
-                    let cleanCode = code.trim();
-                    
-                    // CORREÇÃO: Remover elementos de interface HTML que podem ter contaminado o código
-                    cleanCode = cleanCode
-                        .replace(/📊\s*Gráfico\s*Interativo[\s\S]*?Editar\s*Online[\s\S]*?mindmap/g, 'mindmap') // Remove header completo
-                        .replace(/Ver\s*Código[\s\S]*?Editar\s*Online[\s\S]*?mindmap/g, 'mindmap') // Remove controles
-                        .replace(/<[^>]*>/g, '') // Remove qualquer HTML restante
-                        .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
-                        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-                        .replace(/&nbsp;/g, ' ');
-                    
-                    // Detectar e corrigir quebras de linha incorretas em mindmap
-                    if (cleanCode.includes('mindmap')) {
-                        // Corrigir quebras de linha problemáticas em mindmap
-                        cleanCode = cleanCode
-                            .replace(/(\w+)\s*\n\s*\(([^)]+)\)/g, '$1($2)') // Corrigir quebras entre nome e parênteses
-                            .replace(/(\w+)\s*\n\s*::/g, '$1 ::') // Corrigir quebras antes de ::
-                            .replace(/\n\s*\n/g, '\n'); // Remover linhas vazias duplas
-                    }
-                    
-                    // Escapar caracteres problemáticos em labels
-                    cleanCode = cleanCode.replace(/\[([^\]]*)\(/g, (match, content) => {
-                        // Substitui parênteses em labels por hífen
-                        const cleanContent = content.replace(/\(/g, '-').replace(/\)/g, '');
-                        return `[${cleanContent}`;
-                    });
-                    
-                    // Remover quebras de linha desnecessárias
-                    cleanCode = cleanCode.replace(/\n\s*\n/g, '\n');
-                    
-                    // Garantir que cada linha termina corretamente
-                    const lines = cleanCode.split('\n');
-                    const processedLines = lines.map(line => {
-                        line = line.trim();
-                        if (!line) return line;
-                        
-                        // Escapar caracteres especiais em textos de nós
-                        if (line.includes('[') && line.includes(']')) {
-                            line = line.replace(/\[([^\]]*)\]/g, (match, content) => {
-                                // Limpar conteúdo problemático
-                                const cleanContent = content
-                                    .replace(/\(/g, ' ')
-                                    .replace(/\)/g, ' ')
-                                    .replace(/:/g, ' -')
-                                    .replace(/\s+/g, ' ')
-                                    .trim();
-                                return `[${cleanContent}]`;
-                            });
-                        }
-                        
-                        return line;
-                    });
-                    
-                    return processedLines.join('\n');
-                };
                 
                 // Configurar Mermaid com melhor contraste e tratamento de erros
                 const isDarkMode = document.body.classList.contains('dark-mode');
                 mermaid.initialize({
-                    startOnLoad: false, // Sempre false para controle manual
+                    startOnLoad: false,
                     theme: isDarkMode ? 'dark' : 'default',
                     themeCSS: isDarkMode ? `
                         .node rect, .node circle, .node ellipse, .node polygon {
@@ -3190,7 +2524,7 @@
                     },
                     securityLevel: 'loose',
                     suppressErrorRendering: false,
-                    logLevel: 'error', // Reduzir logs verbosos
+                    logLevel: 0,
                     er: { useMaxWidth: true },
                     sequence: { useMaxWidth: true },
                     gantt: { useMaxWidth: true },
@@ -3242,8 +2576,14 @@
                                 // NOVA ABORDAGEM: Processamento mais cuidadoso
                                 let preparedCode = codeText;
                                 
-                                // Usar função de sanitização melhorada
-                                preparedCode = sanitizeMermaidCode(preparedCode);
+                                // Limpeza e normalização do código Mermaid
+                                preparedCode = preparedCode
+                                    .replace(/<[^>]*>/g, '') // Remove HTML tags
+                                    .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
+                                    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ')
+                                    .replace(/\r\n/g, '\n').replace(/\r/g, '\n') // Normalizar quebras
+                                    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove caracteres de controle
+                                    .split('\n').map(line => line.trimRight()).join('\n').trim(); // Limpar espaços
                                 
                                 // Debug apenas se necessário
                                 if (preparedCode.length < 50) {
@@ -3279,81 +2619,44 @@
                 });
                 
                 // NOVO: Renderizar elementos Mermaid já existentes (gerados por Apps 9/13)
-                const existingMermaidElems = this.elements.contentBody.querySelectorAll(
-                    '.mermaid-container .mermaid, .mermaid, .mermaid-container, .mermaid-graph, [id^="mermaid-"]'
-                );
-                console.log(`🔎 Detectados ${existingMermaidElems.length} possíveis elementos Mermaid existentes`);
+                const existingMermaidElems = this.elements.contentBody.querySelectorAll('.mermaid-container .mermaid, .mermaid');
                 existingMermaidElems.forEach((elem) => {
                     // Ignorar se já houver SVG renderizado
                     if (elem.querySelector('svg')) return;
                     
-                    // Obter código Mermaid do próprio elemento - CORRIGIDO
+                    // Obter código Mermaid do próprio elemento
                     let codeText = '';
-                    
-                    // CORREÇÃO: Extrair apenas do elemento .mermaid ou .mermaid-graph, não do container completo
-                    const mermaidElement = elem.classList.contains('mermaid') || elem.classList.contains('mermaid-graph') 
-                        ? elem 
-                        : elem.querySelector('.mermaid, .mermaid-graph');
-                    
-                    if (mermaidElement) {
-                        // Extrair apenas texto puro, ignorando elementos de interface
-                        const extractCleanText = (node) => {
-                            let result = '';
-                            for (const child of node.childNodes) {
-                                if (child.nodeType === Node.TEXT_NODE) {
-                                    result += child.textContent;
-                                } else if (child.nodeType === Node.ELEMENT_NODE) {
-                                    // Ignorar elementos de interface (botões, controles, etc.)
-                                    if (child.classList.contains('mermaid-header') || 
-                                        child.classList.contains('mermaid-controls') ||
-                                        child.classList.contains('mermaid-source') ||
-                                        child.tagName === 'BUTTON' ||
-                                        child.tagName === 'A' ||
-                                        child.tagName === 'H4') {
-                                        continue; // Pular elementos de interface
-                                    }
-                                    
-                                    if (child.tagName === 'BR') {
-                                        result += '\n';
-                                    } else {
-                                        result += extractCleanText(child);
-                                    }
+                    const extractText = (node) => {
+                        let result = '';
+                        for (const child of node.childNodes) {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                result += child.textContent;
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                if (child.tagName === 'BR') {
+                                    result += '\n';
+                                } else {
+                                    result += extractText(child);
                                 }
                             }
-                            return result;
-                        };
-                        
-                        codeText = extractCleanText(mermaidElement).replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-                            .split('\n').map(l => l.trimRight()).join('\n').trim();
-                    } else {
-                        // Fallback: extrair de todo o elemento se não encontrar sub-elemento
-                        codeText = elem.textContent || '';
-                    }
+                        }
+                        return result;
+                    };
+                    codeText = extractText(elem).replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+                        .split('\n').map(l => l.trimRight()).join('\n').trim();
                     
                     if (!this.isMermaidGraph(codeText)) return;
                     
                     mermaidCounter++;
                     const mermaidId = `mermaid-graph-${mermaidCounter}`;
                     
-                    // CORREÇÃO: Usar função de sanitização melhorada
-                    let preparedCode = sanitizeMermaidCode(codeText);
-                    
-                    // Validação adicional: verificar se o código ainda é válido após limpeza
-                    if (!this.isMermaidGraph(preparedCode)) {
-                        console.warn(`⚠️ Código Mermaid ${mermaidCounter} inválido após limpeza, pulando...`);
-                        return;
-                    }
-
-                    // Fallback: uma linha -> quebrar por ';'
-                    if (!/\n/.test(preparedCode)) {
-                        preparedCode = preparedCode.replace(/;[\t ]*/g, '\n');
-                        if (!/\n/.test(preparedCode)) {
-                            preparedCode = preparedCode
-                                .replace(/\s(subgraph\s+)/gi, '\n$1')
-                                .replace(/\s(end)\b/gi, '\n$1')
-                                .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
-                        }
-                    }
+                    // Limpeza mínima antes do render
+                    let preparedCode = codeText
+                        .replace(/<[^>]*>/g, '')
+                        .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+                        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+                        .replace(/&nbsp;/g, ' ')
+                        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+                        .split('\n').map(line => line.trimRight()).join('\n').trim();
                     
                     // Renderizar no próprio elemento
                     try {
@@ -3371,109 +2674,11 @@
                         console.warn('⚠️ Erro inesperado ao renderizar Mermaid existente:', e);
                     }
                 });
-
-                // Fallback: se ainda não encontrou nada, procurar blocos de texto que parecem Mermaid
-                if (mermaidCounter === 0) {
-                    const candidates = this.elements.contentBody.querySelectorAll('div, pre, code, section, article');
-                    let foundFallback = 0;
-                    candidates.forEach((el) => {
-                        if (foundFallback >= 10) return; // limitar para evitar custo
-                        
-                        // CORREÇÃO: Extrair texto limpo, ignorando elementos de interface
-                        let text = '';
-                        if (el.classList.contains('mermaid') || el.classList.contains('mermaid-graph')) {
-                            // Se é um elemento Mermaid direto, extrair apenas texto puro
-                            text = Array.from(el.childNodes)
-                                .filter(node => node.nodeType === Node.TEXT_NODE)
-                                .map(node => node.textContent)
-                                .join('')
-                                .trim();
-                        } else {
-                            // Para outros elementos, usar textContent mas filtrar elementos de interface
-                            const clone = el.cloneNode(true);
-                            // Remover elementos de interface do clone
-                            clone.querySelectorAll('.mermaid-header, .mermaid-controls, .mermaid-source, button, a, h4').forEach(elem => elem.remove());
-                            text = (clone.textContent || '').trim();
-                        }
-                        
-                        if (text.length < 12) return;
-                        if (!this.isMermaidGraph(text)) return;
-                        if (el.querySelector('svg')) return;
-                        
-                        foundFallback++;
-                        mermaidCounter++;
-                        const mermaidId = `mermaid-graph-auto-${mermaidCounter}`;
-                        
-                        // CORREÇÃO: Usar função de sanitização melhorada
-                        let preparedCode = sanitizeMermaidCode(text);
-                        
-                        // Validação adicional: verificar se o código ainda é válido após limpeza
-                        if (!this.isMermaidGraph(preparedCode)) {
-                            console.warn(`⚠️ Código Mermaid fallback ${mermaidCounter} inválido após limpeza, pulando...`);
-                            return;
-                        }
-
-                        if (!/\n/.test(preparedCode)) {
-                            preparedCode = preparedCode.replace(/;[\t ]*/g, '\n');
-                            if (!/\n/.test(preparedCode)) {
-                                preparedCode = preparedCode
-                                    .replace(/\s(subgraph\s+)/gi, '\n$1')
-                                    .replace(/\s(end)\b/gi, '\n$1')
-                                    .replace(/\s([A-Za-z][A-Za-z0-9_]*\s*(\[|\{|\(|>))/g, '\n$1');
-                            }
-                        }
-                        
-                        mermaid.render(mermaidId + '-svg', preparedCode)
-                            .then(({ svg }) => {
-                                // Envolver em container amigável
-                                const graphContainer = document.createElement('div');
-                                graphContainer.className = 'mermaid-container';
-                                graphContainer.innerHTML = `
-                                    <div class="mermaid-header">
-                                        <h4>📊 Gráfico Interativo</h4>
-                                        <div class="mermaid-controls">
-                                            <button class="mermaid-btn" onclick="this.closest('.mermaid-container').querySelector('.mermaid-source').style.display = 
-                                                this.closest('.mermaid-container').querySelector('.mermaid-source').style.display === 'none' ? 'block' : 'none'">
-                                                Ver Código
-                                            </button>
-                                            <a class="mermaid-btn" href="https://mermaid.live/edit#${btoa(preparedCode)}" target="_blank">Editar Online</a>
-                                        </div>
-                                    </div>
-                                    <div class="mermaid-graph" id="${mermaidId}">${svg}</div>
-                                    <div class="mermaid-source" style="display: none;">
-                                        <pre><code>${this.escapeHtml(preparedCode)}</code></pre>
-                                    </div>
-                                `;
-                                el.replaceWith(graphContainer);
-                                console.log(`✅ Gráfico Mermaid (fallback) renderizado (${mermaidId})`);
-                            })
-                            .catch((error) => {
-                                console.warn('⚠️ Falha no fallback Mermaid:', error);
-                            });
-                    });
-                    if (foundFallback > 0) {
-                        console.log(`🔁 Fallback ativado: ${foundFallback} bloco(s) Mermaid renderizado(s)`);
-                    }
-                }
                 
                 if (mermaidCounter > 0) {
                     console.log(`✅ ${mermaidCounter} gráfico(s) Mermaid processado(s)`);
                 } else {
                     console.log('ℹ️ Nenhum gráfico Mermaid encontrado');
-                    // Fallback final: tentar mermaid.run() nos elementos dentro do contentBody
-                    try {
-                        const scope = this.elements.contentBody;
-                        if (scope && scope.querySelector('.mermaid')) {
-                            console.log('🔁 Tentando fallback mermaid.run()');
-                            const maybePromise = mermaid.run({ nodes: [scope] });
-                            if (maybePromise && typeof maybePromise.then === 'function') {
-                                maybePromise.then(() => console.log('✅ Fallback mermaid.run() executado'))
-                                    .catch(e => console.warn('⚠️ Fallback mermaid.run() falhou:', e));
-                            }
-                        }
-                    } catch (e) {
-                        console.warn('⚠️ Erro ao executar fallback mermaid.run():', e);
-                    }
                 }
             }
             
@@ -3622,4 +2827,5 @@
         });
     </script>
 </body>
+</html>
 </html>
