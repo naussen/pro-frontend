@@ -1035,28 +1035,7 @@ const AppState = {
   authListener: null
 };
 
-// Inicialização do header quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-  // Aguardar o Firebase estar carregado antes de inicializar
-  if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-    // Firebase já está inicializado
-    initAuthSystem();
-    initLoginSystem();
-    initThemeToggle();
-    initSocialAuthButtons();
-  } else {
-    // Aguardar o Firebase carregar
-    const checkFirebase = setInterval(() => {
-      if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-        clearInterval(checkFirebase);
-        initAuthSystem();
-        initLoginSystem();
-        initThemeToggle();
-        initSocialAuthButtons();
-      }
-    }, 100);
-  }
-});
+// Inicialização será feita no segundo event listener
 
 // Função para inicializar sistema de autenticação
 function initAuthSystem() {
@@ -1626,206 +1605,255 @@ function initSocialAuthButtons() {
 <!-- Apple Sign-In SDK -->
 <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 
-<script src="firebase-config.js"></script>
 <script>
-  // Usar configuração do arquivo firebase-config.js
+  // Configuração do Firebase inline (mais simples)
+  const firebaseConfigs = {
+    development: {
+      apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+      authDomain: "localhost",
+      projectId: "nvp-concursos",
+      storageBucket: "nvp-concursos.firebasestorage.app",
+      messagingSenderId: "397960760271",
+      appId: "1:397960760271:web:1243b04141178453d860ba",
+      measurementId: "G-T6RVBM12BQ"
+    },
+    production: {
+      apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+      authDomain: "nvp-concursos.firebaseapp.com",
+      projectId: "nvp-concursos",
+      storageBucket: "nvp-concursos.firebasestorage.app",
+      messagingSenderId: "397960760271",
+      appId: "1:397960760271:web:1243b04141178453d860ba",
+      measurementId: "G-T6RVBM12BQ"
+    }
+  };
 
-  // Verificar se o Firebase está carregado
-  if (typeof firebase === 'undefined') {
-    console.error('Firebase não foi carregado corretamente');
-    alert('Erro ao carregar Firebase. Verifique sua conexão com a internet.');
-  } else {
-    firebase.initializeApp(firebaseConfig);
-    window.auth = firebase.auth();
-    window.db = firebase.firestore();
+  // Detectar ambiente e usar configuração apropriada
+  const isLocalhost = window.location.hostname === 'localhost' ||
+                     window.location.hostname === '127.0.0.1' ||
+                     window.location.hostname === '';
+  const firebaseConfig = isLocalhost ? firebaseConfigs.development : firebaseConfigs.production;
 
-    // Verificar se a inicialização foi bem-sucedida
-    if (!window.auth || !window.db) {
-      console.error('Erro ao inicializar Firebase Auth ou Firestore');
-      alert('Erro ao inicializar Firebase. Verifique as configurações.');
-    } else {
+  console.log('Firebase Config - Ambiente:', isLocalhost ? 'Desenvolvimento' : 'Produção');
+  console.log('Auth Domain:', firebaseConfig.authDomain);
+
+  // Inicializar Firebase quando a página carregar
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página carregada - inicializando Firebase...');
+
+    // Verificar se Firebase está carregado
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase não foi carregado');
+      alert('Erro: Firebase não carregou. Verifique sua conexão.');
+      return;
+    }
+
+    try {
+      // Inicializar Firebase
+      firebase.initializeApp(firebaseConfig);
+      window.auth = firebase.auth();
+      window.db = firebase.firestore();
+
       console.log('Firebase inicializado com sucesso');
-      console.log('Ambiente:', window.location.hostname === 'localhost' ? 'Desenvolvimento' : 'Produção');
-      console.log('Auth Domain:', firebaseConfig.authDomain);
+
+      // Inicializar funcionalidades
+      initAuthSystem();
+      initLoginSystem();
+      initThemeToggle();
+      initSocialAuthButtons();
+
+      // Inicializar formulário de cadastro após Firebase estar pronto
+      initCadastroForm();
+
+      console.log('Todas as funcionalidades inicializadas');
+    } catch (error) {
+      console.error('Erro ao inicializar Firebase:', error);
+      alert('Erro ao inicializar Firebase: ' + error.message);
     }
-  }
+  });
 
 
 
-  const form = document.getElementById('cadastro-form');
+  // Função para inicializar o formulário de cadastro
+  function initCadastroForm() {
+    const form = document.getElementById('cadastro-form');
 
+    if (form) {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let isValid = true;
 
+        document.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+        document.querySelectorAll('.form-group input').forEach(input => input.classList.remove('error'));
 
-  if (form) {
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      let isValid = true;
+        // Clear previous errors specifically for cpf before new validation
+        showError('cpf', '');
 
-      document.querySelectorAll('.error-message').forEach(span => span.textContent = '');
-      document.querySelectorAll('.form-group input').forEach(input => input.classList.remove('error'));
+        isValid = validateRequiredField('nome', 'Nome completo é obrigatório.', 3) && isValid;
+        isValid = validateEmailField('email', 'Formato de e-mail inválido.') && isValid;
+        isValid = validatePasswordField('senha') && isValid;
+        isValid = validatePasswordMatch('senha', 'repetir_senha') && isValid;
+        isValid = validateTermsAcceptance() && isValid;
 
-      // Clear previous errors specifically for cpf before new validation
-      showError('cpf', '');
+        if (isValid) {
+          const submitButton = form.querySelector('button[type="submit"]');
+          submitButton.disabled = true;
+          submitButton.textContent = 'Processando...';
 
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('senha').value;
+          const userData = {
+            user_id: "", // Será preenchido com o UID após criação do usuário
+            nome: document.getElementById('nome').value.trim(),
+            email: email,
+            emailVerified: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            hasPersonalized: false,
+            is_subscriber: false, // Inicialmente falso, será atualizado após pagamento
+            termsAccepted: true,
+            termsAcceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
 
-      isValid = validateRequiredField('nome', 'Nome completo é obrigatório.', 3) && isValid;
-      isValid = validateEmailField('email', 'Formato de e-mail inválido.') && isValid;
-      isValid = validatePasswordField('senha') && isValid;
-      isValid = validatePasswordMatch('senha', 'repetir_senha') && isValid;
-      isValid = validateTermsAcceptance() && isValid;
+          window.auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              userData.user_id = user.uid; // Adiciona o UID ao campo user_id
 
-      if (isValid) {
-        const submitButton = form.querySelector('button[type="submit"]');
-        submitButton.disabled = true;
-        submitButton.textContent = 'Processando...';
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('senha').value;
-        const userData = {
-          user_id: "", // Será preenchido com o UID após criação do usuário
-          nome: document.getElementById('nome').value.trim(),
-          email: email,
-          emailVerified: false,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          hasPersonalized: false,
-          is_subscriber: false, // Inicialmente falso, será atualizado após pagamento
-          termsAccepted: true,
-          termsAcceptedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        window.auth.createUserWithEmailAndPassword(email, password)
-          .then((userCredential) => {
-            const user = userCredential.user;
-            userData.user_id = user.uid; // Adiciona o UID ao campo user_id
-            
-            // Enviar email de confirmação
-            return user.sendEmailVerification({
-              url: window.location.origin + '/email-verificado.html',
-              handleCodeInApp: false
-            }).then(() => {
-              return window.db.collection('users').doc(user.uid).set(userData);
+              // Enviar email de confirmação
+              return user.sendEmailVerification({
+                url: window.location.origin + '/email-verificado.html',
+                handleCodeInApp: false
+              }).then(() => {
+                return window.db.collection('users').doc(user.uid).set(userData);
+              });
+            })
+            .then(() => {
+              alert('Cadastro realizado com sucesso! Redirecionando para página de pagamento...');
+              window.location.href = 'pagamento.html'; // Redireciona para página de pagamento
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              let friendlyMessage = 'Ocorreu um erro inesperado durante o cadastro.';
+              if (errorCode === 'auth/email-already-in-use') {
+                friendlyMessage = 'Este endereço de e-mail já está cadastrado.';
+                showError('email', friendlyMessage);
+              } else if (errorCode === 'auth/invalid-email') {
+                friendlyMessage = 'Formato de e-mail inválido.';
+                showError('email', friendlyMessage);
+              } else if (errorCode === 'auth/weak-password') {
+                friendlyMessage = 'A senha é muito fraca.';
+                showError('senha', friendlyMessage);
+              } else {
+                alert(friendlyMessage + ` (${errorCode})`);
+              }
+              submitButton.disabled = false;
+              submitButton.textContent = 'FINALIZAR CADASTRO';
             });
-          })
-          .then(() => {
-            alert('Cadastro realizado com sucesso! Redirecionando para página de pagamento...');
-            window.location.href = 'pagamento.html'; // Redireciona para página de pagamento
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            let friendlyMessage = 'Ocorreu um erro inesperado durante o cadastro.';
-            if (errorCode === 'auth/email-already-in-use') {
-              friendlyMessage = 'Este endereço de e-mail já está cadastrado.';
-              showError('email', friendlyMessage);
-            } else if (errorCode === 'auth/invalid-email') {
-              friendlyMessage = 'Formato de e-mail inválido.';
-              showError('email', friendlyMessage);
-            } else if (errorCode === 'auth/weak-password') {
-              friendlyMessage = 'A senha é muito fraca.';
-              showError('senha', friendlyMessage);
-            } else {
-              alert(friendlyMessage + ` (${errorCode})`);
-            }
-            submitButton.disabled = false;
-            submitButton.textContent = 'FINALIZAR CADASTRO';
-          });
-      }
-    });
-  } else {
-    const submitButton = form?.querySelector('button[type="submit"]');
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.textContent = 'Erro de Inicialização';
-      submitButton.style.backgroundColor = 'grey';
-    }
-  }
-
-  function showError(fieldId, message) {
-    const errorSpan = document.getElementById(`${fieldId}-error`);
-    const inputField = document.getElementById(fieldId);
-    if (errorSpan) errorSpan.textContent = message;
-    if (inputField) inputField.classList.add('error');
-  }
-
-  function validateRequiredField(fieldId, message, minLength = 1) {
-    const field = document.getElementById(fieldId);
-    if (!field || !field.value.trim() || field.value.trim().length < minLength) {
-      showError(fieldId, message || `Campo obrigatório (mín. ${minLength} caracteres).`);
-      return false;
-    }
-    return true;
-  }
-
-
-
-  function validateEmailField(fieldId, message) {
-    const field = document.getElementById(fieldId);
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!field || !emailPattern.test(field.value)) {
-      showError(fieldId, message);
-      return false;
-    }
-    return true;
-  }
-
-  function validatePasswordField(fieldId) {
-    const field = document.getElementById(fieldId);
-    const value = field ? field.value : '';
-    let isValid = true;
-    let errorMessage = '';
-    
-    if (value.length < 8) {
-      errorMessage += 'Mín. 8 caracteres. ';
-      isValid = false;
-    }
-    if (!/[A-Z]/.test(value)) {
-      errorMessage += '1 maiúscula. ';
-      isValid = false;
-    }
-    if (!/[a-z]/.test(value)) {
-      errorMessage += '1 minúscula. ';
-      isValid = false;
-    }
-    if (!/\d/.test(value)) {
-      errorMessage += '1 número. ';
-      isValid = false;
-    }
-    // Caracteres especiais específicos: @!`~#$%^&*;./\{}[]().
-    if (!/[@!`~#$%^&*;./\\{}[\]()]/.test(value)) {
-      errorMessage += '1 caractere especial (@!`~#$%^&*;./\\{}[]()).';
-      isValid = false;
-    }
-    
-    if (!isValid) {
-      showError(fieldId, errorMessage.trim());
+        }
+      });
     } else {
-      showError(fieldId, ''); // Limpar erro se válido
+      const submitButton = form?.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Erro de Inicialização';
+        submitButton.style.backgroundColor = 'grey';
+      }
     }
-    return isValid;
-  }
 
-  function validatePasswordMatch(passFieldId, confirmFieldId) {
-    const passField = document.getElementById(passFieldId);
-    const confirmField = document.getElementById(confirmFieldId);
-    if (!passField || !confirmField) {
-      showError(confirmFieldId, 'Erro interno.');
-      return false;
+    function showError(fieldId, message) {
+      const errorSpan = document.getElementById(`${fieldId}-error`);
+      const inputField = document.getElementById(fieldId);
+      if (errorSpan) errorSpan.textContent = message;
+      if (inputField) inputField.classList.add('error');
     }
-    if (passField.value !== confirmField.value) {
-      showError(confirmFieldId, 'As senhas não coincidem.');
-      return false;
-    }
-    return true;
-  }
 
-  function validateTermsAcceptance() {
-    const termsCheckbox = document.getElementById('aceitar_termos');
-    if (!termsCheckbox || !termsCheckbox.checked) {
-      showError('aceitar_termos', 'Você deve aceitar os termos de uso e política de privacidade.');
-      return false;
+    function validateRequiredField(fieldId, message, minLength = 1) {
+      const field = document.getElementById(fieldId);
+      if (!field || !field.value.trim() || field.value.trim().length < minLength) {
+        showError(fieldId, message || `Campo obrigatório (mín. ${minLength} caracteres).`);
+        return false;
+      }
+      return true;
     }
-    showError('aceitar_termos', '');
-    return true;
+
+    function validateEmailField(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!field || !emailPattern.test(field.value)) {
+        showError(fieldId, message);
+        return false;
+      }
+      return true;
+    }
+
+    function validatePasswordField(fieldId) {
+      const field = document.getElementById(fieldId);
+      const value = field ? field.value : '';
+      let isValid = true;
+      let errorMessage = '';
+
+      if (value.length < 8) {
+        errorMessage += 'Mín. 8 caracteres. ';
+        isValid = false;
+      }
+      if (!/[A-Z]/.test(value)) {
+        errorMessage += '1 maiúscula. ';
+        isValid = false;
+      }
+      if (!/[a-z]/.test(value)) {
+        errorMessage += '1 minúscula. ';
+        isValid = false;
+      }
+      if (!/\d/.test(value)) {
+        errorMessage += '1 número. ';
+        isValid = false;
+      }
+      // Caracteres especiais específicos: @!`~#$%^&*;./\{}[]().
+      if (!/[@!`~#$%^&*;./\\{}[\]()]/.test(value)) {
+        errorMessage += '1 caractere especial (@!`~#$%^&*;./\\{}[]()).';
+        isValid = false;
+      }
+
+      if (!isValid) {
+        showError(fieldId, errorMessage.trim());
+      } else {
+        showError(fieldId, ''); // Limpar erro se válido
+      }
+      return isValid;
+    }
+
+    function validatePasswordMatch(passFieldId, confirmFieldId) {
+      const passField = document.getElementById(passFieldId);
+      const confirmField = document.getElementById(confirmFieldId);
+      if (!passField || !confirmField) {
+        showError(confirmFieldId, 'Erro interno.');
+        return false;
+      }
+      if (passField.value !== confirmField.value) {
+        showError(confirmFieldId, 'As senhas não coincidem.');
+        return false;
+      }
+      return true;
+    }
+
+    function validateTermsAcceptance() {
+      const termsCheckbox = document.getElementById('aceitar_termos');
+      if (!termsCheckbox || !termsCheckbox.checked) {
+        showError('aceitar_termos', 'Você deve aceitar os termos de uso e política de privacidade.');
+        return false;
+      }
+      showError('aceitar_termos', '');
+      return true;
+    }
+    } else {
+      const submitButton = form?.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Erro de Inicialização';
+        submitButton.style.backgroundColor = 'grey';
+      }
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {

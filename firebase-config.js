@@ -26,9 +26,10 @@ const isLocalhost = window.location.hostname === 'localhost' ||
                    window.location.hostname === '';
 
 // Usar configuração baseada no ambiente
-const firebaseConfig = isLocalhost ? firebaseConfigs.development : firebaseConfigs.production;
+var firebaseConfig = isLocalhost ? firebaseConfigs.development : firebaseConfigs.production;
 
 console.log('Firebase Config - Ambiente:', isLocalhost ? 'Desenvolvimento' : 'Produção');
 console.log('Auth Domain:', firebaseConfig.authDomain);
 
-export default firebaseConfig;
+// Tornar disponível globalmente
+window.firebaseConfig = firebaseConfig;
