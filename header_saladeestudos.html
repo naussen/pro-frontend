@@ -1178,15 +1178,6 @@
                 // Notificar o app principal se disponível
                 if (window.studyApp && window.studyApp.showNotification) {
                     window.studyApp.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
-                    
-                    // Aplicar tema ao conteúdo da aula atual
-                    if (window.studyApp.currentContent && window.studyApp.applyCurrentThemeToLesson) {
-                        const lessonContent = document.querySelector('.lesson-content');
-                        if (lessonContent) {
-                            console.log('🎨 Aplicando tema ao conteúdo da aula...');
-                            window.studyApp.applyCurrentThemeToLesson(lessonContent);
-                        }
-                    }
                 } else {
                     console.log(`Tema ${isDark ? 'escuro' : 'claro'} ativado (sem notificação)`);
                 }
