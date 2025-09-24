@@ -820,10 +820,10 @@
                         
                         <form id="login-form">
                             <label for="login-email">Email:</label>
-                            <input type="email" id="login-email" required>
+                            <input type="email" id="login-email" required autocomplete="email">
                             
                             <label for="login-password">Senha:</label>
-                            <input type="password" id="login-password" required>
+                            <input type="password" id="login-password" required autocomplete="current-password">
                             
                             <button type="submit">Entrar</button>
                         </form>
@@ -879,13 +879,13 @@
                     
                     <form id="signup-form">
                         <label for="signup-email">Email:</label>
-                        <input type="email" id="signup-email" required>
+                        <input type="email" id="signup-email" required autocomplete="email">
                         
                         <label for="signup-password">Senha:</label>
-                        <input type="password" id="signup-password" required>
+                        <input type="password" id="signup-password" required autocomplete="new-password">
                         
                         <label for="confirm-password">Confirmar Senha:</label>
-                        <input type="password" id="confirm-password" required>
+                        <input type="password" id="confirm-password" required autocomplete="new-password">
                         
                         <button type="submit">Cadastrar</button>
                     </form>
@@ -958,23 +958,23 @@
         <div class="form-grid">
           <div class="form-group full-width">
             <label for="nome">Nome completo:</label>
-            <input type="text" id="nome" name="nome" required minlength="3" maxlength="100">
+            <input type="text" id="nome" name="nome" required minlength="3" maxlength="100" autocomplete="name">
             <span class="error-message" id="nome-error"></span>
           </div>
           <div class="form-group full-width">
             <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" required autocomplete="email">
             <span class="error-message" id="email-error"></span>
           </div>
           <div class="form-group">
             <label for="senha">Senha:</label>
-            <input type="password" id="senha" name="senha" required minlength="8">
+            <input type="password" id="senha" name="senha" required minlength="8" autocomplete="new-password">
             <span class="password-requirements">Mín. 8 caracteres, 1 maiúscula, 1 minúscula, 1 número, 1 caractere especial (@!`~#$%^&*;./\{}[]()).</span>
             <span class="error-message" id="senha-error"></span>
           </div>
           <div class="form-group">
             <label for="repetir_senha">Confirmar Senha:</label>
-            <input type="password" id="repetir_senha" name="repetir_senha" required>
+            <input type="password" id="repetir_senha" name="repetir_senha" required autocomplete="new-password">
             <span class="error-message" id="repetir_senha-error"></span>
           </div>
         </div>
@@ -1606,40 +1606,55 @@ function initSocialAuthButtons() {
 <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 
 <script>
-  // Configuração do Firebase inline (mais simples)
-  const firebaseConfigs = {
-    development: {
-      apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-      authDomain: "localhost",
-      projectId: "nvp-concursos",
-      storageBucket: "nvp-concursos.firebasestorage.app",
-      messagingSenderId: "397960760271",
-      appId: "1:397960760271:web:1243b04141178453d860ba",
-      measurementId: "G-T6RVBM12BQ"
-    },
-    production: {
-      apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-      authDomain: "nvp-concursos.firebaseapp.com",
-      projectId: "nvp-concursos",
-      storageBucket: "nvp-concursos.firebasestorage.app",
-      messagingSenderId: "397960760271",
-      appId: "1:397960760271:web:1243b04141178453d860ba",
-      measurementId: "G-T6RVBM12BQ"
-    }
+  // Configuração do Firebase - SOMENTE PRODUÇÃO
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+    authDomain: "nvp-concursos.firebaseapp.com",
+    projectId: "nvp-concursos",
+    storageBucket: "nvp-concursos.firebasestorage.app",
+    messagingSenderId: "397960760271",
+    appId: "1:397960760271:web:1243b04141178453d860ba",
+    measurementId: "G-T6RVBM12BQ"
   };
 
-  // Detectar ambiente e usar configuração apropriada
-  const isLocalhost = window.location.hostname === 'localhost' ||
-                     window.location.hostname === '127.0.0.1' ||
-                     window.location.hostname === '';
-  const firebaseConfig = isLocalhost ? firebaseConfigs.development : firebaseConfigs.production;
-
-  console.log('Firebase Config - Ambiente:', isLocalhost ? 'Desenvolvimento' : 'Produção');
+  console.log('Firebase Config - Ambiente: Produção');
   console.log('Auth Domain:', firebaseConfig.authDomain);
 
-  // Inicializar Firebase quando a página carregar
+  // Inicializar Firebase quando a página carregar - SOMENTE EM PRODUÇÃO
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('Página carregada - inicializando Firebase...');
+    console.log('Página carregada - verificando ambiente...');
+
+    // VERIFICAR SE ESTÁ EM PRODUÇÃO
+    const hostname = window.location.hostname;
+    const isProduction = hostname.includes('firebaseapp.com') ||
+                        hostname.includes('netlify.app') ||
+                        hostname.includes('vercel.app') ||
+                        hostname.includes('github.io') ||
+                        (hostname !== 'localhost' && hostname !== '127.0.0.1' && hostname !== '');
+
+    console.log('Hostname detectado:', hostname);
+    console.log('É produção?', isProduction);
+
+    if (!isProduction) {
+      console.log('Modo desenvolvimento - funcionalidades desabilitadas');
+      // Desabilitar botões em desenvolvimento
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.disabled = true;
+        button.textContent = 'Somente em Produção';
+        button.style.backgroundColor = '#ccc';
+      });
+
+      const inputs = document.querySelectorAll('input');
+      inputs.forEach(input => {
+        input.disabled = true;
+        input.placeholder = 'Disponível apenas em produção';
+      });
+
+      return;
+    }
+
+    console.log('Ambiente de produção detectado - inicializando Firebase...');
 
     // Verificar se Firebase está carregado
     if (typeof firebase === 'undefined') {
@@ -1676,10 +1691,14 @@ function initSocialAuthButtons() {
 
   // Função para inicializar o formulário de cadastro
   function initCadastroForm() {
+    console.log('initCadastroForm: Iniciando...');
     const form = document.getElementById('cadastro-form');
+    console.log('initCadastroForm: Form encontrado:', !!form);
 
     if (form) {
+      console.log('initCadastroForm: Adicionando event listener...');
       form.addEventListener('submit', function(event) {
+        console.log('Form submit: Iniciando validação...');
         event.preventDefault();
         let isValid = true;
 
@@ -1689,13 +1708,16 @@ function initSocialAuthButtons() {
         // Clear previous errors specifically for cpf before new validation
         showError('cpf', '');
 
+        console.log('Form submit: Executando validações...');
         isValid = validateRequiredField('nome', 'Nome completo é obrigatório.', 3) && isValid;
         isValid = validateEmailField('email', 'Formato de e-mail inválido.') && isValid;
         isValid = validatePasswordField('senha') && isValid;
         isValid = validatePasswordMatch('senha', 'repetir_senha') && isValid;
         isValid = validateTermsAcceptance() && isValid;
+        console.log('Form submit: Validação concluída, isValid:', isValid);
 
         if (isValid) {
+          console.log('Form submit: Validação passou, processando cadastro...');
           const submitButton = form.querySelector('button[type="submit"]');
           submitButton.disabled = true;
           submitButton.textContent = 'Processando...';
@@ -1846,14 +1868,14 @@ function initSocialAuthButtons() {
       showError('aceitar_termos', '');
       return true;
     }
-    } else {
-      const submitButton = form?.querySelector('button[type="submit"]');
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = 'Erro de Inicialização';
-        submitButton.style.backgroundColor = 'grey';
-      }
+  } else {
+    const submitButton = form?.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Erro de Inicialização';
+      submitButton.style.backgroundColor = 'grey';
     }
+  }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
