@@ -1,0 +1,14 @@
+{
+  "name": "pro-concursos",
+  "version": "1.0.0",
+  "description": "Frontend for PRO Concursos",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "replace-in-file": "^6.3.5"
+  }
+}
