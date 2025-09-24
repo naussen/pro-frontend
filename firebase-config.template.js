@@ -1,6 +1,6 @@
 const firebaseConfigs = {
   'nvp-concursos': {
-    apiKey: "__API_KEY_NVP__",
+    apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
     authDomain: "nvp-concursos.firebaseapp.com",
     projectId: "nvp-concursos",
     storageBucket: "nvp-concursos.firebasestorage.app",
@@ -9,7 +9,7 @@ const firebaseConfigs = {
     measurementId: "G-T6RVBM12BQ"
   },
   'pro-concursos': {
-    apiKey: "__API_KEY_PRO__",
+    apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
     authDomain: "proconcursos.com.br",
     projectId: "nvp-concursos",
     storageBucket: "nvp-concursos.firebasestorage.app",
