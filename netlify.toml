@@ -1,6 +1,6 @@
 [build]
   publish = "."
-  command = "echo 'No build required - static files'"
+  command = "npm install && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
