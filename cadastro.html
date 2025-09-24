@@ -1868,14 +1868,6 @@ function initSocialAuthButtons() {
       showError('aceitar_termos', '');
       return true;
     }
-  } else {
-    const submitButton = form?.querySelector('button[type="submit"]');
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.textContent = 'Erro de Inicialização';
-      submitButton.style.backgroundColor = 'grey';
-    }
-  }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
