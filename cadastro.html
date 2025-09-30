@@ -1605,23 +1605,8 @@ function initSocialAuthButtons() {
 
 <script src="firebase-config.js"></script>
 <script>
-  // Configuração do Firebase - SOMENTE PRODUÇÃO
-  // Configuração única do Firebase - SEMPRE usar o authDomain do Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-    authDomain: "nvp-concursos.firebaseapp.com", // DEVE ser o domínio do Firebase, não o customizado
-    projectId: "nvp-concursos",
-    storageBucket: "nvp-concursos.firebasestorage.app",
-    messagingSenderId: "397960760271",
-    appId: "1:397960760271:web:1243b04141178453d860ba",
-    measurementId: "G-T6RVBM12BQ"
-  };
-
-  console.log('Usando configuração Firebase');
-  console.log('IMPORTANTE: authDomain deve ser sempre xxx.firebaseapp.com para funcionar fora do Firebase Hosting');
-
-  console.log('Firebase Config - Ambiente: Produção');
-  console.log('Auth Domain:', firebaseConfig.authDomain);
+  console.log('Firebase Config carregado do firebase-config.js');
+  console.log('Auth Domain:', window.firebaseConfig.authDomain);
 
   // Inicializar Firebase quando a página carregar
   document.addEventListener('DOMContentLoaded', function() {
