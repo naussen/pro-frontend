@@ -1607,80 +1607,29 @@ function initSocialAuthButtons() {
 
 <script>
   // Configuração do Firebase - SOMENTE PRODUÇÃO
-  // Configurações para diferentes domínios/apps
-  const firebaseConfigs = {
-    // Configuração principal (firebaseapp.com)
-    'nvp-concursos': {
-      apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-      authDomain: "nvp-concursos.firebaseapp.com",
-      projectId: "nvp-concursos",
-      storageBucket: "nvp-concursos.firebasestorage.app",
-      messagingSenderId: "397960760271",
-      appId: "1:397960760271:web:1243b04141178453d860ba",
-      measurementId: "G-T6RVBM12BQ"
-    },
-    // Configuração para proconcursos.com.br
-    'pro-concursos': {
-      apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
-      authDomain: "proconcursos.com.br",
-      projectId: "nvp-concursos",
-      storageBucket: "nvp-concursos.firebasestorage.app",
-      messagingSenderId: "397960760271",
-      appId: "1:397960760271:web:1243b04141178453d860ba", // Pode precisar ser atualizado
-      measurementId: "G-T6RVBM12BQ"
-    }
+  // Configuração única do Firebase - SEMPRE usar o authDomain do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+    authDomain: "nvp-concursos.firebaseapp.com", // DEVE ser o domínio do Firebase, não o customizado
+    projectId: "nvp-concursos",
+    storageBucket: "nvp-concursos.firebasestorage.app",
+    messagingSenderId: "397960760271",
+    appId: "1:397960760271:web:1243b04141178453d860ba",
+    measurementId: "G-T6RVBM12BQ"
   };
 
-  // Detectar qual configuração usar baseado no domínio
-  const hostname = window.location.hostname;
-  let firebaseConfig;
-
-  if (hostname.includes('proconcursos.com.br')) {
-    firebaseConfig = firebaseConfigs['pro-concursos'];
-    console.log('Usando configuração PRO Concursos (proconcursos.com.br)');
-  } else {
-    firebaseConfig = firebaseConfigs['nvp-concursos'];
-    console.log('Usando configuração principal (nvp-concursos.firebaseapp.com)');
-  }
+  console.log('Usando configuração Firebase');
+  console.log('IMPORTANTE: authDomain deve ser sempre xxx.firebaseapp.com para funcionar fora do Firebase Hosting');
 
   console.log('Firebase Config - Ambiente: Produção');
   console.log('Auth Domain:', firebaseConfig.authDomain);
 
-  // Inicializar Firebase quando a página carregar - SOMENTE EM PRODUÇÃO
+  // Inicializar Firebase quando a página carregar
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('Página carregada - verificando ambiente...');
+    console.log('Página carregada - inicializando Firebase...');
 
-    // VERIFICAR SE ESTÁ EM PRODUÇÃO
     const hostname = window.location.hostname;
-    const isProduction = hostname.includes('firebaseapp.com') ||
-                        hostname.includes('netlify.app') ||
-                        hostname.includes('vercel.app') ||
-                        hostname.includes('github.io') ||
-                        (hostname !== 'localhost' && hostname !== '127.0.0.1' && hostname !== '');
-
     console.log('Hostname detectado:', hostname);
-    console.log('É produção?', isProduction);
-
-    if (!isProduction) {
-      console.log('Modo desenvolvimento - funcionalidades desabilitadas');
-      // Desabilitar botões em desenvolvimento
-      const buttons = document.querySelectorAll('button');
-      buttons.forEach(button => {
-        button.disabled = true;
-        button.textContent = 'Somente em Produção';
-        button.style.backgroundColor = '#ccc';
-      });
-
-      const inputs = document.querySelectorAll('input');
-      inputs.forEach(input => {
-        input.disabled = true;
-        input.placeholder = 'Disponível apenas em produção';
-      });
-
-      return;
-    }
-
-    console.log('Ambiente de produção detectado - inicializando Firebase...');
 
     // Verificar se Firebase está carregado
     if (typeof firebase === 'undefined') {
