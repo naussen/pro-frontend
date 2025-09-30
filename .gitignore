@@ -3,3 +3,11 @@ firebase-config.js
 
 # Ignore node_modules
 node_modules
+
+# Ignore Firebase credentials and secrets
+nvp-concursos-credentials.json
+*.key
+*.pem
+.env
+.env.local
+.env.production
