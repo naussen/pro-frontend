@@ -50,13 +50,20 @@
                 }
 
                 log(`Configuração carregada - authDomain: ${window.firebaseConfig.authDomain}`);
+                log(`API Key: ${window.firebaseConfig.apiKey.substring(0, 20)}...`);
 
                 // Verificar se authDomain está correto
                 if (window.firebaseConfig.authDomain !== 'nvp-concursos.firebaseapp.com') {
-                    log('❌ ERRO: authDomain deve ser "nvp-concursos.firebaseapp.com" para funcionar corretamente', 'error');
-                    log('🔧 SOLUÇÃO: Verifique se firebase-config.js está configurado corretamente', 'error');
+                    log('⚠️ AVISO: authDomain não é o padrão. Verifique se está correto para seu ambiente', 'info');
                 } else {
                     log('✅ authDomain configurado corretamente', 'success');
+                }
+
+                // Verificar se API Key está presente
+                if (!window.firebaseConfig.apiKey || window.firebaseConfig.apiKey.length < 20) {
+                    log('❌ ERRO: API Key inválida ou ausente', 'error');
+                } else {
+                    log('✅ API Key presente', 'success');
                 }
 
                 log('Tentando inicializar Firebase...');

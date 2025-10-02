@@ -154,6 +154,12 @@
     </div>
 </header>
 
+<!-- Firebase SDK para autenticação independente -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
 <style>
     /* Variáveis CSS para modo claro/escuro */
     :root {
@@ -915,6 +921,41 @@
         window.openQuestoesForCourse = openQuestoesForCourse;
         window.openAllQuestoes = openAllQuestoes;
         
+        // === SISTEMA DE AUTENTICAÇÃO INDEPENDENTE ===
+        let firebaseAuth = null;
+        let firebaseDb = null;
+
+        async function initFirebaseAuth() {
+            if (firebaseAuth) return firebaseAuth; // Já inicializado
+
+            try {
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase SDK não carregado');
+                }
+
+                // Usar configuração padronizada do firebase-config.js
+                if (!window.firebaseConfig) {
+                    throw new Error('firebase-config.js não carregado');
+                }
+
+                console.log('🔧 Inicializando Firebase Auth no header...');
+
+                // Verificar se já foi inicializado em outro lugar
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(window.firebaseConfig);
+                }
+
+                firebaseAuth = firebase.auth();
+                firebaseDb = firebase.firestore();
+
+                console.log('✅ Firebase Auth inicializado no header');
+                return firebaseAuth;
+            } catch (error) {
+                console.error('❌ Erro ao inicializar Firebase Auth:', error);
+                return null;
+            }
+        }
+
         // === FUNÇÕES DE LOGIN SOCIAL COM FIREBASE ===
         async function loginWithGoogle() {
             console.log('🔍 Tentando login com Google...');
@@ -935,9 +976,12 @@
                     return;
                 }
 
-                if (!window.proApp || !window.proApp.firebaseManager) {
-                    console.error('❌ FirebaseManager não está disponível!');
-                    showNotification('Erro de inicialização. Atualize a página.', 'error');
+                // Inicializar Firebase se necessário
+                if (!firebaseAuth) {
+                    firebaseAuth = await initFirebaseAuth();
+                }
+                if (!firebaseAuth) {
+                    showNotification('Erro: Firebase não inicializado.', 'error');
                     return;
                 }
 
@@ -952,16 +996,16 @@
                 provider.setCustomParameters({ prompt: 'select_account' });
 
                 console.log('📱 Abrindo popup de login do Google...');
-                const result = await window.proApp.firebaseManager.auth.signInWithPopup(provider);
-                
+                const result = await firebaseAuth.signInWithPopup(provider);
+
                 console.log('✅ Login bem-sucedido:', result.user.email);
-                
+
                 // Verificar ou criar documento do usuário
-                const userDoc = await window.proApp.firebaseManager.db.collection('users').doc(result.user.uid).get();
+                const userDoc = await firebaseDb.collection('users').doc(result.user.uid).get();
                 
                 if (!userDoc.exists) {
                     // Criar novo documento de usuário
-                    await window.proApp.firebaseManager.db.collection('users').doc(result.user.uid).set({
+                    await firebaseDb.collection('users').doc(result.user.uid).set({
                         user_id: result.user.uid,
                         nome: result.user.displayName || result.user.email.split('@')[0],
                         email: result.user.email,
@@ -1016,8 +1060,93 @@
         }
         
         async function signupWithGoogle() {
-            // Redirecionar para página de cadastro completa
-            window.location.href = 'cadastro.html';
+            console.log('🔍 Tentando cadastro com Google...');
+
+            const btn = document.getElementById('google-signup-btn-header');
+            if (!btn) {
+                console.error('❌ Botão google-signup-btn-header não encontrado!');
+                return;
+            }
+
+            const originalContent = btn.innerHTML;
+
+            try {
+                // Inicializar Firebase se necessário
+                const auth = await initFirebaseAuth();
+                if (!auth) {
+                    showNotification('Erro: Firebase não inicializado.', 'error');
+                    return;
+                }
+
+                console.log('✅ Iniciando cadastro...');
+
+                btn.disabled = true;
+                btn.innerHTML = '<span>Processando...</span>';
+
+                const provider = new firebase.auth.GoogleAuthProvider();
+                provider.addScope('email');
+                provider.addScope('profile');
+                provider.setCustomParameters({ prompt: 'select_account' });
+
+                console.log('📱 Abrindo popup de cadastro do Google...');
+                const result = await auth.signInWithPopup(provider);
+
+                console.log('✅ Cadastro bem-sucedido:', result.user.email);
+
+                // Verificar se usuário já existe
+                const userDoc = await firebaseDb.collection('users').doc(result.user.uid).get();
+
+                if (!userDoc.exists) {
+                    // Criar novo documento de usuário
+                    await firebaseDb.collection('users').doc(result.user.uid).set({
+                        user_id: result.user.uid,
+                        nome: result.user.displayName || result.user.email.split('@')[0],
+                        email: result.user.email,
+                        emailVerified: result.user.emailVerified,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        hasPersonalized: false,
+                        is_subscriber: false,
+                        termsAccepted: true,
+                        termsAcceptedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        authProvider: 'google',
+                        photoURL: result.user.photoURL || null
+                    });
+
+                    showNotification('Bem-vindo! Redirecionando...', 'success');
+                    setTimeout(() => window.location.href = 'personalizar.html', 1500);
+                } else {
+                    showNotification('Usuário já cadastrado! Fazendo login...', 'success');
+                    setTimeout(() => window.location.href = 'saladeestudos.html', 1500);
+                }
+
+            } catch (error) {
+                console.error('❌ Erro no cadastro:', error);
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+
+                let message = 'Erro ao fazer cadastro.';
+                switch (error.code) {
+                    case 'auth/popup-blocked':
+                        message = 'Popup bloqueado! Permita popups para este site.';
+                        break;
+                    case 'auth/popup-closed-by-user':
+                        message = 'Cadastro cancelado pelo usuário.';
+                        break;
+                    case 'auth/cancelled-popup-request':
+                        message = 'Operação cancelada.';
+                        break;
+                    case 'auth/unauthorized-domain':
+                        message = 'Domínio não autorizado no Firebase.';
+                        break;
+                    case 'auth/operation-not-allowed':
+                        message = 'Google Auth não habilitado.';
+                        break;
+                    case 'auth/email-already-in-use':
+                        message = 'Email já cadastrado.';
+                        break;
+                }
+                showNotification(message, 'error');
+            }
         }
         
         // Função auxiliar para mostrar notificações
