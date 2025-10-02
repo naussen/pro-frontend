@@ -699,22 +699,53 @@
     
     // Função para inicializar botões de autenticação Google
     function initGoogleAuthButtons() {
+        console.log('🎯 Inicializando botões de autenticação Google...');
+        
         // Botão de login com Google
         const googleLoginBtn = document.getElementById('google-login-btn');
         if (googleLoginBtn) {
+            console.log('✅ Botão google-login-btn encontrado');
+            
+            // Desabilitar botão até Firebase estar pronto
+            if (!window.firebaseReady) {
+                googleLoginBtn.disabled = true;
+                googleLoginBtn.style.opacity = '0.6';
+                googleLoginBtn.title = 'Aguarde, inicializando...';
+                
+                // Verificar periodicamente se Firebase está pronto
+                const checkFirebase = setInterval(() => {
+                    if (window.firebaseReady) {
+                        googleLoginBtn.disabled = false;
+                        googleLoginBtn.style.opacity = '1';
+                        googleLoginBtn.title = 'Fazer login com Google';
+                        clearInterval(checkFirebase);
+                        console.log('✅ Botão Google Login habilitado');
+                    }
+                }, 100);
+                
+                // Timeout de 10 segundos
+                setTimeout(() => clearInterval(checkFirebase), 10000);
+            }
+            
             googleLoginBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
+                console.log('🖱️ Clique no botão Google Login detectado');
                 await loginWithGoogle();
             });
+        } else {
+            console.error('❌ Botão google-login-btn NÃO encontrado!');
         }
         
         // Botão de cadastro com Google (redireciona para página de cadastro)
         const googleSignupBtn = document.getElementById('google-signup-btn-header');
         if (googleSignupBtn) {
+            console.log('✅ Botão google-signup-btn-header encontrado');
             googleSignupBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 signupWithGoogle();
             });
+        } else {
+            console.warn('⚠️ Botão google-signup-btn-header não encontrado (normal se estiver no login)');
         }
     }
     
@@ -784,6 +815,20 @@
         document.addEventListener('headerLoaded', function() {
             console.log('🎯 Header carregado dinamicamente, inicializando Google Auth...');
             initGoogleAuthButtons();
+        });
+        
+        // Escutar evento de Firebase pronto
+        document.addEventListener('firebaseReady', function() {
+            console.log('🔥 Firebase está pronto! Habilitando botões de autenticação...');
+            
+            // Habilitar botão de login do Google
+            const googleLoginBtn = document.getElementById('google-login-btn');
+            if (googleLoginBtn) {
+                googleLoginBtn.disabled = false;
+                googleLoginBtn.style.opacity = '1';
+                googleLoginBtn.title = 'Fazer login com Google';
+                console.log('✅ Botão Google Login habilitado via evento');
+            }
         });
         
         // === FUNÇÕES DO MENU QUESTÕES ===
@@ -862,18 +907,52 @@
         // === FUNÇÕES DE LOGIN SOCIAL COM FIREBASE ===
         async function loginWithGoogle() {
             console.log('🔍 Tentando login com Google...');
+            console.log('🔍 Debug - window.proApp:', window.proApp);
+            console.log('🔍 Debug - window.firebaseReady:', window.firebaseReady);
+            console.log('🔍 Debug - firebase global:', typeof firebase !== 'undefined');
             
             const btn = document.getElementById('google-login-btn');
-            if (!btn) return;
+            if (!btn) {
+                console.error('❌ Botão google-login-btn não encontrado!');
+                return;
+            }
             
             const originalContent = btn.innerHTML;
             
             try {
-                // Verificar se Firebase está disponível via index.html
-                if (!window.proApp || !window.proApp.firebaseManager || !window.proApp.firebaseManager.auth) {
-                    showNotification('Sistema não inicializado. Aguarde...', 'warning');
+                // Verificar se Firebase SDK está carregado
+                if (typeof firebase === 'undefined') {
+                    console.error('❌ Firebase SDK não está carregado!');
+                    showNotification('Erro: Firebase não carregado. Atualize a página.', 'error');
                     return;
                 }
+                
+                // Verificar se Firebase foi inicializado
+                if (!window.firebaseReady) {
+                    console.warn('⚠️ Firebase ainda não está pronto. Aguardando...');
+                    showNotification('Aguarde, sistema está inicializando...', 'warning');
+                    
+                    // Aguardar até 5 segundos para o Firebase ficar pronto
+                    let attempts = 0;
+                    while (!window.firebaseReady && attempts < 50) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        attempts++;
+                    }
+                    
+                    if (!window.firebaseReady) {
+                        showNotification('Sistema não inicializou. Atualize a página.', 'error');
+                        return;
+                    }
+                }
+                
+                // Verificar se proApp está disponível
+                if (!window.proApp || !window.proApp.firebaseManager) {
+                    console.error('❌ FirebaseManager não está disponível!');
+                    showNotification('Erro de inicialização. Atualize a página.', 'error');
+                    return;
+                }
+                
+                console.log('✅ Todas as verificações passaram, iniciando login...');
                 
                 btn.disabled = true;
                 btn.innerHTML = '<span>Processando...</span>';
@@ -883,7 +962,7 @@
                 provider.addScope('profile');
                 provider.setCustomParameters({ prompt: 'select_account' });
                 
-                console.log('📱 Abrindo popup de login...');
+                console.log('📱 Abrindo popup de login do Google...');
                 const result = await window.proApp.firebaseManager.auth.signInWithPopup(provider);
                 
                 console.log('✅ Login bem-sucedido:', result.user.email);
