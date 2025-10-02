@@ -1772,18 +1772,27 @@
                 try {
                     if (typeof firebase === 'undefined') {
                         console.warn('Firebase SDK não carregado');
-                        return;
+                        return false;
                     }
 
-                    firebase.initializeApp(firebaseConfig);
-                    this.auth = firebase.auth();
-                    this.db = firebase.firestore();
-                    this.storage = firebase.storage();
+                    // Verifica se já foi inicializado
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                        this.auth = firebase.auth();
+                        this.db = firebase.firestore();
+                        this.storage = firebase.storage();
+                        console.log("✅ Firebase inicializado com sucesso.");
+                    } else {
+                        // Usa a instância já existente
+                        this.auth = firebase.auth();
+                        this.db = firebase.firestore();
+                        this.storage = firebase.storage();
+                        console.log("✅ Firebase já estava inicializado. Reutilizando instância.");
+                    }
                     
-                    console.log("Firebase inicializado com sucesso.");
                     return true;
                 } catch (error) {
-                    console.error("Erro na inicialização do Firebase:", error);
+                    console.error("❌ Erro na inicialização do Firebase:", error);
                     return false;
                 }
             }
