@@ -1483,8 +1483,22 @@
             }
 
             async initializeFirebase() {
-                // Firebase será inicializado no próximo script
-                return Promise.resolve();
+                if (!this.firebaseManager) {
+                    this.firebaseManager = new FirebaseManager();
+                    const success = await this.firebaseManager.init();
+                    
+                    // Torna o Firebase disponível globalmente para o header
+                    window.firebaseReady = success;
+                    
+                    // Emite evento para notificar que Firebase está pronto
+                    if (success) {
+                        console.log('🔥 Emitindo evento firebaseReady');
+                        document.dispatchEvent(new CustomEvent('firebaseReady'));
+                    }
+                    
+                    return success;
+                }
+                return true;
             }
 
             updateFooterYear() {
@@ -1755,7 +1769,7 @@
         // --- Configuração Firebase e Extensões da Classe Principal ---
         const firebaseConfig = {
             apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-            authDomain: "proconcursos.com.br",
+            authDomain: "nvp-concursos.firebaseapp.com",
             projectId: "nvp-concursos",
             storageBucket: "nvp-concursos.firebasestorage.app",
             messagingSenderId: "397960760271",
@@ -1823,24 +1837,6 @@
         }
 
         // Adiciona métodos de formulário à classe principal
-        ProConcursosApp.prototype.initializeFirebase = async function() {
-            if (!this.firebaseManager) {
-                this.firebaseManager = new FirebaseManager();
-                const success = await this.firebaseManager.init();
-                
-                // Torna o Firebase disponível globalmente para o header
-                window.firebaseReady = success;
-                
-                // Emite evento para notificar que Firebase está pronto
-                if (success) {
-                    console.log('🔥 Emitindo evento firebaseReady');
-                    document.dispatchEvent(new CustomEvent('firebaseReady'));
-                }
-                
-                return success;
-            }
-            return true;
-        };
 
         ProConcursosApp.prototype.initLoginForm = function() {
             const loginForm = document.getElementById('login-form');
