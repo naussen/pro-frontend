@@ -1,5 +1,5 @@
 # Ignore the generated firebase-config.js file
-firebase-config.js
+
 
 # Ignore node_modules
 node_modules
