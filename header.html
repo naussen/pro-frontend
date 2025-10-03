@@ -606,6 +606,8 @@
 </style>
 
 <script>
+    let googleButtonsInitializer = null; // Inicializador global dos botões Google
+
     // Inicialização do botão de tema quando o header é carregado diretamente
     document.addEventListener('DOMContentLoaded', function() {
         // Inicializar dropdowns de navegação
@@ -699,64 +701,47 @@
     
     // Função para inicializar botões de autenticação Google
     function initGoogleAuthButtons() {
-        console.log('🎯 Inicializando botões de autenticação Google...');
+        console.log('🎯 Inicializando botões Google...');
 
-        // Função auxiliar para configurar botão
-        function setupGoogleButton(btn, isSignup = false) {
-            if (!btn) return false;
-
-            console.log(`✅ Botão ${btn.id} encontrado`);
-
-            // Adicionar event listener imediatamente
-            btn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                console.log(`🖱️ Clique no botão ${isSignup ? 'signup' : 'login'} Google detectado`);
-
-                if (isSignup) {
-                    signupWithGoogle();
-                } else {
-                    await loginWithGoogle();
-                }
-            });
-
-            // Se Firebase já estiver pronto, habilitar botão
-            if (window.firebaseReady || isSignup) {
-                btn.disabled = false;
-                btn.style.opacity = '1';
-                btn.title = isSignup ? 'Cadastrar com Google' : 'Fazer login com Google';
-                console.log(`✅ Botão ${btn.id} habilitado`);
-            } else {
-                // Desabilitar temporariamente
-                btn.disabled = true;
-                btn.style.opacity = '0.6';
-                btn.title = 'Aguarde, inicializando...';
-            }
-
-            return true;
-        }
-
-        // Configurar botões
         const loginBtn = document.getElementById('google-login-btn');
         const signupBtn = document.getElementById('google-signup-btn-header');
 
-        const loginConfigured = setupGoogleButton(loginBtn, false);
-        const signupConfigured = setupGoogleButton(signupBtn, true);
-
-        if (!loginConfigured && !signupConfigured) {
-            console.error('❌ Nenhum botão Google encontrado!');
+        // Adicionar event listeners
+        if (loginBtn) {
+            loginBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await loginWithGoogle();
+            });
+            loginBtn.disabled = true;
+            loginBtn.style.opacity = '0.6';
         }
 
-        // Retornar função para reconfigurar quando Firebase estiver pronto
-        return function enableButtonsWhenFirebaseReady() {
-            if (loginBtn && !loginBtn.disabled) return; // Já habilitado
+        if (signupBtn) {
+            signupBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await signupWithGoogle();
+            });
+            signupBtn.disabled = true;
+            signupBtn.style.opacity = '0.6';
+        }
 
-            if (window.firebaseReady && loginBtn) {
+        // Armazenar função para habilitar botões
+        googleButtonsInitializer = function() {
+            if (loginBtn) {
                 loginBtn.disabled = false;
                 loginBtn.style.opacity = '1';
-                loginBtn.title = 'Fazer login com Google';
-                console.log('✅ Botão Google Login habilitado via callback');
             }
+            if (signupBtn) {
+                signupBtn.disabled = false;
+                signupBtn.style.opacity = '1';
+            }
+            console.log('✅ Botões Google habilitados');
         };
+
+        // Se Firebase já pronto, habilitar agora
+        if (window.firebaseReady) {
+            googleButtonsInitializer();
+        }
     }
     
     // Função para inicializar sistema de login
@@ -834,11 +819,9 @@
         
         // Escutar evento de Firebase pronto
         document.addEventListener('firebaseReady', function() {
-            console.log('🔥 Firebase está pronto! Habilitando botões de autenticação...');
-
-            // Usar a função retornada para habilitar botões
-            if (typeof enableGoogleButtons === 'function') {
-                enableGoogleButtons();
+            console.log('🔥 Firebase pronto!');
+            if (typeof googleButtonsInitializer === 'function') {
+                googleButtonsInitializer();
             }
         });
         
@@ -1008,7 +991,8 @@
                         message = 'Operação cancelada.';
                         break;
                     case 'auth/unauthorized-domain':
-                        message = 'Domínio não autorizado no Firebase.';
+                        message = '❌ Domínio não autorizado. Adicione ' + window.location.hostname + ' no Firebase Console.';
+                        console.error('⚠️ Firebase Console: https://console.firebase.google.com/project/nvp-concursos/authentication/settings');
                         break;
                 }
                 showNotification(message, 'error');
