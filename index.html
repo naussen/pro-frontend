@@ -1405,6 +1405,7 @@
     </footer>
 
     <!-- Firebase SDK -->
+    <script src="firebase-config.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -1419,11 +1420,11 @@
 
             async init() {
                 try {
-                    // Carrega recursos em paralelo
-                    await Promise.all([
-                        this.loadHeader(),
-                        this.initializeFirebase()
-                    ]);
+                    // Inicializa Firebase PRIMEIRO para evitar condição de corrida
+                    await this.initializeFirebase();
+
+                    // Só depois carrega o header
+                    await this.loadHeader();
                     
                     // Inicializa componentes básicos
                     this.updateFooterYear();
@@ -1767,15 +1768,8 @@
     
     <script>
         // --- Configuração Firebase e Extensões da Classe Principal ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
-            authDomain: "nvp-concursos.firebaseapp.com",
-            projectId: "nvp-concursos",
-            storageBucket: "nvp-concursos.firebasestorage.app",
-            messagingSenderId: "397960760271",
-            appId: "1:397960760271:web:1243b04141178453d860ba",
-            measurementId: "G-T6RVBM12BQ"
-        };
+        // Usar configuração centralizada do firebase-config.js
+        const firebaseConfig = window.firebaseConfig;
 
         // Extensão da classe principal para gerenciar Firebase e formulários
         class FirebaseManager {
