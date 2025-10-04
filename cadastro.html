@@ -431,21 +431,14 @@
   <p>© <span id="current-year">2025</span> NVP Concursos. Todos os direitos reservados.</p>
 </footer>
 
+<script src="firebase-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
-// CONFIGURAÇÃO FIREBASE
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
-  authDomain: "nvp-concursos.firebaseapp.com",
-  projectId: "nvp-concursos",
-  storageBucket: "nvp-concursos.firebasestorage.app",
-  messagingSenderId: "397960760271",
-  appId: "1:397960760271:web:1243b04141178453d860ba",
-  measurementId: "G-T6RVBM12BQ"
-};
+// CONFIGURAÇÃO FIREBASE - Usar configuração centralizada
+const FIREBASE_CONFIG = window.firebaseConfig;
 
 class CadastroApp {
   constructor() {
