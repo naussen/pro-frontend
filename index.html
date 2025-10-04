@@ -1222,6 +1222,53 @@
         @media (min-width: 1400px) {
             .w3s-header-actions a[title="Contato"] { display: flex; }
         }
+
+        /* --- Notification Styles --- */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 350px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .notification-info { background-color: #2196F3; }
+        .notification-success { background-color: #4CAF50; }
+        .notification-warning { background-color: #FF9800; }
+        .notification-error { background-color: #F44336; }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            margin-left: auto;
+            opacity: 0.8;
+        }
+        
+        .notification-close:hover { opacity: 1; }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1479,6 +1526,7 @@
                 this.initNavigationDropdowns();
                 this.initSidebarToggle();
                 this.initLoginSystem();
+                this.initGoogleAuth(); // Adicionado para inicializar o login do Google
                 this.initCourseCarousel();
             }
 
@@ -1757,6 +1805,88 @@
                     courseGrid.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
                 });
             }
+
+            initGoogleAuth() {
+                const loginBtn = document.getElementById('google-login-btn');
+                const signupBtn = document.getElementById('google-signup-btn-header');
+
+                if (loginBtn) {
+                    loginBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleGoogleLogin();
+                    });
+                }
+
+                if (signupBtn) {
+                    signupBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleGoogleSignup();
+                    });
+                }
+            }
+
+            handleGoogleLogin = async function() {
+                console.log('🔍 Tentando login com Google...');
+                const btn = document.getElementById('google-login-btn');
+                if (!btn) {
+                    console.error('❌ Botão google-login-btn não encontrado!');
+                    return;
+                }
+
+                const originalContent = btn.innerHTML;
+
+                try {
+                    if (!this.firebaseManager || !this.firebaseManager.auth) {
+                        this.showNotification('Erro de inicialização. Atualize a página.', 'error');
+                        return;
+                    }
+
+                    this.setFormLoading(btn, true, 'Processando...');
+                    
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    provider.addScope('email');
+                    provider.addScope('profile');
+                    provider.setCustomParameters({ prompt: 'select_account' });
+
+                    const result = await this.firebaseManager.auth.signInWithPopup(provider);
+                    const userDocRef = this.firebaseManager.db.collection('users').doc(result.user.uid);
+                    const userDoc = await userDocRef.get();
+
+                    if (!userDoc.exists) {
+                        await userDocRef.set({
+                            user_id: result.user.uid,
+                            nome: result.user.displayName || result.user.email.split('@')[0],
+                            email: result.user.email,
+                            emailVerified: result.user.emailVerified,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            hasPersonalized: false,
+                            is_subscriber: false,
+                            authProvider: 'google',
+                            photoURL: result.user.photoURL || null
+                        });
+                        this.showNotification('Bem-vindo! Redirecionando...', 'success');
+                        setTimeout(() => window.location.href = 'personalizar.html', 1500);
+                    } else {
+                        this.showNotification('Login realizado com sucesso!', 'success');
+                        this.redirectUserAfterLogin(userDoc);
+                    }
+                } catch (error) {
+                    console.error('❌ Erro no login com Google:', error);
+                    let message = 'Erro ao fazer login com Google.';
+                    if (error.code === 'auth/popup-blocked') {
+                        message = 'Popup bloqueado! Permita popups e tente novamente.';
+                    } else if (error.code === 'auth/popup-closed-by-user') {
+                        message = 'Login cancelado pelo usuário.';
+                    }
+                    this.showNotification(message, 'error');
+                } finally {
+                     this.setFormLoading(btn, false, originalContent);
+                }
+            };
+
+            handleGoogleSignup = function() {
+                window.location.href = 'cadastro.html';
+            };
         }
 
         // Inicialização da aplicação
@@ -1966,18 +2096,18 @@
             if (!button) return;
             
             button.disabled = isLoading;
-            button.textContent = text;
-            
-            if (isLoading) {
-                button.classList.add('loading');
+            if(isLoading){
+                 button.innerHTML = `<span>${text}</span><span class="button-loading"></span>`;
+                 button.classList.add('loading');
             } else {
+                button.innerHTML = text; // Restaura o conteúdo original
                 button.classList.remove('loading');
             }
         };
 
         ProConcursosApp.prototype.showFormError = function(message) {
             // Implementar sistema de notificação mais sofisticado no futuro
-            alert(message);
+            this.showNotification(message, 'error');
         };
 
         ProConcursosApp.prototype.getAuthErrorMessage = function(error) {
@@ -2143,6 +2273,25 @@
 
         ProConcursosApp.prototype.hideSkeleton = function(element) {
             element.classList.remove('skeleton-loading');
+        };
+
+        ProConcursosApp.prototype.showNotification = function(message, type = 'info') {
+            console.log(`📢 ${type.toUpperCase()}: ${message}`);
+            
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
         };
 
         // Adiciona lazy loading e UX ao inicializador principal
