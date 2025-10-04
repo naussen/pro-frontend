@@ -629,7 +629,7 @@
 
       try {
         // Chame o backend para criar a preferência
-        const response = await fetch('https://proconcursos.onrender.com/api/pagamentos/create-mercadopago-preference', {
+        const response = await fetch('http://localhost:3000/api/pagamentos/create-mercadopago-preference', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

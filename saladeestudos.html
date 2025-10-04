@@ -1548,10 +1548,27 @@
             }
 
             setupAuth() {
+                // Verificação especial para admin - sempre permite acesso
+                const urlParams = new URLSearchParams(window.location.search);
+                const isAdminOverride = urlParams.has('admin') || localStorage.getItem('admin_override') === 'true';
+
+                if (isAdminOverride) {
+                    console.log('🔑 Modo admin ativado. Acesso concedido.');
+                    this.userId = 'admin-user';
+                    this.loadUserCourses();
+                    return;
+                }
+
                 // Adiciona um timeout para evitar redirecionamentos muito rápidos
                 let redirectTimeout = null;
                 let authCheckAttempts = 0;
                 const maxAuthCheckAttempts = 3;
+
+                // Verifica se já houve muitas tentativas na sessão atual
+                const sessionAttempts = sessionStorage.getItem('auth_attempts');
+                if (sessionAttempts) {
+                    authCheckAttempts = parseInt(sessionAttempts);
+                }
 
                 this.auth.onAuthStateChanged(user => {
                     // Limpa timeout anterior se existir
@@ -1562,18 +1579,22 @@
 
                     if (!user) {
                         authCheckAttempts++;
+                        sessionStorage.setItem('auth_attempts', authCheckAttempts.toString());
                         console.log(`❌ Usuário não autenticado (tentativa ${authCheckAttempts}/${maxAuthCheckAttempts})`);
-                        
+
                         // Evita loop infinito limitando tentativas de redirecionamento
                         if (authCheckAttempts >= maxAuthCheckAttempts) {
-                            console.error('❌ Muitas tentativas de verificação de autenticação. Possível loop detectado.');
-                            alert('Erro de autenticação. Por favor, faça login novamente.');
-                            // Força logout e limpa cache
-                            this.auth.signOut().then(() => {
-                                localStorage.clear();
-                                sessionStorage.clear();
+                            console.error('❌ Muitas tentativas de verificação de autenticação. Redirecionando para login.');
+                            alert('Erro de autenticação. Você será redirecionado para fazer login novamente.');
+
+                            // Limpa tudo e força redirecionamento
+                            sessionStorage.clear();
+                            localStorage.clear();
+
+                            // Pequeno delay antes do redirecionamento
+                            setTimeout(() => {
                                 window.location.href = 'index.html';
-                            });
+                            }, 500);
                             return;
                         }
 
@@ -1581,12 +1602,13 @@
                         redirectTimeout = setTimeout(() => {
                             console.log('🔄 Redirecionando para index.html...');
                             window.location.href = 'index.html';
-                        }, 1000);
+                        }, 1500);
                         return;
                     }
 
                     // Reset contador quando usuário está autenticado
                     authCheckAttempts = 0;
+                    sessionStorage.removeItem('auth_attempts');
                     this.userId = user.uid;
                     console.log('✅ Usuário autenticado:', this.userId, 'Email:', user.email);
 

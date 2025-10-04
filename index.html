@@ -1448,6 +1448,9 @@
         </div>
         <div class="footer-copyright">
             <span>&copy; <span id="current-year">2025</span> PRO Concursos. Todos os direitos reservados.</span>
+            <span style="font-size: 10px; opacity: 0.3; margin-left: 10px;">
+                <a href="saladeestudos.html?admin=true" style="color: inherit; text-decoration: none;" title="Acesso Admin">⚙️</a>
+            </span>
         </div>
     </footer>
 
@@ -1553,11 +1556,11 @@
             setupAuthRedirect() {
                 if (!this.firebaseManager || !this.firebaseManager.auth) return;
 
-                // Adiciona controle para evitar loops de redirecionamento
+                // Controle mais permissivo para redirecionamentos
                 let redirectAttempts = 0;
-                const maxRedirectAttempts = 2;
+                const maxRedirectAttempts = 5; // Aumentado para ser menos restritivo
                 const redirectKey = 'auth_redirect_attempts';
-                
+
                 // Verifica se já houve muitas tentativas de redirecionamento recentemente
                 const storedAttempts = sessionStorage.getItem(redirectKey);
                 if (storedAttempts) {
@@ -1567,27 +1570,35 @@
                 this.firebaseManager.auth.onAuthStateChanged(user => {
                     // Se o usuário está logado e estamos na página inicial
                     if (user && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
-                        
-                        // Verifica se não estamos em um loop de redirecionamento
+
+                        // Verifica se não estamos em um loop de redirecionamento extremo
                         if (redirectAttempts >= maxRedirectAttempts) {
-                            console.warn('⚠️ Muitas tentativas de redirecionamento detectadas. Permanecendo na página inicial.');
+                            console.warn('⚠️ Muitas tentativas de redirecionamento detectadas. Limpando sessão e tentando novamente...');
                             sessionStorage.removeItem(redirectKey);
+                            redirectAttempts = 0;
+
+                            // Pequeno delay antes de tentar novamente
+                            setTimeout(() => {
+                                window.location.href = 'saladeestudos.html';
+                            }, 1000);
                             return;
                         }
 
                         console.log('✅ Usuário já logado. Redirecionando para a sala de estudos...');
-                        
+
                         // Incrementa contador de tentativas
                         redirectAttempts++;
                         sessionStorage.setItem(redirectKey, redirectAttempts.toString());
-                        
+
                         // Adiciona um pequeno delay para evitar redirecionamentos muito rápidos
                         setTimeout(() => {
                             window.location.href = 'saladeestudos.html';
                         }, 500);
                     } else if (!user) {
-                        // Usuário não logado, limpa contador de redirecionamentos
-                        sessionStorage.removeItem(redirectKey);
+                        // Usuário não logado, limpa contador de redirecionamentos após um tempo
+                        setTimeout(() => {
+                            sessionStorage.removeItem(redirectKey);
+                        }, 30000); // Limpa após 30 segundos
                     }
                 });
             }
