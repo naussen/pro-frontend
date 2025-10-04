@@ -12,6 +12,7 @@
     "@paypal/checkout-server-sdk": "^1.0.3",
     "firebase-admin": "^13.5.0",
     "mercadopago": "^2.9.0",
+    "node-fetch": "^2.7.0",
     "playwright": "^1.55.1",
     "replace-in-file": "^6.3.5"
   }

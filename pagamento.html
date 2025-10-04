@@ -616,7 +616,8 @@
 
   function initializePayment(user) {
     // Mercado Pago
-    const mp = new MercadoPago('YOUR_MERCADO_PAGO_PUBLIC_KEY', {
+    // IMPORTANTE: Substitua a string abaixo pela sua Public Key do Mercado Pago
+    const mp = new MercadoPago('APP_USR-7e613646-9a2c-4243-85cf-2135f6396c09', {
       locale: 'pt-BR'
     });
 
@@ -693,14 +694,28 @@
           },
           onApprove: async (data, actions) => {
             try {
-              await db.collection('users').doc(user.uid).update({
-                is_subscriber: true,
-                subscription_id: data.subscriptionID,
-                subscription_start: firebase.firestore.FieldValue.serverTimestamp()
+              // Chamar o backend para verificar e salvar a assinatura
+              const response = await fetch('https://proconcursos.onrender.com/api/pagamentos/approve-paypal-subscription', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  subscriptionID: data.subscriptionID,
+                  userID: user.uid
+                }),
               });
+
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Falha ao ativar a assinatura.');
+              }
+              
               showSuccessMessage();
+
             } catch (error) {
-              console.error('Erro ao atualizar status de assinatura:', error);
+              console.error('Erro ao aprovar assinatura PayPal:', error);
+              document.getElementById('error-message').textContent = 'Erro: ' + error.message;
               document.getElementById('error-message').style.display = 'block';
             }
           },
