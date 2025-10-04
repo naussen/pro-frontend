@@ -1542,11 +1542,24 @@
                     if (success) {
                         console.log('🔥 Emitindo evento firebaseReady');
                         document.dispatchEvent(new CustomEvent('firebaseReady'));
+                        this.setupAuthRedirect(); // <-- Adiciona a verificação de redirecionamento aqui
                     }
                     
                     return success;
                 }
                 return true;
+            }
+
+            setupAuthRedirect() {
+                if (!this.firebaseManager || !this.firebaseManager.auth) return;
+
+                this.firebaseManager.auth.onAuthStateChanged(user => {
+                    // Se o usuário está logado e estamos na página inicial, redireciona.
+                    if (user && window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+                        console.log('✅ Usuário já logado. Redirecionando para a sala de estudos...');
+                        window.location.href = 'saladeestudos.html';
+                    }
+                });
             }
 
             updateFooterYear() {
