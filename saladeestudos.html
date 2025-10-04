@@ -1548,13 +1548,45 @@
             }
 
             setupAuth() {
+                // Adiciona um timeout para evitar redirecionamentos muito rápidos
+                let redirectTimeout = null;
+                let authCheckAttempts = 0;
+                const maxAuthCheckAttempts = 3;
+
                 this.auth.onAuthStateChanged(user => {
+                    // Limpa timeout anterior se existir
+                    if (redirectTimeout) {
+                        clearTimeout(redirectTimeout);
+                        redirectTimeout = null;
+                    }
+
                     if (!user) {
-                        console.log('❌ Usuário não autenticado, redirecionando...');
-                        window.location.href = 'index.html';
+                        authCheckAttempts++;
+                        console.log(`❌ Usuário não autenticado (tentativa ${authCheckAttempts}/${maxAuthCheckAttempts})`);
+                        
+                        // Evita loop infinito limitando tentativas de redirecionamento
+                        if (authCheckAttempts >= maxAuthCheckAttempts) {
+                            console.error('❌ Muitas tentativas de verificação de autenticação. Possível loop detectado.');
+                            alert('Erro de autenticação. Por favor, faça login novamente.');
+                            // Força logout e limpa cache
+                            this.auth.signOut().then(() => {
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.href = 'index.html';
+                            });
+                            return;
+                        }
+
+                        // Adiciona um pequeno delay antes do redirecionamento
+                        redirectTimeout = setTimeout(() => {
+                            console.log('🔄 Redirecionando para index.html...');
+                            window.location.href = 'index.html';
+                        }, 1000);
                         return;
                     }
 
+                    // Reset contador quando usuário está autenticado
+                    authCheckAttempts = 0;
                     this.userId = user.uid;
                     console.log('✅ Usuário autenticado:', this.userId, 'Email:', user.email);
 

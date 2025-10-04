@@ -1553,11 +1553,41 @@
             setupAuthRedirect() {
                 if (!this.firebaseManager || !this.firebaseManager.auth) return;
 
+                // Adiciona controle para evitar loops de redirecionamento
+                let redirectAttempts = 0;
+                const maxRedirectAttempts = 2;
+                const redirectKey = 'auth_redirect_attempts';
+                
+                // Verifica se já houve muitas tentativas de redirecionamento recentemente
+                const storedAttempts = sessionStorage.getItem(redirectKey);
+                if (storedAttempts) {
+                    redirectAttempts = parseInt(storedAttempts);
+                }
+
                 this.firebaseManager.auth.onAuthStateChanged(user => {
-                    // Se o usuário está logado e estamos na página inicial, redireciona.
-                    if (user && window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+                    // Se o usuário está logado e estamos na página inicial
+                    if (user && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
+                        
+                        // Verifica se não estamos em um loop de redirecionamento
+                        if (redirectAttempts >= maxRedirectAttempts) {
+                            console.warn('⚠️ Muitas tentativas de redirecionamento detectadas. Permanecendo na página inicial.');
+                            sessionStorage.removeItem(redirectKey);
+                            return;
+                        }
+
                         console.log('✅ Usuário já logado. Redirecionando para a sala de estudos...');
-                        window.location.href = 'saladeestudos.html';
+                        
+                        // Incrementa contador de tentativas
+                        redirectAttempts++;
+                        sessionStorage.setItem(redirectKey, redirectAttempts.toString());
+                        
+                        // Adiciona um pequeno delay para evitar redirecionamentos muito rápidos
+                        setTimeout(() => {
+                            window.location.href = 'saladeestudos.html';
+                        }, 500);
+                    } else if (!user) {
+                        // Usuário não logado, limpa contador de redirecionamentos
+                        sessionStorage.removeItem(redirectKey);
                     }
                 });
             }
