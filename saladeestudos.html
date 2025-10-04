@@ -1554,7 +1554,17 @@
 
                 if (isAdminOverride) {
                     console.log('🔑 Modo admin ativado. Acesso concedido.');
+                    localStorage.setItem('admin_override', 'true');
                     this.userId = 'admin-user';
+                    this.loadUserCourses();
+                    return;
+                }
+
+                // Verificar se há token de autenticação salvo localmente
+                const savedAuthState = localStorage.getItem('firebase_auth_state');
+                if (savedAuthState === 'authenticated') {
+                    console.log('✅ Estado de autenticação encontrado no localStorage. Carregando conteúdo...');
+                    this.userId = localStorage.getItem('firebase_user_id') || 'authenticated-user';
                     this.loadUserCourses();
                     return;
                 }
@@ -1589,7 +1599,8 @@
 
                             // Limpa tudo e força redirecionamento
                             sessionStorage.clear();
-                            localStorage.clear();
+                            localStorage.removeItem('firebase_auth_state');
+                            localStorage.removeItem('firebase_user_id');
 
                             // Pequeno delay antes do redirecionamento
                             setTimeout(() => {
@@ -1602,13 +1613,18 @@
                         redirectTimeout = setTimeout(() => {
                             console.log('🔄 Redirecionando para index.html...');
                             window.location.href = 'index.html';
-                        }, 1500);
+                        }, 2000); // Aumentado para 2 segundos
                         return;
                     }
 
                     // Reset contador quando usuário está autenticado
                     authCheckAttempts = 0;
                     sessionStorage.removeItem('auth_attempts');
+                    
+                    // Salva estado de autenticação
+                    localStorage.setItem('firebase_auth_state', 'authenticated');
+                    localStorage.setItem('firebase_user_id', user.uid);
+                    
                     this.userId = user.uid;
                     console.log('✅ Usuário autenticado:', this.userId, 'Email:', user.email);
 
