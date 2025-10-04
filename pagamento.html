@@ -477,7 +477,7 @@
     <section class="payment-section">
       <h2>Finalizar Assinatura</h2>
       <div class="plan-details">
-        Plano Mensal: <span class="price">R$ 29,90/mês</span><br>
+        Plano Mensal: <span class="price">R$ 0,01/mês</span><br>
         <small>Cancele quando quiser</small>
       </div>
       <div class="payment-options">
@@ -540,7 +540,7 @@
 <!-- Mercado Pago SDK -->
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <!-- PayPal SDK -->
-<script src="https://www.paypal.com/sdk/js?client-id=AcwJztgY_UReyUkD_Yw2Yr...&vault=true&intent=subscription"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=sb&vault=true&intent=subscription"></script>
 
 <script src="firebase-config.js"></script>
 <script>
@@ -623,46 +623,36 @@
     const mercadoPagoBtn = document.getElementById('mercado-pago-btn');
     mercadoPagoBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      try {
-        // Simulação de criação de preferência (deve ser feita no backend em produção)
-        const preference = {
-          items: [
-            {
-              title: 'Assinatura Mensal NVP Concursos',
-              unit_price: 29.90,
-              quantity: 1,
-            }
-          ],
-          auto_recurring: {
-            frequency: 1,
-            frequency_type: 'months',
-            transaction_amount: 29.90,
-            currency_id: 'BRL'
-          },
-          back_urls: {
-            success: window.location.origin + '/pagamento.html?status=success',
-            failure: window.location.origin + '/pagamento.html?status=failure',
-            pending: window.location.origin + '/pagamento.html?status=pending'
-          },
-          payer: {
-            email: user.email
-          }
-        };
+      mercadoPagoBtn.textContent = 'Processando...';
+      mercadoPagoBtn.disabled = true;
 
-        // Em produção, isso deve ser feito no backend com o Access Token
-        const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
+      try {
+        // Chame o backend para criar a preferência
+        const response = await fetch('https://proconcursos.onrender.com/api/pagamentos/create-mercadopago-preference', {
           method: 'POST',
           headers: {
-            'Authorization': 'Bearer YOUR_MERCADO_PAGO_ACCESS_TOKEN',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(preference)
+          body: JSON.stringify({
+            userEmail: user.email,
+            userId: user.uid
+          }),
         });
+
+        if (!response.ok) {
+          throw new Error('Falha ao criar a preferência de pagamento.');
+        }
+
         const data = await response.json();
+        
+        // Redirecione para o checkout do Mercado Pago
         window.location.href = data.init_point;
+
       } catch (error) {
         console.error('Erro ao criar preferência Mercado Pago:', error);
         document.getElementById('error-message').style.display = 'block';
+        mercadoPagoBtn.textContent = 'Pagar com Mercado Pago';
+        mercadoPagoBtn.disabled = false;
       }
     });
 
@@ -697,7 +687,7 @@
         paypal.Buttons({
           createSubscription: (data, actions) => {
             return actions.subscription.create({
-              plan_id: 'YOUR_PAYPAL_PLAN_ID',
+              plan_id: 'P-YOUR_PAYPAL_SANDBOX_PLAN_ID', // Use um PLAN ID do ambiente de Sandbox
               custom_id: user.uid
             });
           },

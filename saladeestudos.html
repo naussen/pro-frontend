@@ -1554,13 +1554,36 @@
                         window.location.href = 'index.html';
                         return;
                     }
-                    
+
                     this.userId = user.uid;
-                    console.log('✅ Usuário autenticado:', this.userId);
-                    
-                    // Carrega cursos após autenticação
-                    this.loadUserCourses();
+                    console.log('✅ Usuário autenticado:', this.userId, 'Email:', user.email);
+
+                    // Verifica isenção do admin ou status de pagamento
+                    if (user.email === 'nvpezat@gmail.com') {
+                        console.log('🔑 Admin logado. Acesso total concedido.');
+                        this.loadUserCourses();
+                    } else {
+                        this.checkSubscriptionStatus(user.uid);
+                    }
                 });
+            }
+
+            async checkSubscriptionStatus(userId) {
+                try {
+                    const userDoc = await this.db.collection('users').doc(userId).get();
+                    if (userDoc.exists && userDoc.data().is_subscriber === true) {
+                        console.log('✅ Assinatura ativa. Carregando conteúdo.');
+                        this.loadUserCourses();
+                    } else {
+                        console.log('⚠️ Assinatura inativa ou não encontrada. Redirecionando para pagamento.');
+                        window.location.href = 'pagamento.html';
+                    }
+                } catch (error) {
+                    console.error('❌ Erro ao verificar status da assinatura:', error);
+                    alert('Ocorreu um erro ao verificar sua assinatura. Tente recarregar a página.');
+                    // Opcional: redirecionar para uma página de erro ou a de pagamento como fallback
+                    window.location.href = 'pagamento.html';
+                }
             }
 
             // === GERENCIAMENTO DE SIDEBAR ===
@@ -2858,5 +2881,4 @@
         });
     </script>
 </body>
-</html>
 </html>
