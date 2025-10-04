@@ -1405,76 +1405,12 @@
     </footer>
 
     <!-- Firebase SDK -->
-    <script src="firebase-config.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
     
-            constructor() {
-                this.auth = null;
-                this.db = null;
-                this.storage = null;
-            }
-
-            async init() {
-                try {
-                    // Verifica se já foi inicializado
-                    if (!firebase.apps.length) {
-                        firebase.initializeApp(firebaseConfig);
-                        this.auth = firebase.auth();
-                        this.db = firebase.firestore();
-                        this.storage = firebase.storage();
-                        console.log("✅ Firebase inicializado com sucesso.");
-                    } else {
-                        // Usa a instância já existente
-                        this.auth = firebase.auth();
-                        this.db = firebase.firestore();
-                        this.storage = firebase.storage();
-                        console.log("✅ Firebase já estava inicializado. Reutilizando instância.");
-                    }
-
-                    // Configurar provedor Google
-                    this.googleProvider = new firebase.auth.GoogleAuthProvider();
-                    this.googleProvider.setCustomParameters({
-                        prompt: 'select_account'
-                    });
-
-                    console.log("🔥 Firebase pronto!");
-                    return true;
-
-                } catch (error) {
-                    console.error("❌ Erro ao inicializar Firebase:", error);
-                    return false;
-                }
-            }
-
-            async signInWithGoogle() {
-                try {
-                    console.log("🔍 Tentando login com Google...");
-                    const result = await this.auth.signInWithPopup(this.googleProvider);
-                    console.log("✅ Login bem-sucedido:", result.user.email);
-                    return result.user;
-                } catch (error) {
-                    console.error("❌ Erro no login com Google:", error);
-                    throw error;
-                }
-            }
-
-            async signUpWithGoogle() {
-                // Mesmo método que signIn para Google
-                return this.signInWithGoogle();
-            }
-
-            onAuthStateChanged(callback) {
-                return this.auth.onAuthStateChanged(callback);
-            }
-
-            signOut() {
-                return this.auth.signOut();
-            }
-        }
-
+    <script>
         // --- Módulo Principal da Aplicação ---
         class ProConcursosApp {
             constructor() {
@@ -1483,11 +1419,11 @@
 
             async init() {
                 try {
-                    // Inicializa Firebase PRIMEIRO para evitar condição de corrida
-                    await this.initializeFirebase();
-
-                    // Só depois carrega o header
-                    await this.loadHeader();
+                    // Carrega recursos em paralelo
+                    await Promise.all([
+                        this.loadHeader(),
+                        this.initializeFirebase()
+                    ]);
                     
                     // Inicializa componentes básicos
                     this.updateFooterYear();
@@ -1827,6 +1763,408 @@
         document.addEventListener('DOMContentLoaded', () => {
             window.proApp = new ProConcursosApp();
         });
+    </script>
+    
+    <script>
+        // --- Configuração Firebase e Extensões da Classe Principal ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
+            authDomain: "nvp-concursos.firebaseapp.com",
+            projectId: "nvp-concursos",
+            storageBucket: "nvp-concursos.firebasestorage.app",
+            messagingSenderId: "397960760271",
+            appId: "1:397960760271:web:1243b04141178453d860ba",
+            measurementId: "G-T6RVBM12BQ"
+        };
+
+        // Extensão da classe principal para gerenciar Firebase e formulários
+        class FirebaseManager {
+            constructor() {
+                this.auth = null;
+                this.db = null;
+                this.storage = null;
+                // init() será chamado externamente
+            }
+
+            async init() {
+                try {
+                    if (typeof firebase === 'undefined') {
+                        console.warn('Firebase SDK não carregado');
+                        return false;
+                    }
+
+                    // Verifica se já foi inicializado
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                        this.auth = firebase.auth();
+                        this.db = firebase.firestore();
+                        this.storage = firebase.storage();
+                        console.log("✅ Firebase inicializado com sucesso.");
+                    } else {
+                        // Usa a instância já existente
+                        this.auth = firebase.auth();
+                        this.db = firebase.firestore();
+                        this.storage = firebase.storage();
+                        console.log("✅ Firebase já estava inicializado. Reutilizando instância.");
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    console.error("❌ Erro na inicialização do Firebase:", error);
+                    return false;
+                }
+            }
+
+            async signInUser(email, password) {
+                if (!this.auth) throw new Error('Firebase não inicializado');
+                return await this.auth.signInWithEmailAndPassword(email, password);
+            }
+
+            async signUpUser(email, password) {
+                if (!this.auth) throw new Error('Firebase não inicializado');
+                return await this.auth.createUserWithEmailAndPassword(email, password);
+            }
+
+            async createUserDocument(uid, userData) {
+                if (!this.db) throw new Error('Firestore não inicializado');
+                return await this.db.collection('users').doc(uid).set(userData);
+            }
+
+            async getUserDocument(uid) {
+                if (!this.db) throw new Error('Firestore não inicializado');
+                return await this.db.collection('users').doc(uid).get();
+            }
+        }
+
+        // Adiciona métodos de formulário à classe principal
+
+        ProConcursosApp.prototype.initLoginForm = function() {
+            const loginForm = document.getElementById('login-form');
+            if (!loginForm) return;
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.handleLoginSubmit(e.target);
+            });
+        };
+
+        ProConcursosApp.prototype.handleLoginSubmit = async function(form) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const emailField = document.getElementById('login-email');
+            const passwordField = document.getElementById('login-password');
+
+            if (!emailField || !passwordField) {
+                this.showFormError('Campos de login não encontrados');
+                return;
+            }
+
+            const email = emailField.value.trim();
+            const password = passwordField.value;
+
+            if (!email || !password) {
+                this.showFormError('Por favor, preencha todos os campos.');
+                return;
+            }
+
+            this.setFormLoading(submitBtn, true, 'Entrando...');
+
+            try {
+                const userCredential = await this.firebaseManager.signInUser(email, password);
+                const userDoc = await this.firebaseManager.getUserDocument(userCredential.user.uid);
+                
+                this.redirectUserAfterLogin(userDoc);
+            } catch (error) {
+                console.error('Erro no login:', error);
+                this.showFormError(this.getAuthErrorMessage(error));
+                this.setFormLoading(submitBtn, false, 'Entrar');
+            }
+        };
+
+        ProConcursosApp.prototype.initSignupForm = function() {
+            const signupForm = document.getElementById('signup-form');
+            if (!signupForm) return;
+
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.handleSignupSubmit(e.target);
+            });
+        };
+
+        ProConcursosApp.prototype.handleSignupSubmit = async function(form) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const emailField = document.getElementById('signup-email');
+            const passwordField = document.getElementById('signup-password');
+            const confirmPasswordField = document.getElementById('confirm-password');
+
+            if (!emailField || !passwordField || !confirmPasswordField) {
+                this.showFormError('Campos de cadastro não encontrados');
+                return;
+            }
+
+            const email = emailField.value.trim();
+            const password = passwordField.value;
+            const confirmPassword = confirmPasswordField.value;
+
+            const validationError = this.validateSignupForm(email, password, confirmPassword);
+            if (validationError) {
+                this.showFormError(validationError);
+                return;
+            }
+
+            this.setFormLoading(submitBtn, true, 'Cadastrando...');
+
+            try {
+                const userCredential = await this.firebaseManager.signUpUser(email, password);
+                
+                await this.firebaseManager.createUserDocument(userCredential.user.uid, {
+                    email: email,
+                    role: 'user',
+                    hasPersonalized: false,
+                    createdAt: new Date()
+                });
+                
+                window.location.href = 'personalizar.html';
+            } catch (error) {
+                console.error('Erro no cadastro:', error);
+                this.showFormError(this.getAuthErrorMessage(error));
+                this.setFormLoading(submitBtn, false, 'Cadastrar');
+            }
+        };
+
+        ProConcursosApp.prototype.validateSignupForm = function(email, password, confirmPassword) {
+            if (!email || !password || !confirmPassword) {
+                return 'Por favor, preencha todos os campos.';
+            }
+            
+            if (password !== confirmPassword) {
+                return 'As senhas não coincidem!';
+            }
+            
+            if (password.length < 6) {
+                return 'A senha deve ter pelo menos 6 caracteres.';
+            }
+            
+            return null;
+        };
+
+        ProConcursosApp.prototype.redirectUserAfterLogin = function(userDoc) {
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                if (userData.role === 'admin') {
+                    window.location.href = '/admin/dashboard.html';
+                } else if (userData.hasPersonalized) {
+                    window.location.href = 'saladeestudos.html';
+                } else {
+                    window.location.href = 'personalizar.html';
+                }
+            } else {
+                window.location.href = 'personalizar.html';
+            }
+        };
+
+        ProConcursosApp.prototype.setFormLoading = function(button, isLoading, text) {
+            if (!button) return;
+            
+            button.disabled = isLoading;
+            button.textContent = text;
+            
+            if (isLoading) {
+                button.classList.add('loading');
+            } else {
+                button.classList.remove('loading');
+            }
+        };
+
+        ProConcursosApp.prototype.showFormError = function(message) {
+            // Implementar sistema de notificação mais sofisticado no futuro
+            alert(message);
+        };
+
+        ProConcursosApp.prototype.getAuthErrorMessage = function(error) {
+            const errorMessages = {
+                'auth/user-not-found': 'Usuário não encontrado.',
+                'auth/wrong-password': 'Senha incorreta.',
+                'auth/invalid-email': 'Formato de email inválido.',
+                'auth/email-already-in-use': 'Este email já está em uso.',
+                'auth/weak-password': 'A senha deve ter pelo menos 6 caracteres.',
+                'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.'
+            };
+
+            return errorMessages[error.code] || 'Erro de autenticação. Tente novamente.';
+        };
+
+        // --- Lazy Loading e Performance ---
+        ProConcursosApp.prototype.initLazyLoading = function() {
+            // Lazy loading para imagem de background
+            const bgImage = document.querySelector('.bg-image[data-lazy-bg]');
+            if (bgImage) {
+                this.loadBackgroundImage(bgImage);
+            }
+
+            // Intersection Observer para elementos lazy
+            this.setupIntersectionObserver();
+        };
+
+        ProConcursosApp.prototype.loadBackgroundImage = function(element) {
+            const src = element.getAttribute('data-lazy-bg');
+            if (!src) return;
+
+            const img = new Image();
+            img.onload = () => {
+                element.style.backgroundImage = `url('${src}')`;
+                element.removeAttribute('data-lazy-bg');
+                element.classList.add('loaded');
+            };
+            img.onerror = () => {
+                console.warn('Erro ao carregar imagem de background:', src);
+            };
+            img.src = src;
+        };
+
+        ProConcursosApp.prototype.setupIntersectionObserver = function() {
+            if (!('IntersectionObserver' in window)) return;
+
+            const options = {
+                root: null,
+                rootMargin: '50px',
+                threshold: 0.1
+            };
+
+            this.observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.animateElement(entry.target);
+                        this.observer.unobserve(entry.target);
+                    }
+                });
+            }, options);
+
+            // Observa elementos para animação
+            const animateElements = document.querySelectorAll('.course-card, .step-card, .news-item');
+            animateElements.forEach(el => this.observer.observe(el));
+        };
+
+        ProConcursosApp.prototype.animateElement = function(element) {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+
+            requestAnimationFrame(() => {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            });
+        };
+
+        // --- Melhorias UX ---
+        ProConcursosApp.prototype.initUXEnhancements = function() {
+            this.initSmoothScrolling();
+            this.initFocusManagement();
+            this.initKeyboardNavigation();
+            this.initLoadingStates();
+        };
+
+        ProConcursosApp.prototype.initSmoothScrolling = function() {
+            // Smooth scroll para links internos
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a[href^="#"]');
+                if (!link) return;
+
+                const href = link.getAttribute('href');
+                if (href === '#') return;
+
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+
+                    // Foco para acessibilidade
+                    setTimeout(() => {
+                        target.focus();
+                    }, 300);
+                }
+            });
+        };
+
+        ProConcursosApp.prototype.initFocusManagement = function() {
+            // Gerenciamento de foco para dropdowns
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeAllDropdowns();
+                    this.closeAllModals();
+                }
+            });
+        };
+
+        ProConcursosApp.prototype.closeAllDropdowns = function() {
+            const dropdowns = document.querySelectorAll('.dropdown-content, .login-dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
+        };
+
+        ProConcursosApp.prototype.closeAllModals = function() {
+            // Para implementar quando houver modais
+        };
+
+        ProConcursosApp.prototype.initKeyboardNavigation = function() {
+            // Navegação por teclado nos filtros
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach((button, index) => {
+                button.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        const direction = e.key === 'ArrowRight' ? 1 : -1;
+                        const nextIndex = (index + direction + filterButtons.length) % filterButtons.length;
+                        filterButtons[nextIndex].focus();
+                    }
+                });
+            });
+        };
+
+        ProConcursosApp.prototype.initLoadingStates = function() {
+            // Skeleton loading para conteúdo dinâmico
+            const dynamicContent = document.querySelectorAll('[data-dynamic-content]');
+            dynamicContent.forEach(element => {
+                this.showSkeleton(element);
+                
+                // Simula carregamento e remove skeleton
+                setTimeout(() => {
+                    this.hideSkeleton(element);
+                }, 1000);
+            });
+        };
+
+        ProConcursosApp.prototype.showSkeleton = function(element) {
+            element.classList.add('skeleton-loading');
+        };
+
+        ProConcursosApp.prototype.hideSkeleton = function(element) {
+            element.classList.remove('skeleton-loading');
+        };
+
+        // Adiciona lazy loading e UX ao inicializador principal
+        ProConcursosApp.prototype.init = async function() {
+            try {
+                // Carrega recursos em paralelo
+                await Promise.all([
+                    this.loadHeader(),
+                    this.initializeFirebase()
+                ]);
+                
+                // Inicializa componentes básicos
+                this.updateFooterYear();
+                this.initCourseFilters();
+                this.initLazyLoading();
+                this.initUXEnhancements();
+                
+            } catch (error) {
+                console.error('Erro na inicialização da aplicação:', error);
+            }
+        };
+
     </script>
 </body>
 </html>
