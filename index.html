@@ -1576,19 +1576,21 @@
                     // Se o usuário está logado e estamos na página inicial
                     if (user && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
 
-                        // NOVO: Se houve redirecionamento do saladeestudos nos últimos 15 segundos, não redireciona
+                        // NOVO: Se houve redirecionamento do saladeestudos nos últimos 15 segundos, mostra botão manual
                         if (lastRedirectTime && (currentTime - parseInt(lastRedirectTime)) < 15000) {
-                            console.log('🛡️ Redirecionamento bloqueado - possível loop detectado. Aguardando...');
+                            console.log('🛡️ Redirecionamento bloqueado - possível loop detectado. Mostrando acesso manual...');
+                            this.showNotification('Você está logado! Use o botão abaixo para acessar a sala de estudos.', 'info');
+                            this.addManualRedirectButton();
                             return;
                         }
 
                         // Verifica se não estamos em um loop de redirecionamento extremo
                         if (redirectAttempts >= maxRedirectAttempts) {
-                            console.warn('⚠️ Muitas tentativas de redirecionamento detectadas. Parando redirecionamentos automáticos.');
+                            console.warn('⚠️ Muitas tentativas de redirecionamento detectadas. Mostrando acesso manual.');
                             sessionStorage.removeItem(redirectKey);
                             
                             // Mostra mensagem para o usuário clicar manualmente
-                            this.showNotification('Você está logado! Clique aqui para acessar a sala de estudos.', 'info');
+                            this.showNotification('Você está logado! Use o botão abaixo para acessar a sala de estudos.', 'info');
                             
                             // Adiciona botão manual na interface
                             this.addManualRedirectButton();
@@ -1616,18 +1618,56 @@
             }
 
             addManualRedirectButton() {
-                // Adiciona botão manual para redirecionamento se necessário
+                // Remove botão existente se houver
+                const existingBtn = document.getElementById('manual-redirect-btn');
+                if (existingBtn) {
+                    existingBtn.remove();
+                }
+
+                // Adiciona botão manual para redirecionamento
                 const heroSection = document.querySelector('.hero-banner .hero-content');
-                if (heroSection && !document.getElementById('manual-redirect-btn')) {
+                if (heroSection) {
                     const manualBtn = document.createElement('button');
                     manualBtn.id = 'manual-redirect-btn';
                     manualBtn.innerHTML = '🎓 Acessar Sala de Estudos';
                     manualBtn.className = 'cta-button';
-                    manualBtn.style.marginTop = '20px';
+                    manualBtn.style.cssText = `
+                        margin-top: 20px;
+                        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                        animation: pulse 2s infinite;
+                        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+                    `;
+                    
+                    // Adiciona animação CSS se não existir
+                    if (!document.getElementById('pulse-animation')) {
+                        const style = document.createElement('style');
+                        style.id = 'pulse-animation';
+                        style.textContent = `
+                            @keyframes pulse {
+                                0% { transform: scale(1); }
+                                50% { transform: scale(1.05); }
+                                100% { transform: scale(1); }
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    
                     manualBtn.onclick = () => {
+                        // Limpa flags de proteção para permitir acesso
+                        sessionStorage.removeItem('auth_redirect_loop_prevention');
+                        sessionStorage.removeItem('auth_redirect_attempts');
+                        localStorage.setItem('manual_access_requested', 'true');
+                        
+                        console.log('🎓 Acesso manual solicitado pelo usuário');
                         window.location.href = 'saladeestudos.html';
                     };
+                    
                     heroSection.appendChild(manualBtn);
+                    
+                    // Foca no botão para acessibilidade
+                    setTimeout(() => {
+                        manualBtn.focus();
+                    }, 100);
                 }
             }
 

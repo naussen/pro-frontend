@@ -1560,6 +1560,17 @@
                     return;
                 }
 
+                // NOVO: Verifica se foi acesso manual solicitado
+                const manualAccessRequested = localStorage.getItem('manual_access_requested');
+                if (manualAccessRequested === 'true') {
+                    console.log('🎓 Acesso manual detectado. Carregando sem verificação de loop...');
+                    localStorage.removeItem('manual_access_requested');
+                    
+                    // Realiza verificação de autenticação mais direta
+                    this.performDirectAuthCheck();
+                    return;
+                }
+
                 // NOVO: Verifica se estamos em um loop de redirecionamento
                 const redirectLoopKey = 'auth_redirect_loop_prevention';
                 const lastRedirectTime = sessionStorage.getItem(redirectLoopKey);
@@ -1577,6 +1588,36 @@
                 }
 
                 this.performAuthCheck();
+            }
+
+            performDirectAuthCheck() {
+                // Verificação direta para acesso manual
+                console.log('🔍 Realizando verificação direta de autenticação...');
+                
+                this.auth.onAuthStateChanged(user => {
+                    if (user) {
+                        console.log('✅ Usuário autenticado encontrado:', user.email);
+                        
+                        // Salva estado de autenticação
+                        localStorage.setItem('firebase_auth_state', 'authenticated');
+                        localStorage.setItem('firebase_user_id', user.uid);
+                        
+                        this.userId = user.uid;
+
+                        // Verifica isenção do admin ou status de pagamento
+                        if (user.email === 'nvpezat@gmail.com') {
+                            console.log('🔑 Admin logado. Acesso total concedido.');
+                            this.loadUserCourses();
+                        } else {
+                            this.checkSubscriptionStatus(user.uid);
+                        }
+                    } else {
+                        console.log('❌ Nenhum usuário autenticado encontrado. Redirecionando...');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    }
+                });
             }
 
             performAuthCheck() {
@@ -2974,6 +3015,54 @@
                 return false;
             }
         });
+
+        // === FUNÇÕES GLOBAIS PARA O HEADER ===
+        // Essas funções são chamadas pelo header.html e precisam estar disponíveis globalmente
+        window.openQuestoesForCourse = function(courseId) {
+            console.log('🎯 Abrindo questões para curso:', courseId);
+            
+            try {
+                // Fallback: abrir com parâmetros específicos
+                let url;
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    // URL direta para servidor de desenvolvimento
+                    url = `http://localhost:8001/pro-questoes.html?course=${courseId}`;
+                } else {
+                    // URL de produção
+                    url = `https://questoes.proconcursos.com.br?course=${courseId}`;
+                }
+                
+                console.log('🌐 Abrindo URL:', url);
+                window.open(url, '_blank', 'noopener,noreferrer');
+                
+            } catch (error) {
+                console.error('❌ Erro ao abrir questões para curso:', error);
+                alert('Erro ao abrir questões. Tente novamente.');
+            }
+        };
+
+        window.openAllQuestoes = function() {
+            console.log('🎯 Abrindo todas as questões');
+            
+            try {
+                // Fallback: abrir com parâmetros específicos
+                let url;
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    // URL direta para servidor de desenvolvimento
+                    url = 'http://localhost:8001/pro-questoes.html';
+                } else {
+                    // URL de produção
+                    url = 'https://questoes.proconcursos.com.br';
+                }
+                
+                console.log('🌐 Abrindo URL:', url);
+                window.open(url, '_blank', 'noopener,noreferrer');
+                
+            } catch (error) {
+                console.error('❌ Erro ao abrir todas as questões:', error);
+                alert('Erro ao abrir questões. Tente novamente.');
+            }
+        };
     </script>
 </body>
 </html>
