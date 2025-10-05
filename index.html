@@ -1556,9 +1556,9 @@
             setupAuthRedirect() {
                 if (!this.firebaseManager || !this.firebaseManager.auth) return;
 
-                // Controle mais permissivo para redirecionamentos
+                // Controle mais rigoroso para redirecionamentos
                 let redirectAttempts = 0;
-                const maxRedirectAttempts = 5; // Aumentado para ser menos restritivo
+                const maxRedirectAttempts = 3; // Reduzido para ser mais conservador
                 const redirectKey = 'auth_redirect_attempts';
 
                 // Verifica se já houve muitas tentativas de redirecionamento recentemente
@@ -1567,20 +1567,31 @@
                     redirectAttempts = parseInt(storedAttempts);
                 }
 
+                // NOVO: Verifica se houve redirecionamento recente do saladeestudos
+                const loopPreventionKey = 'auth_redirect_loop_prevention';
+                const lastRedirectTime = sessionStorage.getItem(loopPreventionKey);
+                const currentTime = Date.now();
+
                 this.firebaseManager.auth.onAuthStateChanged(user => {
                     // Se o usuário está logado e estamos na página inicial
                     if (user && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
 
+                        // NOVO: Se houve redirecionamento do saladeestudos nos últimos 15 segundos, não redireciona
+                        if (lastRedirectTime && (currentTime - parseInt(lastRedirectTime)) < 15000) {
+                            console.log('🛡️ Redirecionamento bloqueado - possível loop detectado. Aguardando...');
+                            return;
+                        }
+
                         // Verifica se não estamos em um loop de redirecionamento extremo
                         if (redirectAttempts >= maxRedirectAttempts) {
-                            console.warn('⚠️ Muitas tentativas de redirecionamento detectadas. Limpando sessão e tentando novamente...');
+                            console.warn('⚠️ Muitas tentativas de redirecionamento detectadas. Parando redirecionamentos automáticos.');
                             sessionStorage.removeItem(redirectKey);
-                            redirectAttempts = 0;
-
-                            // Pequeno delay antes de tentar novamente
-                            setTimeout(() => {
-                                window.location.href = 'saladeestudos.html';
-                            }, 1000);
+                            
+                            // Mostra mensagem para o usuário clicar manualmente
+                            this.showNotification('Você está logado! Clique aqui para acessar a sala de estudos.', 'info');
+                            
+                            // Adiciona botão manual na interface
+                            this.addManualRedirectButton();
                             return;
                         }
 
@@ -1590,17 +1601,34 @@
                         redirectAttempts++;
                         sessionStorage.setItem(redirectKey, redirectAttempts.toString());
 
-                        // Adiciona um pequeno delay para evitar redirecionamentos muito rápidos
+                        // AUMENTADO: Delay maior para evitar conflitos
                         setTimeout(() => {
                             window.location.href = 'saladeestudos.html';
-                        }, 500);
+                        }, 1500); // Aumentado para 1.5 segundos
                     } else if (!user) {
                         // Usuário não logado, limpa contador de redirecionamentos após um tempo
                         setTimeout(() => {
                             sessionStorage.removeItem(redirectKey);
+                            sessionStorage.removeItem(loopPreventionKey);
                         }, 30000); // Limpa após 30 segundos
                     }
                 });
+            }
+
+            addManualRedirectButton() {
+                // Adiciona botão manual para redirecionamento se necessário
+                const heroSection = document.querySelector('.hero-banner .hero-content');
+                if (heroSection && !document.getElementById('manual-redirect-btn')) {
+                    const manualBtn = document.createElement('button');
+                    manualBtn.id = 'manual-redirect-btn';
+                    manualBtn.innerHTML = '🎓 Acessar Sala de Estudos';
+                    manualBtn.className = 'cta-button';
+                    manualBtn.style.marginTop = '20px';
+                    manualBtn.onclick = () => {
+                        window.location.href = 'saladeestudos.html';
+                    };
+                    heroSection.appendChild(manualBtn);
+                }
             }
 
             updateFooterYear() {

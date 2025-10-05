@@ -1560,6 +1560,26 @@
                     return;
                 }
 
+                // NOVO: Verifica se estamos em um loop de redirecionamento
+                const redirectLoopKey = 'auth_redirect_loop_prevention';
+                const lastRedirectTime = sessionStorage.getItem(redirectLoopKey);
+                const currentTime = Date.now();
+                
+                // Se houve um redirecionamento nos últimos 10 segundos, aguarda mais tempo
+                if (lastRedirectTime && (currentTime - parseInt(lastRedirectTime)) < 10000) {
+                    console.log('🛡️ Proteção contra loop ativada. Aguardando mais tempo para verificação...');
+                    
+                    // Aguarda 5 segundos antes de verificar autenticação
+                    setTimeout(() => {
+                        this.performAuthCheck();
+                    }, 5000);
+                    return;
+                }
+
+                this.performAuthCheck();
+            }
+
+            performAuthCheck() {
                 // Verificar se há token de autenticação salvo localmente
                 const savedAuthState = localStorage.getItem('firebase_auth_state');
                 if (savedAuthState === 'authenticated') {
@@ -1572,7 +1592,7 @@
                 // Adiciona um timeout para evitar redirecionamentos muito rápidos
                 let redirectTimeout = null;
                 let authCheckAttempts = 0;
-                const maxAuthCheckAttempts = 3;
+                const maxAuthCheckAttempts = 5; // Aumentado para 5 tentativas
 
                 // Verifica se já houve muitas tentativas na sessão atual
                 const sessionAttempts = sessionStorage.getItem('auth_attempts');
@@ -1595,25 +1615,30 @@
                         // Evita loop infinito limitando tentativas de redirecionamento
                         if (authCheckAttempts >= maxAuthCheckAttempts) {
                             console.error('❌ Muitas tentativas de verificação de autenticação. Redirecionando para login.');
-                            alert('Erro de autenticação. Você será redirecionado para fazer login novamente.');
-
+                            
                             // Limpa tudo e força redirecionamento
                             sessionStorage.clear();
                             localStorage.removeItem('firebase_auth_state');
                             localStorage.removeItem('firebase_user_id');
 
+                            // NOVO: Marca o tempo do redirecionamento para evitar loops
+                            sessionStorage.setItem('auth_redirect_loop_prevention', Date.now().toString());
+
                             // Pequeno delay antes do redirecionamento
                             setTimeout(() => {
+                                console.log('🔄 Redirecionando para index.html...');
                                 window.location.href = 'index.html';
-                            }, 500);
+                            }, 1000);
                             return;
                         }
 
-                        // Adiciona um pequeno delay antes do redirecionamento
+                        // AUMENTADO: Tempo de espera maior antes do redirecionamento
                         redirectTimeout = setTimeout(() => {
                             console.log('🔄 Redirecionando para index.html...');
+                            // NOVO: Marca o tempo do redirecionamento
+                            sessionStorage.setItem('auth_redirect_loop_prevention', Date.now().toString());
                             window.location.href = 'index.html';
-                        }, 2000); // Aumentado para 2 segundos
+                        }, 4000); // Aumentado para 4 segundos
                         return;
                     }
 
