@@ -655,7 +655,13 @@
             }
 
             setupAuthentication() {
-                this.auth.onAuthStateChanged(user => {
+                let authInitialized = false;
+
+                // Show a loading message immediately
+                this.elements.lessonContentDiv.innerHTML = '<p>Verificando autenticação...</p>';
+
+                const unsubscribe = this.auth.onAuthStateChanged(user => {
+                    authInitialized = true;
                     if (user) {
                         this.userId = user.uid;
                         console.log("Usuário autenticado:", this.userId);
@@ -665,17 +671,33 @@
                         this.initExternalModules();
                     } else {
                         // User is signed out.
-                        console.log("Usuário não autenticado.");
+                        console.log("Usuário não autenticado. Redirecionando para o login.");
                         this.elements.lessonContentDiv.innerHTML = `
                             <div class="empty-state" style="text-align: center; padding: 2rem;">
                                 <h3>⚠️ Acesso Negado</h3>
-                                <p>Você precisa estar logado para acessar a sala de estudos.</p>
+                                <p>Você precisa estar logado. Redirecionando para a página de login...</p>
                                 <a href="index.html" style="display: inline-block; margin-top: 1rem; padding: 0.8rem 1.5rem; background-color: var(--main-color); color: white; text-decoration: none; border-radius: 5px;">Ir para a página de Login</a>
                             </div>
                         `;
                         this.elements.courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
+                        
+                        // Redirect to login page after a short delay
+                        setTimeout(() => {
+                           window.location.href = 'index.html';
+                        }, 2500);
                     }
                 });
+
+                // Timeout to handle cases where onAuthStateChanged doesn't fire quickly
+                setTimeout(() => {
+                    if (!authInitialized) {
+                        console.log("Timeout de autenticação. Verificando usuário atual.");
+                        if (!this.auth.currentUser) {
+                             console.log("Nenhum usuário atual encontrado após timeout. Redirecionando.");
+                             window.location.href = 'index.html';
+                        }
+                    }
+                }, 3000);
             }
 
             applyUserPreferences() {
