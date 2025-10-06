@@ -655,17 +655,23 @@
             }
 
             setupAuthentication() {
+                let redirectTimeout = setTimeout(() => {
+                    console.log("Usuário não autenticado após 2s. Redirecionando...");
+                    window.location.href = 'index.html';
+                }, 2000); // Período de carência de 2 segundos
+
                 this.auth.onAuthStateChanged(user => {
                     if (user) {
+                        // Usuário está logado, cancela o redirecionamento
+                        clearTimeout(redirectTimeout);
+                        
                         this.userId = user.uid;
                         console.log("Usuário autenticado:", this.userId);
                         this.applyUserPreferences();
                         this.loadCourses();
-                        this.initExternalModules(); // Prepara módulos externos
-                    } else {
-                        console.log("Usuário não logado. Redirecionando...");
-                        window.location.href = 'index.html';
+                        this.initExternalModules();
                     }
+                    // Se o usuário for nulo, o timeout eventualmente fará o redirecionamento
                 });
             }
 
