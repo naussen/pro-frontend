@@ -611,39 +611,96 @@
             }
 
             setupHeaderEventListeners() {
-                // Eventos para elementos DENTRO do header carregado
-                const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+                const headerPlaceholder = this.elements.headerPlaceholder;
+                if (!headerPlaceholder) return;
+
+                // 1. Botão da Sidebar
+                const sidebarToggleBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
                 if (sidebarToggleBtn) {
                     sidebarToggleBtn.addEventListener('click', this.toggleSidebar.bind(this));
                 }
-                
-                const themeToggleBtn = document.getElementById('theme-toggle');
+
+                // 2. Botão de Tema
+                const themeToggleBtn = headerPlaceholder.querySelector('#themeToggleBtn');
                 if (themeToggleBtn) {
                     themeToggleBtn.addEventListener('click', this.toggleTheme.bind(this));
                 }
 
-                const logoutBtn = document.getElementById('logout-btn');
+                // 3. Botão de Logout
+                const logoutBtn = headerPlaceholder.querySelector('#logout-btn');
                 if (logoutBtn) {
-                    logoutBtn.addEventListener('click', () => this.auth.signOut());
+                    logoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.auth.signOut();
+                    });
                 }
-                
-                // Adicione aqui a lógica para os Mega Menus, baseada na versão nova
-                // ...
+
+                // 4. Lógica dos Menus Dropdown (antigo Mega Menu)
+                const navButtons = headerPlaceholder.querySelectorAll('.nav-button');
+                const dropdownMenus = document.querySelectorAll('.mega-menu-panel'); // Os painéis estão no corpo principal
+
+                navButtons.forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const targetMenuId = button.dataset.target;
+                        const targetMenu = document.getElementById(targetMenuId);
+
+                        // Fecha outros menus que possam estar abertos
+                        dropdownMenus.forEach(menu => {
+                            if (menu.id !== targetMenuId) {
+                                menu.classList.remove('active');
+                            }
+                        });
+                        navButtons.forEach(btn => {
+                            if (btn !== button) {
+                                btn.classList.remove('active');
+                            }
+                        });
+
+                        // Alterna o menu e botão atuais
+                        if (targetMenu) {
+                            targetMenu.classList.toggle('active');
+                            button.classList.toggle('active');
+                        }
+                    });
+                });
+
+                // Fecha todos os menus se o usuário clicar fora deles
+                window.addEventListener('click', (event) => {
+                    const isClickInsideHeader = headerPlaceholder.contains(event.target);
+                    if (!isClickInsideHeader) {
+                        dropdownMenus.forEach(menu => menu.classList.remove('active'));
+                        navButtons.forEach(btn => btn.classList.remove('active'));
+                    }
+                });
             }
 
             updateLayout() {
-                // Lógica de layout responsivo será adicionada aqui
-                console.log('Layout atualizado');
+                // A maior parte do layout é tratada por CSS, mas podemos adicionar lógica JS se necessário.
+                // Por exemplo, fechar a sidebar em telas menores ao redimensionar.
+                if (window.innerWidth <= 768) {
+                    this.elements.sidebar.classList.add('hidden');
+                    this.elements.mainContent.classList.add('sidebar-hidden');
+                }
             }
 
             toggleSidebar() {
-                // Lógica para mostrar/esconder sidebar será adicionada aqui
-                console.log('Sidebar toggled');
+                const isHidden = this.elements.sidebar.classList.toggle('hidden');
+                this.elements.mainContent.classList.toggle('sidebar-hidden', isHidden);
+                // Em telas pequenas, a sidebar deve ser visível sobre o conteúdo
+                if (window.innerWidth <= 768) {
+                    this.elements.sidebar.classList.toggle('visible', !isHidden);
+                }
             }
 
             toggleTheme() {
-                // Lógica para trocar tema (dark/light) será adicionada aqui
-                console.log('Tema trocado');
+                const isDark = this.elements.body.classList.toggle('dark-mode');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) {
+                    themeIcon.textContent = isDark ? '☀️' : '🌙';
+                }
             }
 
             initFirebase() {
@@ -655,135 +712,69 @@
             }
 
             setupAuthentication() {
-                let authInitialized = false;
-
-                // Show a loading message immediately
                 this.elements.lessonContentDiv.innerHTML = '<p>Verificando autenticação...</p>';
+                this.elements.courseMenuContainer.innerHTML = '<p>Aguardando autenticação...</p>';
 
-                const unsubscribe = this.auth.onAuthStateChanged(user => {
-                    authInitialized = true;
+                this.auth.onAuthStateChanged(user => {
                     if (user) {
                         this.userId = user.uid;
                         console.log("Usuário autenticado:", this.userId);
                         this.elements.lessonContentDiv.innerHTML = '<p>Carregando suas informações...</p>';
+                        
+                        // Sequência de inicialização para usuário logado
                         this.applyUserPreferences();
-                        this.loadCourses();
+                        this.loadCourses(); // Carrega os cursos e depois renderiza o menu
                         this.initExternalModules();
+
                     } else {
-                        // User is signed out.
+                        // Se não houver usuário, mostra mensagem e redireciona.
                         console.log("Usuário não autenticado. Redirecionando para o login.");
                         this.elements.lessonContentDiv.innerHTML = `
                             <div class="empty-state" style="text-align: center; padding: 2rem;">
                                 <h3>⚠️ Acesso Negado</h3>
-                                <p>Você precisa estar logado. Redirecionando para a página de login...</p>
+                                <p>Você precisa estar logado para acessar esta página. Redirecionando...</p>
                                 <a href="index.html" style="display: inline-block; margin-top: 1rem; padding: 0.8rem 1.5rem; background-color: var(--main-color); color: white; text-decoration: none; border-radius: 5px;">Ir para a página de Login</a>
                             </div>
                         `;
                         this.elements.courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
                         
-                        // Redirect to login page after a short delay
+                        // Redireciona de forma segura após um tempo para o usuário ler a mensagem.
                         setTimeout(() => {
                            window.location.href = 'index.html';
-                        }, 2500);
+                        }, 2000);
                     }
                 });
-
-                // Timeout to handle cases where onAuthStateChanged doesn't fire quickly
-                setTimeout(() => {
-                    if (!authInitialized) {
-                        console.log("Timeout de autenticação. Verificando usuário atual.");
-                        if (!this.auth.currentUser) {
-                             console.log("Nenhum usuário atual encontrado após timeout. Redirecionando.");
-                             window.location.href = 'index.html';
-                        }
-                    }
-                }, 3000);
             }
 
             applyUserPreferences() {
-                console.log('Preferências do usuário serão aplicadas aqui.');
+                const savedTheme = localStorage.getItem('theme');
+                // Se não houver tema salvo, usa a preferência do sistema operacional como padrão
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+
+                this.elements.body.classList.toggle('dark-mode', isDark);
+
+                // A atualização do ícone do tema é feita em setupHeaderEventListeners, 
+                // que é chamado depois que o header é carregado.
             }
 
             async loadCourses() {
-                if (!this.userId || !this.elements.courseMenuContainer) {
+                if (!this.userId) {
                     this.elements.courseMenuContainer.innerHTML = '<p>Erro: Usuário não identificado.</p>';
                     return;
                 }
                 this.elements.courseMenuContainer.innerHTML = '<p>Carregando seus cursos...</p>';
+                
                 try {
-                    const userDocRef = this.db.collection('users').doc(this.userId);
-                    const userDoc = await userDocRef.get();
+                    const userDoc = await this.db.collection('users').doc(this.userId).get();
                     let coursesToDisplay = [];
 
                     if (userDoc.exists && userDoc.data().hasPersonalized && userDoc.data().selectedSubtopics?.length > 0) {
-                        const selectedSubtopicsInfo = userDoc.data().selectedSubtopics;
-                        const structuredSelections = {};
-                        for (const selection of selectedSubtopicsInfo) {
-                            if (!structuredSelections[selection.courseId]) {
-                                structuredSelections[selection.courseId] = {};
-                            }
-                            if (!structuredSelections[selection.courseId][selection.moduleId]) {
-                                structuredSelections[selection.courseId][selection.moduleId] = [];
-                            }
-                            structuredSelections[selection.courseId][selection.moduleId].push(selection.subtopicId);
-                        }
-
-                        for (const courseId in structuredSelections) {
-                            const courseRef = this.db.collection('courses').doc(courseId);
-                            const courseDoc = await courseRef.get();
-                            if (!courseDoc.exists) { console.warn(`Curso ${courseId} não encontrado.`); continue; }
-                            const courseData = courseDoc.data();
-                            const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
-
-                            for (const moduleId in structuredSelections[courseId]) {
-                                const moduleRef = courseRef.collection('modules').doc(moduleId);
-                                const moduleDoc = await moduleRef.get();
-                                if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} não encontrado.`); continue; }
-                                const moduleData = moduleDoc.data();
-                                const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
-
-                                for (const subtopicId of structuredSelections[courseId][moduleId]) {
-                                    const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
-                                    const subtopicDoc = await subtopicRef.get();
-                                    if (!subtopicDoc.exists) { console.warn(`Subtema ${subtopicId} não encontrado.`); continue; }
-                                    const subtopicData = subtopicDoc.data();
-                                    moduleEntry.subtopics.push({
-                                        id: subtopicId,
-                                        name: subtopicData.name || 'Aula s/ Nome',
-                                        order: subtopicData.order || 0,
-                                        content_url: subtopicData.content_url || ''
-                                    });
-                                }
-                                if(moduleEntry.subtopics.length > 0) {
-                                    moduleEntry.subtopics.sort((a, b) => a.order - b.order);
-                                    courseEntry.modules.push(moduleEntry);
-                                }
-                            }
-                            if(courseEntry.modules.length > 0) {
-                               courseEntry.modules.sort((a, b) => a.order - b.order);
-                               coursesToDisplay.push(courseEntry);
-                            }
-                        }
-                        coursesToDisplay.sort((a,b) => a.order - b.order);
-
+                        console.log("Carregando plano de estudos personalizado...");
+                        coursesToDisplay = await this._loadPersonalizedCourses(userDoc.data().selectedSubtopics);
                     } else {
-                        const coursesSnapshot = await this.db.collection('courses').orderBy('order').get();
-                        if (coursesSnapshot.empty) {
-                            this.elements.courseMenuContainer.innerHTML = '<p>Nenhum curso encontrado.</p>';
-                            return;
-                        }
-                        for (const courseDoc of coursesSnapshot.docs) {
-                            const courseData = courseDoc.data();
-                            const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
-                            const modules = [];
-                            for (const moduleDoc of modulesSnapshot.docs) {
-                                const moduleData = moduleDoc.data();
-                                const subtopicsSnapshot = await moduleDoc.ref.collection('subtopics').orderBy('order').get();
-                                const subtopics = subtopicsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                                if (subtopics.length > 0) modules.push({ id: moduleDoc.id, ...moduleData, subtopics });
-                            }
-                            if (modules.length > 0) coursesToDisplay.push({ id: courseDoc.id, ...courseData, modules });
-                        }
+                        console.log("Carregando todos os cursos disponíveis...");
+                        coursesToDisplay = await this._loadAllCourses();
                     }
 
                     if (coursesToDisplay.length === 0) {
@@ -795,80 +786,203 @@
                     this.renderCourseMenu();
 
                 } catch (error) {
-                    console.error('Erro ao carregar cursos:', error);
-                    this.elements.courseMenuContainer.innerHTML = `<p>Erro ao carregar cursos. Tente recarregar a página. Detalhes: ${error.message}</p>`;
+                    console.error('Erro crítico ao carregar cursos:', error);
+                    this.elements.courseMenuContainer.innerHTML = `<p style="padding: 10px; color: var(--error-color);">Erro ao carregar cursos. Tente recarregar a página.</p>`;
                 }
             }
 
-            renderCourseMenu() {
-                if (!this.elements.courseMenuContainer) return;
-                let htmlContent = '';
-                this.loadedCoursesData.forEach(course => {
-                    htmlContent += `
-                        <div class="course-item">
-                            <div class="course-header" data-course-id="${course.id}">
-                                <span>${course.name || 'Curso Sem Nome'}</span>
-                                <span class="toggle-icon">▶</span>
-                            </div>
-                            <ul class="module-list" id="modules-${course.id}">
-                                ${(course.modules || []).map(module => `
-                                    <li class="module-item">
-                                        <div class="module-header" data-module-id="${module.id}" data-course-id="${course.id}">
-                                            <span>${module.name || 'Módulo Sem Nome'}</span>
-                                            <span class="toggle-icon">▶</span>
-                                        </div>
-                                        <ul class="subtopic-list" id="subtopics-${module.id}">
-                                            ${(module.subtopics || []).map(subtopic => `
-                                                <li class="subtopic-item">
-                                                    <a href="#" class="subtopic-link" 
-                                                       data-subtopic-id="${subtopic.id}" 
-                                                       data-module-id="${module.id}" 
-                                                       data-course-id="${course.id}">
-                                                       ${subtopic.name || 'Aula Sem Nome'}
-                                                    </a>
-                                                </li>
-                                            `).join('')}
-                                        </ul>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                    `;
-                });
-                this.elements.courseMenuContainer.innerHTML = htmlContent || '<p>Nenhum curso para exibir.</p>';
-                this.addMenuEventListeners();
+            async _loadPersonalizedCourses(selectedSubtopicsInfo) {
+                const structuredSelections = {};
+                for (const selection of selectedSubtopicsInfo) {
+                    if (!structuredSelections[selection.courseId]) {
+                        structuredSelections[selection.courseId] = {};
+                    }
+                    if (!structuredSelections[selection.courseId][selection.moduleId]) {
+                        structuredSelections[selection.courseId][selection.moduleId] = [];
+                    }
+                    structuredSelections[selection.courseId][selection.moduleId].push(selection.subtopicId);
+                }
+
+                const coursesToDisplay = [];
+                for (const courseId in structuredSelections) {
+                    const courseRef = this.db.collection('courses').doc(courseId);
+                    const courseDoc = await courseRef.get();
+                    if (!courseDoc.exists) { console.warn(`Curso ${courseId} não encontrado.`); continue; }
+                    
+                    const courseData = courseDoc.data();
+                    const courseEntry = { id: courseId, name: courseData.name || 'Curso s/ Nome', order: courseData.order || 0, modules: [] };
+
+                    for (const moduleId in structuredSelections[courseId]) {
+                        const moduleRef = courseRef.collection('modules').doc(moduleId);
+                        const moduleDoc = await moduleRef.get();
+                        if (!moduleDoc.exists) { console.warn(`Módulo ${moduleId} não encontrado.`); continue; }
+
+                        const moduleData = moduleDoc.data();
+                        const moduleEntry = { id: moduleId, name: moduleData.name || 'Módulo s/ Nome', order: moduleData.order || 0, subtopics: [] };
+
+                        for (const subtopicId of structuredSelections[courseId][moduleId]) {
+                            const subtopicRef = moduleRef.collection('subtopics').doc(subtopicId);
+                            const subtopicDoc = await subtopicRef.get();
+                            if (subtopicDoc.exists) {
+                                moduleEntry.subtopics.push({ id: subtopicId, ...subtopicDoc.data() });
+                            } else {
+                                console.warn(`Subtema ${subtopicId} não encontrado.`);
+                            }
+                        }
+
+                        if (moduleEntry.subtopics.length > 0) {
+                            moduleEntry.subtopics.sort((a, b) => a.order - b.order);
+                            courseEntry.modules.push(moduleEntry);
+                        }
+                    }
+
+                    if (courseEntry.modules.length > 0) {
+                        courseEntry.modules.sort((a, b) => a.order - b.order);
+                        coursesToDisplay.push(courseEntry);
+                    }
+                }
+                
+                coursesToDisplay.sort((a, b) => a.order - b.order);
+                return coursesToDisplay;
             }
 
-            addMenuEventListeners() {
-                this.elements.courseMenuContainer.querySelectorAll('.course-header').forEach(header => {
-                    header.addEventListener('click', () => {
-                        const moduleList = header.nextElementSibling;
-                        const toggleIcon = header.querySelector('.toggle-icon');
+            async _loadAllCourses() {
+                const coursesToDisplay = [];
+                const coursesSnapshot = await this.db.collection('courses').orderBy('order').get();
+                
+                if (coursesSnapshot.empty) return [];
+
+                for (const courseDoc of coursesSnapshot.docs) {
+                    const courseData = courseDoc.data();
+                    const modulesSnapshot = await courseDoc.ref.collection('modules').orderBy('order').get();
+                    const modules = [];
+
+                    for (const moduleDoc of modulesSnapshot.docs) {
+                        const moduleData = moduleDoc.data();
+                        const subtopicsSnapshot = await moduleDoc.ref.collection('subtopics').orderBy('order').get();
+                        const subtopics = subtopicsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        
+                        if (subtopics.length > 0) {
+                            modules.push({ id: moduleDoc.id, ...moduleData, subtopics });
+                        }
+                    }
+                    
+                    if (modules.length > 0) {
+                        coursesToDisplay.push({ id: courseDoc.id, ...courseData, modules });
+                    }
+                }
+                return coursesToDisplay;
+            }
+
+
+            renderCourseMenu() {
+                if (!this.elements.courseMenuContainer) return;
+
+                const fragment = document.createDocumentFragment();
+                this.loadedCoursesData.forEach(course => {
+                    const courseItem = document.createElement('div');
+                    courseItem.className = 'course-item';
+
+                    const courseHeader = document.createElement('div');
+                    courseHeader.className = 'course-header';
+                    courseHeader.dataset.courseId = course.id;
+                    courseHeader.innerHTML = `<span>${course.name || 'Curso Sem Nome'}</span><span class="toggle-icon">▶</span>`;
+
+                    const moduleList = document.createElement('ul');
+                    moduleList.className = 'module-list';
+                    moduleList.id = `modules-${course.id}`;
+
+                    (course.modules || []).forEach(module => {
+                        const moduleItem = document.createElement('li');
+                        moduleItem.className = 'module-item';
+
+                        const moduleHeader = document.createElement('div');
+                        moduleHeader.className = 'module-header';
+                        moduleHeader.dataset.moduleId = module.id;
+                        moduleHeader.innerHTML = `<span>${module.name || 'Módulo Sem Nome'}</span><span class="toggle-icon">▶</span>`;
+
+                        const subtopicList = document.createElement('ul');
+                        subtopicList.className = 'subtopic-list';
+                        subtopicList.id = `subtopics-${module.id}`;
+
+                        (module.subtopics || []).forEach(subtopic => {
+                            const subtopicItem = document.createElement('li');
+                            subtopicItem.className = 'subtopic-item';
+                            
+                            const link = document.createElement('a');
+                            link.href = '#';
+                            link.className = 'subtopic-link';
+                            link.dataset.subtopicId = subtopic.id;
+                            link.dataset.moduleId = module.id;
+                            link.dataset.courseId = course.id;
+                            link.textContent = subtopic.name || 'Aula Sem Nome';
+
+                            subtopicItem.appendChild(link);
+                            subtopicList.appendChild(subtopicItem);
+                        });
+
+                        moduleItem.appendChild(moduleHeader);
+                        moduleItem.appendChild(subtopicList);
+                        moduleList.appendChild(moduleItem);
+                    });
+
+                    courseItem.appendChild(courseHeader);
+                    courseItem.appendChild(moduleList);
+                    fragment.appendChild(courseItem);
+                });
+
+                this.elements.courseMenuContainer.innerHTML = ''; // Limpa o container
+                if (fragment.hasChildNodes()) {
+                    this.elements.courseMenuContainer.appendChild(fragment);
+                } else {
+                    this.elements.courseMenuContainer.innerHTML = '<p>Nenhum curso para exibir.</p>';
+                }
+                
+                this._setupMenuInteraction();
+            }
+
+            _setupMenuInteraction() {
+                if (!this.elements.courseMenuContainer) return;
+
+                // Remove listener antigo para evitar duplicatas se este método for chamado novamente
+                if (this._menuClickListener) {
+                    this.elements.courseMenuContainer.removeEventListener('click', this._menuClickListener);
+                }
+
+                this._menuClickListener = (event) => {
+                    const courseHeader = event.target.closest('.course-header');
+                    const moduleHeader = event.target.closest('.module-header');
+                    const subtopicLink = event.target.closest('.subtopic-link');
+
+                    if (courseHeader) {
+                        const moduleList = courseHeader.nextElementSibling;
+                        const toggleIcon = courseHeader.querySelector('.toggle-icon');
                         moduleList.classList.toggle('visible');
                         toggleIcon.classList.toggle('expanded');
                         toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
-                    });
-                });
+                        return; // Evita que o clique se propague para outros handlers
+                    }
 
-                this.elements.courseMenuContainer.querySelectorAll('.module-header').forEach(header => {
-                    header.addEventListener('click', () => {
-                        const subtopicList = header.nextElementSibling;
-                        const toggleIcon = header.querySelector('.toggle-icon');
+                    if (moduleHeader) {
+                        const subtopicList = moduleHeader.nextElementSibling;
+                        const toggleIcon = moduleHeader.querySelector('.toggle-icon');
                         subtopicList.classList.toggle('visible');
                         toggleIcon.classList.toggle('expanded');
                         toggleIcon.textContent = toggleIcon.classList.contains('expanded') ? '▼' : '▶';
-                    });
-                });
+                        return;
+                    }
 
-                this.elements.courseMenuContainer.querySelectorAll('.subtopic-link').forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
+                    if (subtopicLink) {
+                        event.preventDefault();
                         this.elements.courseMenuContainer.querySelectorAll('.subtopic-link.active').forEach(l => l.classList.remove('active'));
-                        link.classList.add('active');
-                        const { subtopicId, moduleId, courseId } = link.dataset;
+                        subtopicLink.classList.add('active');
+                        const { subtopicId, moduleId, courseId } = subtopicLink.dataset;
                         this.loadLessonContent(courseId, moduleId, subtopicId);
-                    });
-                });
+                        return;
+                    }
+                };
+
+                this.elements.courseMenuContainer.addEventListener('click', this._menuClickListener);
             }
 
             async loadLessonContent(courseId, moduleId, subtopicId) {
