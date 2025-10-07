@@ -1,8 +1,19 @@
-# Ignore the generated firebase-config.js file
+# Ignore os arquivos de log e planos de tarefa da IA
+/Gconsolelog.txt
+/Gplano.md
+/Gtask.md
 
+# Ignore arquivos de configuração de IDEs
+.cursor/
+
+# Ignore diretórios de backup
+backup_*/
+
+# Ignore o arquivo gerado firebase-config.js
+firebase-config.js
 
 # Ignore node_modules
-node_modules
+node_modules/
 
 # Ignore Firebase credentials and secrets
 nvp-concursos-credentials.json
