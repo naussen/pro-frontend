@@ -1,9 +1,0 @@
-feat: Migrate Sala de Estudos to React and Vite
-
-This commit replaces the legacy vanilla JS implementation of the Study Room with a modern, robust, and performant application built with React, Vite, and TypeScript.
-
-- **Architecture:** The new application is component-based, with clear separation of concerns for UI (`components`), business logic (`services`), and state management (`context`).
-- **Build Process:** Uses Vite for a fast development experience and optimized production builds.
-- **Code Quality:** TypeScript is used throughout for type safety and improved maintainability.
-- **Functionality:** The UI and core features are based on the stable `saladeestudos_original.html` from the backup, ensuring functional parity.
-- **Fixes:** This migration definitively resolves the persistent authentication race conditions and redirect loops by centralizing auth state management in a React Context.

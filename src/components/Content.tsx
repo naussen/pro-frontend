@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } => from 'react';
 import { Subtopic, getLessonContent } from '../services/firebaseService';
 
 interface ContentProps {
@@ -27,14 +27,13 @@ const Content: React.FC<ContentProps> = ({ lesson }) => {
           setLoading(false);
         });
     } else {
-      // Limpa o conteúdo se nenhuma aula for selecionada
       setContent('');
       setError(null);
       setLoading(false);
     }
   }, [lesson]);
 
-  const renderContent = () => {
+  const renderBody = () => {
     if (loading) {
       return (
         <div className="loading-container">
@@ -48,14 +47,36 @@ const Content: React.FC<ContentProps> = ({ lesson }) => {
       return (
         <div className="empty-state">
           <h3>⚠️ Erro ao Carregar</h3>
-          <p>{error}</p>
+          <p>Failed to edit, 0 occurrences found for old_string (import React from 'react';
+
+const Content = () => {
+  // A lógica e o JSX completo do conteúdo principal virão aqui.
+  return (
+    <main className="study-content">
+      <p>Content Placeholder</p>
+    </main>
+  );
+};
+
+export default Content;
+). Original old_string was (import React from 'react';
+
+const Content = () => {
+  // A lógica e o JSX completo do conteúdo principal virão aqui.
+  return (
+    <main className="study-content">
+      <p>Content Placeholder</p>
+    </main>
+  );
+};
+
+export default Content;
+) in C:\pro-frontend\src\components\Content.tsx. No edits made. The exact text in old_string was not found. Ensure you're not escaping content incorrectly and check whitespace, indentation, and context. Use read_file tool to verify.</p>
         </div>
       );
     }
 
     if (content) {
-      // Usar dangerouslySetInnerHTML para renderizar o conteúdo HTML
-      // ATENÇÃO: Isso assume que o conteúdo HTML é seguro.
       return <div className="lesson-content" dangerouslySetInnerHTML={{ __html: content }} />;
     }
 
@@ -71,7 +92,7 @@ const Content: React.FC<ContentProps> = ({ lesson }) => {
   return (
     <main className="study-content">
       <div className="content-body" id="contentBody">
-        {renderContent()}
+        {renderBody()}
       </div>
     </main>
   );

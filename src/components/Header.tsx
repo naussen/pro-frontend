@@ -1,24 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } => 'react';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
+  onTogglePomodoro: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [isDark, setIsDark] = useState(false);
-
-  // ... (useEffect para tema e menus) ...
+const Header: React.FC<HeaderProps> = ({ onToggleSidebar, onTogglePomodoro }) => {
+  // ... (estados de menu e tema) ...
 
   return (
-    <header className="w3s-header" id="mainHeader" onClick={(e) => e.stopPropagation()}>
-      <button id="sidebarToggleBtn" className="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu" onClick={onToggleSidebar}>☰</button>
-      {/* ... (resto do JSX do header) ... */}
+    <header className="w3s-header" id="mainHeader">
+      <button id="sidebarToggleBtn" onClick={onToggleSidebar}>...</button>
+      {/* ... (resto do nav) ... */}
+      <div className="w3s-header-right-group">
+        {/* ... (busca e outros botões) ... */}
+        <div className="w3s-header-actions">
+            <button id="pomodoro-btn" title="Timer Pomodoro" aria-label="Abrir Timer Pomodoro" onClick={onTogglePomodoro}>
+                <span className="icon">🍅</span>
+            </button> 
+            {/* ... (resto dos botões) ... */}
+        </div>
+      </div>
     </header>
   );
 };
-
-// O conteúdo completo do header JSX é omitido por brevidade, 
-// mas a lógica principal de estado para menus e tema está acima.
 
 export default Header;
