@@ -713,38 +713,55 @@
 
             setupAuthentication() {
                 this.elements.lessonContentDiv.innerHTML = '<p>Verificando autenticação...</p>';
-                this.elements.courseMenuContainer.innerHTML = '<p>Aguardando autenticação...</p>';
 
-                this.auth.onAuthStateChanged(user => {
+                // Etapa 1: Verificação síncrona imediata
+                const currentUser = this.auth.currentUser;
+                if (currentUser) {
+                    console.log("Usuário encontrado via verificação síncrona. Prosseguindo...");
+                    this.initializeUserSession(currentUser);
+                    return; // Autenticação bem-sucedida, não precisa do listener.
+                }
+
+                // Etapa 2: Se a verificação síncrona falhar, usa o listener assíncrono.
+                console.log("Verificação síncrona falhou. Aguardando listener onAuthStateChanged...");
+                const unsubscribe = this.auth.onAuthStateChanged(user => {
+                    unsubscribe(); // Só precisamos do primeiro resultado.
                     if (user) {
-                        this.userId = user.uid;
-                        console.log("Usuário autenticado:", this.userId);
-                        this.elements.lessonContentDiv.innerHTML = '<p>Carregando suas informações...</p>';
-                        
-                        // Sequência de inicialização para usuário logado
-                        this.applyUserPreferences();
-                        this.loadCourses(); // Carrega os cursos e depois renderiza o menu
-                        this.initExternalModules();
-
+                        console.log("Usuário encontrado via listener onAuthStateChanged. Prosseguindo...");
+                        this.initializeUserSession(user);
                     } else {
-                        // Se não houver usuário, mostra mensagem e redireciona.
-                        console.log("Usuário não autenticado. Redirecionando para o login.");
-                        this.elements.lessonContentDiv.innerHTML = `
-                            <div class="empty-state" style="text-align: center; padding: 2rem;">
-                                <h3>⚠️ Acesso Negado</h3>
-                                <p>Você precisa estar logado para acessar esta página. Redirecionando...</p>
-                                <a href="index.html" style="display: inline-block; margin-top: 1rem; padding: 0.8rem 1.5rem; background-color: var(--main-color); color: white; text-decoration: none; border-radius: 5px;">Ir para a página de Login</a>
-                            </div>
-                        `;
-                        this.elements.courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
-                        
-                        // Redireciona de forma segura após um tempo para o usuário ler a mensagem.
-                        setTimeout(() => {
-                           window.location.href = 'index.html';
-                        }, 2000);
+                        console.log("Listener confirmou que não há usuário. Redirecionando para login.");
+                        this.redirectToLogin();
                     }
                 });
             }
+
+            initializeUserSession(user) {
+                this.userId = user.uid;
+                console.log("Sessão do usuário inicializada:", this.userId);
+                this.applyUserPreferences();
+                this.loadCourses();
+                this.initExternalModules();
+            }
+
+            redirectToLogin() {
+                this.elements.lessonContentDiv.innerHTML = `
+                    <div class="empty-state" style="text-align: center; padding: 2rem;">
+                        <h3>⚠️ Acesso Negado</h3>
+                        <p>Você precisa estar logado para acessar esta página. Redirecionando...</p>
+                        <a href="index.html" style="display: inline-block; margin-top: 1rem; padding: 0.8rem 1.5rem; background-color: var(--main-color); color: white; text-decoration: none; border-radius: 5px;">Ir para a página de Login</a>
+                    </div>
+                `;
+                this.elements.courseMenuContainer.innerHTML = '<p>Faça login para ver seus cursos.</p>';
+                
+                // Define uma flag para o index.html saber que viemos de uma página interna.
+                sessionStorage.setItem('auth_redirect_loop_prevention', Date.now().toString());
+
+                setTimeout(() => {
+                   window.location.href = 'index.html';
+                }, 2000);
+            }
+
 
             applyUserPreferences() {
                 const savedTheme = localStorage.getItem('theme');
