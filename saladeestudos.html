@@ -1548,7 +1548,7 @@
             }
 
             setupAuth() {
-                this.auth.onAuthStateChanged(user => {
+                this.auth.onAuthStateChanged(async user => {
                     if (!user) {
                         console.log('❌ Usuário não autenticado, redirecionando...');
                         window.location.href = 'index.html';
@@ -1558,9 +1558,45 @@
                     this.userId = user.uid;
                     console.log('✅ Usuário autenticado:', this.userId);
                     
-                    // Carrega cursos após autenticação
-                    this.loadUserCourses();
+                    // Verificar assinatura do usuário
+                    try {
+                        const userDoc = await this.db.collection('users').doc(user.uid).get();
+                        const userData = userDoc.data();
+                        
+                        if (!userData?.is_subscriber) {
+                            console.log('❌ Usuário sem assinatura ativa');
+                            window.location.href = 'pagamento.html';
+                            return;
+                        }
+                        
+                        console.log('✅ Assinatura ativa verificada');
+                        // Carrega cursos após autenticação e verificação de assinatura
+                        this.loadUserCourses();
+                        
+                        // Configurar verificação contínua de assinatura
+                        this.setupContinuousSubscriptionCheck();
+                    } catch (error) {
+                        console.error('❌ Erro ao verificar assinatura:', error);
+                        window.location.href = 'pagamento.html';
+                    }
                 });
+            }
+            
+            setupContinuousSubscriptionCheck() {
+                // Verificar assinatura a cada 5 minutos
+                setInterval(async () => {
+                    try {
+                        const userDoc = await this.db.collection('users').doc(this.userId).get();
+                        const userData = userDoc.data();
+                        
+                        if (!userData?.is_subscriber) {
+                            console.log('❌ Assinatura expirada ou cancelada');
+                            window.location.href = 'pagamento.html';
+                        }
+                    } catch (error) {
+                        console.error('❌ Erro ao verificar status da assinatura:', error);
+                    }
+                }, 5 * 60 * 1000); // 5 minutos em milissegundos
             }
 
             // === GERENCIAMENTO DE SIDEBAR ===
