@@ -27,33 +27,39 @@ interface AuthProviderProps {
 
 // Componente Provedor que envolve a aplicação
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  // Lógica de autenticação real comentada para fins de teste
+  /*
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // onAuthStateChanged retorna uma função para desinscrever (unsubscribe)
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
       console.log('Auth state changed. Current user:', user ? user.uid : null);
     });
 
-    // Cleanup: desinscreve do listener quando o componente desmontar
     return () => {
       console.log('Unsubscribing from auth state changes.');
       unsubscribe();
     };
   }, []);
+  */
 
+  // Simula um usuário logado para teste
   const value = {
-    currentUser,
-    loading,
+    currentUser: { 
+      uid: 'test-user-123', 
+      email: 'test@example.com', 
+      displayName: 'Usuário de Teste' 
+      // Adicione outras propriedades do objeto User se necessário
+    } as User,
+    loading: false,
   };
 
-  // Não renderiza os filhos até que o estado de autenticação seja determinado
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
