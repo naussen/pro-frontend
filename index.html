@@ -1793,6 +1793,12 @@
                 return await this.auth.signInWithEmailAndPassword(email, password);
             }
 
+            async signInWithGoogle() {
+                if (!this.auth) throw new Error('Firebase não inicializado');
+                const provider = new firebase.auth.GoogleAuthProvider();
+                return await this.auth.signInWithPopup(provider);
+            }
+
             async signUpUser(email, password) {
                 if (!this.auth) throw new Error('Firebase não inicializado');
                 return await this.auth.createUserWithEmailAndPassword(email, password);
@@ -1817,12 +1823,49 @@
 
         ProConcursosApp.prototype.initLoginForm = function() {
             const loginForm = document.getElementById('login-form');
-            if (!loginForm) return;
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleLoginSubmit(e.target);
+                });
+            }
 
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await this.handleLoginSubmit(e.target);
-            });
+            const googleLoginBtn = document.getElementById('google-login-btn');
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', async () => {
+                    await this.handleGoogleLogin();
+                });
+            }
+        };
+
+        ProConcursosApp.prototype.handleGoogleLogin = async function() {
+            try {
+                const userCredential = await this.firebaseManager.signInWithGoogle();
+                const user = userCredential.user;
+
+                // Verificar se o usuário já existe no Firestore
+                const userDoc = await this.firebaseManager.getUserDocument(user.uid);
+
+                if (!userDoc.exists) {
+                    // Se não existir, cria um novo documento
+                    await this.firebaseManager.createUserDocument(user.uid, {
+                        email: user.email,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL,
+                        role: 'user',
+                        hasPersonalized: false,
+                        createdAt: new Date()
+                    });
+                    const newUserDoc = await this.firebaseManager.getUserDocument(user.uid);
+                    this.redirectUserAfterLogin(newUserDoc);
+                } else {
+                    // Se já existir, apenas redireciona
+                    this.redirectUserAfterLogin(userDoc);
+                }
+            } catch (error) {
+                console.error('Erro no login com Google:', error);
+                this.showFormError(this.getAuthErrorMessage(error));
+            }
         };
 
         ProConcursosApp.prototype.handleLoginSubmit = async function(form) {
@@ -1927,6 +1970,13 @@
         ProConcursosApp.prototype.redirectUserAfterLogin = function(userDoc) {
             if (userDoc.exists) {
                 const userData = userDoc.data();
+                const unlimitedAccessUsers = ['a@b.com', 'nvpezat@gmail.com'];
+
+                if (unlimitedAccessUsers.includes(userData.email)) {
+                    window.location.href = 'saladeestudos.html';
+                    return;
+                }
+
                 if (userData.role === 'admin') {
                     window.location.href = '/admin/dashboard.html';
                 } else if (userData.hasPersonalized) {
