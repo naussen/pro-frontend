@@ -8,9 +8,6 @@
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#2c5aa0">
     
-    <!-- Favicon temporário usando emoji -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
-    
     <!-- Preload recursos críticos -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,8 +16,7 @@
     <link rel="preload" href="fundo.png" as="image">
     
     <!-- PWA Meta Tags -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="PRO Concursos">
@@ -1222,53 +1218,6 @@
         @media (min-width: 1400px) {
             .w3s-header-actions a[title="Contato"] { display: flex; }
         }
-
-        /* --- Notification Styles --- */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            max-width: 350px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            animation: slideInRight 0.3s ease;
-        }
-        
-        .notification-info { background-color: #2196F3; }
-        .notification-success { background-color: #4CAF50; }
-        .notification-warning { background-color: #FF9800; }
-        .notification-error { background-color: #F44336; }
-        
-        .notification-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 0;
-            margin-left: auto;
-            opacity: 0.8;
-        }
-        
-        .notification-close:hover { opacity: 1; }
-        
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1448,9 +1397,6 @@
         </div>
         <div class="footer-copyright">
             <span>&copy; <span id="current-year">2025</span> PRO Concursos. Todos os direitos reservados.</span>
-            <span style="font-size: 10px; opacity: 0.3; margin-left: 10px;">
-                <a href="saladeestudos.html?admin=true" style="color: inherit; text-decoration: none;" title="Acesso Admin">⚙️</a>
-            </span>
         </div>
     </footer>
 
@@ -1529,95 +1475,12 @@
                 this.initNavigationDropdowns();
                 this.initSidebarToggle();
                 this.initLoginSystem();
-                this.initGoogleAuth(); // Adicionado para inicializar o login do Google
                 this.initCourseCarousel();
             }
 
             async initializeFirebase() {
-                if (!this.firebaseManager) {
-                    this.firebaseManager = new FirebaseManager();
-                    const success = await this.firebaseManager.init();
-                    
-                    // Torna o Firebase disponível globalmente para o header
-                    window.firebaseReady = success;
-                    
-                    // Emite evento para notificar que Firebase está pronto
-                    if (success) {
-                        console.log('🔥 Emitindo evento firebaseReady');
-                        document.dispatchEvent(new CustomEvent('firebaseReady'));
-                        this.setupAuthRedirect(); // <-- Adiciona a verificação de redirecionamento aqui
-                    }
-                    
-                    return success;
-                }
-                return true;
-            }
-
-            setupAuthRedirect() {
-                if (!this.firebaseManager || !this.firebaseManager.auth) return;
-
-                this.firebaseManager.auth.onAuthStateChanged(user => {
-                    // Se o usuário está logado e estamos na página inicial, mostra o botão de acesso manual.
-                    if (user && (window.location.pathname.endsWith('index.html') || window.location.pathname === '/')) {
-                        console.log('✅ Usuário logado. Mostrando botão de acesso manual à sala de estudos.');
-                        this.showNotification('Você está logado! Use o botão abaixo para acessar a sala de estudos.', 'info');
-                        this.addManualRedirectButton();
-                    }
-                });
-            }
-
-            addManualRedirectButton() {
-                // Remove botão existente se houver
-                const existingBtn = document.getElementById('manual-redirect-btn');
-                if (existingBtn) {
-                    existingBtn.remove();
-                }
-
-                // Adiciona botão manual para redirecionamento
-                const heroSection = document.querySelector('.hero-banner .hero-content');
-                if (heroSection) {
-                    const manualBtn = document.createElement('button');
-                    manualBtn.id = 'manual-redirect-btn';
-                    manualBtn.innerHTML = '🎓 Acessar Sala de Estudos';
-                    manualBtn.className = 'cta-button';
-                    manualBtn.style.cssText = `
-                        margin-top: 20px;
-                        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-                        animation: pulse 2s infinite;
-                        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-                    `;
-                    
-                    // Adiciona animação CSS se não existir
-                    if (!document.getElementById('pulse-animation')) {
-                        const style = document.createElement('style');
-                        style.id = 'pulse-animation';
-                        style.textContent = `
-                            @keyframes pulse {
-                                0% { transform: scale(1); }
-                                50% { transform: scale(1.05); }
-                                100% { transform: scale(1); }
-                            }
-                        `;
-                        document.head.appendChild(style);
-                    }
-                    
-                    manualBtn.onclick = () => {
-                        // Limpa flags de proteção para permitir acesso
-                        sessionStorage.removeItem('auth_redirect_loop_prevention');
-                        sessionStorage.removeItem('auth_redirect_attempts');
-                        localStorage.setItem('manual_access_requested', 'true');
-                        
-                        console.log('🎓 Acesso manual solicitado pelo usuário');
-                        window.location.href = 'saladeestudos.html';
-                    };
-                    
-                    heroSection.appendChild(manualBtn);
-                    
-                    // Foca no botão para acessibilidade
-                    setTimeout(() => {
-                        manualBtn.focus();
-                    }, 100);
-                }
+                // Firebase será inicializado no próximo script
+                return Promise.resolve();
             }
 
             updateFooterYear() {
@@ -1876,88 +1739,6 @@
                     courseGrid.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
                 });
             }
-
-            initGoogleAuth() {
-                const loginBtn = document.getElementById('google-login-btn');
-                const signupBtn = document.getElementById('google-signup-btn-header');
-
-                if (loginBtn) {
-                    loginBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.handleGoogleLogin();
-                    });
-                }
-
-                if (signupBtn) {
-                    signupBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.handleGoogleSignup();
-                    });
-                }
-            }
-
-            handleGoogleLogin = async function() {
-                console.log('🔍 Tentando login com Google...');
-                const btn = document.getElementById('google-login-btn');
-                if (!btn) {
-                    console.error('❌ Botão google-login-btn não encontrado!');
-                    return;
-                }
-
-                const originalContent = btn.innerHTML;
-
-                try {
-                    if (!this.firebaseManager || !this.firebaseManager.auth) {
-                        this.showNotification('Erro de inicialização. Atualize a página.', 'error');
-                        return;
-                    }
-
-                    this.setFormLoading(btn, true, 'Processando...');
-                    
-                    const provider = new firebase.auth.GoogleAuthProvider();
-                    provider.addScope('email');
-                    provider.addScope('profile');
-                    provider.setCustomParameters({ prompt: 'select_account' });
-
-                    const result = await this.firebaseManager.auth.signInWithPopup(provider);
-                    const userDocRef = this.firebaseManager.db.collection('users').doc(result.user.uid);
-                    const userDoc = await userDocRef.get();
-
-                    if (!userDoc.exists) {
-                        await userDocRef.set({
-                            user_id: result.user.uid,
-                            nome: result.user.displayName || result.user.email.split('@')[0],
-                            email: result.user.email,
-                            emailVerified: result.user.emailVerified,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            hasPersonalized: false,
-                            is_subscriber: false,
-                            authProvider: 'google',
-                            photoURL: result.user.photoURL || null
-                        });
-                        this.showNotification('Bem-vindo! Redirecionando...', 'success');
-                        setTimeout(() => window.location.href = 'personalizar.html', 1500);
-                    } else {
-                        this.showNotification('Login realizado com sucesso!', 'success');
-                        this.redirectUserAfterLogin(userDoc);
-                    }
-                } catch (error) {
-                    console.error('❌ Erro no login com Google:', error);
-                    let message = 'Erro ao fazer login com Google.';
-                    if (error.code === 'auth/popup-blocked') {
-                        message = 'Popup bloqueado! Permita popups e tente novamente.';
-                    } else if (error.code === 'auth/popup-closed-by-user') {
-                        message = 'Login cancelado pelo usuário.';
-                    }
-                    this.showNotification(message, 'error');
-                } finally {
-                     this.setFormLoading(btn, false, originalContent);
-                }
-            };
-
-            handleGoogleSignup = function() {
-                window.location.href = 'cadastro.html';
-            };
         }
 
         // Inicialização da aplicação
@@ -1969,8 +1750,8 @@
     <script>
         // --- Configuração Firebase e Extensões da Classe Principal ---
         const firebaseConfig = {
-            apiKey: "AIzaSyArCRHV8jnauuETj7n_1N_IfaNV5OUQpQw",
-            authDomain: "nvp-concursos.firebaseapp.com",
+            apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+            authDomain: "proconcursos.com.br",
             projectId: "nvp-concursos",
             storageBucket: "nvp-concursos.firebasestorage.app",
             messagingSenderId: "397960760271",
@@ -1984,34 +1765,25 @@
                 this.auth = null;
                 this.db = null;
                 this.storage = null;
-                // init() será chamado externamente
+                this.init();
             }
 
             async init() {
                 try {
                     if (typeof firebase === 'undefined') {
                         console.warn('Firebase SDK não carregado');
-                        return false;
+                        return;
                     }
 
-                    // Verifica se já foi inicializado
-                    if (!firebase.apps.length) {
-                        firebase.initializeApp(firebaseConfig);
-                        this.auth = firebase.auth();
-                        this.db = firebase.firestore();
-                        this.storage = firebase.storage();
-                        console.log("✅ Firebase inicializado com sucesso.");
-                    } else {
-                        // Usa a instância já existente
-                        this.auth = firebase.auth();
-                        this.db = firebase.firestore();
-                        this.storage = firebase.storage();
-                        console.log("✅ Firebase já estava inicializado. Reutilizando instância.");
-                    }
+                    firebase.initializeApp(firebaseConfig);
+                    this.auth = firebase.auth();
+                    this.db = firebase.firestore();
+                    this.storage = firebase.storage();
                     
+                    console.log("Firebase inicializado com sucesso.");
                     return true;
                 } catch (error) {
-                    console.error("❌ Erro na inicialização do Firebase:", error);
+                    console.error("Erro na inicialização do Firebase:", error);
                     return false;
                 }
             }
@@ -2038,6 +1810,10 @@
         }
 
         // Adiciona métodos de formulário à classe principal
+        ProConcursosApp.prototype.initializeFirebase = async function() {
+            this.firebaseManager = new FirebaseManager();
+            return await this.firebaseManager.init();
+        };
 
         ProConcursosApp.prototype.initLoginForm = function() {
             const loginForm = document.getElementById('login-form');
@@ -2167,18 +1943,18 @@
             if (!button) return;
             
             button.disabled = isLoading;
-            if(isLoading){
-                 button.innerHTML = `<span>${text}</span><span class="button-loading"></span>`;
-                 button.classList.add('loading');
+            button.textContent = text;
+            
+            if (isLoading) {
+                button.classList.add('loading');
             } else {
-                button.innerHTML = text; // Restaura o conteúdo original
                 button.classList.remove('loading');
             }
         };
 
         ProConcursosApp.prototype.showFormError = function(message) {
             // Implementar sistema de notificação mais sofisticado no futuro
-            this.showNotification(message, 'error');
+            alert(message);
         };
 
         ProConcursosApp.prototype.getAuthErrorMessage = function(error) {
@@ -2344,25 +2120,6 @@
 
         ProConcursosApp.prototype.hideSkeleton = function(element) {
             element.classList.remove('skeleton-loading');
-        };
-
-        ProConcursosApp.prototype.showNotification = function(message, type = 'info') {
-            console.log(`📢 ${type.toUpperCase()}: ${message}`);
-            
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
-                <span class="notification-message">${message}</span>
-                <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
-            }, 5000);
         };
 
         // Adiciona lazy loading e UX ao inicializador principal
