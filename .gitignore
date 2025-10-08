@@ -1,24 +1,44 @@
-# Ignore os arquivos de log e planos de tarefa da IA
-/Gconsolelog.txt
-/Gplano.md
-/Gtask.md
-
-# Ignore arquivos de configuração de IDEs
-.cursor/
-
-# Ignore diretórios de backup
-backup_*/
-
-# Ignore o arquivo gerado firebase-config.js
-firebase-config.js
-
-# Ignore node_modules
-node_modules/
-
-# Ignore Firebase credentials and secrets
+# Credenciais Firebase (CRÍTICO - NÃO COMMITAR)
 nvp-concursos-credentials.json
-*.key
-*.pem
+*-credentials.json
+firebase-service-account.json
+
+# Arquivos de configuração sensíveis
 .env
 .env.local
 .env.production
+
+# Dependências Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporários
+*.tmp
+*.temp
+.cache/
+
+# Backups
+*.backup
+*.bak 
