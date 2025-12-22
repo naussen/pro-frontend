@@ -5,6 +5,17 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Netlify Functions
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Nota: Configure as seguintes variáveis de ambiente no Netlify Dashboard:
+# MERCADOPAGO_ACCESS_TOKEN: Seu Access Token do Mercado Pago
+#
+# URL do webhook no Mercado Pago:
+# https://seu-site.netlify.app/.netlify/functions/mercadopago-webhook
+
 [[headers]]
   for = "/*"
   [headers.values]

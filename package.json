@@ -1,0 +1,19 @@
+{
+  "name": "pro-concursos-frontend",
+  "version": "1.0.0",
+  "description": "Plataforma de estudos para concursos públicos - NVP Concursos",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "concursos",
+    "estudos",
+    "educação",
+    "online"
+  ],
+  "author": "NVP Concursos",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
+
