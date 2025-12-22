@@ -625,7 +625,8 @@
 
   function initializePayment(user) {
     // Mercado Pago
-    const mp = new MercadoPago('YOUR_MERCADO_PAGO_PUBLIC_KEY', {
+    // >>> IMPORTANTE: SUBSTITUA ABAIXO PELA SUA CHAVE PÚBLICA (PUBLIC KEY) <<<
+    const mp = new MercadoPago('COLE_AQUI_SUA_PUBLIC_KEY_DO_MERCADO_PAGO', {
       locale: 'pt-BR'
     });
 
@@ -705,8 +706,9 @@
       } else {
         paypal.Buttons({
           createSubscription: (data, actions) => {
+            // >>> IMPORTANTE: SUBSTITUA ABAIXO PELO SEU ID DE PLANO (PLAN ID) <<<
             return actions.subscription.create({
-              plan_id: 'YOUR_PAYPAL_PLAN_ID',
+              plan_id: 'COLE_AQUI_SEU_PLAN_ID_DO_PAYPAL',
               custom_id: user.uid
             });
           },
