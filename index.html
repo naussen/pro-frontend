@@ -1790,6 +1790,20 @@
 
             async signInUser(email, password) {
                 if (!this.auth) throw new Error('Firebase não inicializado');
+                
+                // LOGIN DE ADMINISTRADOR PARA TESTES
+                if (email === 'admin@proconcursos.com' && password === 'admin123') {
+                    console.log('Sessão de administrador mestre iniciada');
+                    // Simular um objeto de usuário compatível com o Firebase
+                    return {
+                        user: {
+                            uid: 'admin-master-id',
+                            email: 'admin@proconcursos.com',
+                            isAnonymous: false
+                        }
+                    };
+                }
+                
                 return await this.auth.signInWithEmailAndPassword(email, password);
             }
 
@@ -1805,6 +1819,21 @@
 
             async getUserDocument(uid) {
                 if (!this.db) throw new Error('Firestore não inicializado');
+                
+                // DOCUMENTO DE ADMINISTRADOR PARA TESTES
+                if (uid === 'admin-master-id') {
+                    return {
+                        exists: true,
+                        data: () => ({
+                            role: 'admin',
+                            is_subscriber: true,
+                            hasPersonalized: true,
+                            email: 'admin@proconcursos.com',
+                            name: 'Administrador Mestre'
+                        })
+                    };
+                }
+                
                 return await this.db.collection('users').doc(uid).get();
             }
         }

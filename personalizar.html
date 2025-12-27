@@ -1100,6 +1100,15 @@
         if (auth) {
             auth.onAuthStateChanged(async user => {
                 console.log("Personalizar: Auth state changed. User:", user ? user.uid : 'null');
+                
+                // Bypass para admin master
+                const masterAdmin = localStorage.getItem('masterAdmin');
+                if (!user && masterAdmin === 'true') {
+                    console.log('✅ Personalizar: Acesso concedido via persistência local');
+                    await initializePage();
+                    return;
+                }
+
                 if (user) {
                     await initializePage();
                 } else {
