@@ -1954,9 +1954,11 @@
         };
 
         ProConcursosApp.prototype.redirectUserAfterLogin = function(userDoc) {
+            console.log('Redirecionando usuário:', userDoc.data());
             if (userDoc.exists) {
                 const userData = userDoc.data();
                 if (userData.role === 'admin') {
+                    console.log('Usuário é admin, redirecionando para saladeestudos.html');
                     window.location.href = 'saladeestudos.html';
                 } else if (userData.hasPersonalized) {
                     window.location.href = 'saladeestudos.html';
