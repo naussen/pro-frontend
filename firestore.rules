@@ -1,0 +1,125 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin(userId) {
+      return get(/databases/$(database)/documents/users/$(userId)).data.role == 'admin';
+    }
+
+    // ===== REGRAS EXISTENTES (PRO-FRONTEND) - MANTIDAS INTACTAS =====
+
+    // Coleção 'users' - MANTIDA EXATAMENTE COMO ESTÁ
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Coleção 'courses' (usada em personalizar.html) - MANTIDA
+    match /courses/{courseId} {
+      allow read: if true; // Público para leitura
+      allow write: if request.auth != null; // Apenas usuários autenticados podem escrever
+    }
+
+    // Subcoleções de courses (módulos específicos) - MANTIDA
+    match /courses/{courseId}/modules/{moduleId} {
+      allow read: if true; // Público para leitura
+      allow write: if request.auth != null; // Apenas usuários autenticados podem escrever
+    }
+
+    // Subcoleções de módulos (aulas específicas) - MANTIDA
+    match /courses/{courseId}/modules/{moduleId}/aulas/{aulaId} {
+      allow read: if true; // Público para leitura
+      allow write: if request.auth != null; // Apenas usuários autenticados podem escrever
+    }
+
+    // Compatibilidade com estrutura antiga (lessons) - MANTIDA
+    match /courses/{courseId}/lessons/{lessonId} {
+      allow read: if true; // Público para leitura
+      allow write: if request.auth != null; // Apenas usuários autenticados podem escrever
+    }
+
+    // Progresso do usuário - CORRIGIDA para compatibilidade com questões
+    match /userProgress/{userId} {
+      allow read: if request.auth != null; // ✅ PERMITIR LEITURA PARA ESTATÍSTICAS
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /userProgress/{userId}/lessons/{lessonId} {
+      allow read: if request.auth != null; // ✅ PERMITIR LEITURA PARA ESTATÍSTICAS
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Configurações gerais - MANTIDA
+    match /settings/{settingId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    // ===== REGRAS CORRIGIDAS PARA PRO-QUESTÕES =====
+
+    // Questões - PÚBLICO para leitura (✅ CORRIGIDO)
+    match /questoes/{questaoId} {
+      allow read: if true; // ✅ PÚBLICO - usuários não autenticados podem ver questões
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    // Estatísticas do usuário por questão - Privadas por usuário
+    match /user_questoes_stats/{docId} {
+      allow read, write: if request.auth != null &&
+        docId.matches(request.auth.uid + '_.*');
+    }
+
+    // Discussões/comentários das questões
+    match /questoes_discussoes/{comentarioId} {
+      // Leitura: PÚBLICO
+      allow read: if true;
+
+      // Criação: usuários autenticados
+      allow create: if request.auth != null &&
+        request.resource.data.user_id == request.auth.uid;
+
+      // Atualização/exclusão: apenas o próprio usuário ou admin
+      allow update, delete: if request.auth != null &&
+        (resource.data.user_id == request.auth.uid || isAdmin(request.auth.uid));
+    }
+
+    // Rankings dos usuários - PÚBLICO para leitura (✅ CORRIGIDO)
+    match /user_rankings/{userId} {
+      allow read: if true; // ✅ PÚBLICO - todos podem ver rankings
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Simulados - PÚBLICO para leitura (✅ CORRIGIDO)
+    match /simulados/{simuladoId} {
+      allow read: if true; // ✅ PÚBLICO - todos podem ver simulados
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    // Resultados de simulados do usuário - Privados por usuário
+    match /user_simulados/{docId} {
+      allow read, write: if request.auth != null &&
+        docId.matches(request.auth.uid + '_.*');
+    }
+
+    // Recomendações de IA - Privadas por usuário
+    match /ai_recommendations/{userId} {
+      allow read, write: if request.auth != null &&
+        request.auth.uid == userId;
+    }
+
+    // Anotações do usuário - Privadas por usuário
+    match /user_notes/{docId} {
+      allow read, write: if request.auth != null &&
+        docId.matches(request.auth.uid + '_.*');
+    }
+
+    // ===== REGRA PADRÃO PARA OUTRAS COLEÇÕES =====
+    // Permite leitura para usuários autenticados, escrita apenas para admins
+    match /{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+  }
+}

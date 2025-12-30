@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de Estudos - PRO Concursos</title>
+    
+    <!-- Favicon inline para evitar erro 404 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDdiZmYiLz4KPHRleHQgeD0iNTAlIiB5PSI1MyUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+UDwvdGV4dD4KPC9zdmc+">
+    <link rel="alternate icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIiSURBVFhH7ZY9SwNBEIafgIWNhYWFhYWNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2N/QHbWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWP/">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/saladeestudos.css">
+
+
+    </style>
+</head>
+<body>
+    <!-- Header placeholder que será carregado dinamicamente -->
+    <div id="header-placeholder"></div>
+
+    <!-- Layout principal da sala de estudos -->
+    <div class="study-layout">
+        <!-- Overlay para mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar de navegação -->
+        <aside class="study-sidebar" id="studySidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Meus Cursos</div>
+                <div class="sidebar-icon-expanded">📚</div>
+                <div class="sidebar-icon-collapsed">📚</div>
+            </div>
+            <div class="sidebar-content">
+                <nav class="sidebar-nav" id="courseNavigation">
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando cursos...</p>
+                    </div>
+                </nav>
+                <!-- Indicador de scroll -->
+                <div class="scroll-indicator" id="scrollIndicator">
+                    <div class="scroll-indicator-icon">↓</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área de conteúdo principal -->
+        <main class="study-content">
+            <!-- Botão dinâmico para questões do módulo atual -->
+            <button id="dynamic-questoes-btn" title="🎯 Questões do módulo atual - Clique para praticar!">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+            </button>
+            <div class="content-body" id="contentBody">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📖</div>
+                    <h3>Bem-vindo à Sala de Estudos!</h3>
+                    <p>Selecione um curso no menu lateral para começar seus estudos.</p>
+                    <p style="margin-top: 1rem; font-size: 0.9em; opacity: 0.8;">
+                        💡 Use o botão "Todos os Cursos" para ver todo o conteúdo disponível.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    
+    <!-- Scripts da aplicação -->
+    <script type="module" src="scripts/saladeestudos.js"></script>
+        // O menu de cursos, módulos e aulas SEMPRE é apresentado no estado RECOLHIDO
+        // Independentemente da última visualização do usuário, ele deve clicar para expandir:
+        // 1. Clique no curso para ver os módulos
+        // 2. Clique no módulo para ver as aulas
+        // 3. Clique na aula para carregar o conteúdo
+        // 
+        // O indicador de scroll (↓) aparece quando há mais conteúdo abaixo no menu
+
+        // === CONFIGURAÇÃO E INICIALIZAÇÃO ===
+        class StudyRoomApp {
+            constructor() {
+                this.isInitialized = false;
+                this.userId = null;
+                this.db = null;
+                this.storage = null;
+                this.auth = null;
+                
+                // Cache para otimização
+                this.contentCache = new Map();
+                this.coursesCache = null;
+                this.cacheTTL = 5 * 60 * 1000; // 5 minutos
+                
+                // Estado da aplicação
+                this.sidebarCollapsed = false;
+                this.currentContent = null;
+                this.loadedCourses = [];
+                
+                // Elementos DOM
+                this.elements = {};
+                
+                // Configuração do Firebase
+                this.firebaseConfig = {
+                    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
+                    authDomain: "nvp-concursos.firebaseapp.com",
+                    projectId: "nvp-concursos",
+                    storageBucket: "nvp-concursos.firebasestorage.app",
+                    messagingSenderId: "397960760271",
+                    appId: "1:397960760271:web:1243b04141178453d860ba",
+                    measurementId: "G-T6RVBM12BQ"
+                };
+
+                this.init();
+            }
+
+            async init() {
+                try {
+                    // Carrega header dinamicamente
+                    await this.loadHeader();
+                    
+                    // Inicializa Firebase
+                    this.initFirebase();
+                    
+                    // Inicializa elementos DOM
+                    this.initializeElements();
+                    
+                    // Configura event listeners
+                    this.setupEventListeners();
+                    
+                    // Configura indicador de scroll após elementos estarem prontos
+                    this.setupScrollIndicator();
+                    
+                    // Aplica tema salvo
+                    this.applyTheme();
+                    
+                    // Configura autenticação
+                    this.setupAuth();
+                    
+                    this.isInitialized = true;
+                    console.log('✅ StudyRoomApp inicializado com sucesso');
+                } catch (error) {
+                    console.error('❌ Erro na inicialização:', error);
+                    this.showNotification('Erro na inicialização da aplicação', 'error');
+                }
+            }
+
+            async loadHeader() {
+                try {
+                    const response = await fetch('header_saladeestudos.html');
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const headerHTML = await response.text();
+                    
+                    // Criar um documento temporário para extrair apenas o header e estilos
+                    const tempDoc = document.createElement('div');
+                    tempDoc.innerHTML = headerHTML;
+                    
+                    // Extrair apenas o header principal e o painel pomodoro
+                    const mainHeader = tempDoc.querySelector('#mainHeader');
+                    const pomodoroPanel = tempDoc.querySelector('#pomodoroTimerPanel');
+                    const headerStyles = tempDoc.querySelector('style');
+                    
+                    if (!mainHeader) {
+                        throw new Error('Header principal não encontrado no arquivo');
+                    }
+                    
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    
+                    // Limpar placeholder e remover botões duplicados
+                    headerPlaceholder.innerHTML = '';
+                    
+                    // Remover botões duplicados que possam existir
+                    const existingButtons = document.querySelectorAll('#showAllCoursesBtn, #themeToggleBtn, #pomodoro-btn');
+                    existingButtons.forEach(btn => {
+                        if (btn.parentNode) {
+                            btn.parentNode.removeChild(btn);
+                        }
+                    });
+                    
+                    // Adicionar estilos ao head se não existirem
+                    if (headerStyles && !document.querySelector('style[data-header-styles]')) {
+                        const styleElement = document.createElement('style');
+                        styleElement.setAttribute('data-header-styles', 'true');
+                        styleElement.textContent = headerStyles.textContent;
+                        document.head.appendChild(styleElement);
+                    }
+                    
+                    // Inserir header principal
+                    headerPlaceholder.appendChild(mainHeader.cloneNode(true));
+                    
+                    // Inserir painel pomodoro (se existir)
+                    if (pomodoroPanel) {
+                        headerPlaceholder.appendChild(pomodoroPanel.cloneNode(true));
+                    }
+                    
+                    // Scripts do header são ignorados - botões configurados manualmente
+                    console.log('📋 Scripts do header ignorados para evitar conflitos');
+                    
+                    console.log('✅ Header carregado com sucesso');
+                    
+                    // Aplicar tema imediatamente
+                    this.applyThemeToHeader();
+                    
+                    // Inicializar eventos do header após carregamento dinâmico
+                    setTimeout(() => {
+                        console.log('🔧 Configurando botões do header manualmente...');
+                        this.setupHeaderButtons();
+                        console.log('✅ Botões do header configurados com sucesso');
+                    }, 300);
+                    
+                } catch (error) {
+                    console.warn('⚠️ Falha ao carregar header:', error);
+                    // Fallback: criar header mínimo
+                    this.createFallbackHeader();
+                }
+            }
+
+            createFallbackHeader() {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                headerPlaceholder.innerHTML = `
+                    <header style="height: var(--header-height); background: var(--header-bg); border-bottom: 1px solid var(--header-border); display: flex; align-items: center; padding: 0 1rem; position: fixed; top: 0; left: 0; right: 0; z-index: 105;">
+                        <button id="sidebarToggleBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-right: 1rem;">☰</button>
+                        <h1 style="margin: 0; font-size: 1.2rem; color: var(--text-dark);">PRO Concursos - Sala de Estudos</h1>
+                        <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                            <button id="showAllCoursesBtn" style="padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 4px; cursor: pointer;">📚 Todos os Cursos</button>
+                            <button id="themeToggleBtn" style="padding: 0.5rem; background: var(--border-color); border: none; border-radius: 4px; cursor: pointer;">🌙</button>
+                        </div>
+                    </header>
+                `;
+                
+                // Configurar event listeners para header fallback
+                const sidebarBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
+                const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
+                const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
+                
+                if (sidebarBtn) {
+                    sidebarBtn.onclick = () => this.toggleSidebar();
+                }
+                if (showAllBtn) {
+                    showAllBtn.onclick = () => this.loadAllCourses();
+                }
+                if (themeBtn) {
+                    themeBtn.onclick = () => {
+                        document.body.classList.toggle('dark-mode');
+                        const isDark = document.body.classList.contains('dark-mode');
+                        themeBtn.textContent = isDark ? '☀️' : '🌙';
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    };
+                }
+                
+                console.log('✅ Header fallback criado');
+            }
+
+            setupHeaderButtons() {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (!headerPlaceholder) return;
+
+                // Botão showAllCoursesBtn
+                const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
+                if (showAllBtn) {
+                    showAllBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Show All Courses clicked');
+                        this.loadAllCourses();
+                    };
+                    console.log('✅ showAllCoursesBtn configurado');
+                } else {
+                    console.warn('❌ showAllCoursesBtn não encontrado');
+                }
+
+                // Botão themeToggleBtn
+                const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
+                if (themeBtn) {
+                    themeBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Theme Toggle clicked');
+                        const body = document.body;
+                        const isDark = body.classList.toggle('dark-mode');
+
+                        // Forçar atualização das variáveis CSS do sidebar
+                        if (isDark) {
+                            document.documentElement.style.setProperty('--sidebar-bg', '#1a202c');
+                            document.documentElement.style.setProperty('--sidebar-border', '#2d3748');
+                        } else {
+                            document.documentElement.style.setProperty('--sidebar-bg', '#f8fafc');
+                            document.documentElement.style.setProperty('--sidebar-border', '#e2e8f0');
+                        }
+
+                        const themeIcon = headerPlaceholder.querySelector('#themeIcon');
+                        if (themeIcon) {
+                            themeIcon.textContent = isDark ? '☀️' : '🌙';
+                        }
+
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                        this.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+                    };
+                    console.log('✅ themeToggleBtn configurado');
+                } else {
+                    console.warn('❌ themeToggleBtn não encontrado');
+                }
+
+                // Botão pomodoro-btn
+                const pomodoroBtn = headerPlaceholder.querySelector('#pomodoro-btn');
+                if (pomodoroBtn) {
+                    pomodoroBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Pomodoro clicked');
+                        
+                        const pomodoroPanel = headerPlaceholder.querySelector('#pomodoroTimerPanel');
+                        if (pomodoroPanel) {
+                            const isVisible = pomodoroPanel.style.display === 'flex';
+                            pomodoroPanel.style.display = isVisible ? 'none' : 'flex';
+                            console.log('🍅 Painel pomodoro', isVisible ? 'fechado' : 'aberto');
+                        } else {
+                            console.warn('❌ Painel pomodoro não encontrado');
+                        }
+                    };
+                    console.log('✅ pomodoro-btn configurado');
+                } else {
+                    console.warn('❌ pomodoro-btn não encontrado');
+                }
+
+                // Botão sidebarToggleBtn
+                const sidebarBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
+                if (sidebarBtn) {
+                    sidebarBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Sidebar Toggle clicked');
+                        this.toggleSidebar();
+                    };
+                    console.log('✅ sidebarToggleBtn configurado');
+                } else {
+                    console.warn('❌ sidebarToggleBtn não encontrado');
+                }
+
+                // Botão logout-btn
+                const logoutBtn = headerPlaceholder.querySelector('#logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.onclick = (e) => {
+                        e.preventDefault();
+                        console.log('🔧 Logout clicked');
+                        localStorage.removeItem('masterAdmin');
+                        if (this.auth) {
+                            this.auth.signOut().then(() => {
+                                window.location.href = 'index.html';
+                            }).catch(err => {
+                                console.error('Erro no logout:', err);
+                                window.location.href = 'index.html';
+                            });
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    };
+                    console.log('✅ logout-btn configurado');
+                }
+
+                // === CONFIGURAÇÃO DOS MENUS DROPDOWN ===
+                this.setupDropdownMenus(headerPlaceholder);
+            }
+
+            setupDropdownMenus(headerContainer) {
+                console.log('🔧 Configurando menus dropdown...');
+                
+                if (!headerContainer) {
+                    console.warn('❌ Container do header não fornecido');
+                    return false;
+                }
+
+                // Configurar botão CURSOS
+                const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
+                const cursosMenu = headerContainer.querySelector('#cursos-menu');
+                
+                console.log('🔍 Elementos CURSOS:', {
+                    button: cursosBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: cursosMenu ? 'Encontrado' : 'Não encontrado'
+                });
+                
+                if (cursosBtn && cursosMenu) {
+                    cursosBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão CURSOS clicado - toggling menu');
+                        this.toggleDropdownMenu(cursosMenu, cursosBtn);
+                    };
+                    console.log('✅ Menu CURSOS configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu CURSOS não encontrados');
+                }
+
+                // Configurar botão FLASHCARDS
+                const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
+                const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
+                
+                console.log('🔍 Elementos FLASHCARDS:', {
+                    button: flashcardsBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: flashcardsMenu ? 'Encontrado' : 'Não encontrado'
+                });
+                
+                if (flashcardsBtn && flashcardsMenu) {
+                    flashcardsBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão FLASHCARDS clicado - toggling menu');
+                        this.toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
+                    };
+                    console.log('✅ Menu FLASHCARDS configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
+                }
+
+                // Configurar botão QUESTÕES
+                const questoesBtn = headerContainer.querySelector('#questoesMenuBtn');
+                const questoesMenu = headerContainer.querySelector('#questoes-menu');
+
+                console.log('🔍 Elementos QUESTÕES:', {
+                    button: questoesBtn ? 'Encontrado' : 'Não encontrado',
+                    menu: questoesMenu ? 'Encontrado' : 'Não encontrado'
+                });
+
+                if (questoesBtn && questoesMenu) {
+                    questoesBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔧 Botão QUESTÕES clicado - toggling menu');
+                        this.toggleDropdownMenu(questoesMenu, questoesBtn);
+                    };
+                    console.log('✅ Menu QUESTÕES configurado com sucesso');
+                } else {
+                    console.warn('❌ Elementos do menu QUESTÕES não encontrados');
+                }
+
+                // Configurar fechamento ao clicar fora
+                if (!window.dropdownClickHandlerAdded) {
+                    document.addEventListener('click', (e) => {
+                        const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+                        const isClickOnNavButton = e.target.closest('.nav-button');
+                        const isClickInsideDropdown = e.target.closest('.dropdown-menu');
+                        
+                        if (!isClickOnNavButton && !isClickInsideDropdown) {
+                            dropdowns.forEach(dropdown => {
+                                this.closeDropdownMenu(dropdown);
+                            });
+                        }
+                    });
+                    window.dropdownClickHandlerAdded = true;
+                    console.log('✅ Handler de fechamento global configurado');
+                }
+
+                return true;
+            }
+
+            toggleDropdownMenu(menu, button) {
+                console.log('🔄 Toggle menu:', menu.id);
+                
+                // Fechar outros menus primeiro
+                const allDropdowns = document.querySelectorAll('.dropdown-menu');
+                allDropdowns.forEach(dropdown => {
+                    if (dropdown !== menu && dropdown.classList.contains('show')) {
+                        this.closeDropdownMenu(dropdown);
+                    }
+                });
+                
+                // Toggle do menu atual
+                const isOpen = menu.classList.contains('show');
+                
+                if (isOpen) {
+                    this.closeDropdownMenu(menu);
+                } else {
+                    this.openDropdownMenu(menu, button);
+                }
+            }
+
+            openDropdownMenu(menu, button) {
+                menu.classList.add('show');
+                if (button) {
+                    button.setAttribute('aria-expanded', 'true');
+                }
+                console.log('📂 Menu aberto:', menu.id);
+            }
+
+            closeDropdownMenu(menu) {
+                menu.classList.remove('show');
+                const button = document.querySelector(`[data-target="${menu.id}"]`);
+                if (button) {
+                    button.setAttribute('aria-expanded', 'false');
+                }
+                console.log('📁 Menu fechado:', menu.id);
+            }
+
+            applyThemeToHeader() {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+
+                // Aplicar tema ao body
+                document.body.classList.toggle('dark-mode', isDark);
+
+                // Forçar atualização das variáveis CSS para garantir que o sidebar seja atualizado
+                if (isDark) {
+                    document.documentElement.style.setProperty('--sidebar-bg', '#1a202c');
+                    document.documentElement.style.setProperty('--sidebar-border', '#2d3748');
+                } else {
+                    document.documentElement.style.setProperty('--sidebar-bg', '#f8fafc');
+                    document.documentElement.style.setProperty('--sidebar-border', '#e2e8f0');
+                }
+
+                // Atualizar ícone do tema no header
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (headerPlaceholder) {
+                    const themeIcon = headerPlaceholder.querySelector('#themeIcon');
+                    if (themeIcon) {
+                        themeIcon.textContent = isDark ? '☀️' : '🌙';
+                        console.log('✅ Tema aplicado ao header:', isDark ? 'escuro' : 'claro');
+                    }
+                }
+            }
+
+            initFirebase() {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(this.firebaseConfig);
+                }
+                
+                this.auth = firebase.auth();
+                this.db = firebase.firestore();
+                this.storage = firebase.storage();
+                
+                // Configurações de performance com nova API
+                try {
+                    // Nova API recomendada (Firebase v9+) com merge para evitar override warning
+                    this.db.settings({
+                        cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+                    });
+                    console.log('✅ Firebase inicializado com persistência moderna');
+                } catch (error) {
+                    // Fallback para API antiga se a nova não estiver disponível
+                    try {
+                        this.db.enablePersistence({ synchronizeTabs: true });
+                        console.log('✅ Firebase inicializado com persistência legada');
+                    } catch (persistenceError) {
+                        // Modo silencioso - não mostrar warning desnecessário
+                        if (this.isDevelopment()) {
+                            console.warn('Persistência offline não disponível:', persistenceError);
+                        }
+                        console.log('✅ Firebase inicializado sem persistência');
+                    }
+                }
+                
+                console.log('✅ Firebase inicializado');
+            }
+
+            // Função auxiliar para detectar ambiente de desenvolvimento
+            isDevelopment() {
+                return window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.includes('localhost');
+            }
+
+            initializeElements() {
+                this.elements = {
+                    sidebar: document.getElementById('studySidebar'),
+                    courseNav: document.getElementById('courseNavigation'),
+                    contentBody: document.getElementById('contentBody'),
+                    overlay: document.getElementById('sidebarOverlay'),
+                    scrollIndicator: document.getElementById('scrollIndicator')
+                };
+            }
+
+            setupEventListeners() {
+                // Overlay click (mobile)
+                this.elements.overlay?.addEventListener('click', () => this.closeSidebar());
+                
+                // Sidebar icons click - expandir/recolher menu lateral
+                const sidebarIconExpanded = document.querySelector('.sidebar-icon-expanded');
+                const sidebarIconCollapsed = document.querySelector('.sidebar-icon-collapsed');
+                
+                // Event listener para ícone expandido (à direita)
+                if (sidebarIconExpanded) {
+                    sidebarIconExpanded.addEventListener('click', () => {
+                        console.log('📚 Sidebar icon expandido clicado - recolhendo menu lateral');
+                        this.toggleSidebar();
+                    });
+                    sidebarIconExpanded.title = 'Clique para recolher menu lateral';
+                }
+                
+                // Event listener para ícone recolhido (centralizado)
+                if (sidebarIconCollapsed) {
+                    sidebarIconCollapsed.addEventListener('click', () => {
+                        console.log('📚 Sidebar icon recolhido clicado - expandindo menu lateral');
+                        this.toggleSidebar();
+                    });
+                    sidebarIconCollapsed.title = 'Clique para expandir menu lateral';
+                }
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                        e.preventDefault();
+                        this.toggleSidebar();
+                    }
+                });
+                
+                // Resize handler
+                window.addEventListener('resize', () => this.handleResize());
+                
+                // Configurar indicador de scroll para a sidebar (será chamado após inicialização)
+                // this.setupScrollIndicator();
+                
+                console.log('✅ Event listeners configurados');
+            }
+
+            setupAuth() {
+                this.auth.onAuthStateChanged(async user => {
+                    if (!user) {
+                        // Verificar se é o admin master simulado (via localStorage para persistência de sessão simulada)
+                        const masterAdmin = localStorage.getItem('masterAdmin');
+                        if (masterAdmin === 'true') {
+                            this.userId = 'admin-master-id';
+                            console.log('✅ Administrador Mestre detectado via persistência local');
+                            this.loadUserCourses();
+                            return;
+                        }
+                        
+                        console.log('❌ Usuário não autenticado, redirecionando...');
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    
+                    this.userId = user.uid;
+                    console.log('✅ Usuário autenticado:', this.userId);
+                    
+                    // Se for o admin-master-id (simulado), pular verificação de Firestore
+                    if (this.userId === 'admin-master-id') {
+                        console.log('✅ Acesso concedido: Administrador Mestre');
+                        localStorage.setItem('masterAdmin', 'true');
+                        this.loadUserCourses();
+                        return;
+                    }
+                    
+                    // Verificar assinatura do usuário
+                    try {
+                        const userDoc = await this.db.collection('users').doc(user.uid).get();
+                        const userData = userDoc.data();
+
+                        if (!userData?.is_subscriber) {
+                            console.log('❌ Usuário sem assinatura ativa');
+                            window.location.href = 'pagamento.html';
+                            return;
+                        }
+
+                        // Verificar se a assinatura não expirou
+                        if (userData?.subscription_expiry) {
+                            const expiryDate = new Date(userData.subscription_expiry.toDate ? userData.subscription_expiry.toDate() : userData.subscription_expiry);
+                            const now = new Date();
+
+                            if (expiryDate < now) {
+                                console.log('❌ Assinatura expirada');
+                                window.location.href = 'pagamento.html';
+                                return;
+                            }
+                        }
+                        
+                        console.log('✅ Assinatura ativa verificada');
+                        // Carrega cursos após autenticação e verificação de assinatura
+                        this.loadUserCourses();
+                        
+                        // Configurar verificação contínua de assinatura
+                        this.setupContinuousSubscriptionCheck();
+                    } catch (error) {
+                        console.error('❌ Erro ao verificar assinatura:', error);
+                        window.location.href = 'pagamento.html';
+                    }
+                });
+            }
+            
+            setupContinuousSubscriptionCheck() {
+                // Verificar assinatura a cada 5 minutos
+                setInterval(async () => {
+                    // Ignorar se for admin master
+                    if (this.userId === 'admin-master-id' || localStorage.getItem('masterAdmin') === 'true') {
+                        return;
+                    }
+                    
+                    try {
+                        const userDoc = await this.db.collection('users').doc(this.userId).get();
+                        const userData = userDoc.data();
+
+                        if (!userData?.is_subscriber) {
+                            console.log('❌ Assinatura expirada ou cancelada');
+                            window.location.href = 'pagamento.html';
+                            return;
+                        }
+
+                        // Verificar se a assinatura não expirou
+                        if (userData?.subscription_expiry) {
+                            const expiryDate = new Date(userData.subscription_expiry.toDate ? userData.subscription_expiry.toDate() : userData.subscription_expiry);
+                            const now = new Date();
+
+                            if (expiryDate < now) {
+                                console.log('❌ Assinatura expirada');
+                                window.location.href = 'pagamento.html';
+                                return;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('❌ Erro ao verificar status da assinatura:', error);
+                    }
+                }, 5 * 60 * 1000); // 5 minutos em milissegundos
+            }
+
+            // === GERENCIAMENTO DE SIDEBAR ===
+            toggleSidebar() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    this.elements.sidebar.classList.toggle('visible');
+                    this.elements.overlay.classList.toggle('visible');
+                } else {
+                    this.sidebarCollapsed = !this.sidebarCollapsed;
+                    this.elements.sidebar.classList.toggle('collapsed', this.sidebarCollapsed);
+                }
+                
+                // Salva estado
+                localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed.toString());
+            }
+
+            closeSidebar() {
+                if (window.innerWidth <= 768) {
+                    this.elements.sidebar.classList.remove('visible');
+                    this.elements.overlay.classList.remove('visible');
+                }
+            }
+
+            handleResize() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (!isMobile && this.elements.sidebar.classList.contains('visible')) {
+                    this.elements.sidebar.classList.remove('visible');
+                    this.elements.overlay.classList.remove('visible');
+                }
+            }
+
+            updateScrollIndicator() {
+                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
+                
+                const nav = this.elements.courseNav;
+                const indicator = this.elements.scrollIndicator;
+                
+                if (nav.scrollHeight > nav.clientHeight) {
+                    // Há conteúdo para scroll
+                    if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
+                        // Próximo do final - oculta indicador
+                        indicator.classList.remove('visible');
+                    } else {
+                        // Mostra indicador
+                        indicator.classList.add('visible');
+                    }
+                } else {
+                    // Não há scroll necessário - oculta indicador
+                    indicator.classList.remove('visible');
+                }
+            }
+
+            setupScrollIndicator() {
+                if (!this.elements.scrollIndicator || !this.elements.courseNav) return;
+                
+                const checkScrollIndicator = () => {
+                    const nav = this.elements.courseNav;
+                    const indicator = this.elements.scrollIndicator;
+                    
+                    if (nav.scrollHeight > nav.clientHeight) {
+                        // Há conteúdo para scroll
+                        if (nav.scrollTop + nav.clientHeight >= nav.scrollHeight - 10) {
+                            // Próximo do final - oculta indicador
+                            indicator.classList.remove('visible');
+                        } else {
+                            // Mostra indicador
+                            indicator.classList.add('visible');
+                        }
+                    } else {
+                        // Não há scroll necessário - oculta indicador
+                        indicator.classList.remove('visible');
+                    }
+                };
+                
+                // Verificar ao carregar conteúdo
+                this.elements.courseNav.addEventListener('scroll', checkScrollIndicator);
+                
+                // Verificar inicialmente
+                setTimeout(checkScrollIndicator, 100);
+                
+                console.log('✅ Indicador de scroll configurado');
+            }
+
+            // === GERENCIAMENTO DE TEMA ===
+            applyTheme() {
+                // Restaura estado da sidebar
+                const sidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
+                if (sidebarState && window.innerWidth > 768) {
+                    this.sidebarCollapsed = true;
+                    this.elements.sidebar.classList.add('collapsed');
+                }
+
+                // Aplicar tema salvo às variáveis CSS do sidebar
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+
+                if (isDark) {
+                    document.documentElement.style.setProperty('--sidebar-bg', '#1a202c');
+                    document.documentElement.style.setProperty('--sidebar-border', '#2d3748');
+                } else {
+                    document.documentElement.style.setProperty('--sidebar-bg', '#f8fafc');
+                    document.documentElement.style.setProperty('--sidebar-border', '#e2e8f0');
+                }
+            }
+
+            // === GERENCIAMENTO DO BOTÃO DINÂMICO DE QUESTÕES ===
+            updateDynamicQuestoesButton(meta) {
+                const button = document.getElementById('dynamic-questoes-btn');
+                if (!button) return;
+
+                if (meta && meta.course && meta.module) {
+                    // Exibir botão quando houver contexto de aula
+                    button.classList.add('visible');
+                    button.title = `Questões: ${meta.course} > ${meta.module}`;
+                    
+                    // Remover event listener anterior
+                    button.onclick = null;
+                    
+                    // Adicionar novo event listener
+                    button.onclick = () => {
+                        this.openQuestoesForCurrentModule(meta);
+                    };
+                    
+                    console.log('✅ Botão dinâmico ativado para:', meta.course, '>', meta.module);
+                } else {
+                    // Ocultar botão quando não há contexto
+                    button.classList.remove('visible');
+                    button.onclick = null;
+                    console.log('⚪ Botão dinâmico oculto - sem contexto');
+                }
+            }
+
+            openQuestoesForCurrentModule(meta) {
+                console.log('🎯 Abrindo questões para módulo atual:', meta);
+                
+                try {
+                    // Se a integração estiver presente, usar contexto específico
+                    if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                        console.log('🔗 Usando integração QuestoesIntegration com contexto específico');
+                        // Criar um contexto personalizado para a integração
+                        const originalContext = window.QuestoesIntegration.currentContext;
+                        
+                        // Temporariamente definir contexto baseado na aula atual
+                        window.QuestoesIntegration.currentContext = {
+                            type: 'content',
+                            courses: this.normalizeCourseId(meta.course),
+                            modules: this.normalizeModuleId(meta.module),
+                            aula: meta.aula || null
+                        };
+                        
+                        // Aplicar filtros contextuais
+                        window.QuestoesIntegration.setContextualFilters();
+                        
+                        // Abrir em modo overlay
+                        window.QuestoesIntegration.openQuestions('overlay');
+                        
+                        // Restaurar contexto original
+                        setTimeout(() => {
+                            window.QuestoesIntegration.currentContext = originalContext;
+                        }, 1000);
+                        
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+                }
+
+                // Fallback: abrir com parâmetros específicos
+                let url;
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    // URL direta para servidor de desenvolvimento
+                    url = 'http://localhost:8001/pro-questoes.html';
+                } else {
+                    // Subdomínio para produção
+                    url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+                }
+                
+                const params = new URLSearchParams();
+                const slugify = (val) => typeof val === 'string' 
+                    ? val.toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-')
+                        .trim()
+                    : val;
+                if (meta.course) params.append('courses', slugify(meta.course));
+                if (meta.module) params.append('modules', slugify(meta.module));
+                if (meta.aula) params.append('aula', slugify(meta.aula));
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                console.log('🌐 Abrindo URL específica do módulo:', url);
+                window.open(url, '_blank');
+            }
+
+            normalizeCourseId(courseName) {
+                return courseName.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[áàâã]/g, 'a')
+                    .replace(/[éèê]/g, 'e')
+                    .replace(/[íìî]/g, 'i')
+                    .replace(/[óòôõ]/g, 'o')
+                    .replace(/[úùû]/g, 'u')
+                    .replace(/ç/g, 'c')
+                    .replace(/[^\w-]/g, '');
+            }
+
+            normalizeModuleId(moduleName) {
+                return moduleName.toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[áàâã]/g, 'a')
+                    .replace(/[éèê]/g, 'e')
+                    .replace(/[íìî]/g, 'i')
+                    .replace(/[óòôõ]/g, 'o')
+                    .replace(/[úùû]/g, 'u')
+                    .replace(/ç/g, 'c')
+                    .replace(/[^\w-]/g, '');
+            }
+
+            // === CARREGAMENTO DE CURSOS ===
+            async loadUserCourses() {
+                if (!this.userId) return;
+                
+                this.showLoading('Carregando seus cursos...');
+                
+                try {
+                    // Verifica cache primeiro
+                    if (this.coursesCache && this.isCacheValid(this.coursesCache.timestamp)) {
+                        console.log('📋 Usando cursos do cache');
+                        this.renderCourses(this.coursesCache.data);
+                        return;
+                    }
+                    
+                    const userDoc = await this.db.collection('users').doc(this.userId).get();
+                    
+                    if (userDoc.exists && userDoc.data().hasPersonalized) {
+                        const userData = userDoc.data();
+                        console.log('👤 Carregando cursos personalizados');
+                        
+                        // Nova estrutura com selectedModules
+                        if (userData.selectedModules?.length > 0) {
+                            const courses = await this.loadSelectedModules(userData.selectedModules);
+                            this.cacheCourses(courses);
+                            this.renderCourses(courses);
+                            console.log('✅ Cursos personalizados carregados em modo recolhido');
+                        } 
+                        // Para usuários antigos, carrega todos os cursos
+                        else {
+                            console.log('📚 Usuário sem personalização - carregando todos os cursos');
+                            await this.loadAllCourses();
+                        }
+                    } else {
+                        console.log('📚 Carregando todos os cursos');
+                        await this.loadAllCourses();
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar cursos:', error);
+                    this.showError('Falha ao carregar cursos. Tente novamente.');
+                }
+            }
+
+            async loadSelectedModules(selectedModules) {
+                const coursesMap = new Map();
+                
+                for (const { courseId, moduleId } of selectedModules) {
+                    try {
+                        // Carregar dados do curso
+                        if (!coursesMap.has(courseId)) {
+                            const courseDoc = await this.db.collection('courses').doc(courseId).get();
+                            if (courseDoc.exists) {
+                                coursesMap.set(courseId, {
+                                    id: courseId,
+                                    name: courseDoc.data().name,
+                                    order: courseDoc.data().order || 0,
+                                    modules: []
+                                });
+                            }
+                        }
+                        
+                        // Carregar dados do módulo e suas aulas
+                        const moduleDoc = await this.db.collection('courses')
+                            .doc(courseId).collection('modules').doc(moduleId).get();
+                            
+                        if (moduleDoc.exists) {
+                            const moduleData = moduleDoc.data();
+                            const course = coursesMap.get(courseId);
+                            
+                            // Carregar todas as aulas do módulo de forma unificada
+                            const aulas = await this.loadAulasFromModule(courseId, moduleId);
+                            
+                            // Adiciona módulo com suas aulas
+                            if (aulas.length > 0) {
+                                course.modules.push({
+                                    id: moduleId,
+                                    name: moduleData.name,
+                                    order: moduleData.order || 0,
+                                    aulas: aulas,
+                                    type: 'aulas'
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.warn(`⚠️ Erro ao carregar módulo ${moduleId}:`, error);
+                    }
+                }
+                
+                return Array.from(coursesMap.values())
+                    .filter(course => course.modules.length > 0)
+                    .sort((a, b) => a.order - b.order);
+            }
+
+            async loadAllCourses() {
+                this.showLoading('Carregando todos os cursos...');
+                
+                try {
+                    const coursesSnapshot = await this.db.collection('courses')
+                        .orderBy('order').get();
+                    
+                    const courses = [];
+                    
+                    for (const courseDoc of coursesSnapshot.docs) {
+                        const courseData = courseDoc.data();
+                        const modulesSnapshot = await courseDoc.ref
+                            .collection('modules').orderBy('order').get();
+                        
+                        const modules = [];
+                        
+                        for (const moduleDoc of modulesSnapshot.docs) {
+                            const moduleData = moduleDoc.data();
+                            
+                            // Carregar todas as aulas do módulo de forma unificada
+                            const aulas = await this.loadAulasFromModule(courseDoc.id, moduleDoc.id);
+                            
+                            // Adiciona módulo com suas aulas
+                            if (aulas.length > 0) {
+                                modules.push({
+                                    id: moduleDoc.id,
+                                    name: moduleData.name,
+                                    order: moduleData.order || 0,
+                                    aulas: aulas,
+                                    type: 'aulas'
+                                });
+                            }
+                        }
+                        
+                        if (modules.length > 0) {
+                            courses.push({
+                                id: courseDoc.id, 
+                                name: courseData.name,
+                                order: courseData.order || 0,
+                                modules 
+                            });
+                        }
+                    }
+                    
+                    this.cacheCourses(courses);
+                    this.renderCourses(courses);
+                    this.showNotification('Todos os cursos carregados', 'success');
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar todos os cursos:', error);
+                    this.showError('Falha ao carregar cursos');
+                }
+            }
+
+            // === NOVA FUNÇÃO UNIFICADA PARA CARREGAR AULAS ===
+            async loadAulasFromModule(courseId, moduleId) {
+                try {
+                    const aulasSnapshot = await this.db.collection('courses')
+                        .doc(courseId).collection('modules').doc(moduleId)
+                        .collection('aulas').orderBy('order').get();
+                        
+                    const aulas = [];
+                    aulasSnapshot.forEach(aulaDoc => {
+                        const aulaData = aulaDoc.data();
+                        aulas.push({
+                            id: aulaDoc.id,
+                            name: aulaData.name,
+                            order: aulaData.order || 0,
+                            content_url: aulaData.content_url,
+                            file_name: aulaData.file_name,
+                            estimated_time: aulaData.estimated_time,
+                            difficulty: aulaData.difficulty
+                        });
+                    });
+                    
+                    return aulas.sort((a, b) => a.order - b.order);
+                } catch (error) {
+                    console.warn(`⚠️ Erro ao carregar aulas do módulo ${moduleId}:`, error);
+                    return [];
+                }
+            }
+
+            // === RENDERIZAÇÃO === 
+            renderCourses(courses) {
+                if (!courses || courses.length === 0) {
+                    this.showEmptyState();
+                    return;
+                }
+                
+                this.loadedCourses = courses;
+                
+                const html = courses.map(course => {
+                    const courseName = this.escapeHtml(course.name);
+                    const courseId = this.escapeHtml(course.id);
+                    
+                    return `
+                        <div class="course-item">
+                            <div class="course-header" data-course-id="${courseId}">
+                                <div class="course-icon">${this.getCourseIcon(course.name)}</div>
+                                <span class="course-name">${courseName}</span>
+                                <span class="toggle-icon">▶</span>
+                            </div>
+                            <div class="module-list" id="modules-${courseId}">
+                                ${course.modules.map(module => {
+                                    const moduleName = this.escapeHtml(module.name);
+                                    const moduleId = this.escapeHtml(module.id);
+                                    
+                                    return `
+                                        <div class="module-item" 
+                                             data-course-id="${courseId}" 
+                                             data-module-id="${moduleId}"
+                                             data-type="${this.escapeHtml(module.type)}">
+                                            <div class="module-header">
+                                                <span class="module-name">${moduleName}</span>
+                                                <span class="module-meta">(${module.aulas ? module.aulas.length : 0} aulas)</span>
+                                                <span class="module-toggle">▶</span>
+                                            </div>
+                                            <div class="aulas-list" style="display: none;">
+                                                ${module.aulas ? module.aulas.map(aula => {
+                                                    const aulaName = this.escapeHtml(aula.name);
+                                                    const aulaId = this.escapeHtml(aula.id);
+                                                    const estimatedTime = aula.estimated_time ? 
+                                                        this.escapeHtml(aula.estimated_time.toString()) : '';
+                                                    
+                                                    return `
+                                                        <div class="aula-item" 
+                                                             data-course-id="${courseId}"
+                                                             data-module-id="${moduleId}"
+                                                             data-aula-id="${aulaId}">
+                                                            ${aulaName}
+                                                            <span class="aula-meta">${estimatedTime ? estimatedTime + 'min' : ''}</span>
+                                                        </div>
+                                                    `;
+                                                }).join('') : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                this.elements.courseNav.innerHTML = html;
+                this.attachCourseEvents();
+                
+                // Auto-seleciona primeiro conteúdo SEM expandir menu
+                this.autoSelectFirstContent();
+                
+                // Atualizar indicador de scroll após renderizar
+                setTimeout(() => this.updateScrollIndicator(), 200);
+                
+                console.log(`✅ ${courses.length} cursos renderizados em modo recolhido`);
+            }
+
+            attachCourseEvents() {
+                // Course headers (toggle) - SEMPRE começa recolhido
+                this.elements.courseNav.querySelectorAll('.course-header').forEach(header => {
+                    header.addEventListener('click', () => {
+                        const moduleList = header.nextElementSibling;
+                        const toggleIcon = header.querySelector('.toggle-icon');
+                        const isVisible = moduleList.classList.contains('visible');
+                        
+                        // Toggle visibilidade dos módulos
+                        moduleList.classList.toggle('visible', !isVisible);
+                        toggleIcon.classList.toggle('expanded', !isVisible);
+                        toggleIcon.textContent = isVisible ? '▶' : '▼';
+                        
+                        // Atualizar indicador de scroll após expandir/recolher
+                        setTimeout(() => this.updateScrollIndicator(), 100);
+                    });
+                });
+
+                // Module items (toggle aulas) - SEMPRE começa recolhido
+                this.elements.courseNav.querySelectorAll('.module-item').forEach(item => {
+                    const moduleHeader = item.querySelector('.module-header');
+                    const aulasList = item.querySelector('.aulas-list');
+                    const toggleIcon = item.querySelector('.module-toggle');
+                    
+                    moduleHeader.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        
+                        // Toggle lista de aulas
+                        const isVisible = aulasList.style.display !== 'none';
+                        aulasList.style.display = isVisible ? 'none' : 'block';
+                        toggleIcon.classList.toggle('expanded', !isVisible);
+                        toggleIcon.textContent = isVisible ? '▶' : '▼';
+                        
+                        // Atualizar indicador de scroll após expandir/recolher
+                        setTimeout(() => this.updateScrollIndicator(), 100);
+                    });
+                });
+
+                // Aula items (load content)
+                this.elements.courseNav.querySelectorAll('.aula-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        // Remove seleção anterior
+                        this.elements.courseNav.querySelectorAll('.aula-item.active')
+                            .forEach(el => el.classList.remove('active'));
+                        
+                        // Marca como ativo
+                        item.classList.add('active');
+                        
+                        // Carrega conteúdo da aula
+                        const { courseId, moduleId, aulaId } = item.dataset;
+                        this.loadAulaContent(courseId, moduleId, aulaId);
+                    });
+                });
+            }
+
+            autoSelectFirstContent() {
+                if (this.loadedCourses.length > 0 && this.loadedCourses[0].modules.length > 0) {
+                    const firstCourse = this.loadedCourses[0];
+                    const firstModule = firstCourse.modules[0];
+                    const firstAula = firstModule.aulas?.[0];
+                    
+                    // SEMPRE mantém menu recolhido - usuário deve clicar para expandir
+                    // Apenas seleciona primeira aula sem expandir nada
+                    setTimeout(() => {
+                        const firstAulaItem = this.elements.courseNav.querySelector('.aula-item');
+                        
+                        if (firstAulaItem && firstAula) {
+                            // Seleciona primeira aula sem expandir curso/módulo
+                            firstAulaItem.classList.add('active');
+                            this.loadAulaContent(firstCourse.id, firstModule.id, firstAula.id);
+                        }
+                    }, 100);
+                }
+            }
+
+            // === CARREGAMENTO DE CONTEÚDO DE AULAS ===
+            async loadAulaContent(courseId, moduleId, aulaId) {
+                try {
+                    const cacheKey = `${courseId}-${moduleId}-${aulaId}`;
+                    
+                    // Verifica cache primeiro
+                    if (this.contentCache.has(cacheKey)) {
+                        const cached = this.contentCache.get(cacheKey);
+                        if (this.isCacheValid(cached.timestamp)) {
+                            console.log('📋 Usando conteúdo do cache');
+                            this.displayContent(cached.data);
+                            return;
+                        }
+                    }
+                    
+                    this.showContentLoading();
+                    
+                    const course = this.loadedCourses.find(c => c.id === courseId);
+                    const module = course?.modules.find(m => m.id === moduleId);
+                    const aula = module?.aulas.find(a => a.id === aulaId);
+
+                    if (!aula) {
+                        throw new Error('Aula não encontrada');
+                    }
+
+                    const contentData = {
+                        title: aula.name,
+                        content: await this.fetchHTMLContent(aula.content_url),
+                        meta: {
+                            course: course.name,
+                            module: module.name,
+                            aula: aula.name,
+                            difficulty: aula.difficulty,
+                            estimatedTime: aula.estimated_time
+                        }
+                    };
+
+                    // Cache do conteúdo
+                    this.contentCache.set(cacheKey, {
+                        data: contentData,
+                        timestamp: Date.now()
+                    });
+
+                    this.displayContent(contentData);
+
+                } catch (error) {
+                    console.error('❌ Erro ao carregar conteúdo da aula:', error);
+                    this.showContentError(error.message);
+                }
+            }
+
+            // === SANITIZAÇÃO MELHORADA DE HTML ===
+            async fetchHTMLContent(contentUrl) {
+                try {
+                    console.log('🔗 Carregando conteúdo de:', contentUrl);
+                    let url = contentUrl;
+                    
+                    // Se é referência do Firebase Storage
+                    if (url.startsWith('gs://')) {
+                        try {
+                            const storageRef = this.storage.refFromURL(url);
+                            url = await storageRef.getDownloadURL();
+                            console.log('✅ URL do Firebase Storage obtida:', url);
+                        } catch (storageError) {
+                            console.warn('⚠️ Erro ao obter URL do Storage:', storageError.message);
+                            console.warn('🔄 Tentando construir URL pública...');
+                            
+                            // Fallback mais robusto para URL pública
+                            const gsPath = url.replace('gs://', '').split('/');
+                            const bucketName = gsPath[0];
+                            const filePath = gsPath.slice(1).join('/');
+                            const encodedPath = encodeURIComponent(filePath);
+                            
+                            url = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodedPath}?alt=media`;
+                            console.log('🔄 URL pública construída:', url);
+                        }
+                    }
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    let rawHtml = await response.text();
+
+                    // === SANITIZAÇÃO ROBUSTA DO CONTEÚDO HTML ===
+                    return this.sanitizeHTML(rawHtml);
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao buscar conteúdo HTML:', error);
+                    throw new Error('Falha ao carregar conteúdo: ' + error.message);
+                }
+            }
+
+            sanitizeHTML(rawHtml) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rawHtml;
+
+                // Remove elementos perigosos
+                const dangerousElements = [
+                    'iframe', 'object', 'embed', 
+                    'form', 'input', 'button', 'textarea', 'select',
+                    'applet', 'audio', 'video', 'source', 'track',
+                    'script', 'style'
+                ];
+                
+                dangerousElements.forEach(tag => {
+                    tempDiv.querySelectorAll(tag).forEach(el => el.remove());
+                });
+
+                // Remove tags <html> e <body> (caso existam)
+                tempDiv.querySelectorAll('html, body').forEach(el => {
+                    while (el.firstChild) tempDiv.appendChild(el.firstChild);
+                    el.remove();
+                });
+
+                // Remove atributos perigosos
+                const dangerousAttributes = [
+                    'onclick', 'onload', 'onerror', 'onmouseover', 
+                    'onfocus', 'onblur', 'onchange', 'onsubmit'
+                ];
+                
+                tempDiv.querySelectorAll('*').forEach(el => {
+                    dangerousAttributes.forEach(attr => {
+                        if (el.hasAttribute(attr)) {
+                            el.removeAttribute(attr);
+                        }
+                    });
+                    
+                    // Sanitiza links externos
+                    if (el.tagName === 'A' && el.href) {
+                        if (!el.href.startsWith(window.location.origin)) {
+                            el.setAttribute('target', '_blank');
+                            el.setAttribute('rel', 'noopener noreferrer');
+                        }
+                    }
+                });
+
+                // Remove estilos inline perigosos
+                tempDiv.querySelectorAll('[style]').forEach(el => {
+                    // Estilos potencialmente perigosos que podem quebrar o layout do container
+                    const dangerousStyles = ['position', 'z-index'];
+                    
+                    // Remove apenas estilos que podem quebrar o container principal
+                    dangerousStyles.forEach(style => {
+                        const styleValue = el.style.getPropertyValue(style);
+                        if (styleValue === 'fixed' || styleValue === 'absolute' || 
+                            (style === 'z-index' && parseInt(styleValue) > 9998)) {
+                            el.style.removeProperty(style);
+                        }
+                    });
+                    
+                    // Remove viewport units perigosos
+                    if (el.style.height && el.style.height.includes('vh')) {
+                        el.style.removeProperty('height');
+                    }
+                    if (el.style.width && el.style.width.includes('vw')) {
+                        el.style.removeProperty('width');
+                    }
+                    
+                    // Preserva estilos necessários para tabelas, cards, grids, etc.
+                    // Não remove: width, height, margin, padding, display, flex, grid, etc.
+                });
+
+                return tempDiv.innerHTML;
+            }
+
+            displayContent(contentData) {
+                this.currentContent = contentData;
+                
+                // Atualiza corpo do conteúdo
+                const lessonContentDiv = document.createElement('div');
+                lessonContentDiv.className = 'lesson-content';
+                lessonContentDiv.innerHTML = contentData.content; // Já sanitizado
+                
+                this.elements.contentBody.innerHTML = '';
+                this.elements.contentBody.appendChild(lessonContentDiv);
+                
+                // Scroll para o topo
+                this.elements.contentBody.scrollTop = 0;
+                
+                // Atualizar botão dinâmico de questões
+                this.updateDynamicQuestoesButton(contentData.meta);
+                
+                console.log('✅ Conteúdo exibido:', contentData.title);
+            }
+
+            // === ESTADOS DE UI ===
+            showLoading(message = 'Carregando...') {
+                this.elements.courseNav.innerHTML = `
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>${this.escapeHtml(message)}</p>
+                    </div>
+                `;
+            }
+
+            showContentLoading() {
+                this.elements.contentBody.innerHTML = `
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando conteúdo...</p>
+                    </div>
+                `;
+            }
+
+            showEmptyState() {
+                this.elements.courseNav.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>Nenhum curso encontrado</h3>
+                        <p>Configure sua personalização ou use "Todos os Cursos".</p>
+                    </div>
+                `;
+            }
+
+            showError(message) {
+                this.elements.courseNav.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <h3>Erro</h3>
+                        <p>${this.escapeHtml(message)}</p>
+                        <button onclick="location.reload()" 
+                                style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--error-color); color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+                            Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            }
+
+            showContentError(message) {
+                this.elements.contentBody.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Erro ao carregar conteúdo</h3>
+                        <p>${this.escapeHtml(message)}</p>
+                        <p style="font-size: 0.9em; margin-top: 1rem; opacity: 0.8;">
+                            Verifique sua conexão e tente novamente.
+                        </p>
+                    </div>
+                `;
+            }
+
+            // === NOTIFICAÇÕES ===
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Anima entrada
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // Remove após 3 segundos
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+
+            // === UTILITÁRIOS ===
+            getCourseIcon(courseName) {
+                const name = courseName.toLowerCase();
+                if (name.includes('direito')) return '⚖️';
+                if (name.includes('matemática') || name.includes('matematica')) return '🔢';
+                if (name.includes('português') || name.includes('portugues')) return '📝';
+                if (name.includes('informática') || name.includes('informatica')) return '💻';
+                if (name.includes('contabilidade')) return '📊';
+                if (name.includes('administração') || name.includes('administracao')) return '🏛️';
+                return '📚';
+            }
+
+            cacheCourses(courses) {
+                this.coursesCache = {
+                    data: courses,
+                    timestamp: Date.now()
+                };
+            }
+
+            isCacheValid(timestamp) {
+                return (Date.now() - timestamp) < this.cacheTTL;
+            }
+
+            // === FUNÇÃO DE ESCAPE HTML PARA SEGURANÇA ===
+            escapeHtml(text) {
+                if (typeof text !== 'string') return text;
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // === API PÚBLICA ===
+            clearCache() {
+                this.contentCache.clear();
+                this.coursesCache = null;
+                this.showNotification('Cache limpo', 'success');
+            }
+
+            refresh() {
+                this.clearCache();
+                this.loadUserCourses();
+            }
+        }
+
+        // === INICIALIZAÇÃO GLOBAL ===
+        let studyApp;
+
+        // Configurar API básica imediatamente para o header
+        window.studyApp = {
+            toggleSidebar: () => {
+                console.log('toggleSidebar chamado via header (early)');
+                if (studyApp && studyApp.toggleSidebar) {
+                    return studyApp.toggleSidebar();
+                } else {
+                    console.warn('studyApp.toggleSidebar não disponível ainda');
+                }
+            },
+            loadAllCourses: () => {
+                console.log('loadAllCourses chamado via header (early)');
+                if (studyApp && studyApp.loadAllCourses) {
+                    return studyApp.loadAllCourses();
+                } else {
+                    console.warn('studyApp.loadAllCourses não disponível ainda');
+                }
+            },
+            showNotification: (message, type) => {
+                console.log('showNotification chamado via header (early):', message, type);
+                if (studyApp && studyApp.showNotification) {
+                    return studyApp.showNotification(message, type);
+                } else {
+                    console.log('Notificação (fallback):', message);
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('StudyApp DOM carregado');
+            studyApp = new StudyRoomApp();
+            
+            // Atualizar métodos com referência real
+            window.studyApp.toggleSidebar = () => {
+                console.log('toggleSidebar chamado via header');
+                return studyApp.toggleSidebar();
+            };
+            window.studyApp.loadAllCourses = () => {
+                console.log('loadAllCourses chamado via header');
+                return studyApp.loadAllCourses();
+            };
+            window.studyApp.showNotification = (message, type) => {
+                console.log('showNotification chamado via header:', message, type);
+                return studyApp.showNotification(message, type);
+            };
+            
+            console.log('window.studyApp atualizado com referências reais');
+            
+            // Expor para debug em desenvolvimento
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.studyApp.debug = studyApp;
+            }
+        });
+
+        // Service Worker para cache offline
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('✅ Service Worker registrado'))
+                    .catch(error => {
+                        // Service Worker não crítico - aplicação funciona sem ele
+                        if (console.debug) console.debug('Service Worker não disponível:', error.message);
+                    });
+            });
+        }
+
+        // Suprimir erros comuns de extensões do navegador
+        window.addEventListener('error', (e) => {
+            if (e.message.includes('message channel closed') || 
+                e.message.includes('asynchronous response')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

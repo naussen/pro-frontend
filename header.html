@@ -1,0 +1,983 @@
+<!-- header.html -->
+<header class="w3s-header" id="mainHeader">
+    <button id="sidebarToggleBtn" class="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu">☰</button>
+    <div class="w3s-logo-area">
+        <a href="index.html" title="Página Inicial" class="logo-link">
+            <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="18" fill="#94ba65"/>
+                <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
+            </svg>
+            <span class="logo-text">PRO Concursos</span>
+        </a>
+    </div>
+    
+    <nav class="w3s-nav-menu" id="topNav">
+        <div class="nav-item">
+            <button class="nav-button" data-target="cursos-menu">Cursos ▼</button>
+            <div class="dropdown-content">
+                <a href="#">Direito Constitucional</a>
+                <a href="#">Direito Administrativo</a>
+                <a href="#">Direito Penal</a>
+                <a href="#">Direito Tributário</a>
+                <a href="#">Português</a>
+                <a href="#">Raciocínio Lógico</a>
+            </div>
+        </div>
+        <div class="nav-item">
+            <button class="nav-button" data-target="questoes-menu" id="questoesMenuBtn">Questões ▼</button>
+            <div class="dropdown-content" id="questoes-menu">
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('administracao-financeira-orcamentaria')">
+                    <span class="dropdown-icon">🏛️</span>
+                    Administração Financeira Orçamentária
+                </a>
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-administrativo')">
+                    <span class="dropdown-icon">⚖️</span>
+                    Direito Administrativo
+                </a>
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-constitucional')">
+                    <span class="dropdown-icon">📜</span>
+                    Direito Constitucional
+                </a>
+                <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-penal')">
+                    <span class="dropdown-icon">⚔️</span>
+                    Direito Penal
+                </a>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" onclick="openAllQuestoes()">
+                    <span class="dropdown-icon">📖</span>
+                    Todas as Questões
+                </button>
+            </div>
+        </div>
+        <div class="nav-item">
+            <button class="nav-button" data-target="flashcards-menu">Flashcards ▼</button>
+            <div class="dropdown-content">
+                <a href="#">Criar Flashcards</a>
+                <a href="#">Meus Flashcards</a>
+                <a href="#">Flashcards Públicos</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="w3s-header-right-group">
+        <div class="w3s-search-area">
+            <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
+            <button type="submit" aria-label="Buscar">🔍</button>
+        </div>
+        <div class="w3s-header-actions">
+            <button id="theme-toggle" title="Alternar Tema Claro/Escuro">
+                <span class="icon theme-icon-light">☀️</span>
+                <span class="icon theme-icon-dark" style="display: none;">🌙</span>
+            </button>
+            
+            <a href="cadastro.html" title="Cadastro"><span class="icon">📝</span> <span class="link-text">Cadastro</span></a>
+            <div class="login-container">
+                <button id="login-btn" title="Login/Cadastro"><span class="icon">👤</span> <span class="link-text">Login</span></button>
+                
+                <!-- Login Dropdown -->
+                <div id="login-dropdown" class="login-dropdown">
+                    <h3>Login</h3>
+                    
+                    <!-- Opções de Login Social -->
+                    <div class="social-login-options">
+                        <button type="button" class="social-login-btn google-login" onclick="loginWithGoogle()">
+                            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            <span class="social-text">Continuar com Google</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn facebook-login" onclick="loginWithFacebook()">
+                            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            <span class="social-text">Continuar com Facebook</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn apple-login" onclick="loginWithApple()">
+                            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                            </svg>
+                            <span class="social-text">Continuar com Apple</span>
+                        </button>
+                    </div>
+                    
+                    <div class="login-divider">
+                        <span>ou</span>
+                    </div>
+                    
+                    <form id="login-form">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" required>
+                        
+                        <label for="login-password">Senha:</label>
+                        <input type="password" id="login-password" required>
+                        
+                        <button type="submit">Entrar</button>
+                    </form>
+                    
+                    <div class="login-footer">
+                        <p>Não tem uma conta? <a href="#" id="show-signup">Cadastre-se</a></p>
+                        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                    </div>
+                </div>
+                
+                <!-- Signup Dropdown -->
+                <div id="signup-dropdown" class="login-dropdown" style="display: none;">
+                    <h3>Cadastro</h3>
+                    
+                    <!-- Opções de Cadastro Social -->
+                    <div class="social-login-options">
+                        <button type="button" class="social-login-btn google-login" onclick="signupWithGoogle()">
+                            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            <span class="social-text">Cadastrar com Google</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn facebook-login" onclick="signupWithFacebook()">
+                            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#4285F4" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            <span class="social-text">Cadastrar com Facebook</span>
+                        </button>
+                        
+                        <button type="button" class="social-login-btn apple-login" onclick="signupWithApple()">
+                            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                            </svg>
+                            <span class="social-text">Cadastrar com Apple</span>
+                        </button>
+                    </div>
+                    
+                    <div class="login-divider">
+                        <span>ou</span>
+                    </div>
+                    
+                    <form id="signup-form">
+                        <label for="signup-email">Email:</label>
+                        <input type="email" id="signup-email" required>
+                        
+                        <label for="signup-password">Senha:</label>
+                        <input type="password" id="signup-password" required>
+                        
+                        <label for="confirm-password">Confirmar Senha:</label>
+                        <input type="password" id="confirm-password" required>
+                        
+                        <button type="submit">Cadastrar</button>
+                    </form>
+                    
+                    <div class="login-footer">
+                        <p>Já tem uma conta? <a href="#" id="show-login">Faça login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* Variáveis CSS para modo claro/escuro */
+    :root {
+        /* Modo claro (padrão) */
+        --header-height: 55px;
+        --header-bg: rgba(240, 248, 255, 0.95);
+        --text-dark: #333;
+        --header-border: #e7e7e7;
+        --top-nav-link-color: #4e4d4a;
+        --top-nav-link-hover-bg: #f0f7ff;
+        --border-color: #ccc;
+        --main-content-bg: #f7fbff;
+    }
+    
+    /* Modo escuro */
+    [data-theme="dark"], .dark-mode {
+        --header-bg: #1a1a1a;
+        --text-dark: #e1e1e1;
+        --header-border: #333333;
+        --top-nav-link-color: #e1e1e1;
+        --top-nav-link-hover-bg: #333333;
+        --border-color: #444;
+        --main-content-bg: #222222;
+    }
+    
+    /* Estilos do header para corrigir alinhamentos */
+    .w3s-header {
+        background-color: var(--header-bg, #ffffff);
+        color: var(--text-dark, #333);
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        height: var(--header-height, 55px);
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 105;
+        border-bottom: 1px solid var(--header-border, #e7e7e7);
+        gap: 10px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    /* Botão do menu sidebar */
+    .w3s-sidebar-toggle {
+        background-color: transparent;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0 15px;
+        color: var(--text-dark, #4e4d4a);
+        line-height: var(--header-height, 55px);
+        transition: color 0.3s;
+    }
+    .w3s-sidebar-toggle:hover {
+        color: var(--main-color, #4e4d4a);
+    }
+    
+    /* Logo */
+    .w3s-logo-area {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        padding-left: 10px;
+        height: 100%;
+    }
+    .logo-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-dark, #4e4d4a);
+    }
+    .w3s-logo-placeholder {
+        width: 35px;
+        height: 35px;
+        margin-right: 8px;
+    }
+    .logo-text {
+        font-weight: bold;
+        font-size: 18px;
+    }
+    
+    /* Menu de navegação */
+    .w3s-nav-menu {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        margin-left: 15px;
+    }
+    .nav-item {
+        height: 100%;
+    }
+    .nav-button {
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        height: 100%;
+        color: var(--top-nav-link-color, #4e4d4a);
+        font-size: 15px;
+        background-color: transparent;
+        border: none;
+        border-right: 1px solid var(--header-border, #e7e7e7);
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .nav-item:first-child .nav-button {
+        border-left: 1px solid var(--header-border, #e7e7e7);
+    }
+    .nav-button:hover {
+        background-color: var(--top-nav-link-hover-bg, #f0f7ff);
+    }
+    .nav-button.active {
+        background-color: var(--top-nav-link-active-bg, #ddd);
+    }
+    
+    /* Dropdown do menu */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--header-bg);
+        border: 1px solid var(--header-border);
+        border-radius: 4px;
+        min-width: 200px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 110;
+    }
+    .dropdown-content a {
+        display: block;
+        padding: 12px 16px;
+        color: var(--text-dark);
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+    .dropdown-content a:hover {
+        background-color: var(--top-nav-link-hover-bg, #f0f7ff);
+    }
+    
+    /* Estilos específicos para o menu QUESTOES */
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        color: var(--text-dark);
+        text-decoration: none;
+        font-size: 14px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        gap: 8px;
+        white-space: nowrap;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .dropdown-item:hover {
+        background-color: var(--top-nav-link-hover-bg, #f0f7ff);
+    }
+    
+    .dropdown-icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background-color: var(--border-color, #ccc);
+        margin: 4px 0;
+    }
+    
+    /* Área de busca */
+    .w3s-search-area {
+        display: flex;
+        align-items: center;
+        max-width: 220px;
+    }
+    .w3s-search-area input[type="text"] {
+        padding: 8px 12px;
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 25px 0 0 25px;
+        font-size: 14px;
+        width: 100%;
+        border-right: none;
+        height: 36px;
+        background-color: var(--main-content-bg, #f7fbff);
+        color: var(--text-dark, #4e4d4a);
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .w3s-search-area input[type="text"]:focus {
+        outline: none;
+        border-color: var(--main-color, #4e4d4a);
+    }
+    .w3s-search-area button {
+        padding: 0 12px;
+        height: 36px;
+        background-color: var(--light-grey-bg, #f1f1f1);
+        border: 1px solid var(--border-color, #ccc);
+        border-left: none;
+        cursor: pointer;
+        border-radius: 0 25px 25px 0;
+        transition: background-color 0.2s;
+        font-size: 16px;
+        color: var(--text-muted, #6c757d);
+    }
+    
+    /* Ações de cabeçalho */
+    .w3s-header-right-group {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        gap: 5px;
+        padding-right: 10px;
+    }
+    .w3s-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+    }
+    .w3s-header-actions a, 
+    .w3s-header-actions button {
+        color: var(--text-dark, #4e4d4a);
+        text-decoration: none;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 10px;
+        border-radius: 4px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    .w3s-header-actions a .icon, 
+    .w3s-header-actions button .icon {
+        font-size: 1.1em;
+    }
+    .w3s-header-actions a:hover, 
+    .w3s-header-actions button:hover {
+        color: var(--main-color, #94ba65);
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Login dropdown */
+    .login-container {
+        position: relative;
+    }
+    .login-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: var(--main-content-bg, #f7fbff);
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 8px;
+        padding: 20px;
+        z-index: 110;
+        width: 320px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* Estilos específicos para modo escuro */
+    .dark-mode .login-dropdown,
+    [data-theme="dark"] .login-dropdown {
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .login-dropdown label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    .login-dropdown input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 4px;
+    }
+    .login-dropdown button[type="submit"] {
+        width: 100%;
+        background-color: var(--main-color, #94ba65);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .login-dropdown p {
+        font-size: 13px;
+        text-align: center;
+        margin: 10px 0 0;
+    }
+    
+    /* Estilos para Login Social */
+    .social-login-options {
+        margin-bottom: 20px;
+    }
+    
+    .social-login-btn {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 8px;
+        background-color: var(--main-content-bg, #ffffff);
+        color: var(--text-dark, #333);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .social-login-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .social-login-btn:active {
+        transform: translateY(0);
+    }
+    
+    .social-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .social-text {
+        font-weight: 500;
+    }
+    
+    /* Cores específicas para cada provedor */
+    .google-login {
+        border-color: #4285f4;
+        color: #4285f4;
+    }
+    
+    .google-login:hover {
+        background-color: #4285f4;
+        color: white;
+    }
+    
+    .facebook-login {
+        border-color: #1877f2;
+        color: #1877f2;
+    }
+    
+    .facebook-login:hover {
+        background-color: #1877f2;
+        color: white;
+    }
+    
+    .apple-login {
+        border-color: #000000;
+        color: #000000;
+    }
+    
+    .apple-login:hover {
+        background-color: #000000;
+        color: white;
+    }
+    
+    /* Modo escuro - ajustes para Apple */
+    .dark-mode .apple-login {
+        border-color: #ffffff;
+        color: #ffffff;
+    }
+    
+    .dark-mode .apple-login:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    
+    /* Separador "ou" */
+    .login-divider {
+        text-align: center;
+        margin: 20px 0;
+        position: relative;
+    }
+    
+    .login-divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--border-color, #ccc);
+    }
+    
+    .login-divider span {
+        background-color: var(--main-content-bg, #ffffff);
+        padding: 0 15px;
+        color: var(--text-muted, #6c757d);
+        font-size: 13px;
+        font-weight: 500;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Footer do login */
+    .login-footer {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .login-footer p {
+        margin-bottom: 10px;
+    }
+    
+    .forgot-password {
+        color: var(--main-color, #94ba65);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .forgot-password:hover {
+        text-decoration: underline;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 992px) {
+        .w3s-header-actions .link-text {
+            display: none;
+        }
+    }
+    @media (max-width: 768px) {
+        .w3s-nav-menu {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    // Inicialização do botão de tema quando o header é carregado diretamente
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar dropdowns de navegação
+        initNavigationDropdowns();
+        
+        // Inicializar sistema de login
+        initLoginSystem();
+        
+        // Inicializar botão de tema
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
+            const moonIcon = themeToggleBtn.querySelector('.theme-icon-dark');
+            
+            // Verificar tema atual
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            // Aplicar tema
+            document.body.classList.toggle('dark-mode', currentTheme === 'dark');
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Atualizar ícones
+            if (sunIcon && moonIcon) {
+                sunIcon.style.display = currentTheme === 'dark' ? 'none' : 'inline';
+                moonIcon.style.display = currentTheme === 'dark' ? 'inline' : 'none';
+            }
+            
+            // Adicionar evento de clique
+            themeToggleBtn.addEventListener('click', function() {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const newTheme = isDarkMode ? 'light' : 'dark';
+                
+                // Alternar classe no body
+                document.body.classList.toggle('dark-mode');
+                document.documentElement.setAttribute('data-theme', newTheme);
+                
+                // Alternar ícones
+                if (sunIcon && moonIcon) {
+                    sunIcon.style.display = newTheme === 'dark' ? 'none' : 'inline';
+                    moonIcon.style.display = newTheme === 'dark' ? 'inline' : 'none';
+                }
+                
+                // Salvar preferência
+                localStorage.setItem('theme', newTheme);
+                console.log('Tema alterado para:', newTheme);
+            });
+        }
+    });
+    
+    // Função para inicializar dropdowns de navegação
+    function initNavigationDropdowns() {
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        navItems.forEach(item => {
+            const btn = item.querySelector('.nav-button');
+            const dropdown = item.querySelector('.dropdown-content');
+            
+            if (btn && dropdown) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    // Fecha todos os outros dropdowns
+                    navItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            const otherDropdown = otherItem.querySelector('.dropdown-content');
+                            if (otherDropdown) otherDropdown.style.display = 'none';
+                        }
+                    });
+                    
+                    // Alterna o dropdown atual
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+        });
+
+        // Fechar ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-item')) {
+                navItems.forEach(item => {
+                    const dropdown = item.querySelector('.dropdown-content');
+                    if (dropdown) dropdown.style.display = 'none';
+                });
+            }
+        });
+    }
+    
+    // Função para inicializar sistema de login
+    function initLoginSystem() {
+        const loginBtn = document.getElementById('login-btn');
+        const loginDropdown = document.getElementById('login-dropdown');
+        const signupDropdown = document.getElementById('signup-dropdown');
+        const showSignupLink = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
+
+        // Toggle dropdowns
+        if (loginBtn && loginDropdown && signupDropdown) {
+            loginBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = loginDropdown.style.display === 'block';
+                
+                loginDropdown.style.display = isVisible ? 'none' : 'block';
+                signupDropdown.style.display = 'none';
+            });
+
+            // Alternar entre login e cadastro
+            if (showSignupLink) {
+                showSignupLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loginDropdown.style.display = 'none';
+                    signupDropdown.style.display = 'block';
+                });
+            }
+
+            if (showLoginLink) {
+                showLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    signupDropdown.style.display = 'none';
+                    loginDropdown.style.display = 'block';
+                });
+            }
+
+            // Fechar ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.login-container')) {
+                    loginDropdown.style.display = 'none';
+                    signupDropdown.style.display = 'none';
+                }
+            });
+        }
+    }
+    
+        // Escutar eventos de mudança de tema de outros componentes
+        document.addEventListener('themeChanged', function(e) {
+            const theme = e.detail.theme;
+            document.body.classList.toggle('dark-mode', theme === 'dark');
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            if (themeToggleBtn) {
+                const sunIcon = themeToggleBtn.querySelector('.theme-icon-light');
+                const moonIcon = themeToggleBtn.querySelector('.theme-icon-dark');
+                if (sunIcon && moonIcon) {
+                    sunIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+                    moonIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+                }
+            }
+        });
+        
+        // === FUNÇÕES DO MENU QUESTÕES ===
+        function openQuestoesForCourse(courseName) {
+            console.log('🎯 Abrindo questões para curso:', courseName);
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) {
+                questoesMenu.style.display = 'none';
+            }
+            
+            try {
+                // Se a integração estiver presente, usar contexto específico
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration para curso específico');
+                    // Usar integração se disponível
+                    return window.QuestoesIntegration.openQuestions('static');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir com parâmetro de curso
+            let url;
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                // URL direta para servidor de desenvolvimento
+                url = 'http://localhost:8001/pro-questoes.html';
+            } else {
+                // Subdomínio para produção
+                url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+            }
+            url += `?curso=${courseName}`;
+            
+            console.log('🌐 Abrindo URL com curso específico:', url);
+            window.open(url, '_blank');
+        }
+
+        function openAllQuestoes() {
+            console.log('🎯 Abrindo todas as questões');
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) {
+                questoesMenu.style.display = 'none';
+            }
+            
+            try {
+                // Se a integração estiver presente, abrir em overlay
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration');
+                    return window.QuestoesIntegration.openQuestions('overlay');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir página estática
+            let url;
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                // URL direta para servidor de desenvolvimento
+                url = 'http://localhost:8001/pro-questoes.html';
+            } else {
+                // Subdomínio para produção
+                url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+            }
+            
+            console.log('🌐 Abrindo URL geral:', url);
+            window.open(url, '_blank');
+        }
+
+        // Funções globais para compatibilidade
+        window.openQuestoesForCourse = openQuestoesForCourse;
+        window.openAllQuestoes = openAllQuestoes;
+        
+        // === FUNÇÕES DE LOGIN SOCIAL ===
+        function loginWithGoogle() {
+            console.log('🔍 Tentando login com Google...');
+            // Implementar integração com Google OAuth
+            showNotification('Login com Google em desenvolvimento', 'info');
+        }
+        
+        function loginWithFacebook() {
+            console.log('📘 Tentando login com Facebook...');
+            // Implementar integração com Facebook OAuth
+            showNotification('Login com Facebook em desenvolvimento', 'info');
+        }
+        
+        function loginWithApple() {
+            console.log('🍎 Tentando login com Apple...');
+            // Implementar integração com Apple OAuth
+            showNotification('Login com Apple em desenvolvimento', 'info');
+        }
+        
+        function signupWithGoogle() {
+            console.log('🔍 Tentando cadastro com Google...');
+            // Implementar integração com Google OAuth
+            showNotification('Cadastro com Google em desenvolvimento', 'info');
+        }
+        
+        function signupWithFacebook() {
+            console.log('📘 Tentando cadastro com Facebook...');
+            // Implementar integração com Facebook OAuth
+            showNotification('Cadastro com Facebook em desenvolvimento', 'info');
+        }
+        
+        function signupWithApple() {
+            console.log('🍎 Tentando cadastro com Apple...');
+            // Implementar integração com Apple OAuth
+            showNotification('Cadastro com Apple em desenvolvimento', 'info');
+        }
+        
+        // Função auxiliar para mostrar notificações
+        function showNotification(message, type = 'info') {
+            console.log(`📢 ${type.toUpperCase()}: ${message}`);
+            
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            // Adicionar ao body
+            document.body.appendChild(notification);
+            
+            // Remover automaticamente após 5 segundos
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Adicionar estilos para notificações
+        const notificationStyles = document.createElement('style');
+        notificationStyles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                max-width: 350px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                animation: slideInRight 0.3s ease;
+            }
+            
+            .notification-info {
+                background-color: #2196F3;
+            }
+            
+            .notification-success {
+                background-color: #4CAF50;
+            }
+            
+            .notification-warning {
+                background-color: #FF9800;
+            }
+            
+            .notification-error {
+                background-color: #F44336;
+            }
+            
+            .notification-close {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 0;
+                margin-left: auto;
+                opacity: 0.8;
+            }
+            
+            .notification-close:hover {
+                opacity: 1;
+            }
+            
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(notificationStyles);
+    </script>

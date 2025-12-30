@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO Concursos - Header com Pomodoro</title>
+    
+    <!-- Favicon inline para evitar erro 404 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDdiZmYiLz4KPHRleHQgeD0iNTAlIiB5PSI1MyUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+UDwvdGV4dD4KPC9zdmc+">
+</head>
+<body>
+    <!-- header_saladeestudos.html -->
+    <header class="w3s-header" id="mainHeader">
+        <button id="sidebarToggleBtn" class="w3s-sidebar-toggle" title="Alternar Menu" aria-label="Alternar Menu">☰</button>
+        <div class="w3s-logo-area">
+            <a href="index.html" title="Página Inicial" class="logo-link">
+                <svg class="w3s-logo-placeholder" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="18" fill="#007bff"/>
+                    <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="16" font-weight="bold" dy="1">P</text>
+                </svg>
+                <span class="logo-text">PRO Concursos</span>
+            </a>
+        </div>
+        
+        <nav class="w3s-nav-menu" id="topNav">
+            <div class="nav-item">
+                <button class="nav-button" data-target="cursos-menu" id="cursosMenuBtn">Cursos ▼</button>
+                <div class="dropdown-menu" id="cursos-menu">
+                    <a href="saladeestudos.html" class="dropdown-item">
+                        <span class="dropdown-icon">📚</span>
+                        Sala de Estudos
+                    </a>
+                    <a href="administracao-financeira-orcamentaria.html" class="dropdown-item">
+                        <span class="dropdown-icon">🏛️</span>
+                        Administração Financeira Orçamentária
+                    </a>
+                    <a href="direito-administrativo.html" class="dropdown-item">
+                        <span class="dropdown-icon">⚖️</span>
+                        Direito Administrativo
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="showAllCoursesAction()">
+                        <span class="dropdown-icon">📖</span>
+                        Ver Todos os Cursos
+                    </button>
+                </div>
+            </div>
+            <div class="nav-item">
+                <button class="nav-button" data-target="flashcards-menu" id="flashcardsMenuBtn">Flashcards ▼</button>
+                <div class="dropdown-menu" id="flashcards-menu">
+                    <a href="#" class="dropdown-item">
+                        <span class="dropdown-icon">🃏</span>
+                        Flashcards de Direito
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="dropdown-icon">📊</span>
+                        Flashcards de Matemática
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="dropdown-icon">📝</span>
+                        Flashcards de Português
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="createCustomFlashcards()">
+                        <span class="dropdown-icon">➕</span>
+                        Criar Flashcards Personalizados
+                    </button>
+                </div>
+            </div>
+            <!-- Menu QUESTÕES com expansão por curso -->
+            <div class="nav-item">
+                <button class="nav-button" data-target="questoes-menu" id="questoesMenuBtn">Questões ▼</button>
+                <div class="dropdown-menu" id="questoes-menu">
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('administracao-financeira-orcamentaria')">
+                        <span class="dropdown-icon">🏛️</span>
+                        Administração Financeira Orçamentária
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-administrativo')">
+                        <span class="dropdown-icon">⚖️</span>
+                        Direito Administrativo
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-constitucional')">
+                        <span class="dropdown-icon">📜</span>
+                        Direito Constitucional
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="openQuestoesForCourse('direito-penal')">
+                        <span class="dropdown-icon">⚔️</span>
+                        Direito Penal
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="openAllQuestoes()">
+                        <span class="dropdown-icon">📖</span>
+                        Todas as Questões
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="w3s-header-right-group">
+            <div class="w3s-search-area">
+                <input type="text" placeholder="Buscar..." aria-label="Campo de busca">
+                <button type="submit" aria-label="Buscar">🔍</button>
+            </div>
+            <div class="w3s-header-actions">
+                <button id="showAllCoursesBtn" class="header-btn" title="Exibir todos os cursos">
+                    <span class="icon">📚</span>
+                    <span class="link-text">Todos os Cursos</span>
+                </button>
+                <button id="pomodoro-btn" title="Timer Pomodoro" aria-label="Abrir Timer Pomodoro">
+                    <span class="icon">🍅</span>
+                </button> 
+                <button id="themeToggleBtn" class="header-btn primary" title="Alternar tema">
+                    <span class="icon" id="themeIcon">🌙</span>
+                </button>
+                <a href="personalizar.html" title="Personalizar Sala de Estudos">
+                    <span class="icon">⚙️</span> 
+                    <span class="link-text">Personalizar Sala de Estudos</span>
+                </a>
+                <a id="logout-btn" href="index.html" title="Logout">
+                    <span class="icon">🚪</span> 
+                    <span class="link-text">Logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pomodoro Panel -->
+    <div id="pomodoroTimerPanel" class="pomodoro-timer-panel" style="display: none;">
+        <div class="pomodoro-timer-header">
+            <h3>Timer Pomodoro <span class="pomodoro-timer-icon">🍅</span></h3>
+            <button id="pomodoroTimerCloseBtn" class="pomodoro-timer-close-btn" aria-label="Fechar Timer Pomodoro">&times;</button>
+        </div>
+        <div class="pomodoro-timer-display">
+            <span id="pomodoroTimerTime">25:00</span>
+        </div>
+        <div class="pomodoro-timer-controls">
+            <button id="pomodoroTimerStartBtn" class="pomodoro-timer-btn pomodoro-timer-start">Iniciar</button>
+            <button id="pomodoroTimerPauseBtn" class="pomodoro-timer-btn pomodoro-timer-pause" style="display: none;">Pausar</button>
+            <button id="pomodoroTimerResetBtn" class="pomodoro-timer-btn pomodoro-timer-reset">Resetar</button>
+        </div>
+        <div class="pomodoro-timer-status">
+            <p id="pomodoroTimerSessionStatus">Sessão de Trabalho</p>
+            <p>Ciclos: <span id="pomodoroTimerCycles">0</span></p>
+        </div>
+    </div>
+
+    <style>
+        :root {
+            --header-bg: #ffffff;
+            --text-dark: #4e4d4a;
+            --header-height: 55px;
+            --header-border: #e7e7e7;
+            --main-color: #4e4d4a;
+            --border-color: #ccc;
+            --main-content-bg: #ffffff;
+            --light-grey-bg: #f1f1f1;
+            --text-muted: #6c757d;
+            --top-nav-link-color: #4e4d4a;
+            --top-nav-link-hover-bg: #f1f1f1;
+            --top-nav-link-active-bg: #ddd;
+            --text-light: #f8f9fa;
+            --accent-1: #94ba65;
+            --accent-2: #2790b0;
+            --light-highlight-bg: #f5f5f4;
+            --dark-blue-hover: #2b4e72;
+        }
+
+        /* Modo escuro */
+        body.dark-mode {
+            --header-bg: rgba(26, 32, 44, 0.95);
+            --text-dark: #e2e8f0;
+            --header-border: #2d3748;
+            --main-color: #63b3ed;
+            --border-color: #2d3748;
+            --main-content-bg: #1a202c;
+            --light-grey-bg: #1a202c;
+            --text-muted: #a0aec0;
+            --top-nav-link-color: #e2e8f0;
+            --top-nav-link-hover-bg: #2d3748;
+            --top-nav-link-active-bg: #4a5568;
+            --text-light: #ffffff;
+            --accent-1: #68d391;
+            --accent-2: #4fd1c7;
+            --light-highlight-bg: #2d3748;
+            --dark-blue-hover: #4299e1;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            padding-top: var(--header-height);
+            font-family: Arial, sans-serif;
+        }
+
+        /* Estilos do header */
+        .w3s-header {
+            background-color: var(--header-bg);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            height: var(--header-height);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 105;
+            border-bottom: 1px solid var(--header-border);
+            gap: 10px;
+            box-sizing: border-box;
+        }
+        
+        .w3s-sidebar-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 15px;
+            color: var(--text-dark);
+            line-height: var(--header-height);
+            transition: color 0.3s;
+        }
+
+        .w3s-sidebar-toggle:hover {
+            color: var(--main-color);
+        }
+        
+        .w3s-logo-area {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            padding-left: 10px;
+            height: 100%;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+
+        .w3s-logo-placeholder {
+            width: 40px;
+            height: 40px;
+            margin-right: 8px;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .w3s-nav-menu {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: 40px;
+        }
+
+        .nav-item {
+            height: 100%;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            height: 100%;
+            color: var(--top-nav-link-color);
+            font-size: 15px;
+            background-color: transparent;
+            border: none;
+            border-right: 1px solid var(--header-border);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .nav-item:first-child .nav-button {
+            border-left: 1px solid var(--header-border);
+        }
+
+        .nav-button:hover {
+            background-color: var(--top-nav-link-hover-bg);
+        }
+
+        .nav-button.active {
+            background-color: var(--top-nav-link-active-bg);
+        }
+
+
+
+        /* === DROPDOWN MENUS === */
+        .nav-item {
+            position: relative;
+            height: 100%;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--main-content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 220px;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-menu.show {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-highlight-bg);
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            background-color: var(--light-highlight-bg);
+        }
+
+        .dropdown-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 4px 0;
+        }
+
+        /* Indicador visual de menu ativo */
+        .nav-button[aria-expanded="true"] {
+            background-color: var(--top-nav-link-active-bg);
+        }
+        
+        .w3s-search-area {
+            display: flex;
+            align-items: center;
+            max-width: 220px;
+        }
+
+        .w3s-search-area input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px 0 0 25px;
+            font-size: 14px;
+            width: 100%;
+            border-right: none;
+            height: 36px;
+            background-color: var(--main-content-bg);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .w3s-search-area input[type="text"]:focus {
+            outline: none;
+            border-color: var(--main-color);
+        }
+
+        .w3s-search-area button {
+            padding: 0 12px;
+            height: 36px;
+            background-color: var(--light-grey-bg);
+            border: 1px solid var(--border-color);
+            border-left: none;
+            cursor: pointer;
+            border-radius: 0 25px 25px 0;
+            transition: background-color 0.2s;
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+        
+        .w3s-header-right-group {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            gap: 5px;
+            padding-right: 10px;
+        }
+
+        .w3s-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .w3s-header-actions a, 
+        .w3s-header-actions button {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .w3s-header-actions .header-btn {
+            background-color: var(--light-grey-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .w3s-header-actions .header-btn:hover {
+            background-color: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .w3s-header-actions .header-btn.primary {
+            background-color: var(--main-color);
+            color: var(--text-light);
+            border-color: var(--main-color);
+        }
+
+        .w3s-header-actions .header-btn.primary:hover {
+            background-color: var(--dark-blue-hover);
+            border-color: var(--dark-blue-hover);
+        }
+
+        .w3s-header-actions a .icon, 
+        .w3s-header-actions button .icon {
+            font-size: 1.1em;
+        }
+
+        .w3s-header-actions a:hover, 
+        .w3s-header-actions button:hover {
+            color: var(--main-color);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        /* Garantir que os botões sejam clicáveis */
+        #showAllCoursesBtn, #themeToggleBtn {
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 1000 !important;
+        }
+        
+        #showAllCoursesBtn *, #themeToggleBtn * {
+            pointer-events: none !important;
+        }
+        
+        @media (max-width: 992px) {
+            .w3s-header-actions .link-text {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .w3s-nav-menu {
+                /* Não ocultar completamente, apenas ajustar */
+                margin-left: 5px;
+                gap: 2px;
+            }
+            
+            .nav-button {
+                padding: 0 8px;
+                font-size: 13px;
+            }
+
+            /* === MOBILE DROPDOWN ADJUSTMENTS === */
+            .dropdown-menu {
+                position: fixed;
+                top: var(--header-height);
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100vw - 20px);
+                max-width: 300px;
+                border-radius: 8px;
+                max-height: 60vh;
+            }
+
+            .dropdown-item {
+                padding: 14px 16px;
+                font-size: 16px;
+            }
+
+            .dropdown-icon {
+                font-size: 18px;
+                width: 24px;
+            }
+        }
+
+        /* Para telas muito pequenas (menos de 480px), aí sim podemos ocultar */
+        @media (max-width: 480px) {
+            .w3s-nav-menu {
+                display: none;
+            }
+        }
+
+        /* Pomodoro Timer Styles */
+        .pomodoro-timer-panel {
+            position: fixed;
+            top: calc(var(--header-height) + 5px);
+            right: 20px;
+            width: 320px;
+            max-width: calc(100vw - 40px);
+            background-color: var(--main-content-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            z-index: 9999;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            color: var(--text-dark);
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .pomodoro-timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 8px;
+        }
+
+        .pomodoro-timer-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+            color: var(--main-color);
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .pomodoro-timer-icon {
+            margin-left: 8px;
+            font-size: 1.1em;
+        }
+
+        .pomodoro-timer-close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 8px;
+            line-height: 1;
+            color: var(--text-muted);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pomodoro-timer-close-btn:hover {
+            color: var(--text-dark);
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .pomodoro-timer-display {
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        #pomodoroTimerTime {
+            font-size: 3.8em;
+            font-weight: bold;
+            color: var(--accent-1);
+            display: block;
+            margin: 12px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pomodoro-timer-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .pomodoro-timer-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-height: 44px;
+        }
+
+        .pomodoro-timer-start {
+            background-color: var(--main-color);
+            color: var(--text-light);
+        }
+
+        .pomodoro-timer-start:hover {
+            background-color: var(--dark-blue-hover);
+            transform: translateY(-1px);
+        }
+
+        .pomodoro-timer-pause {
+            background-color: var(--accent-2);
+            color: var(--text-light);
+        }
+
+        .pomodoro-timer-pause:hover {
+            filter: brightness(0.9);
+            transform: translateY(-1px);
+        }
+
+        .pomodoro-timer-reset {
+            background-color: var(--light-highlight-bg);
+            color: var(--text-dark);
+            border: 2px solid var(--border-color);
+        }
+
+        .pomodoro-timer-reset:hover {
+            background-color: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .pomodoro-timer-btn:active {
+            transform: translateY(1px);
+        }
+
+        .pomodoro-timer-status {
+            text-align: center;
+            font-size: 1em;
+            color: var(--text-muted);
+            background-color: var(--light-highlight-bg);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .pomodoro-timer-status p {
+            margin: 6px 0;
+        }
+
+        #pomodoroTimerSessionStatus {
+            font-weight: bold;
+            color: var(--text-dark);
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 480px) {
+            .pomodoro-timer-panel {
+                width: calc(100vw - 20px);
+                right: 10px;
+                left: 10px;
+                padding: 16px;
+            }
+
+            #pomodoroTimerTime {
+                font-size: 3em;
+            }
+
+            .pomodoro-timer-header h3 {
+                font-size: 1.1em;
+            }
+
+            .pomodoro-timer-btn {
+                padding: 10px 12px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+
+    <script>
+        // Namespace isolado para o Pomodoro Timer
+        window.PomodoroTimerApp = (function() {
+            'use strict';
+            
+            // Variáveis privadas
+            let timerState = {
+                workDuration: 25 * 60,
+                shortBreakDuration: 5 * 60,
+                longBreakDuration: 15 * 60,
+                pomodorosBeforeLongBreak: 4,
+                currentTime: 25 * 60,
+                timerInterval: null,
+                isTimerRunning: false,
+                currentSession: 'work',
+                pomodoroCount: 0
+            };
+
+            let elements = {};
+            let isInitialized = false;
+            let lastListeners = {};
+
+            // Função para buscar elementos DOM de forma segura
+            function initializeElements() {
+                const elementIds = {
+                    pomodoroBtn: 'pomodoro-btn',
+                    pomodoroPanel: 'pomodoroTimerPanel',
+                    pomodoroCloseBtn: 'pomodoroTimerCloseBtn',
+                    pomodoroTimeDisplay: 'pomodoroTimerTime',
+                    pomodoroStartBtn: 'pomodoroTimerStartBtn',
+                    pomodoroPauseBtn: 'pomodoroTimerPauseBtn',
+                    pomodoroResetBtn: 'pomodoroTimerResetBtn',
+                    pomodoroSessionStatus: 'pomodoroTimerSessionStatus',
+                    pomodoroCyclesDisplay: 'pomodoroTimerCycles'
+                };
+
+                let allElementsFound = true;
+                
+                // Buscar elementos primeiro no header-placeholder, depois globalmente
+                const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document;
+                
+                for (let key in elementIds) {
+                    elements[key] = headerContainer.querySelector ? 
+                        headerContainer.querySelector('#' + elementIds[key]) : 
+                        document.getElementById(elementIds[key]);
+                    
+                    if (!elements[key]) {
+                        console.warn(`Elemento ${elementIds[key]} não encontrado no header, buscando globalmente...`);
+                        elements[key] = document.getElementById(elementIds[key]);
+                    }
+                    
+                    if (!elements[key]) {
+                        console.error(`Elemento ${elementIds[key]} não encontrado`);
+                        allElementsFound = false;
+                    }
+                }
+
+                return allElementsFound;
+            }
+
+            // Remove listeners antigos para evitar duplicação
+            function removeOldListeners() {
+                if (lastListeners.pomodoroBtn && elements.pomodoroBtn) {
+                    elements.pomodoroBtn.removeEventListener('click', lastListeners.pomodoroBtn);
+                }
+                if (lastListeners.pomodoroCloseBtn && elements.pomodoroCloseBtn) {
+                    elements.pomodoroCloseBtn.removeEventListener('click', lastListeners.pomodoroCloseBtn);
+                }
+                if (lastListeners.pomodoroStartBtn && elements.pomodoroStartBtn) {
+                    elements.pomodoroStartBtn.removeEventListener('click', lastListeners.pomodoroStartBtn);
+                }
+                if (lastListeners.pomodoroPauseBtn && elements.pomodoroPauseBtn) {
+                    elements.pomodoroPauseBtn.removeEventListener('click', lastListeners.pomodoroPauseBtn);
+                }
+                if (lastListeners.pomodoroResetBtn && elements.pomodoroResetBtn) {
+                    elements.pomodoroResetBtn.removeEventListener('click', lastListeners.pomodoroResetBtn);
+                }
+            }
+
+            // Função para atualizar o display
+            function updateDisplay() {
+                if (!elements.pomodoroTimeDisplay) return;
+                
+                const minutes = Math.floor(timerState.currentTime / 60);
+                const seconds = timerState.currentTime % 60;
+                elements.pomodoroTimeDisplay.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            // Função para iniciar o timer
+            function startTimer() {
+                if (timerState.isTimerRunning) return;
+                
+                timerState.isTimerRunning = true;
+                elements.pomodoroStartBtn.style.display = 'none';
+                elements.pomodoroPauseBtn.style.display = 'inline-block';
+                
+                timerState.timerInterval = setInterval(function() {
+                    timerState.currentTime--;
+                    updateDisplay();
+                    
+                    if (timerState.currentTime < 0) {
+                        clearInterval(timerState.timerInterval);
+                        switchSession();
+                    }
+                }, 1000);
+            }
+
+            // Função para pausar o timer
+            function pauseTimer() {
+                timerState.isTimerRunning = false;
+                elements.pomodoroStartBtn.style.display = 'inline-block';
+                elements.pomodoroPauseBtn.style.display = 'none';
+                clearInterval(timerState.timerInterval);
+            }
+
+            // Função para resetar o timer
+            function resetTimer(resetCycles) {
+                clearInterval(timerState.timerInterval);
+                timerState.isTimerRunning = false;
+                timerState.currentSession = 'work';
+                timerState.currentTime = timerState.workDuration;
+                
+                if (resetCycles) {
+                    timerState.pomodoroCount = 0;
+                }
+                
+                updateDisplay();
+                elements.pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
+                elements.pomodoroCyclesDisplay.textContent = timerState.pomodoroCount;
+                elements.pomodoroStartBtn.style.display = 'inline-block';
+                elements.pomodoroPauseBtn.style.display = 'none';
+            }
+
+            // Função para alternar sessões
+            function switchSession() {
+                if (timerState.currentSession === 'work') {
+                    timerState.pomodoroCount++;
+                    elements.pomodoroCyclesDisplay.textContent = timerState.pomodoroCount;
+                    
+                    if (timerState.pomodoroCount % timerState.pomodorosBeforeLongBreak === 0) {
+                        timerState.currentSession = 'longBreak';
+                        timerState.currentTime = timerState.longBreakDuration;
+                        elements.pomodoroSessionStatus.textContent = 'Pausa Longa';
+                    } else {
+                        timerState.currentSession = 'shortBreak';
+                        timerState.currentTime = timerState.shortBreakDuration;
+                        elements.pomodoroSessionStatus.textContent = 'Pausa Curta';
+                    }
+                } else {
+                    timerState.currentSession = 'work';
+                    timerState.currentTime = timerState.workDuration;
+                    elements.pomodoroSessionStatus.textContent = 'Sessão de Trabalho';
+                }
+                
+                updateDisplay();
+                
+                // Tentar notificação
+                try {
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('🍅 Pomodoro Timer', {
+                            body: `Hora da ${elements.pomodoroSessionStatus.textContent}!`,
+                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🍅</text></svg>'
+                        });
+                    }
+                } catch (e) {
+                    console.log('Notificações não disponíveis');
+                }
+                
+                startTimer();
+            }
+
+            // Função para mostrar/esconder painel
+            function togglePanel(forceOpen) {
+                if (!elements.pomodoroPanel) return;
+                const isVisible = elements.pomodoroPanel.style.display === 'flex';
+                if (forceOpen === true) {
+                    elements.pomodoroPanel.style.display = 'flex';
+                } else if (forceOpen === false) {
+                    elements.pomodoroPanel.style.display = 'none';
+                } else {
+                    elements.pomodoroPanel.style.display = isVisible ? 'none' : 'flex';
+                }
+            }
+
+            // Função para fechar painel
+            function closePanel() {
+                if (elements.pomodoroPanel) {
+                    elements.pomodoroPanel.style.display = 'none';
+                }
+            }
+
+            // Função para configurar event listeners
+            function setupEventListeners() {
+                if (!isInitialized) return;
+                removeOldListeners();
+
+                // Botão principal do pomodoro
+                lastListeners.pomodoroBtn = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    togglePanel();
+                };
+                elements.pomodoroBtn.addEventListener('click', lastListeners.pomodoroBtn);
+
+                // Botão fechar
+                lastListeners.pomodoroCloseBtn = closePanel;
+                elements.pomodoroCloseBtn.addEventListener('click', lastListeners.pomodoroCloseBtn);
+
+                // Controles do timer
+                lastListeners.pomodoroStartBtn = startTimer;
+                elements.pomodoroStartBtn.addEventListener('click', lastListeners.pomodoroStartBtn);
+                lastListeners.pomodoroPauseBtn = pauseTimer;
+                elements.pomodoroPauseBtn.addEventListener('click', lastListeners.pomodoroPauseBtn);
+                lastListeners.pomodoroResetBtn = function() { resetTimer(true); };
+                elements.pomodoroResetBtn.addEventListener('click', lastListeners.pomodoroResetBtn);
+
+                // Fechar ao clicar fora
+                document.addEventListener('click', function(e) {
+                    if (elements.pomodoroPanel && 
+                        elements.pomodoroPanel.style.display === 'flex' && 
+                        !elements.pomodoroPanel.contains(e.target) && 
+                        !elements.pomodoroBtn.contains(e.target)) {
+                        closePanel();
+                    }
+                });
+
+                // Solicitar permissão para notificações
+                try {
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        Notification.requestPermission();
+                    }
+                } catch (e) {
+                    console.log('Notificações não suportadas');
+                }
+            }
+
+            // Função de inicialização principal
+            function init() {
+                if (isInitialized) {
+                    // Permite reinicializar se header for recarregado
+                    removeOldListeners();
+                }
+
+                if (!initializeElements()) {
+                    console.error('❌ Falha ao inicializar elementos do Pomodoro');
+                    return;
+                }
+
+                setupEventListeners();
+
+                // Estado inicial
+                updateDisplay();
+                elements.pomodoroPauseBtn.style.display = 'none';
+
+                isInitialized = true;
+                console.log('✅ Pomodoro Timer inicializado com sucesso!');
+            }
+
+            // Função para tentar inicializar múltiplas vezes
+            function tryInitialize() {
+                let attempts = 0;
+                const maxAttempts = 10;
+                const interval = setInterval(function() {
+                    attempts++;
+                    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                        init();
+                        if (isInitialized) {
+                            clearInterval(interval);
+                            return;
+                        }
+                    }
+                    if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        console.error('❌ Falha ao inicializar Pomodoro após múltiplas tentativas');
+                    }
+                }, 500);
+            }
+
+            // API pública
+            return {
+                init: init,
+                tryInitialize: tryInitialize,
+                isInitialized: function() { return isInitialized; },
+                openPanel: function() { togglePanel(true); },
+                closePanel: function() { togglePanel(false); },
+                togglePanel: togglePanel
+            };
+        })();
+
+        // Inicialização automática com múltiplas estratégias
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', window.PomodoroTimerApp.tryInitialize);
+        } else {
+            window.PomodoroTimerApp.tryInitialize();
+        }
+
+        // Fallback adicional
+        window.addEventListener('load', function() {
+            if (!window.PomodoroTimerApp.isInitialized()) {
+                window.PomodoroTimerApp.tryInitialize();
+            }
+        });
+
+        // Integração com sidebar toggle (se existir no contexto pai)
+        document.addEventListener('click', function(e) {
+            console.log('🖱️ Clique detectado em:', e.target.id, e.target.className);
+            
+            // Sidebar toggle
+            if (e.target.id === 'sidebarToggleBtn' && window.studyApp) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔧 Sidebar toggle clicado via delegação');
+                window.studyApp.toggleSidebar();
+                return;
+            }
+            
+            // Botão "Todos os Cursos" - melhor detecção
+            const isShowAllCoursesBtn = e.target.id === 'showAllCoursesBtn' || 
+                                      e.target.closest('#showAllCoursesBtn') || 
+                                      e.target.parentElement?.id === 'showAllCoursesBtn' ||
+                                      (e.target.tagName === 'SPAN' && e.target.parentElement?.id === 'showAllCoursesBtn');
+            
+            if (isShowAllCoursesBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔧 Botão "Todos os Cursos" clicado via delegação');
+                if (window.studyApp && window.studyApp.loadAllCourses) {
+                    window.studyApp.loadAllCourses();
+                } else {
+                    console.warn('⚠️ studyApp.loadAllCourses não disponível');
+                    // Retry após delay
+                    setTimeout(() => {
+                        if (window.studyApp && window.studyApp.loadAllCourses) {
+                            console.log('🔄 Retry: Chamando loadAllCourses após delay');
+                            window.studyApp.loadAllCourses();
+                        }
+                    }, 1000);
+                }
+                return;
+            }
+            
+            // Botão de alternância de tema - melhor detecção
+            const isThemeToggleBtn = e.target.id === 'themeToggleBtn' || 
+                                   e.target.closest('#themeToggleBtn') || 
+                                   e.target.parentElement?.id === 'themeToggleBtn' ||
+                                   e.target.id === 'themeIcon' ||
+                                   (e.target.tagName === 'SPAN' && e.target.parentElement?.id === 'themeToggleBtn');
+            
+            if (isThemeToggleBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔧 Botão de tema clicado via delegação');
+                toggleTheme();
+                return;
+            }
+        });
+
+        // Event listeners diretos para garantir funcionamento
+        function setupDirectEventListeners() {
+            console.log('🔧 Configurando event listeners diretos...');
+            const header = document.getElementById('mainHeader') || document.querySelector('.w3s-header');
+            if (!header) return;
+
+            // Theme toggle button
+            const themeBtn = header.querySelector('#themeToggleBtn');
+            if (themeBtn) {
+                themeBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Theme button clicked directly');
+                    toggleTheme();
+                };
+                console.log('✅ Event listener direto configurado para themeToggleBtn');
+            } else {
+                console.warn('❌ themeToggleBtn não encontrado para event listener direto');
+            }
+
+            // Botão QUESTÕES
+            const questoesBtn = header.querySelector('#questoesOpenBtn');
+            if (questoesBtn) {
+                questoesBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🎯 Botão QUESTÕES clicado');
+                    tryOpenQuestoes();
+                };
+                console.log('✅ Event listener direto configurado para questoesOpenBtn');
+            } else {
+                console.warn('❌ questoesOpenBtn não encontrado para event listener direto');
+            }
+
+            // Show all courses button
+            const showAllBtn = header.querySelector('#showAllCoursesBtn');
+            if (showAllBtn) {
+                showAllBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Show all courses button clicked directly');
+                    if (window.studyApp && window.studyApp.loadAllCourses) {
+                        window.studyApp.loadAllCourses();
+                    } else {
+                        console.warn('⚠️ studyApp.loadAllCourses não disponível');
+                        setTimeout(() => {
+                            if (window.studyApp && window.studyApp.loadAllCourses) {
+                                console.log('🔄 Retry: Chamando loadAllCourses após delay');
+                                window.studyApp.loadAllCourses();
+                            }
+                        }, 1000);
+                    }
+                };
+                console.log('✅ Event listener direto configurado para showAllCoursesBtn');
+            } else {
+                console.warn('❌ showAllCoursesBtn não encontrado para event listener direto');
+            }
+
+            // Sidebar toggle button
+            const sidebarBtn = header.querySelector('#sidebarToggleBtn');
+            if (sidebarBtn) {
+                sidebarBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Sidebar toggle clicked directly');
+                    if (window.studyApp && window.studyApp.toggleSidebar) {
+                        window.studyApp.toggleSidebar();
+                    }
+                };
+                console.log('✅ Event listener direto configurado para sidebarToggleBtn');
+            } else {
+                console.warn('❌ sidebarToggleBtn não encontrado para event listener direto');
+            }
+
+            // Pomodoro button
+            const pomodoroBtn = header.querySelector('#pomodoro-btn');
+            if (pomodoroBtn) {
+                pomodoroBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Pomodoro button clicked directly');
+                    if (window.PomodoroTimerApp && window.PomodoroTimerApp.togglePanel) {
+                        window.PomodoroTimerApp.togglePanel();
+                    } else {
+                        console.warn('⚠️ PomodoroTimerApp.togglePanel não disponível');
+                        // Retry após delay
+                        setTimeout(() => {
+                            if (window.PomodoroTimerApp && window.PomodoroTimerApp.togglePanel) {
+                                console.log('🔄 Retry: Chamando togglePanel após delay');
+                                window.PomodoroTimerApp.togglePanel();
+                            }
+                        }, 500);
+                    }
+                };
+                console.log('✅ Event listener direto configurado para pomodoro-btn');
+            } else {
+                console.warn('❌ pomodoro-btn não encontrado para event listener direto');
+            }
+        }
+
+        // Função para alternar tema
+        function toggleTheme() {
+            console.log('toggleTheme chamada');
+            try {
+                const body = document.body;
+                const isDark = body.classList.toggle('dark-mode');
+                console.log('Modo escuro:', isDark);
+                
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) {
+                    themeIcon.textContent = isDark ? '☀️' : '🌙';
+                    console.log('Ícone atualizado para:', themeIcon.textContent);
+                } else {
+                    console.warn('Elemento themeIcon não encontrado');
+                }
+                
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                console.log('Tema salvo no localStorage:', isDark ? 'dark' : 'light');
+                
+                // Notificar o app principal se disponível
+                if (window.studyApp && window.studyApp.showNotification) {
+                    window.studyApp.showNotification(`Tema ${isDark ? 'escuro' : 'claro'} ativado`, 'success');
+                    
+                    // Aplicar tema ao conteúdo da aula atual
+                    if (window.studyApp.currentContent && window.studyApp.applyCurrentThemeToLesson) {
+                        const lessonContent = document.querySelector('.lesson-content');
+                        if (lessonContent) {
+                            console.log('🎨 Aplicando tema ao conteúdo da aula...');
+                            window.studyApp.applyCurrentThemeToLesson(lessonContent);
+                        }
+                    }
+                } else {
+                    console.log(`Tema ${isDark ? 'escuro' : 'claro'} ativado (sem notificação)`);
+                }
+            } catch (error) {
+                console.error('Erro ao alternar tema:', error);
+            }
+        }
+
+        // Aplicar tema salvo na inicialização
+        function applyTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+            
+            document.body.classList.toggle('dark-mode', isDark);
+            
+            // Buscar themeIcon no header primeiro, depois globalmente
+            const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document;
+            let themeIcon = headerContainer.querySelector ? headerContainer.querySelector('#themeIcon') : null;
+            
+            if (!themeIcon) {
+                themeIcon = document.getElementById('themeIcon');
+            }
+            
+            if (themeIcon) {
+                themeIcon.textContent = isDark ? '☀️' : '🌙';
+                console.log('✅ Ícone do tema atualizado:', themeIcon.textContent);
+            } else {
+                console.warn('⚠️ themeIcon não encontrado');
+            }
+        }
+
+        // Aplicar tema quando o header for carregado
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Header DOM carregado');
+            applyTheme();
+            setupDirectEventListeners();
+        });
+        
+        window.addEventListener('load', function() {
+            console.log('Header window load');
+            applyTheme();
+            setupDirectEventListeners();
+        });
+
+        // Configurar event listeners quando elementos estiverem disponíveis
+        function trySetupEventListeners() {
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            const interval = setInterval(() => {
+                attempts++;
+                console.log(`Tentativa ${attempts} de configurar event listeners`);
+                
+                if (document.getElementById('themeToggleBtn') && document.getElementById('showAllCoursesBtn')) {
+                    setupDirectEventListeners();
+                    clearInterval(interval);
+                    console.log('Event listeners configurados com sucesso');
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    console.warn('Falha ao configurar event listeners após múltiplas tentativas');
+                }
+            }, 500);
+        }
+
+        // Função global para inicialização após carregamento dinâmico
+        window.initializeHeaderEvents = function() {
+            console.log('🔧 Inicializando eventos do header dinamicamente...');
+            
+            // Sempre buscar elementos apenas dentro do header-placeholder ou mainHeader
+            const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document.querySelector('.w3s-header');
+            if (!headerContainer) {
+                console.error('❌ Container do header não encontrado');
+                return;
+            }
+            
+            // Diagnóstico dos elementos dentro do header
+            const themeBtn = headerContainer.querySelector('#themeToggleBtn');
+            const showAllBtn = headerContainer.querySelector('#showAllCoursesBtn');
+            const sidebarBtn = headerContainer.querySelector('#sidebarToggleBtn');
+            const pomodoroBtn = headerContainer.querySelector('#pomodoro-btn');
+            const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
+            const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
+            
+            console.log('🔍 Diagnóstico dos elementos no header:');
+            console.log('  - themeToggleBtn:', themeBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - showAllCoursesBtn:', showAllBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - sidebarToggleBtn:', sidebarBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - pomodoro-btn:', pomodoroBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - cursosMenuBtn:', cursosBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            console.log('  - flashcardsMenuBtn:', flashcardsBtn ? '✅ Encontrado' : '❌ Não encontrado');
+            
+            applyTheme();
+            setupDirectEventListeners();
+            
+            // Configurar menus dropdown com retry
+            const dropdownSuccess = setupDropdownMenus();
+            if (!dropdownSuccess) {
+                console.log('🔄 Tentando configurar dropdowns novamente em 500ms...');
+                setTimeout(() => {
+                    setupDropdownMenus();
+                }, 500);
+            }
+            
+            // Inicializar Pomodoro Timer após carregamento dinâmico
+            if (window.PomodoroTimerApp) {
+                setTimeout(() => {
+                    console.log('🍅 Inicializando Pomodoro Timer...');
+                    window.PomodoroTimerApp.init();
+                }, 100);
+            }
+            
+            // Verificar se window.studyApp está disponível
+            console.log('🔍 window.studyApp:', window.studyApp ? '✅ Disponível' : '❌ Não disponível');
+            if (window.studyApp) {
+                console.log('  - toggleSidebar:', typeof window.studyApp.toggleSidebar);
+                console.log('  - loadAllCourses:', typeof window.studyApp.loadAllCourses);
+                console.log('  - showNotification:', typeof window.studyApp.showNotification);
+            }
+        };
+
+        // === FUNCIONALIDADE DOS MENUS DROPDOWN ===
+        function setupDropdownMenus() {
+            console.log('🔧 Configurando menus dropdown...');
+            
+            const headerContainer = document.getElementById('header-placeholder') || document.getElementById('mainHeader') || document.querySelector('.w3s-header');
+            if (!headerContainer) {
+                console.warn('❌ Container do header não encontrado');
+                return false;
+            }
+
+            console.log('📍 Container encontrado:', headerContainer.id || headerContainer.className);
+
+            // Configurar botão CURSOS
+            const cursosBtn = headerContainer.querySelector('#cursosMenuBtn');
+            const cursosMenu = headerContainer.querySelector('#cursos-menu');
+            
+            console.log('🔍 Elementos CURSOS:', {
+                button: cursosBtn ? 'Encontrado' : 'Não encontrado',
+                menu: cursosMenu ? 'Encontrado' : 'Não encontrado'
+            });
+            
+            if (cursosBtn && cursosMenu) {
+                // Limpar event listeners anteriores
+                cursosBtn.onclick = null;
+                cursosBtn.removeAttribute('onclick');
+                
+                // Adicionar novo event listener
+                cursosBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Botão CURSOS clicado - menu será toggleado');
+                    toggleDropdownMenu(cursosMenu, cursosBtn);
+                });
+                console.log('✅ Menu CURSOS configurado com sucesso');
+            } else {
+                console.warn('❌ Elementos do menu CURSOS não encontrados');
+                return false;
+            }
+
+            // Configurar botão FLASHCARDS
+            const flashcardsBtn = headerContainer.querySelector('#flashcardsMenuBtn');
+            const flashcardsMenu = headerContainer.querySelector('#flashcards-menu');
+            
+            console.log('🔍 Elementos FLASHCARDS:', {
+                button: flashcardsBtn ? 'Encontrado' : 'Não encontrado',
+                menu: flashcardsMenu ? 'Encontrado' : 'Não encontrado'
+            });
+            
+            if (flashcardsBtn && flashcardsMenu) {
+                // Limpar event listeners anteriores
+                flashcardsBtn.onclick = null;
+                flashcardsBtn.removeAttribute('onclick');
+                
+                // Adicionar novo event listener
+                flashcardsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Botão FLASHCARDS clicado - menu será toggleado');
+                    toggleDropdownMenu(flashcardsMenu, flashcardsBtn);
+                });
+                console.log('✅ Menu FLASHCARDS configurado com sucesso');
+            } else {
+                console.warn('❌ Elementos do menu FLASHCARDS não encontrados');
+                return false;
+            }
+
+            // Configurar botão QUESTÕES
+            const questoesBtn = headerContainer.querySelector('#questoesMenuBtn');
+            const questoesMenu = headerContainer.querySelector('#questoes-menu');
+            
+            console.log('🔍 Elementos QUESTÕES:', {
+                button: questoesBtn ? 'Encontrado' : 'Não encontrado',
+                menu: questoesMenu ? 'Encontrado' : 'Não encontrado'
+            });
+            
+            if (questoesBtn && questoesMenu) {
+                // Limpar event listeners anteriores
+                questoesBtn.onclick = null;
+                questoesBtn.removeAttribute('onclick');
+                
+                // Adicionar novo event listener
+                questoesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔧 Botão QUESTÕES clicado - menu será toggleado');
+                    toggleDropdownMenu(questoesMenu, questoesBtn);
+                });
+                console.log('✅ Menu QUESTÕES configurado com sucesso');
+            } else {
+                console.warn('❌ Elementos do menu QUESTÕES não encontrados');
+                return false;
+            }
+
+            // Configurar fechamento ao clicar fora (apenas uma vez)
+            if (!window.dropdownClickHandlerAdded) {
+                document.addEventListener('click', function(e) {
+                    const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+                    const isClickOnNavButton = e.target.closest('.nav-button');
+                    const isClickInsideDropdown = e.target.closest('.dropdown-menu');
+                    
+                    if (!isClickOnNavButton && !isClickInsideDropdown) {
+                        dropdowns.forEach(dropdown => {
+                            closeDropdownMenu(dropdown);
+                        });
+                    }
+                });
+                window.dropdownClickHandlerAdded = true;
+                console.log('✅ Handler de fechamento global configurado');
+            }
+
+            return true;
+        }
+
+        function toggleDropdownMenu(menu, button) {
+            console.log('🔄 Toggle menu:', menu.id);
+            
+            // Fechar outros menus primeiro
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+            allDropdowns.forEach(dropdown => {
+                if (dropdown !== menu && dropdown.classList.contains('show')) {
+                    closeDropdownMenu(dropdown);
+                }
+            });
+            
+            // Toggle do menu atual
+            const isOpen = menu.classList.contains('show');
+            
+            if (isOpen) {
+                closeDropdownMenu(menu);
+            } else {
+                openDropdownMenu(menu, button);
+            }
+        }
+
+        function openDropdownMenu(menu, button) {
+            menu.classList.add('show');
+            if (button) {
+                button.setAttribute('aria-expanded', 'true');
+            }
+            console.log('📂 Menu aberto:', menu.id);
+        }
+
+        function closeDropdownMenu(menu) {
+            menu.classList.remove('show');
+            const button = document.querySelector(`[data-target="${menu.id}"]`);
+            if (button) {
+                button.setAttribute('aria-expanded', 'false');
+            }
+            console.log('📁 Menu fechado:', menu.id);
+        }
+
+        // === FUNÇÕES DOS ITENS DO MENU ===
+        function showAllCoursesAction() {
+            console.log('🔧 Ação "Ver Todos os Cursos" executada');
+            if (window.studyApp && window.studyApp.loadAllCourses) {
+                window.studyApp.loadAllCourses();
+                // Fechar menu
+                const cursosMenu = document.querySelector('#cursos-menu');
+                if (cursosMenu) closeDropdownMenu(cursosMenu);
+            } else {
+                console.warn('⚠️ studyApp.loadAllCourses não disponível');
+                alert('Funcionalidade será implementada em breve!');
+            }
+        }
+
+        function createCustomFlashcards() {
+            console.log('🔧 Ação "Criar Flashcards Personalizados" executada');
+            // Fechar menu
+            const flashcardsMenu = document.querySelector('#flashcards-menu');
+            if (flashcardsMenu) closeDropdownMenu(flashcardsMenu);
+            
+            if (window.studyApp && window.studyApp.showNotification) {
+                window.studyApp.showNotification('Funcionalidade de Flashcards em desenvolvimento!', 'info');
+            } else {
+                alert('Funcionalidade de Flashcards Personalizados será implementada em breve!');
+            }
+        }
+
+        // === FUNÇÕES DO MENU QUESTÕES ===
+        function openQuestoesForCourse(courseName) {
+            console.log('🎯 Abrindo questões para curso:', courseName);
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) closeDropdownMenu(questoesMenu);
+            
+            try {
+                // Se a integração estiver presente, usar contexto específico
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration para curso específico');
+                    // Usar integração se disponível
+                    return window.QuestoesIntegration.openQuestions('static');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir com parâmetro de curso
+            let url;
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                // URL direta para servidor de desenvolvimento
+                url = 'http://localhost:8001/pro-questoes.html';
+            } else {
+                // Subdomínio para produção
+                url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+            }
+            url += `?curso=${courseName}`;
+            
+            console.log('🌐 Abrindo URL com curso específico:', url);
+            window.open(url, '_blank');
+        }
+
+        // Função global para abrir questões (para compatibilidade)
+        window.openQuestoesForCourse = openQuestoesForCourse;
+        window.openAllQuestoes = openAllQuestoes;
+
+        function openAllQuestoes() {
+            console.log('🎯 Abrindo todas as questões');
+            
+            // Fechar menu
+            const questoesMenu = document.querySelector('#questoes-menu');
+            if (questoesMenu) closeDropdownMenu(questoesMenu);
+            
+            try {
+                // Se a integração estiver presente, abrir em overlay
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration');
+                    return window.QuestoesIntegration.openQuestions('overlay');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir página estática
+            let url;
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                // URL direta para servidor de desenvolvimento
+                url = 'http://localhost:8001/pro-questoes.html';
+            } else {
+                // Subdomínio para produção
+                url = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+            }
+            
+            console.log('🌐 Abrindo URL geral:', url);
+            window.open(url, '_blank');
+        }
+
+        // === Abrir Sistema de Questões ===
+        function tryOpenQuestoes() {
+            console.log('🎯 tryOpenQuestoes chamada');
+            
+            // Se a integração estiver presente, abrir em overlay
+            try {
+                if (window.QuestoesIntegration && typeof window.QuestoesIntegration.openQuestions === 'function') {
+                    console.log('🔗 Usando integração QuestoesIntegration');
+                    return window.QuestoesIntegration.openQuestions('overlay');
+                }
+            } catch (e) {
+                console.warn('Integração QuestoesIntegration indisponível, usando fallback');
+            }
+
+            // Fallback: abrir página estática com contexto se possível
+            const url = buildQuestoesUrlWithContext();
+            console.log('🌐 Abrindo URL:', url);
+            window.open(url, '_blank');
+        }
+
+        function buildQuestoesUrlWithContext() {
+            // Usar caminho absoluto correto para o sistema de questões
+            let base = 'http://localhost:8001/pro-questoes.html';
+            
+            // Se não estiver em localhost, usar caminho relativo
+            if (window.location.hostname !== 'localhost') {
+                base = 'https://questoes.proconcursos.com.br/pro-questoes.html';
+            }
+            
+            try {
+                const path = window.location.pathname;
+                console.log('📍 Path atual:', path);
+                
+                // Suporta /content/{courses}/modules/{modules}/aulas/{aula}.html
+                const m2 = path.match(/\/content\/([^\/]+)\/modules\/([^\/]+)\/aulas\/([^\/]+)\.html/);
+                // Suporta /content/{courses}/{modules}/{aula}.html
+                const m1 = path.match(/\/content\/([^\/]+)\/([^\/]+)\/([^\/]+)\.html/);
+                const match = m2 || m1;
+                
+                if (match) {
+                    console.log('🎯 Contexto extraído:', { courses: match[1], modules: match[2], aula: match[3] });
+                    const params = new URLSearchParams({ courses: match[1], modules: match[2], aula: match[3] });
+                    const finalUrl = `${base}?${params.toString()}`;
+                    console.log('🔗 URL final com contexto:', finalUrl);
+                    return finalUrl;
+                } else {
+                    console.log('⚠️ Nenhum contexto encontrado no path');
+                }
+            } catch (error) {
+                console.error('❌ Erro ao extrair contexto:', error);
+            }
+            
+            console.log('🔗 URL final sem contexto:', base);
+            return base;
+        }
+
+        // Tentar configurar imediatamente e com delay
+        trySetupEventListeners();
+        
+        // Executar inicialização se carregado dinamicamente
+        if (window.location.pathname.includes('saladeestudos.html')) {
+            setTimeout(() => {
+                if (typeof window.initializeHeaderEvents === 'function') {
+                    window.initializeHeaderEvents();
+                }
+            }, 500);
+        }
+
+        // Função adicional para garantir inicialização dos dropdowns
+        function ensureDropdownsWork() {
+            console.log('🔧 Verificando elementos dropdown...');
+            
+            const cursosBtn = document.querySelector('#cursosMenuBtn');
+            const flashcardsBtn = document.querySelector('#flashcardsMenuBtn');
+            const questoesBtn = document.querySelector('#questoesMenuBtn');
+            const cursosMenu = document.querySelector('#cursos-menu');
+            const flashcardsMenu = document.querySelector('#flashcards-menu');
+            const questoesMenu = document.querySelector('#questoes-menu');
+            
+            console.log('🔍 Debug dos elementos:', {
+                cursosBtn: cursosBtn ? `Encontrado (${cursosBtn.tagName})` : 'Não encontrado',
+                flashcardsBtn: flashcardsBtn ? `Encontrado (${flashcardsBtn.tagName})` : 'Não encontrado',
+                questoesBtn: questoesBtn ? `Encontrado (${questoesBtn.tagName})` : 'Não encontrado',
+                cursosMenu: cursosMenu ? `Encontrado (${cursosMenu.tagName})` : 'Não encontrado',
+                flashcardsMenu: flashcardsMenu ? `Encontrado (${flashcardsMenu.tagName})` : 'Não encontrado',
+                questoesMenu: questoesMenu ? `Encontrado (${questoesMenu.tagName})` : 'Não encontrado'
+            });
+            
+            // Verificar se os elementos estão visíveis
+            if (cursosBtn) {
+                const rect = cursosBtn.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
+                console.log('👁️ Botão CURSOS visível:', isVisible, rect);
+            }
+            
+            if (questoesBtn) {
+                const rect = questoesBtn.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
+                console.log('👁️ Botão QUESTÕES visível:', isVisible, rect);
+            }
+            
+            if (cursosBtn && flashcardsBtn && questoesBtn && cursosMenu && flashcardsMenu && questoesMenu) {
+                console.log('✅ Todos os elementos encontrados, configurando...');
+                const success = setupDropdownMenus();
+                
+                // Teste adicional: simular clique
+                if (success) {
+                    console.log('🧪 Testando funcionalidade dos botões...');
+                    
+                    // Adicionar indicador visual de que os botões estão funcionando
+                    cursosBtn.style.border = '2px solid green';
+                    flashcardsBtn.style.border = '2px solid green';
+                    questoesBtn.style.border = '2px solid green';
+                    
+                    setTimeout(() => {
+                        cursosBtn.style.border = '';
+                        flashcardsBtn.style.border = '';
+                        questoesBtn.style.border = '';
+                    }, 2000);
+                }
+                
+                return success;
+            } else {
+                console.log('⚠️ Nem todos os elementos foram encontrados ainda');
+                return false;
+            }
+        }
+
+        // Retry mechanism para garantir que os dropdowns funcionem
+        let retryCount = 0;
+        const maxRetries = 10;
+        
+        function retryDropdownSetup() {
+            if (retryCount >= maxRetries) {
+                console.error('❌ Falha ao configurar dropdowns após múltiplas tentativas');
+                return;
+            }
+            
+            if (!ensureDropdownsWork()) {
+                retryCount++;
+                console.log(`🔄 Tentativa ${retryCount}/${maxRetries} de configurar dropdowns...`);
+                setTimeout(retryDropdownSetup, 200);
+            } else {
+                console.log('✅ Dropdowns configurados com sucesso!');
+            }
+        }
+
+        // Iniciar retry se necessário
+        setTimeout(retryDropdownSetup, 100);
+    </script>
+</body>
+</html>

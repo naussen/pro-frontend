@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Vite - PRO Concursos</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .test-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 { margin-bottom: 20px; }
+        .status { font-size: 1.2em; margin: 10px 0; }
+        .success { color: #4CAF50; }
+        .info { color: #2196F3; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🚀 Vite Configurado com Sucesso!</h1>
+        <div class="status success">✅ Servidor de Desenvolvimento: OK</div>
+        <div class="status success">✅ Hot Module Replacement: OK</div>
+        <div class="status success">✅ ES6 Modules: OK</div>
+        <div class="status success">✅ Multi-Page Build: OK</div>
+        <div class="status info">ℹ️ Ambiente: <span id="env">Desenvolvimento</span></div>
+        <div class="status info">ℹ️ Porta: 3000</div>
+        <br>
+        <p><strong>Próximos passos:</strong></p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>Execute: <code>npm run dev</code></li>
+            <li>Teste o hot reload editando este arquivo</li>
+            <li>Verifique o console do navegador</li>
+            <li>Teste: <code>npm run build</code></li>
+        </ul>
+    </div>
+
+    <script type="module">
+        // Teste básico de módulos ES6
+        console.log('🎯 Vite funcionando! ES6 Modules carregados.');
+
+        // Teste de variáveis de ambiente
+        const envIndicator = document.getElementById('env');
+        if (import.meta.env.DEV) {
+            envIndicator.textContent = 'Desenvolvimento (DEV)';
+            envIndicator.style.color = '#FF9800';
+        } else {
+            envIndicator.textContent = 'Produção (PROD)';
+            envIndicator.style.color = '#4CAF50';
+        }
+
+        // Log de informações úteis
+        console.log('📊 Vite Environment Info:');
+        console.log('- Mode:', import.meta.env.MODE);
+        console.log('- Dev:', import.meta.env.DEV);
+        console.log('- Prod:', import.meta.env.PROD);
+        console.log('- Base URL:', import.meta.env.BASE_URL);
+    </script>
+</body>
+</html>

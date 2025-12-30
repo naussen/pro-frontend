@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de Estudos - PRO Concursos</title>
+    
+    <!-- Favicon inline para evitar erro 404 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDdiZmYiLz4KPHRleHQgeD0iNTAlIiB5PSI1MyUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+UDwvdGV4dD4KPC9zdmc+">
+    <link rel="alternate icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIiSURBVFhH7ZY9SwNBEIafgIWNhYWFhYWNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2N/QHbWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWP/">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/saladeestudos.css">
+</head>
+<body>
+    <!-- Header placeholder que será carregado dinamicamente -->
+    <div id="header-placeholder"></div>
+
+    <!-- Layout principal da sala de estudos -->
+    <div class="study-layout">
+        <!-- Overlay para mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar de navegação -->
+        <aside class="study-sidebar" id="studySidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Meus Cursos</div>
+                <div class="sidebar-icon-expanded">📚</div>
+                <div class="sidebar-icon-collapsed">📚</div>
+            </div>
+            <div class="sidebar-content">
+                <nav class="sidebar-nav" id="courseNavigation">
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando cursos...</p>
+                    </div>
+                </nav>
+                <!-- Indicador de scroll -->
+                <div class="scroll-indicator" id="scrollIndicator">
+                    <div class="scroll-indicator-icon">↓</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área de conteúdo principal -->
+        <main class="study-content">
+            <!-- Botão dinâmico para questões do módulo atual -->
+            <button id="dynamic-questoes-btn" title="🎯 Questões do módulo atual - Clique para praticar!">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+            </button>
+            <div class="content-body" id="contentBody">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📖</div>
+                    <h3>Bem-vindo à Sala de Estudos!</h3>
+                    <p>Selecione um curso no menu lateral para começar seus estudos.</p>
+                    <p style="margin-top: 1rem; font-size: 0.9em; opacity: 0.8;">
+                        💡 Use o botão "Todos os Cursos" para ver todo o conteúdo disponível.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    
+    <!-- Scripts da aplicação -->
+    <script type="module" src="scripts/saladeestudos.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{
+  "name": "pro-concursos-frontend",
+  "version": "1.0.0",
+  "description": "Plataforma de estudos para concursos públicos - NVP Concursos",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host --port 3000",
+    "build": "vite build",
+    "preview": "vite preview --host --port 4173",
+    "serve": "npm run build && npm run preview",
+    "clean": "rm -rf dist",
+    "clean:build": "npm run clean && npm run build",
+    "lint": "echo 'Linting not configured yet'",
+    "test": "echo 'Tests not configured yet'",
+    "analyze": "npx vite-bundle-analyzer dist",
+    "deploy": "node scripts/deploy.js",
+    "deploy:prod": "node scripts/deploy.js production",
+    "deploy:staging": "node scripts/deploy.js staging",
+    "deploy:preview": "node scripts/deploy.js preview"
+  },
+  "keywords": [
+    "concursos",
+    "estudos",
+    "educação",
+    "online",
+    "pwa",
+    "firebase"
+  ],
+  "author": "NVP Concursos",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nvp-concursos/frontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nvp-concursos/frontend/issues"
+  },
+  "homepage": "https://proconcursos.com.br",
+  "dependencies": {
+    "firebase": "^10.12.2"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vite-bundle-analyzer": "^0.11.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 11"
+  ],
+  "volta": {
+    "node": "18.19.0"
+  }
+}
+

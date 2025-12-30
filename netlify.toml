@@ -1,0 +1,33 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Headers de cache para imagens
+[[headers]]
+  for = "/fundo.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/study-draw.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Headers para arquivos HTML estáticos
+[[headers]]
+  for = "/header.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# API redirects
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200 

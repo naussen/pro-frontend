@@ -1,0 +1,74 @@
+# =================================================================
+# 🚀 NETLIFY REDIRECTS - PRO Concursos
+# =================================================================
+# Formato: from    to    status
+# Documentação: https://docs.netlify.com/routing/redirects/
+
+# -----------------------------------------------------------------
+# 🔄 REDIRECTS IMPORTANTES
+# -----------------------------------------------------------------
+
+# Redirects para www (SEO) - apenas se não for favicon
+https://proconcursos.com.br/*    https://www.proconcursos.com.br/:splat    301
+http://proconcursos.com.br/*     https://www.proconcursos.com.br/:splat    301
+
+# -----------------------------------------------------------------
+# 🔧 API REDIRECTS (Serverless Functions)
+# -----------------------------------------------------------------
+
+# Mercado Pago API
+/api/mercadopago/*    /.netlify/functions/mercadopago-preference    200
+/api/webhook/*         /.netlify/functions/mercadopago-webhook       200
+
+# -----------------------------------------------------------------
+# 📱 LEGACY URLS (se necessário migrar)
+# -----------------------------------------------------------------
+
+# Exemplo: redirecionar URLs antigas
+#/cursos/antigos/*    /cursos/:splat    301
+
+# -----------------------------------------------------------------
+# 🛡️ SECURITY REDIRECTS
+# -----------------------------------------------------------------
+
+# Bloquear acesso direto a arquivos sensíveis
+/admin/*              /404.html    404
+/.env*                /404.html    404
+/config/*             /404.html    404
+
+# -----------------------------------------------------------------
+# 📊 ANALYTICS & TRACKING
+# -----------------------------------------------------------------
+
+# Google Analytics (se usar)
+/analytics/*         https://www.google-analytics.com/:splat    200
+
+# -----------------------------------------------------------------
+# 🎯 UTILITY REDIRECTS
+# -----------------------------------------------------------------
+
+# Health check
+/health               /index.html   200
+
+# Robots.txt (se existir)
+/robots.txt           /robots.txt   200
+
+# Favicon.ico - retornar 404 (usamos SVG inline)
+/favicon.ico          /404.html    404
+
+# -----------------------------------------------------------------
+# 💡 NOTAS
+# -----------------------------------------------------------------
+#
+# STATUS CODES:
+# 200 = Rewrite (URL não muda)
+# 301 = Permanent redirect (SEO)
+# 302 = Temporary redirect
+# 404 = Not found
+#
+# WILDCARDS:
+# * = qualquer string
+# :splat = captura tudo após
+#
+# Para testar redirects:
+# curl -I https://your-site.netlify.app/old-url
