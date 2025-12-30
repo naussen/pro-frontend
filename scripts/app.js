@@ -148,20 +148,7 @@
             }
 
             createFallbackHeader() {
-                const headerPlaceholder = document.getElementById('header-placeholder');
-                headerPlaceholder.innerHTML = `
-                    <header style="height: var(--header-height); background: var(--header-bg); border-bottom: 1px solid var(--header-border); display: flex; align-items: center; padding: 0 1rem; position: fixed; top: 0; left: 0; right: 0; z-index: 105;">
-                        <button id="sidebarToggleBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-right: 1rem;">â˜°</button>
-                        <h1 style="margin: 0; font-size: 1.2rem; color: var(--text-dark);">PRO Concursos - Sala de Estudos</h1>
-                        <div style="margin-left: auto; display: flex; gap: 0.5rem;">
-                            <button id="showAllCoursesBtn" style="padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 4px; cursor: pointer;">ðŸ“š Todos os Cursos</button>
-                            <button id="themeToggleBtn" style="padding: 0.5rem; background: var(--border-color); border: none; border-radius: 4px; cursor: pointer;">ðŸŒ™</button>
-                        </div>
-                    </header>
-                `;
-                
-                // Configurar event listeners para header fallback
-                const sidebarBtn = headerPlaceholder.querySelector('#sidebarToggleBtn');
+                const headerPlaceholder = document.getElementById('header-placeholder'🌙'#sidebarToggleBtn');
                 const showAllBtn = headerPlaceholder.querySelector('#showAllCoursesBtn');
                 const themeBtn = headerPlaceholder.querySelector('#themeToggleBtn');
                 
@@ -175,7 +162,7 @@
                     themeBtn.onclick = () => {
                         document.body.classList.toggle('dark-mode');
                         const isDark = document.body.classList.contains('dark-mode');
-                        themeBtn.textContent = isDark ? 'â˜€ï¸' : 'ðŸŒ™';
+                        themeBtn.textContent = isDark ? '☀️' : '🌙';
                         localStorage.setItem('theme', isDark ? 'dark' : 'light');
                     };
                 }
@@ -222,7 +209,7 @@
 
                         const themeIcon = headerPlaceholder.querySelector('#themeIcon');
                         if (themeIcon) {
-                            themeIcon.textContent = isDark ? 'â˜€ï¸' : 'ðŸŒ™';
+                            themeIcon.textContent = isDark ? '☀️' : '🌙';
                         }
 
                         localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -445,7 +432,7 @@
                 if (headerPlaceholder) {
                     const themeIcon = headerPlaceholder.querySelector('#themeIcon');
                     if (themeIcon) {
-                        themeIcon.textContent = isDark ? 'â˜€ï¸' : 'ðŸŒ™';
+                        themeIcon.textContent = isDark ? '☀️' : '🌙';
                         console.log('âœ… Tema aplicado ao header:', isDark ? 'escuro' : 'claro');
                     }
                 }

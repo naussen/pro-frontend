@@ -155,7 +155,7 @@
                         <h1 style="margin: 0; font-size: 1.2rem; color: var(--text-dark);">PRO Concursos - Sala de Estudos</h1>
                         <div style="margin-left: auto; display: flex; gap: 0.5rem;">
                             <button id="showAllCoursesBtn" style="padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 4px; cursor: pointer;">ðŸ“š Todos os Cursos</button>
-                            <button id="themeToggleBtn" style="padding: 0.5rem; background: var(--border-color); border: none; border-radius: 4px; cursor: pointer;">ðŸŒ™</button>
+                            <button id="themeToggleBtn" style="padding: 0.5rem; background: var(--border-color); border: none; border-radius: 4px; cursor: pointer;">🌙</button>
                         </div>
                     </header>
                 `;
@@ -175,7 +175,7 @@
                     themeBtn.onclick = () => {
                         document.body.classList.toggle('dark-mode');
                         const isDark = document.body.classList.contains('dark-mode');
-                        themeBtn.textContent = isDark ? 'â˜€ï¸' : 'ðŸŒ™';
+                        themeBtn.textContent = isDark ? '☀️' : '🌙';
                         localStorage.setItem('theme', isDark ? 'dark' : 'light');
                     };
                 }
@@ -222,7 +222,7 @@
 
                         const themeIcon = headerPlaceholder.querySelector('#themeIcon');
                         if (themeIcon) {
-                            themeIcon.textContent = isDark ? 'â˜€ï¸' : 'ðŸŒ™';
+                            themeIcon.textContent = isDark ? '☀️' : '🌙';
                         }
 
                         localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -445,7 +445,7 @@
                 if (headerPlaceholder) {
                     const themeIcon = headerPlaceholder.querySelector('#themeIcon');
                     if (themeIcon) {
-                        themeIcon.textContent = isDark ? 'â˜€ï¸' : 'ðŸŒ™';
+                        themeIcon.textContent = isDark ? '☀️' : '🌙';
                         console.log('âœ… Tema aplicado ao header:', isDark ? 'escuro' : 'claro');
                     }
                 }
