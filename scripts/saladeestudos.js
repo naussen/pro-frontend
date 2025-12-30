@@ -151,10 +151,10 @@
                 const headerPlaceholder = document.getElementById('header-placeholder');
                 headerPlaceholder.innerHTML = `
                     <header style="height: var(--header-height); background: var(--header-bg); border-bottom: 1px solid var(--header-border); display: flex; align-items: center; padding: 0 1rem; position: fixed; top: 0; left: 0; right: 0; z-index: 105;">
-                        <button id="sidebarToggleBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-right: 1rem;">â˜°</button>
+                        <button id="sidebarToggleBtn" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-right: 1rem;">☰</button>
                         <h1 style="margin: 0; font-size: 1.2rem; color: var(--text-dark);">PRO Concursos - Sala de Estudos</h1>
                         <div style="margin-left: auto; display: flex; gap: 0.5rem;">
-                            <button id="showAllCoursesBtn" style="padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 4px; cursor: pointer;">ðŸ“š Todos os Cursos</button>
+                            <button id="showAllCoursesBtn" style="padding: 0.5rem 1rem; background: var(--main-color); color: white; border: none; border-radius: 4px; cursor: pointer;">📚 Todos os Cursos</button>
                             <button id="themeToggleBtn" style="padding: 0.5rem; background: var(--border-color); border: none; border-radius: 4px; cursor: pointer;">🌙</button>
                         </div>
                     </header>
@@ -1004,7 +1004,7 @@
                             <div class="course-header" data-course-id="${courseId}">
                                 <div class="course-icon">${this.getCourseIcon(course.name)}</div>
                                 <span class="course-name">${courseName}</span>
-                                <span class="toggle-icon">â–¶</span>
+                                <span class="toggle-icon">▶</span>
                             </div>
                             <div class="module-list" id="modules-${courseId}">
                                 ${course.modules.map(module => {
@@ -1019,7 +1019,7 @@
                                             <div class="module-header">
                                                 <span class="module-name">${moduleName}</span>
                                                 <span class="module-meta">(${module.aulas ? module.aulas.length : 0} aulas)</span>
-                                                <span class="module-toggle">â–¶</span>
+                                                <span class="module-toggle">▶</span>
                                             </div>
                                             <div class="aulas-list" style="display: none;">
                                                 ${module.aulas ? module.aulas.map(aula => {
@@ -1070,7 +1070,7 @@
                         // Toggle visibilidade dos mÃ³dulos
                         moduleList.classList.toggle('visible', !isVisible);
                         toggleIcon.classList.toggle('expanded', !isVisible);
-                        toggleIcon.textContent = isVisible ? 'â–¶' : 'â–¼';
+                        toggleIcon.textContent = isVisible ? '▶' : '▼';
                         
                         // Atualizar indicador de scroll apÃ³s expandir/recolher
                         setTimeout(() => this.updateScrollIndicator(), 100);
@@ -1090,7 +1090,7 @@
                         const isVisible = aulasList.style.display !== 'none';
                         aulasList.style.display = isVisible ? 'none' : 'block';
                         toggleIcon.classList.toggle('expanded', !isVisible);
-                        toggleIcon.textContent = isVisible ? 'â–¶' : 'â–¼';
+                        toggleIcon.textContent = isVisible ? '▶' : '▼';
                         
                         // Atualizar indicador de scroll apÃ³s expandir/recolher
                         setTimeout(() => this.updateScrollIndicator(), 100);
@@ -1342,7 +1342,7 @@
             showEmptyState() {
                 this.elements.courseNav.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">ðŸ“š</div>
+                        <div class="empty-state-icon">📚</div>
                         <h3>Nenhum curso encontrado</h3>
                         <p>Configure sua personalizaÃ§Ã£o ou use "Todos os Cursos".</p>
                     </div>
@@ -1398,12 +1398,12 @@
             getCourseIcon(courseName) {
                 const name = courseName.toLowerCase();
                 if (name.includes('direito')) return 'âš–ï¸';
-                if (name.includes('matemÃ¡tica') || name.includes('matematica')) return 'ðŸ”¢';
+                if (name.includes('matemática') || name.includes('matematica')) return '🔢';
                 if (name.includes('portuguÃªs') || name.includes('portugues')) return 'ðŸ“';
-                if (name.includes('informÃ¡tica') || name.includes('informatica')) return 'ðŸ’»';
-                if (name.includes('contabilidade')) return 'ðŸ“Š';
+                if (name.includes('informática') || name.includes('informatica')) return '💻';
+                if (name.includes('contabilidade')) return '📊';
                 if (name.includes('administraÃ§Ã£o') || name.includes('administracao')) return 'ðŸ›ï¸';
-                return 'ðŸ“š';
+                return '📚';
             }
 
             cacheCourses(courses) {
