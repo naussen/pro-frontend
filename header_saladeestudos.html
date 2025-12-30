@@ -111,6 +111,7 @@
                 </button> 
                 <button id="themeToggleBtn" class="header-btn primary" title="Alternar tema">
                     <span class="icon" id="themeIcon">🌙</span>
+                    <span class="link-text">Alterar Tema</span>
                 </button>
                 <a href="personalizar.html" title="Personalizar Sala de Estudos">
                     <span class="icon">⚙️</span> 
@@ -189,7 +190,7 @@
             margin: 0;
             padding: 0;
             padding-top: var(--header-height);
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         /* Estilos do header */
@@ -471,7 +472,13 @@
             z-index: 1000 !important;
         }
         
-        #showAllCoursesBtn *, #themeToggleBtn * {
+        /* Apenas os elementos filhos internos não devem interceptar cliques */
+        #showAllCoursesBtn .icon, #themeToggleBtn .icon {
+            pointer-events: none !important;
+        }
+        
+        /* Texto do botão deve ser clicável */
+        #showAllCoursesBtn .link-text, #themeToggleBtn .link-text {
             pointer-events: none !important;
         }
         
