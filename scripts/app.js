@@ -262,25 +262,24 @@
                     console.warn('âŒ sidebarToggleBtn nÃ£o encontrado');
                 }
 
-                // BotÃ£o logout-btn
+                // Botão logout-btn
                 const logoutBtn = headerPlaceholder.querySelector('#logout-btn');
                 if (logoutBtn) {
-                    logoutBtn.onclick = (e) => {
+                    logoutBtn.onclick = async (e) => {
                         e.preventDefault();
-                        console.log('ðŸ”§ Logout clicked');
-                        localStorage.removeItem('masterAdmin');
-                        if (this.auth) {
-                            this.auth.signOut().then(() => {
-                                window.location.href = 'index.html';
-                            }).catch(err => {
-                                console.error('Erro no logout:', err);
-                                window.location.href = 'index.html';
-                            });
-                        } else {
+                        console.log('🔐 Logout clicked');
+                        try {
+                            await this.auth.signOut();
+                        } catch (err) {
+                            console.error('Erro no logout:', err);
+                            // Fallback: limpar dados locais
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('authUser');
+                            localStorage.removeItem('masterAdmin');
                             window.location.href = 'index.html';
                         }
                     };
-                    console.log('âœ… logout-btn configurado');
+                    console.log('✅ logout-btn configurado');
                 }
 
                 // === CONFIGURAÃ‡ÃƒO DOS MENUS DROPDOWN ===
@@ -600,29 +599,30 @@
             }
 
             setupAuth() {
+                // Usar sistema de autenticação customizado
                 this.auth.onAuthStateChanged(async user => {
                     if (!user) {
-                        // Verificar se Ã© o admin master simulado (via localStorage para persistÃªncia de sessÃ£o simulada)
+                        // Verificar se é admin master (compatibilidade)
                         const masterAdmin = localStorage.getItem('masterAdmin');
                         if (masterAdmin === 'true') {
                             this.userId = 'admin-master-id';
-                            console.log('âœ… Administrador Mestre detectado via persistÃªncia local');
+                            console.log('✅ Administrador Mestre detectado');
                             this.loadUserCourses();
                             return;
                         }
-                        
-                        console.log('âŒ UsuÃ¡rio nÃ£o autenticado, redirecionando...');
+
+                        console.log('❌ Usuário não autenticado, redirecionando...');
                         window.location.href = 'index.html';
                         return;
                     }
-                    
-                    this.userId = user.uid;
-                    console.log('âœ… UsuÃ¡rio autenticado:', this.userId);
-                    
-                    // Se for o admin-master-id (simulado), pular verificaÃ§Ã£o de Firestore
+
+                    // Usar ID do usuário autenticado
+                    this.userId = user.id || user.uid;
+                    console.log('✅ Usuário autenticado:', this.userId);
+
+                    // Se for admin master, pular verificação
                     if (this.userId === 'admin-master-id') {
-                        console.log('âœ… Acesso concedido: Administrador Mestre');
-                        localStorage.setItem('masterAdmin', 'true');
+                        console.log('✅ Acesso concedido: Administrador Mestre');
                         this.loadUserCourses();
                         return;
                     }
