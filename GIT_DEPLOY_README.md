@@ -147,9 +147,24 @@ npx netlify link
 
 ### 3. Configurar Environment Variables
 No Netlify Dashboard → Site Settings → Environment Variables:
+
+#### 🔥 Credenciais Firebase (OBRIGATÓRIAS):
+```
+FIREBASE_API_KEY = AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8
+FIREBASE_AUTH_DOMAIN = nvp-concursos.firebaseapp.com
+FIREBASE_PROJECT_ID = nvp-concursos
+FIREBASE_STORAGE_BUCKET = nvp-concursos.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID = 397960760271
+FIREBASE_APP_ID = 1:397960760271:web:1243b04141178453d860ba
+FIREBASE_MEASUREMENT_ID = G-T6RVBM12BQ
+```
+
+#### 💳 Pagamento (Opcional):
 ```
 MERCADOPAGO_ACCESS_TOKEN = seu_token_aqui
 ```
+
+**⚠️ IMPORTANTE:** Configure TODAS as variáveis do Firebase antes do deploy para evitar erros de autenticação.
 
 ### 4. Deploy Automático
 ```bash

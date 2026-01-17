@@ -1,4 +1,4 @@
-﻿        'use strict';
+        'use strict';
 
         // === COMPORTAMENTO DO MENU ===
         // O menu de cursos, mÃ³dulos e aulas SEMPRE Ã© apresentado no estado RECOLHIDO
@@ -10,6 +10,17 @@
         // O indicador de scroll (â†“) aparece quando hÃ¡ mais conteÃºdo abaixo no menu
 
         // === CONFIGURAÃ‡ÃƒO E INICIALIZAÃ‡ÃƒO ===
+        // Importar DOMPurify para sanitização XSS
+        let DOMPurify = null;
+        try {
+            // Tentar importar DOMPurify se disponível
+            if (typeof window !== 'undefined' && window.DOMPurify) {
+                DOMPurify = window.DOMPurify;
+            }
+        } catch (e) {
+            console.warn('DOMPurify não disponível, usando sanitização básica');
+        }
+
         class StudyRoomApp {
             constructor() {
                 this.isInitialized = false;
@@ -31,16 +42,8 @@
                 // Elementos DOM
                 this.elements = {};
                 
-                // ConfiguraÃ§Ã£o do Firebase
-                this.firebaseConfig = {
-                    apiKey: "AIzaSyBSRxfHTLbNJWIz2k6ndi1yfVPRq9jzGq8",
-                    authDomain: "nvp-concursos.firebaseapp.com",
-                    projectId: "nvp-concursos",
-                    storageBucket: "nvp-concursos.firebasestorage.app",
-                    messagingSenderId: "397960760271",
-                    appId: "1:397960760271:web:1243b04141178453d860ba",
-                    measurementId: "G-T6RVBM12BQ"
-                };
+                // Configuração do Firebase - Credenciais isoladas para segurança
+                this.firebaseConfig = this.loadFirebaseConfig();
 
                 this.init();
             }
@@ -69,6 +72,9 @@
                     this.setupAuth();
                     
                     this.isInitialized = true;
+                    // Verificar configuração do Firebase
+                    this.verifyFirebaseConfig();
+
                     console.log('âœ… StudyRoomApp inicializado com sucesso');
                 } catch (error) {
                     console.error('âŒ Erro na inicializaÃ§Ã£o:', error);
@@ -436,6 +442,68 @@
                         console.log('âœ… Tema aplicado ao header:', isDark ? 'escuro' : 'claro');
                     }
                 }
+            }
+
+            /**
+             * Carrega configuração do Firebase de forma segura
+             * APENAS variáveis de ambiente - NÃO usa credenciais hardcoded
+             */
+            loadFirebaseConfig() {
+                // Carregar APENAS das variáveis de ambiente (produção/Netlify)
+                const envConfig = {
+                    apiKey: window.FIREBASE_API_KEY || process?.env?.FIREBASE_API_KEY,
+                    authDomain: window.FIREBASE_AUTH_DOMAIN || process?.env?.FIREBASE_AUTH_DOMAIN,
+                    projectId: window.FIREBASE_PROJECT_ID || process?.env?.FIREBASE_PROJECT_ID,
+                    storageBucket: window.FIREBASE_STORAGE_BUCKET || process?.env?.FIREBASE_STORAGE_BUCKET,
+                    messagingSenderId: window.FIREBASE_MESSAGING_SENDER_ID || process?.env?.FIREBASE_MESSAGING_SENDER_ID,
+                    appId: window.FIREBASE_APP_ID || process?.env?.FIREBASE_APP_ID,
+                    measurementId: window.FIREBASE_MEASUREMENT_ID || process?.env?.FIREBASE_MEASUREMENT_ID
+                };
+
+                // Verifica se todas as credenciais essenciais estão disponíveis via variáveis de ambiente
+                const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+                const hasAllEnvCredentials = requiredFields.every(field => envConfig[field]);
+
+                if (hasAllEnvCredentials) {
+                    console.log('🔐 Firebase: Credenciais carregadas com sucesso das variáveis de ambiente');
+                    return envConfig;
+                }
+
+                // NÃO há mais fallback hardcoded por questões de segurança
+                console.error('❌ Firebase: Credenciais não encontradas!');
+                console.error('Configure as seguintes variáveis de ambiente no Netlify:');
+                console.error('- FIREBASE_API_KEY');
+                console.error('- FIREBASE_AUTH_DOMAIN');
+                console.error('- FIREBASE_PROJECT_ID');
+                console.error('- FIREBASE_STORAGE_BUCKET');
+                console.error('- FIREBASE_MESSAGING_SENDER_ID');
+                console.error('- FIREBASE_APP_ID');
+                console.error('- FIREBASE_MEASUREMENT_ID (opcional)');
+
+                // Lança erro em vez de usar credenciais hardcoded
+                throw new Error('Credenciais do Firebase não configuradas. Configure as variáveis de ambiente.');
+            }
+
+            /**
+             * Verifica se a configuração do Firebase foi carregada corretamente
+             */
+            verifyFirebaseConfig() {
+                const config = this.firebaseConfig;
+                const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+
+                const missingFields = requiredFields.filter(field => !config[field]);
+
+                if (missingFields.length > 0) {
+                    console.error('❌ Firebase Config: Campos obrigatórios faltando:', missingFields);
+                    this.showNotification('Erro de configuração do Firebase. Entre em contato com o suporte.', 'error');
+                    return false;
+                }
+
+                // Todas as credenciais agora vêm de variáveis de ambiente
+                console.log('✅ Firebase: Usando configuração baseada em variáveis de ambiente');
+
+                console.log('✅ Firebase Config: Todas as credenciais carregadas corretamente');
+                return true;
             }
 
             initFirebase() {
@@ -1207,17 +1275,42 @@
             }
 
             sanitizeHTML(rawHtml) {
+                // Usar DOMPurify para sanitização robusta (XSS Prevention)
+                if (typeof DOMPurify !== 'undefined') {
+                    return DOMPurify.sanitize(rawHtml, {
+                        ALLOWED_TAGS: [
+                            'p', 'br', 'strong', 'b', 'em', 'i', 'u', 'strike',
+                            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                            'ul', 'ol', 'li',
+                            'table', 'thead', 'tbody', 'tr', 'th', 'td',
+                            'blockquote', 'code', 'pre',
+                            'a', 'img', 'span', 'div'
+                        ],
+                        ALLOWED_ATTR: [
+                            'href', 'target', 'rel', 'alt', 'src', 'title',
+                            'class', 'id', 'style'
+                        ],
+                        ALLOW_DATA_ATTR: false,
+                        FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
+                        FORBID_ATTR: ['onclick', 'onload', 'onerror', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit'],
+                        SANITIZE_DOM: true,
+                        KEEP_CONTENT: true
+                    });
+                }
+
+                // Fallback para sanitização manual se DOMPurify não estiver disponível
+                console.warn('DOMPurify não disponível, usando sanitização básica');
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = rawHtml;
 
                 // Remove elementos perigosos
                 const dangerousElements = [
-                    'iframe', 'object', 'embed', 
+                    'iframe', 'object', 'embed',
                     'form', 'input', 'button', 'textarea', 'select',
                     'applet', 'audio', 'video', 'source', 'track',
                     'script', 'style'
                 ];
-                
+
                 dangerousElements.forEach(tag => {
                     tempDiv.querySelectorAll(tag).forEach(el => el.remove());
                 });
@@ -1230,17 +1323,17 @@
 
                 // Remove atributos perigosos
                 const dangerousAttributes = [
-                    'onclick', 'onload', 'onerror', 'onmouseover', 
+                    'onclick', 'onload', 'onerror', 'onmouseover',
                     'onfocus', 'onblur', 'onchange', 'onsubmit'
                 ];
-                
+
                 tempDiv.querySelectorAll('*').forEach(el => {
                     dangerousAttributes.forEach(attr => {
                         if (el.hasAttribute(attr)) {
                             el.removeAttribute(attr);
                         }
                     });
-                    
+
                     // Sanitiza links externos
                     if (el.tagName === 'A' && el.href) {
                         if (!el.href.startsWith(window.location.origin)) {
@@ -1248,32 +1341,6 @@
                             el.setAttribute('rel', 'noopener noreferrer');
                         }
                     }
-                });
-
-                // Remove estilos inline perigosos
-                tempDiv.querySelectorAll('[style]').forEach(el => {
-                    // Estilos potencialmente perigosos que podem quebrar o layout do container
-                    const dangerousStyles = ['position', 'z-index'];
-                    
-                    // Remove apenas estilos que podem quebrar o container principal
-                    dangerousStyles.forEach(style => {
-                        const styleValue = el.style.getPropertyValue(style);
-                        if (styleValue === 'fixed' || styleValue === 'absolute' || 
-                            (style === 'z-index' && parseInt(styleValue) > 9998)) {
-                            el.style.removeProperty(style);
-                        }
-                    });
-                    
-                    // Remove viewport units perigosos
-                    if (el.style.height && el.style.height.includes('vh')) {
-                        el.style.removeProperty('height');
-                    }
-                    if (el.style.width && el.style.width.includes('vw')) {
-                        el.style.removeProperty('width');
-                    }
-                    
-                    // Preserva estilos necessÃ¡rios para tabelas, cards, grids, etc.
-                    // NÃ£o remove: width, height, margin, padding, display, flex, grid, etc.
                 });
 
                 return tempDiv.innerHTML;
