@@ -7,16 +7,8 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     copyPublicDir: true,
-    // 2. Adiciona configuração de compressão/minificação com esbuild (padrão e mais rápido)
-    // Para usar 'terser', defina como 'terser'. 'esbuild' é geralmente mais rápido.
-    minify: 'esbuild', 
-    // Opções para terser seriam especificadas aqui se 'minify: 'terser'' fosse escolhido:
-    // terserOptions: {
-    //   compress: {
-    //     drop_console: true,
-    //     drop_debugger: true,
-    //   },
-    // },
+    // Configura compressão/minificação com esbuild (padrão e mais rápido)
+    minify: 'esbuild',
     
     rollupOptions: {
       input: {
@@ -41,7 +33,7 @@ export default defineConfig({
           }
           return 'assets/[name]-[hash][extname]';
         },
-        // 1. Configura Code Splitting manual para separar vendor e react
+        // Configura Code Splitting manual para separar vendor e react
         manualChunks(id) {
           // Separa todos os módulos de node_modules
           if (id.includes('node_modules')) {
@@ -52,8 +44,6 @@ export default defineConfig({
             // Cria um chunk geral para outras dependências de node_modules
             return 'vendor';
           }
-          // Você pode adicionar mais regras aqui para outros módulos específicos, se necessário.
-          // Exemplo: if (id.includes('some-large-library')) { return 'large-lib'; }
         },
         // Opcional: para ter mais controle sobre os nomes dos arquivos de chunk gerados
         // chunkFileNames: 'assets/js/[name]-[hash].js',
