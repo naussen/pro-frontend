@@ -1,3 +1,5 @@
+import { secureStorage } from './utils/secureStorage.js';
+
 /**
  * Sistema de Autenticação Customizado
  * Integração com backend JWT em vez de Firebase Auth
@@ -15,14 +17,17 @@ class AuthSystem {
      * Inicializa o sistema de autenticação
      */
     init() {
-        // Carregar token do localStorage
-        this.token = localStorage.getItem('authToken');
-        this.user = JSON.parse(localStorage.getItem('authUser') || 'null');
+        // Carregar token e usuário do SecureStorage
+        this.token = secureStorage.getToken();
+        this.user = secureStorage.getUser();
 
         // Verificar se token ainda é válido
         if (this.token) {
             this.verifyToken();
         }
+
+        // Configurar refresh automático
+        this.setupTokenRefresh();
     }
 
     /**
@@ -32,7 +37,7 @@ class AuthSystem {
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             return 'http://localhost:3001';
         }
-        return 'https://proconcursos-backend.railway.app'; // Atualizar quando deployado
+        return 'https://proconcursos-backend.railway.app';
     }
 
     /**
@@ -40,6 +45,19 @@ class AuthSystem {
      */
     isAuthenticated() {
         return !!(this.token && this.user);
+    }
+
+    /**
+     * Obtém ou gera token CSRF para proteção
+     */
+    getCsrfToken() {
+        let token = sessionStorage.getItem('csrf_token');
+        if (!token) {
+            // Gera um token aleatório simples para a sessão
+            token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            sessionStorage.setItem('csrf_token', token);
+        }
+        return token;
     }
 
     /**
@@ -51,6 +69,7 @@ class AuthSystem {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-Token': this.getCsrfToken()
                 },
                 body: JSON.stringify({ email, password })
             });
@@ -61,12 +80,14 @@ class AuthSystem {
                 throw new Error(data.message || 'Erro no login');
             }
 
-            // Salvar dados de autenticação
+            // Salvar dados de autenticação de forma segura
             this.token = data.token;
             this.user = data.user;
 
-            localStorage.setItem('authToken', this.token);
-            localStorage.setItem('authUser', JSON.stringify(this.user));
+            await secureStorage.setToken(this.token);
+            await secureStorage.setUser(this.user);
+
+            this.setupTokenRefresh();
 
             return {
                 user: this.user,
@@ -98,6 +119,7 @@ class AuthSystem {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-Token': this.getCsrfToken()
                 },
                 body: JSON.stringify(requestData)
             });
@@ -112,8 +134,10 @@ class AuthSystem {
             this.token = data.token;
             this.user = data.user;
 
-            localStorage.setItem('authToken', this.token);
-            localStorage.setItem('authUser', JSON.stringify(this.user));
+            await secureStorage.setToken(this.token);
+            await secureStorage.setUser(this.user);
+
+            this.setupTokenRefresh();
 
             return {
                 user: this.user,
@@ -131,13 +155,16 @@ class AuthSystem {
      */
     async signOut() {
         try {
-            // Limpar dados locais
+            // Limpar dados locais seguros
             this.token = null;
             this.user = null;
 
+            secureStorage.clear();
+            sessionStorage.removeItem('csrf_token');
+
+            // Limpar compatibilidade se houver
             localStorage.removeItem('authToken');
             localStorage.removeItem('authUser');
-            localStorage.removeItem('masterAdmin'); // Compatibilidade
 
             // Redirecionar para página inicial
             window.location.href = 'index.html';
@@ -158,10 +185,7 @@ class AuthSystem {
             // Fazer uma requisição simples para verificar token
             const response = await fetch(`${this.baseURL}/api/usuario/${this.user?.id}`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${this.token}`,
-                    'Content-Type': 'application/json'
-                }
+                headers: this.getAuthHeaders()
             });
 
             if (response.ok) {
@@ -176,25 +200,37 @@ class AuthSystem {
 
         } catch (error) {
             console.error('Erro ao verificar token:', error);
-            // Em caso de erro de rede, assumir token válido
+            // Em caso de erro de rede, assumir token válido temporariamente
             return true;
         }
+    }
+
+    /**
+     * Configura atualização automática do token
+     */
+    setupTokenRefresh() {
+        // Verificar token a cada 15 minutos
+        if (this.refreshInterval) clearInterval(this.refreshInterval);
+
+        this.refreshInterval = setInterval(() => {
+            this.verifyToken();
+        }, 15 * 60 * 1000);
     }
 
     /**
      * Obtém headers de autenticação para requests
      */
     getAuthHeaders() {
-        if (!this.token) {
-            return {
-                'Content-Type': 'application/json'
-            };
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': this.getCsrfToken()
+        };
+
+        if (this.token) {
+            headers['Authorization'] = `Bearer ${this.token}`;
         }
 
-        return {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.token}`
-        };
+        return headers;
     }
 
     /**
@@ -216,7 +252,7 @@ class AuthSystem {
 
             // Atualizar dados locais
             this.user = { ...this.user, ...data.user };
-            localStorage.setItem('authUser', JSON.stringify(this.user));
+            await secureStorage.setUser(this.user);
 
             return data;
 
@@ -235,7 +271,7 @@ class AuthSystem {
         callback(this.user);
 
         // Para compatibilidade, retornar função vazia
-        return () => {};
+        return () => { };
     }
 
     /**
